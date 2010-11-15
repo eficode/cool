@@ -22,6 +22,29 @@ public class Main
 		Component co1 = UCMEntity.GetComponent( "component:COMPONENT_TEST1@\\PDS_PVOB" );
 		BaselineList bls = co1.GetBaselines( st1, Plevel.INITIAL );
 		
+		System.out.println( "SIZE=" + bls.size() );
+		
+		Baseline bl1 = bls.get( 0 );
+		
+		Tag tag = bl1.CreateTag( "hudson", "snade", "now", "building" );
+		tag.SetEntry( "buildnum", "1" );
+		tag = tag.Persist();
+		System.out.println( tag.Stringify() );
+		
+		tag.SetEntry( "buildstatus", "nogetnyt" );
+		tag = tag.Persist();
+		System.out.println( tag.Stringify() );
+		
+		bl1.SaveState();
+
+	}
+	
+	public static void test5()
+	{
+		Stream st1 = UCMEntity.GetStream( "stream:STREAM_TEST1@\\PDS_PVOB" );
+		Component co1 = UCMEntity.GetComponent( "component:COMPONENT_TEST1@\\PDS_PVOB" );
+		BaselineList bls = co1.GetBaselines( st1, Plevel.INITIAL );
+		
 		
 		/* Preprocess */
 		for( Baseline bl : bls )

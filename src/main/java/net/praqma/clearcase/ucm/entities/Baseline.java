@@ -89,6 +89,7 @@ public class Baseline extends UCMEntity
 		else
 		{
 			/* TODO Get from clear case, uses cached value */
+			/* If different from cached, cache the new */
 			return this.plevel;
 		}
 	}
@@ -115,7 +116,6 @@ public class Baseline extends UCMEntity
 			this.plevel = Plevel.BUILT;
 		}
 		
-		//CTF.SetPromotionLevel( this.fqname, this.plevel.GetName() );
 		context.SetPromotionLevel( this );
 		
 		return this.plevel;
@@ -126,13 +126,14 @@ public class Baseline extends UCMEntity
 		if( !loaded ) this.Load();
 		
 		this.plevel = Plevel.REJECTED;
+		
+		context.SetPromotionLevel( this );
 	}
 	
 
 	public BaselineDiff GetDiffs()
 	{
 		return new BaselineDiff();
-		//diff.Print();
 	}
 	
 	public Component GetComponent()

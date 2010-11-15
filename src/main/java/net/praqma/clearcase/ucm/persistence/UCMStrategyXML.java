@@ -232,7 +232,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	public ArrayList<String> GetBaselines( String component, String stream, String plevel )
 	{
 		logger.trace_function();
-		logger.debug( component + ", " + stream );
+		logger.debug( component + ", " + stream + ", " + plevel );
 		
 		NodeList list = baselines.getChildNodes( );
 		ArrayList<String> result = new ArrayList<String>();

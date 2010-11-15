@@ -184,9 +184,13 @@ public class Tag extends UCMEntity
 		return this.entity;
 	}
 	
+	/**
+	 * Persist the Tag.
+	 * Returns the new Tag from ClearCase.
+	 * @return The new Tag.
+	 */
 	public Tag Persist()
 	{
-		//Set( context.StoreTag( this ) );
 		Printer.HashMapPrinter( this.GetEntries() );
 		return context.StoreTag( this );
 	}

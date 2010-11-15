@@ -42,6 +42,7 @@ public class Component extends UCMEntity
 		
 		public BaselineList( Stream stream, Plevel plevel )
 		{
+			logger.debug( "Getting Baselines from " + stream.GetFQName() + " with plevel " + plevel );
 			this.stream = stream;
 			this.addAll( context.GetBaselines( stream, Component.this, plevel ) );
 		}
