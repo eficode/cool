@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.cleartool.Cleartool;
+
 public class SnapshotView extends UCM
 {
 	protected static final String rx_view_uuid  = "view_uuid:(.*)";
