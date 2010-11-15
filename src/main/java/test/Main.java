@@ -22,17 +22,18 @@ public class Main
 		Component co1 = UCMEntity.GetComponent( "component:COMPONENT_TEST1@\\PDS_PVOB" );
 		BaselineList bls = co1.GetBaselines( st1, Plevel.INITIAL );
 		
+		
 		/* Preprocess */
 		for( Baseline bl : bls )
 		{
-			Tag t = bl.CreateTag( "hudson", "007", "2010", "inprogres1s" );
+			Tag t = bl.CreateTag( "hudson", "snade", "2010", "inprogres1s" );
 		}
 		
 		
 		TagQuery tq = new TagQuery();
 		tq.AddCondition( "buildstatus", "^(?!inprogress$)" );
 		
-		BaselineList bls2 = bls.Filter( tq, "hudson", "007" );
+		BaselineList bls2 = bls.Filter( tq, "hudson", "snade" );
 		
 		System.out.println( "BLS2=" );
 		for( Baseline bl : bls2 )

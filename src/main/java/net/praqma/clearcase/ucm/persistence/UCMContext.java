@@ -168,6 +168,10 @@ public class UCMContext
 		logger.debug( "CGI FOR NEW = " + cgi );
 		//System.out.println( "CGI==="+cgi );
 		
+		/* Delete any existing Tags with the unique ID */
+		logger.log( "Deleting Tags with ID: " + tagType + tagID + " for entity " + entity.GetFQName() );
+		strategy.DeleteTagsWithID( tagType, tagID, entity.GetFQName() );
+		
 		cgi = "tagtype=" + tagType + "&tagid=" + tagID + ( cgi.length() > 0 ? "&" + cgi : "" );
 		String fqname = strategy.NewTag( entity, cgi );
 		

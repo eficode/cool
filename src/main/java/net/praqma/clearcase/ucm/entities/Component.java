@@ -1,7 +1,6 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.utils.TagQuery;

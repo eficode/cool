@@ -29,6 +29,8 @@ interface UCMStrategyInterface
 	public String GetTag( String fqname );
 	public String NewTag( UCMEntity entity, String cgi );
 	public void DeleteTag( String fqname );
+	public void DeleteTagsWithID( String tagType, String tagID, String entity );
+	
 	public String PutTag( String fqname, String keyval, UCMEntity entity );
 	
 	/* Snapshot Views */

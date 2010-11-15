@@ -380,17 +380,25 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		return tag.getAttribute( "fqname" );
 	}
 	
-	public void DeleteTag( String fqname )
+	public void DeleteTagsWithID( String tagType, String tagID, String entity )
 	{
 		logger.trace_function();
-		logger.debug( fqname );
+		logger.debug( tagType + tagID );
 		
-		Element tag = GetElementWithFqname( tags, fqname );
-		tags.removeChild( tag );
+		ArrayList<Element> ts = GetElementsWithName( tags, "entity", entity );
+		for( Element e : ts )
+		{
+			tags.removeChild( e );
+		}		
+	}
+	
+	public void DeleteTagsWithID( String ID )
+	{
+		
 	}
 	
 	
-	/* Snapshot views*/
+	/* Snapshot views */
 	public void MakeSnapshotView( String stream, String viewtag, String viewroot )
 	{
 		
@@ -597,6 +605,13 @@ public class UCMStrategyXML implements UCMStrategyInterface
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void DeleteTag( String fqname )
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 }
