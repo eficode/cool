@@ -1,0 +1,259 @@
+<?xml version="1.0" ?>
+<data>
+	
+	<!-- BASELINES -->
+	<baselines>
+
+		
+		<baseline fqname="baseline:BASELINE_TEST1@\PDS_PVOB">
+			<component>component:COMPONENT_TEST1@\PDS_PVOB</component>
+			<plevel>INITIAL</plevel>
+			<pvob>\PDS_PVOB</pvob>
+			<shortname>BASELINE_TEST1</shortname>
+			<stream>stream:STREAM_TEST1@\PDS_PVOB</stream>
+			<user>User 1</user>
+			<!-- White space separated Baseline list -->
+			<depends_on_closure></depends_on_closure>
+			<attributes>
+				<BuildInProgress>false</BuildInProgress>
+			</attributes>
+			<activities>
+				<activity>activity:ACTIVITY_TEST1@\PDS_PVOB</activity>
+				<activity>activity:ACTIVITY_TEST2@\PDS_PVOB</activity>
+			</activities>
+			<previous>baseline:BASELINE_TEST0@\PDS_PVOB</previous>
+		</baseline>
+		
+		<baseline fqname="baseline:BASELINE_TEST2@\PDS_PVOB">
+			<component>component:COMPONENT_TEST1@\PDS_PVOB</component>
+			<plevel>INITIAL</plevel>
+			<pvob>\PDS_PVOB</pvob>
+			<shortname>BASELINE_TEST2</shortname>
+			<stream>stream:STREAM_TEST1@\PDS_PVOB</stream>
+			<user>User 1</user>
+			<!-- White space separated Baseline list -->
+			<depends_on_closure></depends_on_closure>
+			<attributes>
+				<BuildInProgress>false</BuildInProgress>
+			</attributes>
+			<activities>
+				<activity>activity:ACTIVITY_TEST2@\PDS_PVOB</activity>
+				<activity>activity:ACTIVITY_TEST2@\PDS_PVOB</activity>
+			</activities>
+			<previous>baseline:BASELINE_TEST1@\PDS_PVOB</previous>
+		</baseline>
+		
+		
+		<baseline fqname="baseline:BASELINE_TEST3@\PDS_PVOB">
+			<component>component:COMPONENT_TEST1@\PDS_PVOB</component>
+			<plevel>INITIAL</plevel>
+			<pvob>\PDS_PVOB</pvob>
+			<shortname>BASELINE_TEST3</shortname>
+			<stream>stream:STREAM_TEST1@\PDS_PVOB</stream>
+			<user>User 1</user>
+			<!-- White space separated Baseline list -->
+			<depends_on_closure></depends_on_closure>
+			<attributes>
+				<BuildInProgress>false</BuildInProgress>
+			</attributes>
+			<activities>
+				<activity>activity:ACTIVITY_TEST3@\PDS_PVOB</activity>
+				<activity>activity:ACTIVITY_TEST2@\PDS_PVOB</activity>
+			</activities>
+			<previous>baseline:BASELINE_TEST2@\PDS_PVOB</previous>
+		</baseline>		
+
+		
+	</baselines>
+	
+	<!-- TAGS -->
+	<tags>
+		<!--
+		<tag fqname="tag@10001@\PDS_PVOB" entity="baseline:BASELINE_TEST1@\PDS_PVOB">tagtype=hudson&amp;tagid=001&amp;process=pending</tag>
+		<tag fqname="tag@10002@\PDS_PVOB" entity="baseline:BASELINE_TEST1@\PDS_PVOB">tagtype=hudson&amp;tagid=002&amp;process=building</tag>
+		<tag fqname="tag@10003@\PDS_PVOB" entity="baseline:BASELINE_TEST1@\PDS_PVOB">tagtype=hudson&amp;tagid=003&amp;process=finished</tag>
+		-->
+	</tags>
+	
+	<!-- ACTIVITIES -->
+	<activities>
+		
+		<activity fqname="activity:ACTIVITY_TEST1@\PDS_PVOB">
+			<changeset>
+				<version>c:\VERSION_TEST\main.cpp@@\main\1</version>
+				<version>c:\VERSION_TEST\main.cpp@@\main\2</version>
+				<version>c:\VERSION_TEST\main.cpp@@\main\3</version>
+				<version>c:\VERSION_TEST\ultra.cpp@@\main\1</version>
+				<version>c:\VERSION_TEST\mega.cpp@@\main\1</version>
+			</changeset>
+			<user>User 1</user>
+		</activity>
+		
+		<activity fqname="activity:ACTIVITY_TEST2@\PDS_PVOB">
+			<changeset>
+				<version>c:\VERSION_TEST\common.h@@\main\1</version>
+				<version>c:\VERSION_TEST\types.h@@\main\213</version>
+				<version>c:\VERSION_TEST\matrix.h@@\main\32</version>
+			</changeset>
+			<user>User 2</user>
+		</activity>
+		
+		<activity fqname="activity:ACTIVITY_TEST3@\PDS_PVOB">
+			<changeset>
+				<version>c:\VERSION_TEST\index.php@@\main\1</version>
+				<version>c:\VERSION_TEST\debug.php@@\main\2</version>
+				<version>c:\VERSION_TEST\tables.sql@@\main\1</version>
+			</changeset>
+			<user>User 3</user>
+		</activity>
+		
+	</activities>
+	
+	
+	<!-- VERSIONS -->
+	<versions>
+		
+		<version fqname="c:\VERSION_TEST\main.cpp@@\main\1">
+			<user>User 1</user>
+			<date>2010-01-02</date>
+			<comment>Comment for main 1</comment>
+			<machine>Machine 1</machine>
+			<kind>Kind 1</kind>
+			<branch>dev</branch>
+			<checkedout></checkedout>
+		</version>
+		
+		<version fqname="c:\VERSION_TEST\main.cpp@@\main\2">
+			<user>User 1</user>
+			<date>2010-10-26</date>
+			<comment>Comment for main 2</comment>
+			<machine>Machine 1</machine>
+			<kind>Kind 1</kind>
+			<branch>dev</branch>
+			<checkedout></checkedout>
+		</version>
+		
+		<version fqname="c:\VERSION_TEST\main.cpp@@\main\3">
+			<user>User 1</user>
+			<date>2010-10-26</date>
+			<comment>Comment for main 3</comment>
+			<machine>Machine 1</machine>
+			<kind>Kind 1</kind>
+			<branch>dev</branch>
+			<checkedout></checkedout>
+		</version>
+		
+		<version fqname="c:\VERSION_TEST\ultra.cpp@@\main\1">
+			<user>User 2</user>
+			<date>2010-11-01</date>
+			<comment>Comment for main 3</comment>
+			<machine>Machine 2</machine>
+			<kind>Kind 1</kind>
+			<branch>dev</branch>
+			<checkedout></checkedout>
+		</version>
+		
+		<version fqname="c:\VERSION_TEST\mega.cpp@@\main\1">
+			<user>User 2</user>
+			<date>2010-11-01</date>
+			<comment>Comment for main 3</comment>
+			<machine>Machine 2</machine>
+			<kind>Kind 1</kind>
+			<branch>dev</branch>
+			<checkedout></checkedout>
+		</version>
+		
+		<version fqname="c:\VERSION_TEST\common.h@@\main\1">
+			<user>User 2</user>
+			<date>2010-11-01</date>
+			<comment>Comment for main 3</comment>
+			<machine>Machine 2</machine>
+			<kind>Kind 1</kind>
+			<branch>dev</branch>
+			<checkedout></checkedout>
+		</version>
+		
+		<version fqname="c:\VERSION_TEST\types.h@@\main\213">
+			<user>User 2</user>
+			<date>2010-11-01</date>
+			<comment>Comment for main 3</comment>
+			<machine>Machine 2</machine>
+			<kind>Kind 1</kind>
+			<branch>dev</branch>
+			<checkedout></checkedout>
+		</version>
+		
+		<version fqname="c:\VERSION_TEST\matrix.h@@\main\32">
+			<user>User 2</user>
+			<date>2010-11-01</date>
+			<comment>Comment for main 3</comment>
+			<machine>Machine 2</machine>
+			<kind>Kind 1</kind>
+			<branch>dev</branch>
+			<checkedout></checkedout>
+		</version>
+		
+		<version fqname="c:\VERSION_TEST\index.php@@\main\1">
+			<user>User 2</user>
+			<date>2010-11-01</date>
+			<comment>Comment for main 3</comment>
+			<machine>Machine 2</machine>
+			<kind>Kind 1</kind>
+			<branch>dev</branch>
+			<checkedout></checkedout>
+		</version>
+		
+		<version fqname="c:\VERSION_TEST\debug.php@@\main\2">
+			<user>User 2</user>
+			<date>2010-11-01</date>
+			<comment>Comment for main 3</comment>
+			<machine>Machine 2</machine>
+			<kind>Kind 1</kind>
+			<branch>dev</branch>
+			<checkedout></checkedout>
+		</version>
+		
+		<version fqname="c:\VERSION_TEST\tables.sql@@\main\1">
+			<user>User 2</user>
+			<date>2010-11-01</date>
+			<comment>Comment for main 3</comment>
+			<machine>Machine 2</machine>
+			<kind>Kind 1</kind>
+			<branch>dev</branch>
+			<checkedout></checkedout>
+		</version>
+		
+	</versions>
+		
+	
+	<!-- STREAMS -->
+	<streams>
+		
+		<stream fqname="stream:STREAM_TEST1@\PDS_PVOB">
+			<recommended_baseline>baseline:BASELINE_TEST2@\PDS_PVOB</recommended_baseline>
+		</stream>
+		
+		<stream fqname="stream:STREAM_TEST2@\PDS_PVOB">
+			<recommended_baseline>baseline:BASELINE_TEST22@\PDS_PVOB</recommended_baseline>
+		</stream>
+		
+	</streams>
+	
+	<!-- COMPONENTS -->
+	<components>
+
+		
+		<component fqname="component:COMPONENT_TEST1@\PDS_PVOB">
+			<pvob>\PDS_PVOB</pvob>
+			<shortname>COMPONENT_TEST1</shortname>
+			<rootdir>c:\</rootdir>
+		</component>
+		
+		<component fqname="component:COMPONENT_TEST2@\PDS_PVOB">
+			<pvob>\PDS_PVOB</pvob>
+			<shortname>COMPONENT_TEST2</shortname>
+			<rootdir>c:\</rootdir>
+		</component>
+		
+	</components>
+</data>
