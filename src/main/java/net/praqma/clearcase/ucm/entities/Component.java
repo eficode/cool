@@ -44,7 +44,7 @@ public class Component extends UCMEntity
 		{
 			logger.debug( "Getting Baselines from " + stream.GetFQName() + " with plevel " + plevel );
 			this.stream = stream;
-			this.addAll( context.GetBaselines( stream, Component.this, plevel ) );
+			this.addAll( context.GetBaselines( stream, Component.this, plevel, Component.this.pvob ) );
 		}
 		
 		public BaselineList Filter( TagQuery tq, String tagType, String tagID )

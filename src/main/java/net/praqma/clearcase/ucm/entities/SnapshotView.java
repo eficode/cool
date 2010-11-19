@@ -36,13 +36,13 @@ public class SnapshotView extends UCM
 		
 		// cleartool("pwv -root");
 		String cmd = "pwv -root";
-		String wvroot = Cleartool.run( cmd ).trim();
+		String wvroot = Cleartool.run_collapse( cmd ).trim();
 		
 		String viewtag = this.ViewrootIsValid( wvroot );
 		
 		// cleartool( 'lsstream -fmt %Xn -view ' . $viewtag );
 		cmd = "lsstream -fmt %Xn -view " + viewtag;
-		String fqstreamstr = Cleartool.run( cmd ).trim();
+		String fqstreamstr = Cleartool.run_collapse( cmd ).trim();
 		
 		/* Still experimental!!! */
 		System.setProperty( "user.dir", cwd );
@@ -121,7 +121,7 @@ public class SnapshotView extends UCM
 		
 		//my $viewtag = cleartool("lsview -s -uuid $1");
 		String cmd = "lsview -s -uuid " + uuid;
-		String viewtag = Cleartool.run( cmd ).trim();
+		String viewtag = Cleartool.run_collapse( cmd ).trim();
 		
 		return viewtag;
 	}

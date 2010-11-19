@@ -1,13 +1,15 @@
 package net.praqma.clearcase.ucm.entities;
 
 import net.praqma.clearcase.ucm.persistence.UCMContext;
+import net.praqma.clearcase.ucm.persistence.UCMStrategyCleartool;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyXML;
 import net.praqma.utils.Debug;
 
 public abstract class UCM
 {
 	/* Make sure, that we're using the same instance of the context! */
-	protected static UCMContext context = new UCMContext( new UCMStrategyXML() );
+	//protected static UCMContext context = new UCMContext( new UCMStrategyXML() );
+	protected static UCMContext context = new UCMContext( new UCMStrategyCleartool() );
 	
 	protected static Debug logger = Debug.GetLogger( false );
 	
