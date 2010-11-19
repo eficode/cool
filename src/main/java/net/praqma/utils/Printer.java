@@ -2,6 +2,7 @@ package net.praqma.utils;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -25,6 +26,16 @@ public class Printer
 	    	Map.Entry<T1, T2> entry = (Map.Entry<T1, T2>)it.next();
 	    	System.out.print( "(" + entry.getKey().toString() + ", " + entry.getValue().toString() + ")" );
 	    	if( it.hasNext() ) System.out.print( ", " );
+	    }
+	    
+	    System.out.println( "" );
+	}
+	
+	public static <T> void ListPrinter ( List<T> list )
+	{
+	    for( T t : list )
+	    {
+	    	System.out.print( "(" + t.toString() + ") " );
 	    }
 	    
 	    System.out.println( "" );

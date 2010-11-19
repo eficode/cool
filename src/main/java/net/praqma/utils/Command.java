@@ -2,6 +2,8 @@ package net.praqma.utils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.praqma.utils.Debug;
 
@@ -13,8 +15,9 @@ import net.praqma.utils.Debug;
 public abstract class Command
 {
 	protected static Debug logger = Debug.GetLogger();
+	protected static final String linesep = System.getProperty( "line.separator" );
 	
-	public static String run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
+	public static List<String> run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
 		logger.trace_function();
 		
@@ -26,6 +29,14 @@ public abstract class Command
 			p.waitFor();
 			BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
 			
+			String line;
+			List<String> list = new ArrayList<String>();
+			while( ( line = br.readLine() ) != null )
+			{
+				list.add( line );
+	        }
+
+			
 			br.close();
 			
 			/* Abnormal process termination */
@@ -35,7 +46,10 @@ public abstract class Command
 				throw new AbnormalProcessTerminationException();
 			}
 			
-			return br.toString();
+			//System.out.println( "=>" + sb.toString() + "<=" );
+			net.praqma.utils.Printer.ListPrinter( list );
+			
+			return list;
 		}
 		catch ( Exception e )
 		{
