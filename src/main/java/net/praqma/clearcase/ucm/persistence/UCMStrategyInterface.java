@@ -1,6 +1,7 @@
 package net.praqma.clearcase.ucm.persistence;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
@@ -15,7 +16,7 @@ interface UCMStrategyInterface
 	public String GetBaselineActivities( String baseline );
 	
 	/* Component */
-	public ArrayList<String> GetBaselines( String component, String stream, String plevel );
+	public List<String> GetBaselines( String component, String stream, String plevel );
 	
 	/* Stream */
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException;

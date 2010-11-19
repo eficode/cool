@@ -238,14 +238,16 @@ public class UCMContext
 	}
 	
 	
-	public List<Baseline> GetBaselines( Stream stream, Component component, Plevel plevel )
+	public List<Baseline> GetBaselines( Stream stream, Component component, Plevel plevel, String pvob )
 	{
 		String pl = plevel == null ? "" : plevel.toString() ;
 		List<String> bls_str = strategy.GetBaselines( component.GetFQName(), stream.GetFQName(), pl );
+		net.praqma.utils.Printer.ListPrinter( bls_str );
 		List<Baseline> bls = new ArrayList<Baseline>();
 		for( String bl : bls_str )
 		{
-			bls.add( UCMEntity.GetBaseline( bl, true ) );
+			System.out.println( "--->" + bl );
+			bls.add( UCMEntity.GetBaseline( bl + "@" + pvob, true ) );
 		}
 		
 		return bls;

@@ -252,7 +252,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
     			p = plevel.equals( "" ) ? "" : p;
     			if( c.equals( component ) && s.equals( stream ) && ( p.equals( plevel ) ) )
     			{
-    				result.add( attrs.get( "fqname" ) );
+    				result.add( attrs.get( "sname" ) );
     			}
     		}
 		}
