@@ -19,7 +19,7 @@ import java.util.List;
  */
 public abstract class Cleartool extends Command
 {	
-	public static String run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
+	public static List<String> run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
 		return Command.run( "cleartool " + cmd );
 	}
@@ -29,14 +29,18 @@ public abstract class Cleartool extends Command
 	 * @param cmd
 	 * @return The return value of the cleartool command as an array Strings, separated by new lines.
 	 */
-	public static List<String> run_a( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
+	public static String run_collapse( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
 		logger.trace_function();
 		
 		/* Just call the run method an split the result */
-		String result = run( cmd );
-		List<String> rs = Arrays.asList( result.split( "\n" ) );
-		return rs;
+		List<String> result = run( cmd );
+		StringBuffer sb = new StringBuffer();
+		for( String s : result )
+		{
+			sb.append( s + linesep );
+		}
+		return sb.toString();
 	}
 	
 	
