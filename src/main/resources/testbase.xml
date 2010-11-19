@@ -5,7 +5,7 @@
 	<baselines>
 
 		
-		<baseline fqname="baseline:BASELINE_TEST1@\PDS_PVOB">
+		<baseline fqname="baseline:BASELINE_TEST1@\PDS_PVOB" sname="BASELINE_TEST1">
 			<component>component:COMPONENT_TEST1@\PDS_PVOB</component>
 			<plevel>INITIAL</plevel>
 			<pvob>\PDS_PVOB</pvob>
@@ -24,7 +24,7 @@
 			<previous>baseline:BASELINE_TEST0@\PDS_PVOB</previous>
 		</baseline>
 		
-		<baseline fqname="baseline:BASELINE_TEST2@\PDS_PVOB">
+		<baseline fqname="baseline:BASELINE_TEST2@\PDS_PVOB" sname="BASELINE_TEST2">
 			<component>component:COMPONENT_TEST1@\PDS_PVOB</component>
 			<plevel>INITIAL</plevel>
 			<pvob>\PDS_PVOB</pvob>
@@ -44,7 +44,7 @@
 		</baseline>
 		
 		
-		<baseline fqname="baseline:BASELINE_TEST3@\PDS_PVOB">
+		<baseline fqname="baseline:BASELINE_TEST3@\PDS_PVOB" sname="BASELINE_TEST3">
 			<component>component:COMPONENT_TEST1@\PDS_PVOB</component>
 			<plevel>INITIAL</plevel>
 			<pvob>\PDS_PVOB</pvob>
