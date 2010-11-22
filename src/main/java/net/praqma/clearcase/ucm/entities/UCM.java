@@ -9,7 +9,33 @@ public abstract class UCM
 {
 	/* Make sure, that we're using the same instance of the context! */
 	//protected static UCMContext context = new UCMContext( new UCMStrategyXML() );
-	protected static UCMContext context = new UCMContext( new UCMStrategyCleartool() );
+	//protected static UCMContext context = new UCMContext( new UCMStrategyCleartool() );
+	protected static UCMContext context = null;
+	
+	public enum ContextType
+	{
+		XML,
+		CLEARTOOL
+	}
+	
+	public static void SetContext( ContextType ct )
+	{
+		if( context != null )
+		{
+			logger.warning( "Context is already set" );
+			return;
+		}
+		
+		switch( ct )
+		{
+		case XML:
+			context = new UCMContext( new UCMStrategyXML() );
+			break;
+			
+		default:
+			context = new UCMContext( new UCMStrategyCleartool() );
+		}
+	}
 	
 	protected static Debug logger = Debug.GetLogger( false );
 	

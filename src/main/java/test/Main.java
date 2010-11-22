@@ -18,6 +18,8 @@ public class Main
 	 */
 	public static void main( String[] args )
 	{
+		UCM.SetContext( UCM.ContextType.XML );
+		
 		Stream st1 = UCMEntity.GetStream( "stream:STREAM_TEST1@\\PDS_PVOB" );
 		Component co1 = UCMEntity.GetComponent( "component:COMPONENT_TEST1@\\PDS_PVOB" );
 		BaselineList bls = co1.GetBaselines( st1, Plevel.INITIAL );
