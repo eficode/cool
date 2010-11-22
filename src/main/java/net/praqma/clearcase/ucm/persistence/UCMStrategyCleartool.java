@@ -15,12 +15,17 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	
 	static
 	{
-		logger.ExcludeClass( UCMStrategyXML.class.getName() );
+		//logger.ExcludeClass( UCMStrategyXML.class.getName() );
 	}
 	
 	
 	private static final String filesep = System.getProperty( "file.separator" );
 	private static final String linesep = System.getProperty( "line.separator" );
+	
+	public UCMStrategyCleartool()
+	{
+		logger.log( "Using CLEARTOOL strategy" );
+	}
 	
 	@Override
 	public String LoadBaseline( String baseline )

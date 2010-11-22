@@ -42,7 +42,7 @@ public class Stream extends UCMEntity
 	
 	public boolean RecommendBaseline( Baseline baseline )
 	{
-		return context.RecommnedBaseline( this, baseline );
+		return context.RecommendBaseline( this, baseline );
 	}
 	
 	public String Stringify()

@@ -37,7 +37,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	
 	static
 	{
-		logger.ExcludeClass( UCMStrategyXML.class.getName() );
+		//logger.ExcludeClass( UCMStrategyXML.class.getName() );
 	}
 	
 	private Document xml = null;
@@ -58,6 +58,8 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	public UCMStrategyXML( )
 	{
 		logger.trace_function();
+		
+		logger.log( "Using XML strategy" );
 		
 		/* The search result */
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

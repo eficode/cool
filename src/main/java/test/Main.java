@@ -20,8 +20,8 @@ public class Main
 	{
 		UCM.SetContext( UCM.ContextType.XML );
 		
-		Stream st1 = UCMEntity.GetStream( "stream:STREAM_TEST1@\\PDS_PVOB" );
-		Component co1 = UCMEntity.GetComponent( "component:COMPONENT_TEST1@\\PDS_PVOB" );
+		Stream st1 = UCMEntity.GetStream( "stream:STREAM_TEST1@\\PDS_PVOB", false );
+		Component co1 = UCMEntity.GetComponent( "component:COMPONENT_TEST1@\\PDS_PVOB", false );
 		BaselineList bls = co1.GetBaselines( st1, Plevel.INITIAL );
 		
 		System.out.println( "SIZE=" + bls.size() );

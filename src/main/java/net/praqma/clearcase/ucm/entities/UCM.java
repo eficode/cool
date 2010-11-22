@@ -26,6 +26,8 @@ public abstract class UCM
 			return;
 		}
 		
+		logger.log( "Setting context type to " + ct.toString() );
+		
 		switch( ct )
 		{
 		case XML:

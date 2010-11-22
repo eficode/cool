@@ -222,7 +222,7 @@ public class UCMContext
 		return bls;
 	}
 	
-	public boolean RecommnedBaseline( Stream stream, Baseline baseline )
+	public boolean RecommendBaseline( Stream stream, Baseline baseline )
 	{
 		try
 		{
