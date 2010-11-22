@@ -412,7 +412,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	private Element GetElementWithFqname( Element e, String fqname )
 	{
 		logger.trace_function();
-		logger.debug( "Getting " + e.getNodeName() + " element with fqname: " + fqname );
+		//logger.debug( "Getting " + e.getNodeName() + " element with fqname: " + fqname );
 		
 		NodeList list = e.getChildNodes( );
 		//NodeList list = e.getElementsByTagName( "stream" );
@@ -442,7 +442,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	private ArrayList<Element> GetElementsWithFqname( Element e, String fqname )
 	{
 		logger.trace_function();
-		logger.debug( "Getting " + e.getNodeName() + " element with fqname: " + fqname );
+		//logger.debug( "Getting " + e.getNodeName() + " element with fqname: " + fqname );
 		
 		NodeList list = e.getChildNodes( );
 		//NodeList list = e.getElementsByTagName( "stream" );
@@ -470,7 +470,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	private ArrayList<Element> GetElementsWithName( Element e, String attr, String name )
 	{
 		logger.trace_function();
-		logger.debug( "Getting " + e.getNodeName() + " elements with " + attr + " = " + name );
+		//logger.debug( "Getting " + e.getNodeName() + " elements with " + attr + " = " + name );
 		
 		NodeList list = e.getChildNodes( );
 		
@@ -497,7 +497,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	private Element GetElement( Element e, String tag ) throws DOMException
 	{
 		logger.trace_function();
-		logger.debug( "Getting "+e.getNodeName()+" element: " + tag );
+		//logger.debug( "Getting "+e.getNodeName()+" element: " + tag );
 		
 		NodeList list = e.getChildNodes( );
 		
@@ -531,7 +531,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		{
 			Attr at = (Attr)nnm.item( i );
 			list.put( at.getName( ), at.getValue( ) );
-			logger.debug( "ATTR="+at.getNodeName() );
+			//logger.debug( "ATTR="+at.getNodeName() );
 		}
 		
 		return list;
