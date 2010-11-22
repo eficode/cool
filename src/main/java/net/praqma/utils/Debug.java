@@ -48,7 +48,7 @@ public class Debug
 	
 	private Debug( boolean append )
 	{
-		this.append = append;
+		Debug.append = append;
 		
 		nowDate   = Calendar.getInstance();
 		
@@ -67,6 +67,8 @@ public class Debug
 		{
 			logger = new Debug( append );
 		}
+		
+		System.out.println( "USING LOGGER: " + logger.toString() );
 		
 		return logger;
 	}
