@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -125,25 +126,29 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		return str;
 	}
 	
-	public String GetBaselineDiff( String baseline, String other, boolean nmerge )
+	public List<String> GetBaselineDiff( String baseline, String other, boolean nmerge )
 	{
 		logger.trace_function();
 		logger.debug( baseline );
 		
 		ArrayList<Element> acts = _GetBaselineActivities( baseline );
 		
-		StringBuffer sb = new StringBuffer();
+		//StringBuffer sb = new StringBuffer();
+		List<String> list = new ArrayList<String>();
 		
 		for( Element act : acts )
 		{
 			logger.debug( "---->"+act.getAttribute( "fqname" ) );
-			sb.append( ">> " + act.getAttribute( "fqname" ) + linesep );
+			//sb.append( ">> " + act.getAttribute( "fqname" ) + linesep );
+			list.add( ">> " + act.getAttribute( "fqname" ) + linesep );
 			
-			sb.append( GetActivityVersions( act ) );
+			//sb.append( GetActivityVersions( act ) );
+			list.addAll( GetActivityVersions( act ) );
 
 		}
 		
-		return sb.toString();
+		//return sb.toString();
+		return list;
 	}
 	
 	public String GetBaselineActivities( String baseline )
@@ -203,13 +208,14 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	 * @param activity
 	 * @return A String, similar to cleartool, with versions
 	 */
-	private String GetActivityVersions( Element activity )
+	private List<String> GetActivityVersions( Element activity )
 	{
 		logger.debug( "" );
 		
 		/* Get the changeset from an activity */
 		Element ce = GetElement( activity, "changeset" );
-		StringBuffer sb = new StringBuffer();
+		//StringBuffer sb = new StringBuffer();
+		List<String> alist = new ArrayList<String>();
 		
 		NodeList list = ce.getChildNodes( );
 		
@@ -221,12 +227,14 @@ public class UCMStrategyXML implements UCMStrategyInterface
     		{
     			if( node.getNodeName().equalsIgnoreCase( "version" ) )
     			{
-    				sb.append( node.getTextContent() + linesep );
+    				//sb.append( node.getTextContent() + linesep );
+    				alist.add( node.getTextContent() + linesep );
     			}
     		}
 		}
 		
-		return sb.toString();
+		//return sb.toString();
+		return alist;
 	}
 	
 	/* Component */

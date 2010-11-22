@@ -8,9 +8,11 @@ import net.praqma.clearcase.ucm.UCMException;
 
 interface UCMStrategyInterface
 {
+	public static final String delim = "::";
+	
 	/* Baseline */
 	public String LoadBaseline( String baseline );
-	public String GetBaselineDiff( String baseline, String other, boolean nmerge );
+	public List<String> GetBaselineDiff( String baseline, String other, boolean nmerge );
 	public String SetPromotionLevel( String baseline, String plevel );
 	
 	public String GetBaselineActivities( String baseline );

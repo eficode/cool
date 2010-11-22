@@ -30,14 +30,15 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	@Override
 	public String LoadBaseline( String baseline )
 	{
-		// TODO Auto-generated method stub
-		return null;
+		String cmd = "desc -fmt %n" + delim + "%[component]p" + delim + "%[bl_stream]p" + delim + "%[plevel]p" + delim + "%u " + baseline;
+		return Cleartool.run_collapse( cmd );
 	}
 	@Override
-	public String GetBaselineDiff( String baseline, String other, boolean nmerge )
+	public List<String> GetBaselineDiff( String baseline, String other, boolean nmerge )
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// cleartool('diffbl -pre -act -ver '.$sw_nmerge.$self->get_fqname );
+		String cmd = "diffbl -pre -act -ver -nmerge " + baseline;
+		return Cleartool.run( cmd );
 	}
 	@Override
 	public String SetPromotionLevel( String baseline, String plevel )
@@ -91,8 +92,9 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	@Override
 	public String NewTag( UCMEntity entity, String cgi )
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// mkhlink tag 
+		String cmd = "mkhlink tag " + entity.GetFQName() + " \"" + cgi + "\"";
+		return Cleartool.run_collapse( cmd );
 	}
 	@Override
 	public void DeleteTag( String fqname )
@@ -103,7 +105,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	@Override
 	public void DeleteTagsWithID( String tagType, String tagID, String entity )
 	{
-		// TODO Auto-generated method stub
+		// rmhlink uid
 		
 	}
 	@Override

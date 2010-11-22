@@ -39,7 +39,7 @@ public class UCMContext
 	public ArrayList<Activity> GetBaselineDiff( Baseline baseline, Baseline other, boolean nmerge )
 	{
 		/* Change if other than -pre */
-		String result = strategy.GetBaselineDiff( baseline.GetFQName(), "", nmerge );
+		List<String> result = strategy.GetBaselineDiff( baseline.GetFQName(), "", nmerge );
 		
 		
 		//ArrayList<Version> list = new ArrayList<Version>();
@@ -50,9 +50,9 @@ public class UCMContext
 //		result = result.replaceAll( "(?m)\\@\\@.*$", "" );
 //		result = result.replaceAll( "(?m)^\\s+", "" );
 
-		String[] rs = result.split( "\n" );
+		//String[] rs = result.split( "\n" );
 		Activity current = null;
-		for( String s : rs )
+		for( String s : result )
 		{
 //			System.out.println( "s="+s );
 			/* Get activity */
@@ -190,6 +190,7 @@ public class UCMContext
 		
 		//String result = CTF.LoadBaseline( this.fqname );
 		String result = strategy.LoadBaseline( baseline.GetFQName() );
+		logger.debug( "RESULT=" + result );
 		
 		String[] rs = result.split( UCMEntity.delim );
 		

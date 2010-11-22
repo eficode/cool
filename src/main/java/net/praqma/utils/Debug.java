@@ -68,7 +68,7 @@ public class Debug
 			logger = new Debug( append );
 		}
 		
-		System.out.println( "USING LOGGER: " + logger.toString() );
+		//System.out.println( "USING LOGGER: " + logger.toString() );
 		
 		return logger;
 	}

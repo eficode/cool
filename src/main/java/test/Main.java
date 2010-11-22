@@ -26,6 +26,9 @@ public class Main
 		
 		System.out.println( "SIZE=" + bls.size() );
 		
+		Baseline bl = bls.get( 0 );
+		BaselineDiff bd = bl.GetDiffs();
+		
 		Baseline bl1 = bls.get( 0 );
 		
 		Tag tag = bl1.CreateTag( "hudson", "snade", "now", "building" );

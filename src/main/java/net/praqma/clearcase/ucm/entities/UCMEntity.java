@@ -73,7 +73,7 @@ public abstract class UCMEntity extends UCM
 	 * @param str, if not a valid Promotion Level INITAL is returned.
 	 * @return A Promotion Level
 	 */
-	protected Plevel GetPlevelFromString( String str )
+	public static Plevel GetPlevelFromString( String str )
 	{
 		Plevel plevel = Plevel.INITIAL;
 		
@@ -139,6 +139,9 @@ public abstract class UCMEntity extends UCM
 	public static UCMEntity GetEntity( String fqname, boolean trusted, boolean cachable ) throws UCMEntityException
 	{
 		logger.debug( "GetEntity = " + fqname );
+		
+		/* Is this needed? */
+		fqname = fqname.trim();
 		
 		/* If exists, get the entity from cache cache? */
 		if( cachable )

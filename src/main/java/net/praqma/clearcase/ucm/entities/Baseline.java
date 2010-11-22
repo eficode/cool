@@ -52,10 +52,10 @@ public class Baseline extends UCMEntity
 		String[] rs = context.LoadBaseline( this );
 		
 		/* Component */
-		String c = rs[1].matches( ".*@\\\\.*$" ) ? rs[1] : rs[1] + "@" + this.pvob;
+		String c = "component:" + ( rs[1].matches( ".*@\\\\.*$" ) ? rs[1] : rs[1] + "@" + this.pvob );
 		logger.debug( "Component = " + c );
 		/* Stream */
-		String s = rs[2].matches( ".*@\\\\.*$" ) ? rs[2] : rs[2] + "@" + this.pvob;
+		String s = "stream:" + ( rs[2].matches( ".*@\\\\.*$" ) ? rs[2] : rs[2] + "@" + this.pvob );
 		logger.debug( "Stream = " + s );
 		
 		
