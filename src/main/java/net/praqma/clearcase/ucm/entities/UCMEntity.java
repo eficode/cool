@@ -264,7 +264,7 @@ public abstract class UCMEntity extends UCM
 	 */
 	public void Load()
 	{
-		logger.warning( "Load method is not implemented for this Entity." );
+		logger.warning( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
 	}
 	
