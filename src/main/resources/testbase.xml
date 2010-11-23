@@ -4,7 +4,6 @@
 	<!-- BASELINES -->
 	<baselines>
 
-		
 		<baseline fqname="baseline:BASELINE_TEST1@\PDS_PVOB" sname="BASELINE_TEST1">
 			<component>component:COMPONENT_TEST1@\PDS_PVOB</component>
 			<plevel>INITIAL</plevel>
@@ -42,7 +41,6 @@
 			</activities>
 			<previous>baseline:BASELINE_TEST1@\PDS_PVOB</previous>
 		</baseline>
-		
 		
 		<baseline fqname="baseline:BASELINE_TEST3@\PDS_PVOB" sname="BASELINE_TEST3">
 			<component>component:COMPONENT_TEST1@\PDS_PVOB</component>
@@ -238,6 +236,17 @@
 		</stream>
 		
 	</streams>
+	
+	<!-- VIEWS -->
+	<views>
+		<view uuid="123" viewroot="c:\temp\views\view1" viewtag="server_int">
+			<host>pumpkin</host>
+			<host_path>c:\temp\views\view1</host_path>
+			<global_path>\\pumpkin\views\view1</global_path>
+			<local_path>c:\temp\views\view1</local_path>
+			<stream>stream:STREAM_TEST1@\PDS_PVOB</stream>
+		</view>
+	</views>
 	
 	<!-- COMPONENTS -->
 	<components>
