@@ -1,6 +1,7 @@
 package net.praqma.clearcase.ucm.persistence;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -50,6 +51,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	private Element versions   = null;
 	private Element activities = null;
 	private Element tags       = null;
+	private Element views      = null;
 	
 	private static int tagCounter = 20001;
 	
@@ -86,6 +88,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		versions   = this.GetFirstElement( root, "versions" );
 		activities = this.GetFirstElement( root, "activities" );
 		tags       = this.GetFirstElement( root, "tags" );
+		views      = this.GetFirstElement( root, "views" );
 		
 		logger.debug( "root=" + root.getTagName() );
 		logger.debug( "baselines=" + baselines.getTagName() );
@@ -306,6 +309,38 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		}
 	}
 	
+	
+	public String GetStreamFromView( String viewtag )
+	{
+		logger.trace_function();
+		logger.debug( viewtag );
+		
+		List<Element> list = GetElementsWithName( views, "viewtag", viewtag );
+		
+		if( list.size() != 1 )
+		{
+			logger.warning( "There is no unique view! Found " + list.size() + " views." );
+			throw new UCMException( "There is no unique view! Found " + list.size() + " views." );
+		}
+		
+		return list.get( 0 ).getAttribute( "viewroot" );
+	}
+	
+	public String GetCurrentViewRoot( File viewroot )
+	{
+		logger.trace_function();
+		logger.debug( viewroot.toString() );
+		
+		List<Element> list = GetElementsWithName( views, "viewroot", viewroot.toString() );
+		
+		if( list.size() != 1 )
+		{
+			logger.warning( "There is no unique view! Found " + list.size() + " views." );
+			throw new UCMException( "There is no unique view! Found " + list.size() + " views." );
+		}
+		
+		return list.get( 0 ).getAttribute( "viewroot" );
+	}
 	
 	
 	/* Version */

@@ -1,5 +1,6 @@
 package net.praqma.clearcase.ucm.persistence;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ interface UCMStrategyInterface
 	/* Stream */
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException;
 	public String GetRecommendedBaselines( String stream );
+	public String GetStreamFromView( String viewtag );
 	
 	/* Version */
 	public String GetVersion( String version, String separator );
@@ -38,7 +40,8 @@ interface UCMStrategyInterface
 	
 	/* Snapshot Views */
 	public void MakeSnapshotView( String stream, String viewtag, String viewroot );
-	
+	public String GetCurrentViewRoot( File viewroot );
+		
 	
 	/* TEST */
 	public String GetXML();

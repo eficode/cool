@@ -1,5 +1,6 @@
 package net.praqma.clearcase.ucm.persistence;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,5 +132,32 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	{
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String GetStreamFromView( String viewtag )
+	{
+		String fqstreamstr =  Cleartool.run_collapse( "lsstream -fmt %Xn -view " + viewtag );
+
+		return fqstreamstr;
+	}
+
+	@Override
+	public String GetCurrentViewRoot( File viewroot )
+	{
+		String cwd = System.getProperty( "user.dir" );
+		
+		if( !cwd.equals( viewroot.toString() ) )
+		{
+			/* Experimental!!! */
+			System.setProperty( "user.dir", viewroot.toString() );
+		}
+		
+		String wvroot = Cleartool.run_collapse( "pwv -root" );
+
+		/* Still experimental!!! */
+		System.setProperty( "user.dir", cwd );
+		
+		return wvroot;
 	}
 }

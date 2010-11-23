@@ -1,14 +1,17 @@
 package net.praqma.clearcase.ucm.persistence;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCMEntity.Plevel;
+import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.utils.Debug;
 import net.praqma.utils.Printer;
 import net.praqma.utils.Tuple;
@@ -260,6 +263,41 @@ public class UCMContext
 	{
 		strategy.MakeSnapshotView( stream.GetFQName(), viewtag, viewroot );
 	}
+	
+	
+	
+//	public Stream GetStreamFromView( String viewtag )
+//	{
+//		logger.debug( "Getting stream from " + viewtag );
+//		
+//		String stream = strategy.GetStreamFromView( viewtag );
+//		return UCMEntity.GetStream( stream );
+//	}
+	
+	public Tuple<Stream, String> GetStreamFromView( File viewroot )
+	{
+		
+		/* TODO vwroot and viewroot are the same! Right? */
+		/* Verify the (working)view root */
+		// cleartool("pwv -root");
+		// String cmd = "pwv -root";
+		// String wvroot = Cleartool.run_collapse( cmd ).trim();
+		String wvroot = strategy.GetCurrentViewRoot( viewroot );
+		
+		String viewtag = SnapshotView.ViewrootIsValid( wvroot );
+		
+		// cleartool( 'lsstream -fmt %Xn -view ' . $viewtag );
+		//cmd = "lsstream -fmt %Xn -view " + viewtag;
+		//String fqstreamstr = Cleartool.run_collapse( cmd ).trim();
+		//Stream fqstreamstr = GetStreamFromView( viewtag );
+		String streamstr = strategy.GetStreamFromView( viewtag );
+		Stream stream    = UCMEntity.GetStream( streamstr );
+		
+
+		
+		return new Tuple<Stream, String>( stream, viewtag );
+	}
+	
 	
 	
 	public String GetXML()

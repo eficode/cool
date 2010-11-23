@@ -40,7 +40,7 @@ public abstract class Cleartool extends Command
 		{
 			sb.append( s + linesep );
 		}
-		return sb.toString();
+		return sb.toString().trim();
 	}
 	
 	
