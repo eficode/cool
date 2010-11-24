@@ -1,5 +1,6 @@
 package test;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import net.praqma.clearcase.ucm.entities.*;
@@ -7,6 +8,8 @@ import net.praqma.clearcase.ucm.entities.Baseline.BaselineDiff;
 import net.praqma.clearcase.ucm.entities.Component.BaselineList;
 import net.praqma.clearcase.ucm.entities.UCMEntity.Plevel;
 import net.praqma.clearcase.ucm.utils.TagQuery;
+import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.utils.Debug;
 
 public class Main
@@ -19,6 +22,29 @@ public class Main
 	public static void main( String[] args )
 	{
 		UCM.SetContext( UCM.ContextType.XML );
+		
+		test2();
+		
+		UCMEntity.SaveState();
+	}
+	
+	public static void test7()
+	{
+		UCM.SetContext( UCM.ContextType.XML );
+		
+		//SnapshotView sv1 = UCMView.GetSnapshotView( new File( "c:\\temp\\views\\view1" ) );
+		
+		Stream st1 = UCMEntity.GetStream( "stream:STREAM_TEST1@\\PDS_BVOB", true );
+		SnapshotView sv2 = SnapshotView.Create( st1, new File( "c:\\temp\\views\\1" ), "snade_int" );
+		
+		SnapshotView.CreateEnvironment( new File( "c:\\temp\\views\\1" ) );
+		
+		
+	}
+	
+	public static void test6()
+	{
+		
 		
 		Stream st1 = UCMEntity.GetStream( "stream:STREAM_TEST1@\\PDS_PVOB", false );
 		Component co1 = UCMEntity.GetComponent( "component:COMPONENT_TEST1@\\PDS_PVOB", false );
@@ -40,7 +66,7 @@ public class Main
 		tag = tag.Persist();
 		System.out.println( tag.Stringify() );
 		
-		bl1.SaveState();
+		
 
 	}
 	
@@ -84,7 +110,7 @@ public class Main
 	{
 		Stream st1 = UCMEntity.GetStream( "stream:STREAM_TEST1@\\PDS_PVOB" );
 		Component co1 = UCMEntity.GetComponent( "component:COMPONENT_TEST1@\\PDS_PVOB" );
-		BaselineList bls = co1.GetBaselines( st1 );
+		BaselineList bls = co1.GetBaselines( st1, Plevel.INITIAL );
 		
 		
 		for( Baseline bl : bls )
@@ -109,8 +135,6 @@ public class Main
 		{
 			System.out.println( bl.toString() );
 		}
-		
-		t.SaveState();
 	}
 	
 	public static void test2()
@@ -129,7 +153,9 @@ public class Main
 		
 		System.out.println( t1.Stringify() );
 		
-		logger.debug( bl1.GetXML() );
+		t1 = bl1.CreateTag( "hudson", "123", "2010 11 10", "snade" );
+		
+		System.out.println( t1.Stringify() );
 
 	}
 	
@@ -184,9 +210,6 @@ public class Main
 		
 		Tag t4 = bl1.GetTag( "hudson", "001" );
 		System.out.println( t4.Stringify() );
-
-		
-		logger.debug( bl1.GetXML() );
 	}
 	
 }
