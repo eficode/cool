@@ -1,18 +1,28 @@
 package net.praqma.clearcase.ucm.persistence;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.utils.Debug;
+import net.praqma.utils.Tuple;
 
 
 public class UCMStrategyCleartool implements UCMStrategyInterface
 {
 	private static Debug logger = Debug.GetLogger();
+	
+	protected static final String rx_view_uuid  = "view_uuid:(.*)";
+	private static final String rx_ccdef_allowed = "[\\w\\.-\\\\]";
 	
 	static
 	{
@@ -78,35 +88,94 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/*
+wolles_baseline_02.6448
+  Hyperlinks:
+    tag@377@\Cool_PVOB ->  "test"
+    tag@394@\Cool_PVOB ->  "test nummer 2"
+    
+    describe -ahlink tag -l
+	 */
+	
+	private static final Pattern pattern_tags = Pattern.compile( "\\s*(tag@\\d+@"+rx_ccdef_allowed + ")\\s*->\\s*\"(.*?)\"" );
+	
 	@Override
-	public String GetTags( String fqname )
+	public List<Tuple<String, String>> GetTags( String fqname )
 	{
-		// TODO Auto-generated method stub
-		return null;
+		String cmd = "describe -ahlink -l " + fqname;
+		List<String> list = Cleartool.run( cmd );
+		
+		List<Tuple<String, String>> tags = new ArrayList<Tuple<String, String>>();
+		
+		logger.debug( "SIZE = " + list.size() );
+		System.out.println( "SIZE = " + list.size() );
+		
+		/* There are tags */
+		if( list.size() > 2 )
+		{
+			for( int i = 2 ; i < list.size() ; i++ )
+			{
+				logger.debug( "["+i+"]" + list.get( i ) );
+				System.out.println( "["+i+"]" + list.get( i ) );
+				Matcher match = pattern_tags.matcher( list.get( i ) );
+				if( match.find() )
+				{
+					tags.add( new Tuple<String, String>( match.group( 1 ), match.group( 2 ) ) );
+				}
+			}
+		}
+		
+		System.out.println( "DONE" );
+		logger.debug( "DONE" );
+		
+		return tags;
 	}
+	
 	@Override
 	public String GetTag( String fqname )
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	private static final Pattern pattern_remove_verbose_tag = Pattern.compile( "^.*?\"(.*)\".*?$" );
+	
 	@Override
 	public String NewTag( UCMEntity entity, String cgi )
 	{
-		// mkhlink tag 
-		String cmd = "mkhlink tag " + entity.GetFQName() + " \"" + cgi + "\"";
-		return Cleartool.run_collapse( cmd );
+		// mkhlink -ttext "test nummer 2" tag baseline:wolles_baseline_02.6448@\Cool_PVOB
+		String cmd = "mkhlink -ttext \"" + cgi + "\" tag " + entity.GetFQName();
+		String tag = Cleartool.run_collapse( cmd );
+		Matcher match = pattern_remove_verbose_tag.matcher( tag );
+		if( match.find() )
+		{
+			return match.group( 1 );
+		}
+		
+		return "";
 	}
+	
 	@Override
 	public void DeleteTag( String fqname )
 	{
 		// TODO Auto-generated method stub
 		
 	}
+	
 	@Override
 	public void DeleteTagsWithID( String tagType, String tagID, String entity )
 	{
-		// rmhlink uid
+		List<Tuple<String, String>> list = GetTags( entity );
+		
+		for( Tuple<String, String> t : list )
+		{
+			if( t.t2.matches( "^.*tagtype=" + tagType + ".*$" ) && t.t2.matches( "^.*tagid=" + tagID + ".*$" ) )
+			{
+				String cmd = "rmhlink " + t.t1;
+				Cleartool.run( cmd );
+			}
+		}
 		
 	}
 	@Override
@@ -116,7 +185,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		return null;
 	}
 	@Override
-	public void MakeSnapshotView( String stream, String viewtag, String viewroot )
+	public void MakeSnapshotView( String stream, File viewroot, String viewtag )
 	{
 		// TODO Auto-generated method stub
 		
@@ -143,7 +212,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	}
 
 	@Override
-	public String GetCurrentViewRoot( File viewroot )
+	public File GetCurrentViewRoot( File viewroot )
 	{
 		String cwd = System.getProperty( "user.dir" );
 		
@@ -158,6 +227,71 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		/* Still experimental!!! */
 		System.setProperty( "user.dir", cwd );
 		
-		return wvroot;
+		return new File( wvroot );
+	}
+	
+	public String ViewrootIsValid( File viewroot ) throws IOException
+	{
+		logger.debug( "UNTESTED CODE" );
+		//viewroot. 
+		//String viewdotdatpname = viewroot + filesep + "view.dat";
+		File viewdotdatpname = new File( viewroot, "view.dat" );
+		
+		logger.debug( "The view file = " + viewdotdatpname );
+		
+		FileReader fr = null;
+		try
+		{
+			fr = new FileReader( viewdotdatpname );
+		}
+		catch ( FileNotFoundException e1 )
+		{
+			logger.warning( "\"" + viewdotdatpname + "\" not found!" );
+			throw new IOException( e1.getMessage() );
+		}
+		
+		BufferedReader br = new BufferedReader( fr );
+		String line;
+		StringBuffer result = new StringBuffer();
+		try
+		{
+			while( ( line = br.readLine() ) != null )
+			{
+				result.append( line );
+			}
+		}
+		catch ( IOException e )
+		{
+			logger.warning( "Couldn't read lines from " + viewdotdatpname );
+			throw e;
+		}
+		
+		Pattern pattern = Pattern.compile( rx_view_uuid );
+		Matcher match   = pattern.matcher( result.toString() );
+		
+		/* A match is found */
+		String uuid = "";
+		try
+		{
+			uuid = match.group( 1 ).trim();
+		}
+		catch( IllegalStateException e )
+		{
+			logger.log( "UUID not found!", "warning" );
+			throw new UCMException( "UUID not found" );
+		}
+		
+		//my $viewtag = cleartool("lsview -s -uuid $1");
+		String cmd = "lsview -s -uuid " + uuid;
+		String viewtag = Cleartool.run_collapse( cmd ).trim();
+		
+		return viewtag;
+	}
+
+	@Override
+	public void CreateStream( String pstream, String nstream, boolean readonly )
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }
