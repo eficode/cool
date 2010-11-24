@@ -428,7 +428,7 @@ public abstract class UCMEntity extends UCM
 	}
 	
 
-	public void SaveState()
+	public static void SaveState()
 	{
 		context.SaveState();
 	}
