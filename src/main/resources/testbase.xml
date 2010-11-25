@@ -245,6 +245,7 @@
 			<global_path>\\pumpkin\views\view1</global_path>
 			<local_path>c:\temp\views\view1</local_path>
 			<stream>stream:STREAM_TEST1@\PDS_PVOB</stream>
+			<baseline>baseline:BASELINE_TEST1@\PDS_PVOB</baseline>
 		</view>
 	</views>
 	
