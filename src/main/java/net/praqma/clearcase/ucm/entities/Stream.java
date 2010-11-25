@@ -32,7 +32,7 @@ public class Stream extends UCMEntity
 	 * @param readonly Whether the new Stream is read only or not
 	 * @return A new Stream given the parameters
 	 */
-	public static Stream Create( Stream pstream, String nstream, boolean readonly )
+	public static Stream Create( Stream pstream, String nstream, boolean readonly, Baseline baseline )
 	{
 		if( pstream == null || nstream == null )
 		{
@@ -40,7 +40,7 @@ public class Stream extends UCMEntity
 			throw new UCMException( "Incorrect CreateStream() parameters" );
 		}
 		
-		return context.CreateStream( pstream, nstream, readonly );
+		return context.CreateStream( pstream, nstream, readonly, baseline );
 	}
 	
 	public void Rebase( SnapshotView view, Baseline baseline, boolean complete )
