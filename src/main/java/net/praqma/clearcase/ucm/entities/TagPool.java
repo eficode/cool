@@ -46,7 +46,7 @@ class TagPool extends UCM
 		
 		for( Tag t : tags )
 		{
-			t.Load();
+			//t.Load();
 			
 			/* Is it the correct tag? Return it! */
 			if( t.GetTagType().equals( t.GetTagType() ) && t.GetTagID().equals( tagID ) )
@@ -65,7 +65,7 @@ class TagPool extends UCM
 		
 		for( Tag t : tags )
 		{
-			t.Load();
+			//t.Load();
 			
 			/* Is it the correct tag? Return it! */
 			if( t.GetTagType().equals( t.GetTagType() ) && t.GetTagID().equals( tagID ) )

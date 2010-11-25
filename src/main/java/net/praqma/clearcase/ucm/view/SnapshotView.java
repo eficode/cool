@@ -14,7 +14,7 @@ import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.utils.Tuple;
 
-public class SnapshotView extends UCM
+public class SnapshotView extends UCMView
 {
 	protected static final String rx_view_uuid  = "view_uuid:(.*)";
 	
@@ -26,7 +26,7 @@ public class SnapshotView extends UCM
 	private String globalPath = "";
 	
 	
-	private SnapshotView( File viewroot )
+	SnapshotView( File viewroot )
 	{
 		logger.debug( "Running experimental code." );
 		
@@ -65,16 +65,27 @@ public class SnapshotView extends UCM
 	}
 	
 	
-	public static void Create( Stream stream, String viewtag, String viewroot )
-	{
-		File vroot = new File( viewroot );
-		
-		if( vroot.exists() )
+	public static SnapshotView Create( Stream stream, File viewroot, String viewtag )
+	{		
+		if( viewroot.exists() )
 		{
-			DeleteDirectory( vroot );
+			DeleteDirectory( viewroot );
 		}
 		
 		context.MakeSnapshotView( stream, viewroot, viewtag );
+		
+		return new SnapshotView( viewroot );
+	}
+	
+	public static void CreateEnvironment( File viewroot )
+	{
+		CreateEnvironment( viewroot, "" );
+	}
+	
+	public static void CreateEnvironment( File viewroot, String viewtagsuffix )
+	{
+		String viewtag = "cool_" + System.getenv( "COMPUTERNAME" ) + "_env" + viewtagsuffix;
+		System.out.println( viewtag );
 	}
 	
 	

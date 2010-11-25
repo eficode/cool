@@ -1,8 +1,6 @@
 package net.praqma.utils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import net.praqma.utils.Debug;
@@ -23,33 +21,39 @@ public abstract class Command
 		
 		logger.debug( "$ " + cmd );
 		
+		String[] cmds = new String[3];
+		cmds[0] = "cmd.exe";
+		cmds[1] = "/C";
+		cmds[2] = cmd;
+		
 		try
 		{
 			Process p = Runtime.getRuntime().exec( cmd );
-			p.waitFor();
-			BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
 			
-			String line;
-			List<String> list = new ArrayList<String>();
-			while( ( line = br.readLine() ) != null )
-			{
-				list.add( line );
-	        }
+			//StreamGobbler errors = new StreamGobbler( p.getErrorStream() );
+			StreamGobbler output = new StreamGobbler( p.getInputStream() );
 
+			//System.out.println( "Running errors" );
+			//errors.run();
+			System.out.println( "Running output" );
+			output.run();			
 			
-			br.close();
+			int exitValue = p.waitFor();
 			
 			/* Abnormal process termination */
-			if ( p.exitValue() != 0 )
+			if ( exitValue != 0 )
 			{
 				logger.log( "Abnormal process termination" );
 				throw new AbnormalProcessTerminationException();
 			}
 			
-			//System.out.println( "=>" + sb.toString() + "<=" );
-			net.praqma.utils.Printer.ListPrinter( list );
+			p.getErrorStream().close();
+			p.getOutputStream().close();
+			p.getInputStream().close();
 			
-			return list;
+			//net.praqma.utils.Printer.ListPrinter( output.lres );
+			
+			return output.lres;
 		}
 		catch ( Exception e )
 		{

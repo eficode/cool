@@ -1,6 +1,7 @@
 package net.praqma.clearcase.ucm.persistence;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -113,16 +114,16 @@ public class UCMContext
 	{
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		
-		/* Load Tag from clearcase */
-		String result = strategy.GetTags( entity.GetFQName() ).trim();
-		String[] rs = result.split( "\n" );
+		/* Load Tags from clearcase */
+		List<Tuple<String, String>> result = strategy.GetTags( entity.GetFQName() );
 		
-		//if( rs.length > 0 )
-		if( result.length() > 0 )
+		if( result.size() > 0 )
 		{
-			for( String s : rs )
+			for( Tuple<String, String> s : result )
 			{
-				tags.add( (Tag)UCMEntity.GetEntity( s.trim() ) );
+				Tag tag = (Tag)UCMEntity.GetEntity( s.t1.trim() );
+				tag.SetKeyValue( s.t2 );
+				tags.add( tag );
 			}
 		}
 		
@@ -132,8 +133,7 @@ public class UCMContext
 	public Tuple<String, String> GetTag( Tag tag )
 	{
 		String result = strategy.GetTag( tag.GetFQName() );
-		//System.out.println( result );
-		//HashMap<String, String> entries = Tag.CGIToHash( s );
+
 		Tuple<String, String> tuple = new Tuple<String, String>( "oid", result );
 		
 		return tuple;
@@ -259,11 +259,25 @@ public class UCMContext
 		return bls;
 	}
 	
-	public void MakeSnapshotView( Stream stream, String viewroot, String viewtag )
+	public void MakeSnapshotView( Stream stream, File viewroot, String viewtag )
 	{
-		strategy.MakeSnapshotView( stream.GetFQName(), viewtag, viewroot );
+		strategy.MakeSnapshotView( stream.GetFQName(), viewroot, viewtag );
 	}
 	
+	
+	public Stream CreateStream( Stream pstream, String nstream, boolean readonly )
+	{
+		strategy.CreateStream( pstream.GetFQName(), nstream, readonly );
+		
+		Stream stream = UCMEntity.GetStream( nstream );
+		
+		return stream;
+	}
+	
+	public void RebaseView( SnapshotView view, Baseline baseline, boolean complete )
+	{
+		
+	}
 	
 	
 //	public Stream GetStreamFromView( String viewtag )
@@ -282,9 +296,18 @@ public class UCMContext
 		// cleartool("pwv -root");
 		// String cmd = "pwv -root";
 		// String wvroot = Cleartool.run_collapse( cmd ).trim();
-		String wvroot = strategy.GetCurrentViewRoot( viewroot );
+		File wvroot = strategy.GetCurrentViewRoot( viewroot );
 		
-		String viewtag = SnapshotView.ViewrootIsValid( wvroot );
+		String viewtag = "";
+		try
+		{
+			viewtag = strategy.ViewrootIsValid( wvroot );
+		}
+		catch ( IOException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// cleartool( 'lsstream -fmt %Xn -view ' . $viewtag );
 		//cmd = "lsstream -fmt %Xn -view " + viewtag;
@@ -292,10 +315,13 @@ public class UCMContext
 		//Stream fqstreamstr = GetStreamFromView( viewtag );
 		String streamstr = strategy.GetStreamFromView( viewtag );
 		Stream stream    = UCMEntity.GetStream( streamstr );
-		
-
-		
+	
 		return new Tuple<Stream, String>( stream, viewtag );
+	}
+	
+	public static String ViewrootIsValid( String viewroot )
+	{
+		return "";
 	}
 	
 	

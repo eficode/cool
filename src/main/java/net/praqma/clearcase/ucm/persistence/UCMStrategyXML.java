@@ -32,6 +32,7 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.utils.Debug;
+import net.praqma.utils.Tuple;
 
 public class UCMStrategyXML implements UCMStrategyInterface
 {
@@ -53,7 +54,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	private Element tags       = null;
 	private Element views      = null;
 	
-	private static int tagCounter = 20001;
+	private static Integer IDCounter = 20001;
 	
 	private static final String filesep = System.getProperty( "file.separator" );
 	private static final String linesep = System.getProperty( "line.separator" );
@@ -73,7 +74,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		{
 			builder = factory.newDocumentBuilder();
 
-			logger.log( "Getting XML as stream" );
+			logger.log( "Getting XML as stream = " + this.getClass().getClassLoader().getResourceAsStream( testBaseFile ) );
 			xml = builder.parse( this.getClass().getClassLoader().getResourceAsStream( testBaseFile ) );
 		}
 		catch ( Exception e )
@@ -309,13 +310,30 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		}
 	}
 	
+	public void CreateStream( String pstream, String nstream, boolean readonly )
+	{
+		logger.trace_function();
+		logger.debug( "PARENT=" + pstream + ". NEW=" + nstream );
+		
+		Element stream = xml.createElement( "stream" );
+		
+		stream.setAttribute( "fqname", nstream );
+		stream.setAttribute( "readonly", ( readonly ? "1" : "0" ) );
+		
+		Element recbl = xml.createElement( "recommended_baseline" );
+		
+		stream.appendChild( recbl );
+		
+		streams.appendChild( stream );
+	}
+	
 	
 	public String GetStreamFromView( String viewtag )
 	{
 		logger.trace_function();
 		logger.debug( viewtag );
 		
-		List<Element> list = GetElementsWithName( views, "viewtag", viewtag );
+		List<Element> list = GetElementsWithAttribute( views, "viewtag", viewtag );
 		
 		if( list.size() != 1 )
 		{
@@ -323,15 +341,16 @@ public class UCMStrategyXML implements UCMStrategyInterface
 			throw new UCMException( "There is no unique view! Found " + list.size() + " views." );
 		}
 		
-		return list.get( 0 ).getAttribute( "viewroot" );
+		//return list.get( 0 ).getAttribute( "viewroot" );
+		return GetElement( list.get( 0 ), "stream" ).getTextContent();
 	}
 	
-	public String GetCurrentViewRoot( File viewroot )
+	public File GetCurrentViewRoot( File viewroot )
 	{
 		logger.trace_function();
 		logger.debug( viewroot.toString() );
 		
-		List<Element> list = GetElementsWithName( views, "viewroot", viewroot.toString() );
+		List<Element> list = GetElementsWithAttribute( views, "viewroot", viewroot.toString() );
 		
 		if( list.size() != 1 )
 		{
@@ -339,7 +358,20 @@ public class UCMStrategyXML implements UCMStrategyInterface
 			throw new UCMException( "There is no unique view! Found " + list.size() + " views." );
 		}
 		
-		return list.get( 0 ).getAttribute( "viewroot" );
+		return new File( list.get( 0 ).getAttribute( "viewroot" ) );
+	}
+	
+	public String ViewrootIsValid( File viewroot ) throws IOException
+	{
+		List<Element> list = GetElementsWithAttribute( views, "viewroot", viewroot.toString() );
+		
+		if( list.size() != 1 )
+		{
+			logger.warning( "There is no unique view! Found " + list.size() + " views." );
+			throw new IOException( "There is no unique view! Found " + list.size() + " views." );
+		}
+		
+		return list.get( 0 ).getAttribute( "viewtag" );
 	}
 	
 	
@@ -364,20 +396,23 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	
 	
 	/* TAGS */
-	public String GetTags( String name )
+	public List<Tuple<String, String>> GetTags( String name )
 	{
 		logger.trace_function();
 		logger.debug( name );
 		
-		ArrayList<Element> tags = GetElementsWithName( this.tags, "entity", name );
+		ArrayList<Element> tags = GetElementsWithAttribute( this.tags, "entity", name );
 		
-		StringBuffer sb = new StringBuffer();
+		//StringBuffer sb = new StringBuffer();
+		List<Tuple<String, String>> list = new ArrayList<Tuple<String, String>>();
+		
 		for( Element t : tags )
 		{
-			sb.append( t.getAttribute( "fqname" ) + "\n" );
+			//sb.append( t.getAttribute( "fqname" ) + "\n" );
+			list.add( new Tuple<String, String>( t.getAttribute( "fqname" ), t.getTextContent() ) );
 		}
 		
-		return sb.toString();		
+		return list;		
 	}
 	
 	public String GetTag( String fqname )
@@ -400,10 +435,10 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		/* Replace the old with new */
 		/* TODO Get the next oid for the new tag. The old oid SHOULD NOT be reused */
 		tag.setTextContent( keyval );
-		tag.setAttribute( "fqname", "tag@" + tagCounter + "@" + entity.GetPvob() );
+		tag.setAttribute( "fqname", "tag@" + IDCounter + "@" + entity.GetPvob() );
 		tag.setAttribute( "entity", entity.GetFQName() );
 		
-		tagCounter++;
+		IDCounter++;
 		
 		return tag.getAttribute( "fqname" );
 	}
@@ -414,15 +449,28 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		logger.debug( "CGI=" + cgi );
 		
 		Element tag = xml.createElement( "tag" );
-		tag.setAttribute( "fqname", "tag@" + tagCounter + "@" + entity.GetPvob() );
+		tag.setAttribute( "fqname", "tag@" + IDCounter + "@" + entity.GetPvob() );
 		tag.setAttribute( "entity", entity.GetFQName() );
 		tag.setTextContent( cgi );
 		
 		tags.appendChild( tag );
 		
-		tagCounter++;
+		IDCounter++;
 		
 		return tag.getAttribute( "fqname" );
+	}
+	
+	public void DeleteTag( String fqname )
+	{
+		logger.trace_function();
+		logger.debug( fqname );
+		
+		ArrayList<Element> ts = GetElementsWithAttribute( tags, "fqname", fqname );
+		for( Element e : ts )
+		{
+			logger.debug( "Deleting Tag: " + e.getAttribute( "fqname" ) );
+			tags.removeChild( e );
+		}	
 	}
 	
 	public void DeleteTagsWithID( String tagType, String tagID, String entity )
@@ -430,10 +478,14 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		logger.trace_function();
 		logger.debug( tagType + tagID );
 		
-		ArrayList<Element> ts = GetElementsWithName( tags, "entity", entity );
+		ArrayList<Element> ts = GetElementsWithAttribute( tags, "entity", entity );
 		for( Element e : ts )
 		{
-			tags.removeChild( e );
+			if( e.getTextContent().matches( "^.*tagtype=" + tagType + ".*$" ) && e.getTextContent().matches( "^.*tagid=" + tagID + ".*$" ) )
+			{
+				logger.debug( "Deleting Tag: " + e.getAttribute( "fqname" ) );
+				tags.removeChild( e );
+			}
 		}		
 	}
 	
@@ -444,9 +496,25 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	
 	
 	/* Snapshot views */
-	public void MakeSnapshotView( String stream, String viewtag, String viewroot )
+	public void MakeSnapshotView( String stream, File viewroot, String viewtag )
 	{
+		logger.trace_function();
+		logger.debug( stream.toString() + " ," + viewroot + ". " + viewroot.toString() );
 		
+		Element view = xml.createElement( "view" );
+		view.setAttribute( "uuid", IDCounter.toString() );
+		view.setAttribute( "viewroot", viewroot.toString() );
+		view.setAttribute( "viewtag", viewtag );
+		
+		Element st1 = xml.createElement( "stream" );
+		st1.setTextContent( stream );
+		
+		view.appendChild( st1 );
+		views.appendChild( view );
+		
+		IDCounter++;
+		
+		//return tag.getAttribute( "fqname" );
 	}
 	
 	
@@ -510,7 +578,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		return result;
 	}
 	
-	private ArrayList<Element> GetElementsWithName( Element e, String attr, String name )
+	private ArrayList<Element> GetElementsWithAttribute( Element e, String attr, String name )
 	{
 		logger.trace_function();
 		//logger.debug( "Getting " + e.getNodeName() + " elements with " + attr + " = " + name );
@@ -526,6 +594,8 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	    	if( node.getNodeType( ) == Node.ELEMENT_NODE )
     		{
     			HashMap<String, String> attrs = GetAttributes( (Element)node );
+    			
+    			//((Element)node).getAttributeNode( "" )
 
     			if( attrs.get( attr ) != null && attrs.get( attr ).equals( name ) )
     			{
@@ -652,11 +722,5 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		}
 	}
 
-	@Override
-	public void DeleteTag( String fqname )
-	{
-		// TODO Auto-generated method stub
-		
-	}
 
 }

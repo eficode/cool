@@ -1,11 +1,14 @@
 package net.praqma.clearcase.ucm.persistence;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.utils.Tuple;
 
 interface UCMStrategyInterface
 {
@@ -25,12 +28,13 @@ interface UCMStrategyInterface
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException;
 	public String GetRecommendedBaselines( String stream );
 	public String GetStreamFromView( String viewtag );
+	public void CreateStream( String pstream, String nstream, boolean readonly );
 	
 	/* Version */
 	public String GetVersion( String version, String separator );
 	
 	/* Tag */
-	public String GetTags( String fqname );
+	public List<Tuple<String, String>> GetTags( String fqname );
 	public String GetTag( String fqname );
 	public String NewTag( UCMEntity entity, String cgi );
 	public void DeleteTag( String fqname );
@@ -39,8 +43,9 @@ interface UCMStrategyInterface
 	public String PutTag( String fqname, String keyval, UCMEntity entity );
 	
 	/* Snapshot Views */
-	public void MakeSnapshotView( String stream, String viewtag, String viewroot );
-	public String GetCurrentViewRoot( File viewroot );
+	public void MakeSnapshotView( String stream, File viewroot, String viewtag );
+	public File GetCurrentViewRoot( File viewroot );
+	public String ViewrootIsValid( File viewroot ) throws IOException;
 		
 	
 	/* TEST */

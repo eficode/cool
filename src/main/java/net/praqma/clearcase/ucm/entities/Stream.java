@@ -2,6 +2,9 @@ package net.praqma.clearcase.ucm.entities;
 
 import java.util.ArrayList;
 
+import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.view.SnapshotView;
+
 public class Stream extends UCMEntity
 {
 	/* Stream specific fields */
@@ -20,6 +23,29 @@ public class Stream extends UCMEntity
 	static Stream GetEntity()
 	{
 		return new Stream();
+	}
+	
+	/**
+	 * Create a new stream, given a parent Stream, a fully qualified name for the new Stream and whether the Stream is read only or not 
+	 * @param pstream The parent Stream
+	 * @param nstream The fully qualified name of the new Stream
+	 * @param readonly Whether the new Stream is read only or not
+	 * @return A new Stream given the parameters
+	 */
+	public static Stream Create( Stream pstream, String nstream, boolean readonly )
+	{
+		if( pstream == null || nstream == null )
+		{
+			logger.error( "Incorrect CreateStream() parameters" );
+			throw new UCMException( "Incorrect CreateStream() parameters" );
+		}
+		
+		return context.CreateStream( pstream, nstream, readonly );
+	}
+	
+	public void Rebase( SnapshotView view, Baseline baseline, boolean complete )
+	{
+		
 	}
 	
 	public ArrayList<Baseline> GetRecommendedBaselines()
