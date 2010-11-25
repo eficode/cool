@@ -39,8 +39,32 @@ public class TagTest
 		
 		System.out.println( bls.get( 0 ).Stringify() );
 		Baseline bl1 = bls.get( 0 );
-		Tag t1 = bl1.CreateTag( "HUDSON", "007", "2010", "pending" );
 		
-		System.out.println( t1 );
+		Tag t = bl1.GetTag( "hudson", "001" );
+		System.out.println( t.Stringify() );
+		
+		t.SetEntry( "status", "pending" );
+		
+		t.Persist();
+		
+		Tag t2 = bl1.GetTag( "hudson", "001" );
+		System.out.println( t2.Stringify() );
+		
+		t2.SetEntry( "status", "building" );
+		
+		t2.Persist();
+		
+		Tag t3 = bl1.GetTag( "hudson", "001" );
+		System.out.println( t3.Stringify() );
+		
+		t3.SetEntry( "status", "failed" );
+		
+		t3.Persist();
+		
+		Tag t4 = bl1.GetTag( "hudson", "001" );
+		System.out.println( t4.Stringify() );
 	}
 }
+
+
+
