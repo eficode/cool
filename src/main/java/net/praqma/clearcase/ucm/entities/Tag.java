@@ -112,6 +112,9 @@ public class Tag extends UCMEntity
 	    return sb.toString();
 	}
 	
+	/**
+	 * This function is actually never called.... Thus GetTag is never called as well!
+	 */
 	public void Load()
 	{
 		Tuple<String, String> t = context.GetTag( this );
