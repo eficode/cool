@@ -17,7 +17,7 @@ interface UCMStrategyInterface
 	/* Baseline */
 	public String LoadBaseline( String baseline );
 	public List<String> GetBaselineDiff( String baseline, String other, boolean nmerge );
-	public String SetPromotionLevel( String baseline, String plevel );
+	public void SetPromotionLevel( String baseline, String plevel );
 	
 	public String GetBaselineActivities( String baseline );
 	
@@ -28,7 +28,7 @@ interface UCMStrategyInterface
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException;
 	public String GetRecommendedBaselines( String stream );
 	public String GetStreamFromView( String viewtag );
-	public void CreateStream( String pstream, String nstream, boolean readonly );
+	public void CreateStream( String pstream, String nstream, boolean readonly, String baseline );
 	
 	/* Version */
 	public String GetVersion( String version, String separator );

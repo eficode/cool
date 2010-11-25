@@ -265,9 +265,9 @@ public class UCMContext
 	}
 	
 	
-	public Stream CreateStream( Stream pstream, String nstream, boolean readonly )
+	public Stream CreateStream( Stream pstream, String nstream, boolean readonly, Baseline baseline )
 	{
-		strategy.CreateStream( pstream.GetFQName(), nstream, readonly );
+		strategy.CreateStream( pstream.GetFQName(), nstream, readonly, ( baseline != null ? baseline.GetFQName() : "" ) );
 		
 		Stream stream = UCMEntity.GetStream( nstream );
 		

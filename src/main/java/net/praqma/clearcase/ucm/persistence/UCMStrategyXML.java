@@ -161,7 +161,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 	
 
-	public String SetPromotionLevel( String baseline, String plevel )
+	public void SetPromotionLevel( String baseline, String plevel )
 	{
 		logger.trace_function();
 		logger.debug( baseline );
@@ -170,8 +170,6 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		
 		Element pl = GetElement( GetElementWithFqname( baselines, baseline ), "plevel" );
 		pl.setTextContent( plevel );
-		
-		return "";
 	}
 	
 	/**** Baseline helper functions ****/
@@ -310,7 +308,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		}
 	}
 	
-	public void CreateStream( String pstream, String nstream, boolean readonly )
+	public void CreateStream( String pstream, String nstream, boolean readonly, String baseline )
 	{
 		logger.trace_function();
 		logger.debug( "PARENT=" + pstream + ". NEW=" + nstream );
@@ -321,8 +319,11 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		stream.setAttribute( "readonly", ( readonly ? "1" : "0" ) );
 		
 		Element recbl = xml.createElement( "recommended_baseline" );
+		Element bl    = xml.createElement( "baseline" );
+		bl.setTextContent( baseline );
 		
 		stream.appendChild( recbl );
+		stream.appendChild( bl );
 		
 		streams.appendChild( stream );
 	}

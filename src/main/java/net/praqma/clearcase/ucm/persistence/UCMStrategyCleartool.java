@@ -52,10 +52,11 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		return Cleartool.run( cmd );
 	}
 	@Override
-	public String SetPromotionLevel( String baseline, String plevel )
+	public void SetPromotionLevel( String baseline, String plevel )
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// cleartool( 'chbl -level ' . $plevel . ' ' . $self->get_fqname() )
+		String cmd = "chbl -level " + plevel + " " + baseline;
+		Cleartool.run( cmd );
 	}
 	@Override
 	public String GetBaselineActivities( String baseline )
@@ -73,14 +74,17 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	@Override
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException
 	{
-		// TODO Auto-generated method stub
+		// "chstream " . $comment . " -recommend " . $baseline->get_fqname() . ' ' . $self->get_fqname();
+		String cmd = "chstream -recommend " + baseline + " " + stream;
+		Cleartool.run( cmd );
 		
 	}
 	@Override
 	public String GetRecommendedBaselines( String stream )
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// cleartool( 'desc -fmt %[rec_bls]p stream:' . $self->{'fqstream'} );
+		String cmd = "desc -fmt %[rec_bls]p stream " + stream;
+		return Cleartool.run_collapse( cmd );
 	}
 	@Override
 	public String GetVersion( String version, String separator )
@@ -290,9 +294,9 @@ wolles_baseline_02.6448
 	}
 
 	@Override
-	public void CreateStream( String pstream, String nstream, boolean readonly )
+	public void CreateStream( String pstream, String nstream, boolean readonly, String baseline )
 	{
-		// TODO Auto-generated method stub
-		
+		// "mkstream $c $baseline $readonly -in stream:" . $params{'parent_stream'}->get_fqname() . " " . $stream_fqname );
+		String cmd = "mkstream ";
 	}
 }
