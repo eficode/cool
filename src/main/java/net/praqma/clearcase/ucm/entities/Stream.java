@@ -43,6 +43,11 @@ public class Stream extends UCMEntity
 		return context.CreateStream( pstream, nstream, readonly, baseline );
 	}
 	
+	public static boolean StreamExists( String fqname )
+	{
+		return context.StreamExists( fqname );
+	}
+	
 	public void Rebase( SnapshotView view, Baseline baseline, boolean complete )
 	{
 		
