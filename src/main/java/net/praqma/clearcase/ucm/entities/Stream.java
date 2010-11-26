@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 
+/**
+ * This is the OO implementation of the ClearCase entity Stream
+ * @author wolfgang
+ *
+ */
 public class Stream extends UCMEntity
 {
 	/* Stream specific fields */
@@ -43,6 +48,11 @@ public class Stream extends UCMEntity
 		return context.CreateStream( pstream, nstream, readonly, baseline );
 	}
 	
+	/**
+	 * Determines whether a Stream exists, given a fully qualified name
+	 * @param fqname Fully qualified name
+	 * @return True if the Stream exists, false otherwise
+	 */
 	public static boolean StreamExists( String fqname )
 	{
 		return context.StreamExists( fqname );

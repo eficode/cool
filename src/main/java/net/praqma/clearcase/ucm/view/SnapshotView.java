@@ -67,11 +67,6 @@ public class SnapshotView extends UCMView
 	
 	public static SnapshotView Create( Stream stream, File viewroot, String viewtag )
 	{		
-		if( viewroot.exists() )
-		{
-			DeleteDirectory( viewroot );
-		}
-		
 		context.MakeSnapshotView( stream, viewroot, viewtag );
 		
 		return new SnapshotView( viewroot );
@@ -147,19 +142,6 @@ public class SnapshotView extends UCMView
 	}
 	
 	
-	public static boolean DeleteDirectory( File directory )
-	{
-		if ( directory.isDirectory() )
-		{
-			String[] elements = directory.list();
-			for( int i = 0 ;  i < elements.length ; i++ ) 
-			{
-				boolean success = DeleteDirectory( new File( directory, elements[i] ) ); 
-				if ( !success ) return false;
-			} 
-		} 
-		
-		return directory.delete();
-	}
+
 	
 }

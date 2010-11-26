@@ -18,6 +18,7 @@ import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.utils.AbnormalProcessTerminationException;
 import net.praqma.utils.Command;
 import net.praqma.utils.Debug;
+import net.praqma.utils.IO;
 import net.praqma.utils.Tuple;
 
 
@@ -193,10 +194,14 @@ wolles_baseline_02.6448
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 	@Override
 	public void MakeSnapshotView( String stream, File viewroot, String viewtag )
 	{
-		// TODO Auto-generated method stub
+		if( viewroot.exists() )
+		{
+			IO.DeleteDirectory( viewroot );
+		}
 		
 	}
 	
