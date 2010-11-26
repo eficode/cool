@@ -264,6 +264,15 @@ public class UCMContext
 		strategy.MakeSnapshotView( stream.GetFQName(), viewroot, viewtag );
 	}
 	
+	public boolean ViewExists( String viewtag )
+	{
+		return strategy.ViewExists( viewtag );
+	}
+	
+	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException
+	{
+		strategy.RegenerateViewDotDat( dir, viewtag );
+	}
 	
 	public Stream CreateStream( Stream pstream, String nstream, boolean readonly, Baseline baseline )
 	{
@@ -277,6 +286,11 @@ public class UCMContext
 	public void RebaseView( SnapshotView view, Baseline baseline, boolean complete )
 	{
 		
+	}
+	
+	public boolean StreamExists( String fqname )
+	{
+		return strategy.StreamExists( fqname );
 	}
 	
 	

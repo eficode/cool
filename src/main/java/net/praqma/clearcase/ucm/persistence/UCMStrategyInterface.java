@@ -29,6 +29,7 @@ interface UCMStrategyInterface
 	public String GetRecommendedBaselines( String stream );
 	public String GetStreamFromView( String viewtag );
 	public void CreateStream( String pstream, String nstream, boolean readonly, String baseline );
+	public boolean StreamExists( String fqname );
 	
 	/* Version */
 	public String GetVersion( String version, String separator );
@@ -46,6 +47,8 @@ interface UCMStrategyInterface
 	public void MakeSnapshotView( String stream, File viewroot, String viewtag );
 	public File GetCurrentViewRoot( File viewroot );
 	public String ViewrootIsValid( File viewroot ) throws IOException;
+	public boolean ViewExists( String viewtag );
+	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException;
 		
 	
 	/* TEST */

@@ -3,7 +3,9 @@ package net.praqma.clearcase.ucm.persistence;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.utils.AbnormalProcessTerminationException;
+import net.praqma.utils.Command;
 import net.praqma.utils.Debug;
 import net.praqma.utils.Tuple;
 
@@ -195,6 +199,76 @@ wolles_baseline_02.6448
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private static final Pattern pattern_view_uuid = Pattern.compile( "^.*?View uuid: ([\\w\\.:]+).*?$" );
+	
+	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException
+	{
+		logger.trace_function();
+		logger.debug( dir + ", " +  viewtag );
+		
+		File viewdat = new File( dir, "view.dat" );
+		
+		String cmd = "lsview -l " + viewtag;
+		/* TODO Check this functions behavior, if the view doesn't exist */
+		List<String> result = Cleartool.run( cmd );
+		
+		Matcher match = pattern_view_uuid.matcher( result.get( 8 ) );
+		if( !match.find() )
+		{
+			logger.warning( "The UUID of the view " + viewtag + " does not exist!" );
+			throw new UCMException( "The UUID of the view " + viewtag + " does not exist!" );
+		}
+		
+		String uuid = match.group( 1 );
+		
+		cmd = "lsview -uuid " + uuid;
+		
+		try
+		{
+			Cleartool.run( cmd );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "Unable to read the UUID(" + uuid + ") from view tag " + viewtag );
+		}
+		
+		if( dir.exists() )
+		{
+			logger.warning( "The view root, " + dir + ",  already exists - reuse may be problematic" );
+		}
+		else
+		{
+			dir.mkdir();
+		}
+		
+		FileOutputStream fos = new FileOutputStream( viewdat );
+		fos.write( ( "ws_oid:00000000000000000000000000000000 view_uuid:" + uuid ).getBytes() );
+		fos.close();
+		
+		// cmd("attrib +h +r $view_dat_pn");
+		cmd = "attrib +h +r " + viewdat;
+		Command.run( cmd );
+	}
+	
+	public boolean ViewExists( String viewtag )
+	{
+		logger.trace_function();
+		logger.debug( viewtag );
+		
+		String cmd = "lsview " + viewtag;
+		
+		try
+		{
+			Cleartool.run( cmd );
+			return true;
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			return false;
+		}
+	}
+	
 	@Override
 	public String GetXML()
 	{
@@ -297,6 +371,21 @@ wolles_baseline_02.6448
 	public void CreateStream( String pstream, String nstream, boolean readonly, String baseline )
 	{
 		// "mkstream $c $baseline $readonly -in stream:" . $params{'parent_stream'}->get_fqname() . " " . $stream_fqname );
-		String cmd = "mkstream ";
+		String cmd = "mkstream " + ( baseline != null ? baseline + " " : "" ) + ( readonly ? " -readonly " : "" ) + " -in stream " + pstream + " "  + nstream;
+		Cleartool.run( cmd );
+	}
+	
+	public boolean StreamExists( String fqname )
+	{
+		String cmd = "describe stream: " + fqname;
+		try
+		{
+			Cleartool.run( cmd );
+			return true;
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			return false;
+		}
 	}
 }

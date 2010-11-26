@@ -328,6 +328,21 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		streams.appendChild( stream );
 	}
 	
+	public boolean StreamExists( String fqname )
+	{
+		logger.trace_function();
+		logger.debug( fqname );
+		
+		Element stream = GetElementWithFqname( streams, fqname );
+		
+		if( stream != null )
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	
 	public String GetStreamFromView( String viewtag )
 	{
@@ -516,6 +531,31 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		IDCounter++;
 		
 		//return tag.getAttribute( "fqname" );
+	}
+	
+	public boolean ViewExists( String viewtag )
+	{
+		logger.trace_function();
+		logger.debug( viewtag );
+		
+		List<Element> list = GetElementsWithAttribute( views, "viewtag", viewtag );
+		
+		if( list.size() == 0 )
+		{
+			return false;
+		}
+		
+		if( list.size() > 1 )
+		{
+			logger.warning( "More than one view with tag " + viewtag );
+		}
+		
+		return true;
+	}
+	
+	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException
+	{
+		/* This function is not applicable for XML */
 	}
 	
 	
