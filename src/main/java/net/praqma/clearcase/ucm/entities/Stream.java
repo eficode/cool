@@ -60,7 +60,17 @@ public class Stream extends UCMEntity
 	
 	public void Rebase( SnapshotView view, Baseline baseline, boolean complete )
 	{
-		
+		context.RebaseStream( view, this, baseline, complete );
+	}
+	
+	public boolean IsRebaseInProgress()
+	{
+		return context.IsRebaseInProgress( this );
+	}
+	
+	public void CancelRebase()
+	{
+		context.CancelRebase( this );
 	}
 	
 	public ArrayList<Baseline> GetRecommendedBaselines()
