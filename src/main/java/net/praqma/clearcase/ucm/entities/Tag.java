@@ -134,8 +134,8 @@ public class Tag extends UCMEntity
 	public void SetKeyValue( String cgi )
 	{
 		keyval = Tag.CGIToHash( cgi );
-		this.tagType = keyval.get( "tagtype" );
-		this.tagID   = keyval.get( "tagid" );
+		this.tagType = ( keyval.containsKey( "tagtype" ) ? keyval.get( "tagtype" ) : "" );
+		this.tagID   = ( keyval.containsKey( "tagtype" ) ? keyval.get( "tagid" )   : "" );
 		
 		this.loaded = true;
 	}

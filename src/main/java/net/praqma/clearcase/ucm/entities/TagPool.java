@@ -68,7 +68,7 @@ class TagPool extends UCM
 			//t.Load();
 			
 			/* Is it the correct tag? Return it! */
-			if( t.GetTagType().equals( t.GetTagType() ) && t.GetTagID().equals( tagID ) )
+			if( t.GetTagType().equals( tagType ) && t.GetTagID().equals( tagID ) )
 			{
 				t.SetTagEntity( entity );
 				return t;
