@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -761,6 +762,34 @@ public class UCMStrategyXML implements UCMStrategyInterface
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void RebaseStream( String viewtag, String stream, String baseline, boolean complete )
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean IsRebaseInProgress( String stream )
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void CancelRebase( String stream )
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void SwipeView( File viewroot, boolean excludeRoot, Set<String> firstlevel )
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 
