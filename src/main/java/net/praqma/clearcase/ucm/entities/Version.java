@@ -69,6 +69,11 @@ public class Version extends UCMEntity
 		return this.user;
 	}
 	
+	public String Blame()
+	{
+		return this.GetUser();
+	}
+	
 	public String GetFile()
 	{
 		if( !loaded ) Load();
