@@ -13,7 +13,11 @@ public class Baseline extends UCMEntity
 	private Stream stream                  = null;
 	private ArrayList<Activity> activities = null;
 	
-	/* BaselineDiffs class */
+	/**
+	 * Nested public class for easy compilation and access of the differences Activities and Versions.
+	 * @author wolfgang
+	 *
+	 */
 	public class BaselineDiff extends ArrayList<Activity>
 	{
 		
@@ -47,6 +51,10 @@ public class Baseline extends UCMEntity
 	{
 	}
 	
+	/**
+	 * Load the Baseline into memory from ClearCase.<br>
+	 * This function is automatically called when needed by other functions.
+	 */
 	public void Load()
 	{
 		String[] rs = context.LoadBaseline( this );
@@ -80,8 +88,16 @@ public class Baseline extends UCMEntity
 		return new Baseline();
 	}
 	
+	/**
+	 * Return the promotion level of a baseline. <br>
+	 * If <code>cached</code> is not set, the promotion level is loaded from ClearCase.
+	 * @param cached Whether to use the cached promotion level or not
+	 * @return The promotion level of the Baseline
+	 */
 	public Plevel GetPromotionLevel( boolean cached )
 	{
+		if( !loaded ) this.Load();
+		
 		if( cached )
 		{
 			return this.plevel;
@@ -94,6 +110,17 @@ public class Baseline extends UCMEntity
 		}
 	}
 	
+	/**
+	 * Promote the Baseline.
+	 * <ul>
+	 * <li><code>INITIAL -> BUILT</code></li>
+	 * <li><code>BUILD&nbsp;&nbsp; -> TESTED</code></li>
+	 * <li><code>TESTED&nbsp; -> RELEASED</code></li>
+	 * </ul>
+	 * 
+	 * If the promotion level is not set, it is set to <code>INITAL</code>.
+	 * @return The new promotion level.
+	 */
 	public Plevel Promote()
 	{
 		if( !loaded ) this.Load();
@@ -121,6 +148,9 @@ public class Baseline extends UCMEntity
 		return this.plevel;
 	}
 	
+	/**
+	 * Demotes the Baseline to <code>REJECTED</code>.
+	 */
 	public void Demote()
 	{
 		if( !loaded ) this.Load();
@@ -131,6 +161,11 @@ public class Baseline extends UCMEntity
 	}
 	
 
+	/**
+	 * Get the differences between two Baselines.<br>
+	 * Currently this method only support the previous Baseline and with -nmerge set.<br>
+	 * @return A BaselineDiff object containing a set of Activities.
+	 */
 	public BaselineDiff GetDiffs()
 	{
 		return new BaselineDiff();
