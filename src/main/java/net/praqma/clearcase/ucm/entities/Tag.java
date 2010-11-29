@@ -52,7 +52,9 @@ public class Tag extends UCMEntity
 		String[] entries = cgi.split( "&" );
 		for( String e : entries )
 		{
-			logger.debug( "entry="+ e );
+			/* Check if the entry is a key value pair */
+			if( !e.contains( "=" ) ) continue;
+			
 			String[] entry = e.split( "=" );
 			hash.put( entry[0].trim(), entry[1].trim() );
 		}
