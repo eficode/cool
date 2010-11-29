@@ -2,9 +2,13 @@ package net.praqma.clearcase.ucm.view;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +18,12 @@ import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.utils.Tuple;
 
+/**
+ * The OO implementation of the ClearCase entity Snapshot view.
+ * The next line
+ * @author wolfgang
+ *
+ */
 public class SnapshotView extends UCMView
 {
 	protected static final String rx_view_uuid  = "view_uuid:(.*)";
@@ -25,36 +35,13 @@ public class SnapshotView extends UCMView
 	private String uuid       = "";
 	private String globalPath = "";
 	
-	
 	SnapshotView( File viewroot )
 	{
 		logger.debug( "Running experimental code." );
 		
-		this.viewroot = viewroot;		
+		/* TODO Test the view root? Does it exist? Is it a directory? */
 		
-//		String cwd    = System.getProperty( "user.dir" );
-//		String newdir = viewroot != null ? viewroot : cwd;
-//		
-//		if( !cwd.equals( newdir ) )
-//		{
-//			/* Experimental!!! */
-//			System.setProperty( "user.dir", newdir );
-//		}
-//		
-//		/* TODO vwroot and viewroot are the same! Right? */
-//		// cleartool("pwv -root");
-//		String cmd = "pwv -root";
-//		String wvroot = Cleartool.run_collapse( cmd ).trim();
-//		
-//		String viewtag = SnapshotView.ViewrootIsValid( wvroot );
-//		
-//		// cleartool( 'lsstream -fmt %Xn -view ' . $viewtag );
-//		//cmd = "lsstream -fmt %Xn -view " + viewtag;
-//		//String fqstreamstr = Cleartool.run_collapse( cmd ).trim();
-//		String fqstreamstr = context.GetStreamFromView( viewtag );
-//		
-//		/* Still experimental!!! */
-//		System.setProperty( "user.dir", cwd );
+		this.viewroot = viewroot;		
 		
 		Tuple<Stream, String> t = context.GetStreamFromView( viewroot );
 				
@@ -64,7 +51,13 @@ public class SnapshotView extends UCMView
 		this.pvob     = this.stream.GetPvob();
 	}
 	
-	
+	/**
+	 * Create a Snapshot view given a Stream, view root and a view tag.
+	 * @param stream The Stream
+	 * @param viewroot
+	 * @param viewtag
+	 * @return
+	 */
 	public static SnapshotView Create( Stream stream, File viewroot, String viewtag )
 	{		
 		context.MakeSnapshotView( stream, viewroot, viewtag );
@@ -83,62 +76,30 @@ public class SnapshotView extends UCMView
 		System.out.println( viewtag );
 	}
 	
-	
-	
-	
-	public static String ViewrootIsValid( String viewroot )
+	public void Swipe( boolean excludeRoot, Set<String> firstlevel )
 	{
-		logger.trace_function();
-		
-		String viewdotdatpname = viewroot + filesep + "view.dat";
-		
-		FileReader fr = null;
-		try
+		context.SwipeView( viewroot, excludeRoot, firstlevel );
+	}
+	
+	public String GetViewtag()
+	{
+		return this.viewtag;
+	}
+	
+	private void SwipeDir( File dir, FileFilter viewfilter )
+	{
+		File[] files = dir.listFiles( viewfilter );
+		for( File f : files )
 		{
-			fr = new FileReader( viewdotdatpname );
-		}
-		catch ( FileNotFoundException e1 )
-		{
-			logger.warning( "\"" + viewdotdatpname + "\" not found!" );
-			return null;
-		}
-		
-		BufferedReader br = new BufferedReader( fr );
-		String line;
-		StringBuffer result = new StringBuffer();
-		try
-		{
-			while( ( line = br.readLine() ) != null )
+			if( f.isDirectory() )
 			{
-				result.append( line );
+				net.praqma.utils.IO.DeleteDirectory( f );
+			}
+			else
+			{
+				f.delete();
 			}
 		}
-		catch ( IOException e )
-		{
-			logger.warning( "Couldn't read lines from " + viewdotdatpname );
-			result.append( "" );
-		}
-		
-		Pattern pattern = Pattern.compile( rx_view_uuid );
-		Matcher match   = pattern.matcher( result.toString() );
-		
-		/* A match is found */
-		String uuid = "";
-		try
-		{
-			uuid = match.group( 1 ).trim();
-		}
-		catch( IllegalStateException e )
-		{
-			logger.log( "UUID not found!", "warning" );
-			return null;
-		}
-		
-		//my $viewtag = cleartool("lsview -s -uuid $1");
-		String cmd = "lsview -s -uuid " + uuid;
-		String viewtag = Cleartool.run_collapse( cmd ).trim();
-		
-		return viewtag;
 	}
 	
 	
