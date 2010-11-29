@@ -57,7 +57,7 @@ public abstract class Command
 		}
 		catch ( Exception e )
 		{
-			logger.warning( "Could not execute the command \"" + cmd + "\" correctly: " + e.getMessage() );
+			logger.warning( "Could not execute the command \"" + cmd + "\" correctly: " + e.getMessage() + " - " + e.getClass() + " - " + e.toString() );
 			throw new CommandLineException( "Could not execute the command \"" + cmd + "\" correctly" );
 		}
 	}
