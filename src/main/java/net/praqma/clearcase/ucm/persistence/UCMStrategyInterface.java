@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
@@ -30,6 +31,9 @@ interface UCMStrategyInterface
 	public String GetStreamFromView( String viewtag );
 	public void CreateStream( String pstream, String nstream, boolean readonly, String baseline );
 	public boolean StreamExists( String fqname );
+	public void RebaseStream( String viewtag, String stream, String baseline, boolean complete );
+	public boolean IsRebaseInProgress( String stream );
+	public void CancelRebase( String stream );
 	
 	/* Version */
 	public String GetVersion( String version, String separator );
@@ -49,6 +53,7 @@ interface UCMStrategyInterface
 	public String ViewrootIsValid( File viewroot ) throws IOException;
 	public boolean ViewExists( String viewtag );
 	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException;
+	public void SwipeView( File viewroot, boolean excludeRoot, Set<String> firstlevel );
 		
 	
 	/* TEST */

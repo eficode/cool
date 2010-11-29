@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,8 +95,9 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	@Override
 	public String GetVersion( String version, String separator )
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// 'desc -fmt [date:%d]\n[user:%u]\n[machine:%h]\n[comment:%c]\n[checkedout:%Rf]\n[kind:%m]\n[branch:%Vn]\n[xname:%Xn]\n ' . $self->{'fqpname'};
+		String cmd = "desc -fmt %d" + separator + "%u" + separator + "%h" + separator + "%c" + separator + "%Rf" + separator + "%m" + separator + "%Vn" + separator + "%Xn " + version;
+		return Cleartool.run_collapse( cmd );
 	}
 	
 	/*
@@ -274,6 +276,74 @@ wolles_baseline_02.6448
 		}
 	}
 	
+	private final String rx_co_file = ".*CHECKEDOUT$";
+	private final String rx_ctr_file = ".*\\.contrib";
+	private final String rx_keep_file = ".*\\.keep$";
+	
+	public void SwipeView( File viewroot, boolean excludeRoot, Set<String> firstlevel )
+	{
+		logger.debug( viewroot.toString() );
+		
+		File[] files = viewroot.listFiles();
+		//List<File> fls = new ArrayList<File>();
+		String fls = "";
+		List<File> other = new ArrayList<File>();
+		
+		for( File f : files )
+		{
+			if( firstlevel.contains( f.getName() ) )
+			{
+				//fls.add( f );
+				fls += f.getAbsolutePath() + " ";
+			}
+			else
+			{
+				other.add( f );
+			}
+		}
+		
+		/* Remove all other dirs */
+		for( File f : other )
+		{
+			net.praqma.utils.IO.DeleteDirectory( f );
+		}
+		
+		String cmd = "ls -short -recurse -view_only " + fls;
+		List<String> result = Cleartool.run( cmd );
+		List<File> rnew   = new ArrayList<File>();
+		
+		int total = result.size();
+		
+		//for( int i = 0 ; i < result.size() ; i++ )
+		for( String s : result )
+		{
+			/* Speedy, because of lazy evaluation */
+			if( s.matches( rx_co_file ) || s.matches( rx_keep_file ) || s.matches( rx_ctr_file ) )
+			{
+				continue;
+			}
+			
+			rnew.add( new File( s ) );
+		}
+		
+		logger.debug( "Found " + total + " files, of which " + ( total - rnew.size() ) + " were CO, CTR or KEEP's." );
+		
+		for( File f : rnew )
+		{
+			if( f.exists() )
+			{
+				logger.debug( "Deleting " + f );
+				f.delete();
+			}
+			else
+			{
+				logger.debug( "The file " + f + " does not exist." );
+			}
+		}
+		
+		/* TODO Remove the directories, somehow!? Only the empty!? */
+	}
+	
 	@Override
 	public String GetXML()
 	{
@@ -393,4 +463,44 @@ wolles_baseline_02.6448
 			return false;
 		}
 	}
+	
+	public void RebaseStream( String viewtag, String stream, String baseline, boolean complete )
+	{
+		/*cleartool( "rebase $complete -force -view "
+				  . $params{view}->get_viewtag()
+				  . " -stream "
+				  . $self->get_fqname()
+				  . " -baseline "
+				  . $params{baseline}->get_fqname() );*/
+		
+		String cmd = "rebase " + ( complete ? "-complete " : "" ) + viewtag + " -stream " + stream + " -baseline " + baseline;
+		Cleartool.run( cmd );
+	}
+	
+	private final String rx_rebase_in_progress = "^Rebase operation in progress on stream";
+	
+	public boolean IsRebaseInProgress( String stream )
+	{
+		//my ($rebase_in_progress) = grep( /^Rebase operation in progress on stream/, cleartool_qx( 'rebase -status -stream ' . $self->get_fqname ) );
+		String cmd = "rebase -status -stream " + stream;
+		String result = Cleartool.run_collapse( cmd );
+		if( result.matches( rx_rebase_in_progress ) )
+		{
+			return true;
+		}
+			
+		return false;
+	}
+	
+	public void CancelRebase( String stream )
+	{
+		// cleartool( 'rebase -cancel -force -stream ' . $self->get_fqname );
+		String cmd = "rebase -cancel -force -stream " + stream;
+		Cleartool.run( cmd );
+	}
+	
+	
+	
+	
+	
 }

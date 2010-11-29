@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -274,6 +275,11 @@ public class UCMContext
 		strategy.RegenerateViewDotDat( dir, viewtag );
 	}
 	
+	public void SwipeView( File viewroot, boolean excludeRoot, Set<String> firstlevel )
+	{
+		strategy.SwipeView( viewroot, excludeRoot, firstlevel );
+	}
+	
 	public Stream CreateStream( Stream pstream, String nstream, boolean readonly, Baseline baseline )
 	{
 		strategy.CreateStream( pstream.GetFQName(), nstream, readonly, ( baseline != null ? baseline.GetFQName() : "" ) );
@@ -283,9 +289,19 @@ public class UCMContext
 		return stream;
 	}
 	
-	public void RebaseView( SnapshotView view, Baseline baseline, boolean complete )
+	public void RebaseStream( SnapshotView view, Stream stream, Baseline baseline, boolean complete )
 	{
-		
+		strategy.RebaseStream( view.GetViewtag(), stream.GetFQName(), baseline.GetFQName(), complete );
+	}
+	
+	public boolean IsRebaseInProgress( Stream stream )
+	{
+		return strategy.IsRebaseInProgress( stream.GetFQName() );
+	}
+	
+	public void CancelRebase( Stream stream )
+	{
+		strategy.CancelRebase( stream.GetFQName() );
 	}
 	
 	public boolean StreamExists( String fqname )

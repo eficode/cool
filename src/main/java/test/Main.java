@@ -23,7 +23,7 @@ public class Main
 	{
 		UCM.SetContext( UCM.ContextType.XML );
 		
-		test2();
+		test1();
 		
 		UCMEntity.SaveState();
 	}
