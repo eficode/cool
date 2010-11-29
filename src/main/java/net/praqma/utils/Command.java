@@ -1,6 +1,7 @@
 package net.praqma.utils;
 
 
+import java.io.IOException;
 import java.util.List;
 
 import net.praqma.utils.Debug;
@@ -55,10 +56,15 @@ public abstract class Command
 			
 			return output.lres;
 		}
-		catch ( Exception e )
+		catch ( IOException e )
 		{
-			logger.warning( "Could not execute the command \"" + cmd + "\" correctly: " + e.getMessage() + " - " + e.getClass() + " - " + e.toString() );
-			throw new CommandLineException( "Could not execute the command \"" + cmd + "\" correctly" );
+			logger.warning( "Could not execute the command \"" + cmd + "\" correctly: " + e.getMessage() );
+			throw new CommandLineException( "Could not execute the command \"" + cmd + "\" correctly: " + e.getMessage() );
+		}
+		catch ( InterruptedException e )
+		{
+			logger.warning( "The command \"" + cmd + "\" was interrupted: " + e.getMessage() );
+			throw new CommandLineException( "The command \"" + cmd + "\" was interrupted: " + e.getMessage() );
 		}
 	}
 }
