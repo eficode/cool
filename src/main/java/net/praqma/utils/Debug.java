@@ -71,7 +71,7 @@ public class Debug
 		
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		System.out.println( "USING LOGGER: " + logger.toString() );
-		net.praqma.utils.Printer.ArrayPrinter( stack, 3 );
+		net.praqma.utils.Printer.ArrayPrinter( stack, 4 );
 		
 		return logger;
 	}
@@ -148,10 +148,10 @@ public class Debug
 		catch ( IOException e )
 		{
 			System.err.println( "Cannot use the specified path, \"" + path + "\". Defaulting to current working directory." );
-			path = "./";
+			//path = "./";
 			try
 			{
-				file = new File( path + "debug_" + logformat.format( nowDate.getTime() ) + ".log" );
+				file = new File( "debug_" + logformat.format( nowDate.getTime() ) + ".log" );
 				fw = new FileWriter( file, append );
 			}
 			catch ( IOException e1 )
