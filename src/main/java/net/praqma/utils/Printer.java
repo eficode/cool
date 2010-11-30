@@ -11,9 +11,17 @@ public class Printer
 
 	public static <T1> void ArrayPrinter ( T1[] array )
 	{
+		ArrayPrinter( array, null );
+	}
+	
+	public static <T1> void ArrayPrinter ( T1[] array, Integer max )
+	{
+		Integer c = 1;
 	    for( T1 t : array )
 	    {
+	    	if( max != null && c > max ) break;
 	    	System.out.println( "(" + t.toString() + ") " );
+	    	c++;
 	    }
 	}
 	

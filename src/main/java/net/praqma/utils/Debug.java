@@ -71,7 +71,7 @@ public class Debug
 		
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		System.out.println( "USING LOGGER: " + logger.toString() );
-		net.praqma.utils.Printer.ArrayPrinter( stack );
+		net.praqma.utils.Printer.ArrayPrinter( stack, 3 );
 		
 		return logger;
 	}
