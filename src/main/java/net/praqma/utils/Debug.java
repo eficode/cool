@@ -68,7 +68,7 @@ public class Debug
 			logger = new Debug( append );
 		}
 		
-		//System.out.println( "USING LOGGER: " + logger.toString() );
+		System.out.println( "USING LOGGER: " + logger.toString() );
 		
 		return logger;
 	}
@@ -121,6 +121,7 @@ public class Debug
 	private static void NewDate( Calendar n )
 	{
 		nowDate = n;
+		String file = "";
 		
 		if( fw != null )
 		{
@@ -137,8 +138,8 @@ public class Debug
 		
 		try
 		{
-
-			fw = new FileWriter( path +  "debug_" + logformat.format( nowDate.getTime() ) + ".log" , append );
+			file = "debug_" + logformat.format( nowDate.getTime() ) + ".log";
+			fw = new FileWriter( path + file , append );
 			
 		}
 		catch ( IOException e )
@@ -147,7 +148,8 @@ public class Debug
 			path = "./";
 			try
 			{
-				fw = new FileWriter( path +  "debug_" + logformat.format( nowDate.getTime() ) + ".log" , append );
+				file = "debug_" + logformat.format( nowDate.getTime() ) + ".log";
+				fw = new FileWriter( path + file, append );
 			}
 			catch ( IOException e1 )
 			{
@@ -155,6 +157,8 @@ public class Debug
 				System.exit( 1 );
 			}
 		}
+		
+		System.out.println( "LOGGER USING " + path + file );
 		
 		out = new BufferedWriter( fw );
 	}
