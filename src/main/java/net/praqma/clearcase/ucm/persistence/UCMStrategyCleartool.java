@@ -116,6 +116,9 @@ wolles_baseline_02.6448
 	@Override
 	public List<Tuple<String, String>> GetTags( String fqname )
 	{
+		logger.trace_function();
+		logger.debug( fqname );
+		
 		String cmd = "describe -ahlink " + __TAG_NAME + " -l " + fqname;
 		List<String> list = Cleartool.run( cmd );
 		
