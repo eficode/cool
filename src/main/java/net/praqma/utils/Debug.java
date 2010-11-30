@@ -29,6 +29,8 @@ public class Debug
 	private static SimpleDateFormat logformat = null;
 	private static Calendar nowDate           = null;
 	
+	private static File file                  = null;
+	
 	private static boolean enabled            = true;
 	
 	private static final String filesep       = System.getProperty( "file.separator" );
@@ -70,8 +72,10 @@ public class Debug
 		}
 		
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-		System.out.println( "USING LOGGER: " + logger.toString() );
-		net.praqma.utils.Printer.ArrayPrinter( stack, 4 );
+		System.out.println( "USING LOGGER: " + logger.toString() + " @ " + file.getAbsolutePath() );
+		System.out.println( "CLASS=" + stack[3] );
+		//net.praqma.utils.Printer.ArrayPrinter( stack, 4 );
+		
 		
 		return logger;
 	}
@@ -124,7 +128,6 @@ public class Debug
 	private static void NewDate( Calendar n )
 	{
 		nowDate = n;
-		File file = null;
 		
 		if( fw != null )
 		{
@@ -161,7 +164,7 @@ public class Debug
 			}
 		}
 		
-		System.out.println( "LOGGER USING " + file.getAbsolutePath() );
+		//System.out.println( "LOGGER USING " + file.getAbsolutePath() );
 		
 		out = new BufferedWriter( fw );
 	}
