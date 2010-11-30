@@ -31,13 +31,13 @@ public abstract class Command
 		{
 			Process p = Runtime.getRuntime().exec( cmd );
 			
-			//StreamGobbler errors = new StreamGobbler( p.getErrorStream() );
 			StreamGobbler output = new StreamGobbler( p.getInputStream() );
+			StreamGobbler errors = new StreamGobbler( p.getErrorStream() );
 
-			//System.out.println( "Running errors" );
-			//errors.run();
 			System.out.println( "Running output" );
-			output.run();			
+			output.run();
+			System.out.println( "Running errors" );
+			errors.run();
 			
 			int exitValue = p.waitFor();
 			

@@ -35,7 +35,7 @@ public class Version extends UCMEntity
 		return new Version();
 	}
 	
-	public void PostProcess()
+	void PostProcess()
 	{
 		logger.trace_function();
 
@@ -44,6 +44,7 @@ public class Version extends UCMEntity
 		
 		this.fqname = fqname;
 		
+		/* Find the revision number, make it zero if it is not found */
 		Matcher m = p_revision.matcher( this.fqname );
 		if( m.find() )
 		{

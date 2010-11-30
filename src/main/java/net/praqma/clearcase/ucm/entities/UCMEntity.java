@@ -255,7 +255,7 @@ public abstract class UCMEntity extends UCM
 	/**
 	 * Default PostProcess method. If an entity needs post processing of its creation, this method should be overridden.
 	 */
-	protected void PostProcess()
+	void PostProcess()
 	{
 		/* NOP, should be overridden */
 	}

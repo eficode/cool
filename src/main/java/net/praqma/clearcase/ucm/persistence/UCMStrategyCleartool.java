@@ -30,6 +30,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	protected static final String rx_view_uuid  = "view_uuid:(.*)";
 	private static final String rx_ccdef_allowed = "[\\w\\.-_\\\\]";
 	
+	public static final String __TAG_NAME = "tag";
+	
 	static
 	{
 		//logger.ExcludeClass( UCMStrategyXML.class.getName() );
@@ -114,7 +116,7 @@ wolles_baseline_02.6448
 	@Override
 	public List<Tuple<String, String>> GetTags( String fqname )
 	{
-		String cmd = "describe -ahlink tag -l " + fqname;
+		String cmd = "describe -ahlink " + __TAG_NAME + " -l " + fqname;
 		List<String> list = Cleartool.run( cmd );
 		
 		List<Tuple<String, String>> tags = new ArrayList<Tuple<String, String>>();
@@ -152,7 +154,8 @@ wolles_baseline_02.6448
 		logger.debug( entity.GetFQName() );
 		
 		// mkhlink -ttext "test nummer 2" tag baseline:wolles_baseline_02.6448@\Cool_PVOB
-		String cmd = "mkhlink -ttext \"" + cgi + "\" tag " + entity.GetFQName();
+		//String cmd = "mkhlink -ttext \"" + cgi + "\" tag " + entity.GetFQName();
+		String cmd = "mkhlink -ttext \"" + cgi + "\" " + __TAG_NAME + " " + entity.GetFQName();
 		String tag = Cleartool.run_collapse( cmd );
 		Matcher match = pattern_remove_verbose_tag.matcher( tag );
 		if( match.find() )
