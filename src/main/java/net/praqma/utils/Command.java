@@ -44,7 +44,7 @@ public abstract class Command
 			/* Abnormal process termination */
 			if ( exitValue != 0 )
 			{
-				logger.log( "Abnormal process termination: " + output.sres.toString() );
+				logger.log( "Abnormal process termination: " + errors.sres.toString() );
 				throw new AbnormalProcessTerminationException( "Abnormal process termination: " + errors.sres.toString() );
 			}
 			

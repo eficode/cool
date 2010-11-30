@@ -2,6 +2,7 @@ package net.praqma.utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -68,7 +69,9 @@ public class Debug
 			logger = new Debug( append );
 		}
 		
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		System.out.println( "USING LOGGER: " + logger.toString() );
+		net.praqma.utils.Printer.ArrayPrinter( stack );
 		
 		return logger;
 	}
@@ -121,7 +124,7 @@ public class Debug
 	private static void NewDate( Calendar n )
 	{
 		nowDate = n;
-		String file = "";
+		File file = null;
 		
 		if( fw != null )
 		{
@@ -138,8 +141,8 @@ public class Debug
 		
 		try
 		{
-			file = "debug_" + logformat.format( nowDate.getTime() ) + ".log";
-			fw = new FileWriter( path + file , append );
+			file = new File( path + "debug_" + logformat.format( nowDate.getTime() ) + ".log" );
+			fw = new FileWriter( file , append );
 			
 		}
 		catch ( IOException e )
@@ -148,8 +151,8 @@ public class Debug
 			path = "./";
 			try
 			{
-				file = "debug_" + logformat.format( nowDate.getTime() ) + ".log";
-				fw = new FileWriter( path + file, append );
+				file = new File( path + "debug_" + logformat.format( nowDate.getTime() ) + ".log" );
+				fw = new FileWriter( file, append );
 			}
 			catch ( IOException e1 )
 			{
@@ -158,7 +161,7 @@ public class Debug
 			}
 		}
 		
-		System.out.println( "LOGGER USING " + path + file );
+		System.out.println( "LOGGER USING " + file.getAbsolutePath() );
 		
 		out = new BufferedWriter( fw );
 	}
