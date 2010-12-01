@@ -1,6 +1,7 @@
 package net.praqma.utils;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,12 @@ public abstract class Command
 	
 
 	
-	//public static List<String> run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
+	{
+		return run( cmd, null );
+	}
+	
+	public static CmdResult run( String cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException
 	{
 		logger.trace_function();
 		
@@ -33,10 +38,20 @@ public abstract class Command
 		
 		try
 		{
-			Process p = Runtime.getRuntime().exec( cmd );
+			ProcessBuilder pb = new ProcessBuilder( cmd );
+			//Process p = Runtime.getRuntime().exec( cmd );
+			//Process p = Runtime.getRuntime().exec( cmd, null, dir );
+			
+			if( dir != null )
+			{
+				logger.debug( "Changing current working directory to " + dir );
+				pb.directory( dir );
+			}
 			
 			CmdResult result = new CmdResult();
 			
+			Process p = pb.start();
+				
 			StreamGobbler output = new StreamGobbler( p.getInputStream() );
 			StreamGobbler errors = new StreamGobbler( p.getErrorStream() );
 
