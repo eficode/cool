@@ -31,21 +31,23 @@ public class UCMContext
 	}
 	
 	/* Baseline specific */
-	public ArrayList<Activity> GetBaselineDiff( Baseline baseline )
+	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline )
 	{
-		return GetBaselineDiff( baseline, null, true );
+		return GetBaselineDiff( view, baseline, null, true );
 	}
 	
-	public ArrayList<Activity> GetBaselineDiff( Baseline baseline, boolean nmerge )
+	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, boolean nmerge )
 	{
-		return GetBaselineDiff( baseline, null, nmerge );
+		return GetBaselineDiff( view, baseline, null, nmerge );
 	}
 	
-	public ArrayList<Activity> GetBaselineDiff( Baseline baseline, Baseline other, boolean nmerge )
+	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge )
 	{
+		/* Change current working directory to view context */
+		strategy.ChangeDirectoryToView( view.GetViewRoot().getAbsolutePath() );
+		
 		/* Change if other than -pre */
 		List<String> result = strategy.GetBaselineDiff( baseline.GetFQName(), "", nmerge );
-		
 		
 		//ArrayList<Version> list = new ArrayList<Version>();
 		ArrayList<Activity> activities = new ArrayList<Activity>();

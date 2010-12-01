@@ -15,6 +15,10 @@ interface UCMStrategyInterface
 {
 	public static final String delim = "::";
 	
+	/* General command line stuff */
+	public void ChangeDirectoryToView( String path );
+	public void CheckViewContext();
+	
 	/* Baseline */
 	public String LoadBaseline( String baseline );
 	public List<String> GetBaselineDiff( String baseline, String other, boolean nmerge );

@@ -792,5 +792,19 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		
 	}
 
+	@Override
+	public void ChangeDirectoryToView( String path )
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void CheckViewContext()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

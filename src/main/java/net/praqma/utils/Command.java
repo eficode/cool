@@ -47,7 +47,7 @@ public abstract class Command
 			
 			int exitValue = p.waitFor();
 			
-			/* Abnormal process termination */
+			/* Abnormal process termination, with error out as message */
 			if ( exitValue != 0 )
 			{
 				logger.error( "Abnormal process termination: " + errors.sres.toString() );

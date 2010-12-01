@@ -87,6 +87,11 @@ public class SnapshotView extends UCMView
 		return this.viewtag;
 	}
 	
+	public File GetViewRoot()
+	{
+		return this.viewroot;
+	}
+	
 	public void Update( boolean swipe, boolean generate, boolean overwrite, boolean force, boolean excludeRoot, String components, String loadrules )
 	{
 		if( ( components != null && loadrules != null ) || ( components == null && loadrules == null ) )

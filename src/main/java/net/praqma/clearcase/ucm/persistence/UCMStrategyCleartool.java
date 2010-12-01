@@ -43,7 +43,42 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	
 	public UCMStrategyCleartool()
 	{
-		logger.log( "Using CLEARTOOL strategy" );
+		logger.log( "Using ClearTool strategy" );
+	}
+	
+	
+	public void ChangeDirectoryToView( String path )
+	{
+		logger.trace_function();
+		logger.debug( path );
+		
+		String cwd = System.getProperty( "user.dir" );
+		
+		if( !cwd.equals( path ) )
+		{
+			System.setProperty( "user.dir", path );
+		}
+	}
+	
+	public void CheckViewContext()
+	{
+		logger.trace_function();
+		logger.debug( "" );
+		
+		String cmd = "pwv -root";
+		try
+		{
+			Cleartool.run( cmd ).stdoutBuffer.toString();
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			if( e.getMessage().equalsIgnoreCase( "cleartool: Error: operation requires a view" ) )
+			{
+				throw new UCMException( "operation requires a view" );
+			}
+			
+			throw e;
+		}
 	}
 	
 	@Override
@@ -52,32 +87,18 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		String cmd = "desc -fmt %n" + delim + "%[component]p" + delim + "%[bl_stream]p" + delim + "%[plevel]p" + delim + "%u " + baseline;
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
+	
 	@Override
 	public List<String> GetBaselineDiff( String baseline, String other, boolean nmerge )
 	{
 		/* Check if we are in view context */
-		String cmd = "pwv -root";
-		try
-		{
-			String result = Cleartool.run( cmd ).stdoutBuffer.toString();
-		}
-		catch( AbnormalProcessTerminationException e )
-		{
-			logger.debug( "I CAUGHT THE EXCEPTION! " + e.getMessage() );
-			if( e.getMessage().equalsIgnoreCase( "cleartool: Error: operation requires a view" ) )
-			{
-				logger.debug( "I AM IN HERE" );
-				throw new UCMException( "cleartool: Error: operation requires a view" );
-			}
-			
-			throw e;
-		}
-
+		CheckViewContext();
 		
 		// cleartool('diffbl -pre -act -ver '.$sw_nmerge.$self->get_fqname );
-		cmd = "diffbl -pre -act -ver -nmerge " + baseline;
+		String cmd = "diffbl -pre -act -ver -nmerge " + baseline;
 		return Cleartool.run( cmd ).stdoutList;
 	}
+	
 	@Override
 	public void SetPromotionLevel( String baseline, String plevel )
 	{
@@ -85,12 +106,14 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		String cmd = "chbl -level " + plevel + " " + baseline;
 		Cleartool.run( cmd );
 	}
+	
 	@Override
 	public String GetBaselineActivities( String baseline )
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 	@Override
 	public List<String> GetBaselines( String component, String stream, String plevel )
 	{
