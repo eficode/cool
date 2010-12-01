@@ -80,6 +80,45 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 	}
 	
+	public boolean IsVob( File dir )
+	{
+		logger.debug( "Testin " + dir );
+		
+		String cmd = "lsvob " + dir.getName();
+		try
+		{
+			Cleartool.run( cmd );
+		}
+		catch( Exception e )
+		{
+			logger.debug( "E=" + e.getMessage() );
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public List<String> ListVobs( File viewroot )
+	{
+		logger.debug( "Listing vobs at " + viewroot );
+		
+		File[] files = viewroot.listFiles();
+		List<String> vobs = new ArrayList<String>();
+		
+		for( File f : files )
+		{
+			if( f.isDirectory() )
+			{
+				if( IsVob( f ) )
+				{
+					vobs.add( f.getName() );
+				}
+			}
+		}
+		
+		return vobs;
+	}
+	
 	@Override
 	public String LoadBaseline( String baseline )
 	{
@@ -106,18 +145,26 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 			{
 				logger.log( "The given Baseline, \"" + baseline + "\" is the first on the Stream" );
 				
-				List<String> files = Cleartool.run( "ls -s -rec", dir ).stdoutList;
+				List<String> result = new ArrayList<String>();
 				
-				/* Remove lost + found folder */
-				for( int i = 0 ; i < files.size() ; i++ )
+				List<String> vobs = ListVobs( dir );
+				
+				for( String vob : vobs )
 				{
-					if( files.get( i ).matches( "^lost+found@@.*" ) )
+					List<String> files = Cleartool.run( "ls -s -rec " + vob, dir ).stdoutList;
+					
+					/* Remove lost + found folder */
+					for( int i = 0 ; i < files.size() ; i++ )
 					{
-						files.remove( i );
+						if( !files.get( i ).matches( "^lost+found@@.*" ) )
+						{
+							//files.remove( i );
+							result.add( files.get( i ) );
+						}
 					}
 				}
 				
-				return files;
+				return result;
 			}
 			
 			/* The exception could not be handled! */
