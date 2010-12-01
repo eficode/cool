@@ -416,6 +416,9 @@ wolles_baseline_02.6448
 	@Override
 	public File GetCurrentViewRoot( File viewroot )
 	{
+		logger.trace_function();
+		logger.debug( viewroot.getAbsolutePath() );
+		
 		String cwd = System.getProperty( "user.dir" );
 		
 		if( !cwd.equals( viewroot.toString() ) )
