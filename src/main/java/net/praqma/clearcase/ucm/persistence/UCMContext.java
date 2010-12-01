@@ -44,10 +44,10 @@ public class UCMContext
 	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge )
 	{
 		/* Change current working directory to view context */
-		strategy.ChangeDirectoryToView( view.GetViewRoot().getAbsolutePath() );
+		//strategy.ChangeDirectoryToView( view.GetViewRoot().getAbsolutePath() );
 		
 		/* Change if other than -pre */
-		List<String> result = strategy.GetBaselineDiff( baseline.GetFQName(), "", nmerge );
+		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge );
 		
 		//ArrayList<Version> list = new ArrayList<Version>();
 		ArrayList<Activity> activities = new ArrayList<Activity>();

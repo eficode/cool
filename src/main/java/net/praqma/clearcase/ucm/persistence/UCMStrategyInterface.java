@@ -17,11 +17,11 @@ interface UCMStrategyInterface
 	
 	/* General command line stuff */
 	public void ChangeDirectoryToView( String path );
-	public void CheckViewContext();
+	public void CheckViewContext( File dir );
 	
 	/* Baseline */
 	public String LoadBaseline( String baseline );
-	public List<String> GetBaselineDiff( String baseline, String other, boolean nmerge );
+	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge );
 	public void SetPromotionLevel( String baseline, String plevel );
 	
 	public String GetBaselineActivities( String baseline );

@@ -131,7 +131,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		return str;
 	}
 	
-	public List<String> GetBaselineDiff( String baseline, String other, boolean nmerge )
+	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge )
 	{
 		logger.trace_function();
 		logger.debug( baseline );
@@ -800,7 +800,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void CheckViewContext()
+	public void CheckViewContext( File dir )
 	{
 		// TODO Auto-generated method stub
 		

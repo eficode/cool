@@ -59,7 +59,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 	}
 	
-	public void CheckViewContext()
+	public void CheckViewContext( File dir )
 	{
 		logger.trace_function();
 		logger.debug( "" );
@@ -67,7 +67,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		String cmd = "pwv -root";
 		try
 		{
-			Cleartool.run( cmd ).stdoutBuffer.toString();
+			Cleartool.run( cmd, dir ).stdoutBuffer.toString();
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
@@ -88,10 +88,10 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	}
 	
 	@Override
-	public List<String> GetBaselineDiff( String baseline, String other, boolean nmerge )
+	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge )
 	{
 		/* Check if we are in view context */
-		CheckViewContext();
+		CheckViewContext( dir );
 		
 		// cleartool('diffbl -pre -act -ver '.$sw_nmerge.$self->get_fqname );
 		String cmd = "diffbl -pre -act -ver -nmerge " + baseline;
