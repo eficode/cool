@@ -23,7 +23,7 @@ public class UCMContext
 	private Debug logger = Debug.GetLogger();
 	private UCMStrategyInterface strategy;
 	
-	private final Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)$" );
+	private final Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
 	
 	public UCMContext( UCMStrategyInterface strategy )
 	{

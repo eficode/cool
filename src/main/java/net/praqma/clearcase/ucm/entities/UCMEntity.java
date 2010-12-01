@@ -288,6 +288,10 @@ public abstract class UCMEntity extends UCM
 	 */
 	public static Activity GetActivity( String name, boolean trusted )
 	{
+		if( !name.startsWith( "activity:" ) )
+		{
+			name = "activity:" + name;
+		}
 		Activity entity = (Activity)UCMEntity.GetEntity( name, trusted );
 		return entity;
 	}

@@ -111,7 +111,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 			{
 				if( IsVob( f ) )
 				{
-					vobs.add( "\\" + f.getName() );
+					vobs.add( f.getName() );
 				}
 			}
 		}
@@ -146,12 +146,13 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 				logger.log( "The given Baseline, \"" + baseline + "\" is the first on the Stream" );
 				
 				List<String> result = new ArrayList<String>();
+				result.add( ">> rebase.FAKE@\\Cool_PVOB \"FAKE ACTIVITY\"" );
 				
 				List<String> vobs = ListVobs( dir );
 				
 				for( String vob : vobs )
 				{
-					List<String> files = Cleartool.run( "ls -s -rec \\" + vob, dir ).stdoutList;
+					List<String> files = Cleartool.run( "ls -s -rec " + vob, dir ).stdoutList;
 					
 					/* Remove lost + found folder */
 					for( int i = 0 ; i < files.size() ; i++ )
