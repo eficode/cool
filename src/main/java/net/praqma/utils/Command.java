@@ -2,6 +2,7 @@ package net.praqma.utils;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.praqma.utils.Debug;
@@ -16,7 +17,10 @@ public abstract class Command
 	protected static Debug logger = Debug.GetLogger();
 	protected static final String linesep = System.getProperty( "line.separator" );
 	
-	public static List<String> run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
+
+	
+	//public static List<String> run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
+	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
 		logger.trace_function();
 		
@@ -30,6 +34,8 @@ public abstract class Command
 		try
 		{
 			Process p = Runtime.getRuntime().exec( cmd );
+			
+			CmdResult result = new CmdResult();
 			
 			StreamGobbler output = new StreamGobbler( p.getInputStream() );
 			StreamGobbler errors = new StreamGobbler( p.getErrorStream() );
@@ -52,9 +58,17 @@ public abstract class Command
 			p.getOutputStream().close();
 			p.getInputStream().close();
 			
+			/* Setting command result */
+			result.stdoutBuffer = output.sres;
+			result.stdoutList   = output.lres;
+			
+			result.errorBuffer  = errors.sres;
+			result.errorList    = errors.lres;
+			
 			//net.praqma.utils.Printer.ListPrinter( output.lres );
 			
-			return output.lres;
+			//return output.lres;
+			return result;
 		}
 		catch ( IOException e )
 		{

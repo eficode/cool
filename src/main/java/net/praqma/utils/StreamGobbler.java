@@ -19,10 +19,9 @@ public class StreamGobbler extends Thread
         this.is = is;
         lres = new ArrayList<String>();
         sres = new StringBuffer();
-        
     }
     
-    public void run()
+    public void run( )
     {
 		try
 		{
