@@ -61,6 +61,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		if( result.equalsIgnoreCase( "cleartool: Error: operation requires a view" ) )
 		{
 			throw new UCMException( "cleartool: Error: operation requires a view" );
+			/**/
 		}
 		
 		// cleartool('diffbl -pre -act -ver '.$sw_nmerge.$self->get_fqname );
