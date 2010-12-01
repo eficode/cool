@@ -57,12 +57,20 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	{
 		/* Check if we are in view context */
 		String cmd = "pwv -root";
-		String result = Cleartool.run( cmd ).stdoutBuffer.toString();
-		if( result.equalsIgnoreCase( "cleartool: Error: operation requires a view" ) )
+		try
 		{
-			throw new UCMException( "cleartool: Error: operation requires a view" );
-			/**/
+			String result = Cleartool.run( cmd ).stdoutBuffer.toString();
 		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			if( e.getMessage().equalsIgnoreCase( "cleartool: Error: operation requires a view" ) )
+			{
+				throw new UCMException( "cleartool: Error: operation requires a view" );
+			}
+			
+			throw e;
+		}
+
 		
 		// cleartool('diffbl -pre -act -ver '.$sw_nmerge.$self->get_fqname );
 		cmd = "diffbl -pre -act -ver -nmerge " + baseline;
