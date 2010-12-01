@@ -420,12 +420,15 @@ wolles_baseline_02.6448
 		logger.debug( viewroot.getAbsolutePath() );
 		
 		String cwd = System.getProperty( "user.dir" );
+		logger.debug( "Current view context is " + cwd );
 		
 		if( !cwd.equals( viewroot.toString() ) )
 		{
 			/* Experimental!!! */
 			System.setProperty( "user.dir", viewroot.toString() );
 		}
+		
+		logger.debug( "new view context is " + System.getProperty( "user.dir" ) );
 		
 		String wvroot = Cleartool.run( "pwv -root" ).stdoutBuffer.toString();
 
