@@ -84,7 +84,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	{
 		logger.debug( "Testin " + dir );
 		
-		String cmd = "lsvob " + dir.getName();
+		String cmd = "lsvob \\" + dir.getName();
 		try
 		{
 			Cleartool.run( cmd );
@@ -111,7 +111,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 			{
 				if( IsVob( f ) )
 				{
-					vobs.add( f.getName() );
+					vobs.add( "\\" + f.getName() );
 				}
 			}
 		}
