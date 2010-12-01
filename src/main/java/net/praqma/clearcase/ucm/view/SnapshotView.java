@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
@@ -84,6 +85,22 @@ public class SnapshotView extends UCMView
 	public String GetViewtag()
 	{
 		return this.viewtag;
+	}
+	
+	public void Update( boolean swipe, boolean generate, boolean overwrite, boolean force, boolean excludeRoot, String components, String loadrules )
+	{
+		if( ( components != null && loadrules != null ) || ( components == null && loadrules == null ) )
+		{
+			throw new UCMException( "Only one of LOAD RULES and COMPONENTS must be set." );
+		}
+		
+		if( components != null )
+		{
+			if( !components.matches( "" ) )
+			{
+				
+			}
+		}
 	}
 	
 	private void SwipeDir( File dir, FileFilter viewfilter )

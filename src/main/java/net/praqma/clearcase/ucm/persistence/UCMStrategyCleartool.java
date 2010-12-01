@@ -55,8 +55,16 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	@Override
 	public List<String> GetBaselineDiff( String baseline, String other, boolean nmerge )
 	{
+		/* Check if we are in view context */
+		String cmd = "pwv -root";
+		String result = Cleartool.run_collapse( cmd );
+		if( result.equalsIgnoreCase( "cleartool: Error: operation requires a view" ) )
+		{
+			throw new UCMException( "cleartool: Error: operation requires a view" );
+		}
+		
 		// cleartool('diffbl -pre -act -ver '.$sw_nmerge.$self->get_fqname );
-		String cmd = "diffbl -pre -act -ver -nmerge " + baseline;
+		cmd = "diffbl -pre -act -ver -nmerge " + baseline;
 		return Cleartool.run( cmd );
 	}
 	@Override
