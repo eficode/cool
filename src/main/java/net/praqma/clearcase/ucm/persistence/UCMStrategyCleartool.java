@@ -50,14 +50,14 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	public String LoadBaseline( String baseline )
 	{
 		String cmd = "desc -fmt %n" + delim + "%[component]p" + delim + "%[bl_stream]p" + delim + "%[plevel]p" + delim + "%u " + baseline;
-		return Cleartool.run_collapse( cmd );
+		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	@Override
 	public List<String> GetBaselineDiff( String baseline, String other, boolean nmerge )
 	{
 		/* Check if we are in view context */
 		String cmd = "pwv -root";
-		String result = Cleartool.run_collapse( cmd );
+		String result = Cleartool.run( cmd ).stdoutBuffer.toString();
 		if( result.equalsIgnoreCase( "cleartool: Error: operation requires a view" ) )
 		{
 			throw new UCMException( "cleartool: Error: operation requires a view" );
@@ -65,7 +65,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		
 		// cleartool('diffbl -pre -act -ver '.$sw_nmerge.$self->get_fqname );
 		cmd = "diffbl -pre -act -ver -nmerge " + baseline;
-		return Cleartool.run( cmd );
+		return Cleartool.run( cmd ).stdoutList;
 	}
 	@Override
 	public void SetPromotionLevel( String baseline, String plevel )
@@ -85,7 +85,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	{
 		// my @retval = cleartool_qx(' lsbl -s -component '.$self->get_fqname().' -stream '.$stream->get_fqname().' -level '.$params{'plevel'});
 		String cmd = "lsbl -s -component " + component + " -stream " + stream + " -level " + plevel;
-		return Cleartool.run( cmd );
+		return Cleartool.run( cmd ).stdoutList;
 	}
 	@Override
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException
@@ -100,14 +100,14 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	{
 		// cleartool( 'desc -fmt %[rec_bls]p stream:' . $self->{'fqstream'} );
 		String cmd = "desc -fmt %[rec_bls]p stream " + stream;
-		return Cleartool.run_collapse( cmd );
+		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	@Override
 	public String GetVersion( String version, String separator )
 	{
 		// 'desc -fmt [date:%d]\n[user:%u]\n[machine:%h]\n[comment:%c]\n[checkedout:%Rf]\n[kind:%m]\n[branch:%Vn]\n[xname:%Xn]\n ' . $self->{'fqpname'};
 		String cmd = "desc -fmt %d" + separator + "%u" + separator + "%h" + separator + "%c" + separator + "%Rf" + separator + "%m" + separator + "%Vn" + separator + "%Xn " + version;
-		return Cleartool.run_collapse( cmd );
+		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	
 	/*
@@ -128,7 +128,7 @@ wolles_baseline_02.6448
 		logger.debug( fqname );
 		
 		String cmd = "describe -ahlink " + __TAG_NAME + " -l " + fqname;
-		List<String> list = Cleartool.run( cmd );
+		List<String> list = Cleartool.run( cmd ).stdoutList;
 		
 		List<Tuple<String, String>> tags = new ArrayList<Tuple<String, String>>();
 				
@@ -167,7 +167,7 @@ wolles_baseline_02.6448
 		// mkhlink -ttext "test nummer 2" tag baseline:wolles_baseline_02.6448@\Cool_PVOB
 		//String cmd = "mkhlink -ttext \"" + cgi + "\" tag " + entity.GetFQName();
 		String cmd = "mkhlink -ttext \"" + cgi + "\" " + __TAG_NAME + " " + entity.GetFQName();
-		String tag = Cleartool.run_collapse( cmd );
+		String tag = Cleartool.run( cmd ).stdoutBuffer.toString();
 		Matcher match = pattern_remove_verbose_tag.matcher( tag );
 		if( match.find() )
 		{
@@ -232,7 +232,7 @@ wolles_baseline_02.6448
 		
 		String cmd = "lsview -l " + viewtag;
 		/* TODO Check this functions behavior, if the view doesn't exist */
-		List<String> result = Cleartool.run( cmd );
+		List<String> result = Cleartool.run( cmd ).stdoutList;
 		
 		Matcher match = pattern_view_uuid.matcher( result.get( 8 ) );
 		if( !match.find() )
@@ -323,7 +323,7 @@ wolles_baseline_02.6448
 		}
 		
 		String cmd = "ls -short -recurse -view_only " + fls;
-		List<String> result = Cleartool.run( cmd );
+		List<String> result = Cleartool.run( cmd ).stdoutList;
 		List<File> rnew   = new ArrayList<File>();
 		
 		int total = result.size();
@@ -374,7 +374,7 @@ wolles_baseline_02.6448
 	@Override
 	public String GetStreamFromView( String viewtag )
 	{
-		String fqstreamstr =  Cleartool.run_collapse( "lsstream -fmt %Xn -view " + viewtag );
+		String fqstreamstr =  Cleartool.run( "lsstream -fmt %Xn -view " + viewtag ).stdoutBuffer.toString();
 
 		return fqstreamstr;
 	}
@@ -390,7 +390,7 @@ wolles_baseline_02.6448
 			System.setProperty( "user.dir", viewroot.toString() );
 		}
 		
-		String wvroot = Cleartool.run_collapse( "pwv -root" );
+		String wvroot = Cleartool.run( "pwv -root" ).stdoutBuffer.toString();
 
 		/* Still experimental!!! */
 		System.setProperty( "user.dir", cwd );
@@ -451,7 +451,7 @@ wolles_baseline_02.6448
 		
 		//my $viewtag = cleartool("lsview -s -uuid $1");
 		String cmd = "lsview -s -uuid " + uuid;
-		String viewtag = Cleartool.run_collapse( cmd ).trim();
+		String viewtag = Cleartool.run( cmd ).stdoutBuffer.toString().trim();
 		
 		return viewtag;
 	}
@@ -497,7 +497,7 @@ wolles_baseline_02.6448
 	{
 		//my ($rebase_in_progress) = grep( /^Rebase operation in progress on stream/, cleartool_qx( 'rebase -status -stream ' . $self->get_fqname ) );
 		String cmd = "rebase -status -stream " + stream;
-		String result = Cleartool.run_collapse( cmd );
+		String result = Cleartool.run( cmd ).stdoutBuffer.toString();
 		if( result.matches( rx_rebase_in_progress ) )
 		{
 			return true;
