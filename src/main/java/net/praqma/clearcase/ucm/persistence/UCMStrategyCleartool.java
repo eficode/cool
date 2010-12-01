@@ -151,7 +151,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 				
 				for( String vob : vobs )
 				{
-					List<String> files = Cleartool.run( "ls -s -rec \" + vob, dir ).stdoutList;
+					List<String> files = Cleartool.run( "ls -s -rec \\" + vob, dir ).stdoutList;
 					
 					/* Remove lost + found folder */
 					for( int i = 0 ; i < files.size() ; i++ )
