@@ -27,7 +27,6 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 {
 	private static Debug logger = Debug.GetLogger();
 	
-	protected static final String rx_view_uuid  = "view_uuid:(.*)";
 	private static final String rx_ccdef_allowed = "[\\w\\.-_\\\\]";
 	
 	public static final String __TAG_NAME = "tag";
@@ -424,6 +423,8 @@ wolles_baseline_02.6448
 		return new File( wvroot );
 	}
 	
+	protected static final Pattern rx_view_uuid  = Pattern.compile( "view_uuid:(.*)" );
+	
 	public String ViewrootIsValid( File viewroot ) throws IOException
 	{
 		logger.debug( "UNTESTED CODE" );
@@ -460,16 +461,18 @@ wolles_baseline_02.6448
 			throw e;
 		}
 		
-		Pattern pattern = Pattern.compile( rx_view_uuid );
-		Matcher match   = pattern.matcher( result.toString() );
+		logger.debug( "FILE CONTENT=" + result.toString() );
 		
-		/* A match is found */
+		Matcher match = rx_view_uuid.matcher( result.toString() );
+		
 		String uuid = "";
-		try
+		
+		if( match.find() )
 		{
+			/* A match is found */
 			uuid = match.group( 1 ).trim();
 		}
-		catch( IllegalStateException e )
+		else
 		{
 			logger.log( "UUID not found!", "warning" );
 			throw new UCMException( "UUID not found" );
