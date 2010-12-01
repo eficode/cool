@@ -63,8 +63,10 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
+			logger.debug( "I CAUGHT THE EXCEPTION! " + e.getMessage() );
 			if( e.getMessage().equalsIgnoreCase( "cleartool: Error: operation requires a view" ) )
 			{
+				logger.debug( "I AM IN HERE" );
 				throw new UCMException( "cleartool: Error: operation requires a view" );
 			}
 			

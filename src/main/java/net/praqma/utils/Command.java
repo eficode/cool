@@ -40,9 +40,9 @@ public abstract class Command
 			StreamGobbler output = new StreamGobbler( p.getInputStream() );
 			StreamGobbler errors = new StreamGobbler( p.getErrorStream() );
 
-			System.out.println( "Running output" );
+			//System.out.println( "Running output" );
 			output.run();
-			System.out.println( "Running errors" );
+			//System.out.println( "Running errors" );
 			errors.run();
 			
 			int exitValue = p.waitFor();
