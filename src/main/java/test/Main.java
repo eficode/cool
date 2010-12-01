@@ -53,7 +53,7 @@ public class Main
 		System.out.println( "SIZE=" + bls.size() );
 		
 		Baseline bl = bls.get( 0 );
-		BaselineDiff bd = bl.GetDiffs();
+		//BaselineDiff bd = bl.GetDiffs();
 		
 		Baseline bl1 = bls.get( 0 );
 		
@@ -101,8 +101,8 @@ public class Main
 		for( Baseline bl : bls3 )
 		{
 			System.out.println( bl.toString() );
-			BaselineDiff diffs = bl.GetDiffs();
-			System.out.println( diffs.get( 0 ).changeset.versions.get( 0 ).Stringify() );
+//			BaselineDiff diffs = bl.GetDiffs();
+//			System.out.println( diffs.get( 0 ).changeset.versions.get( 0 ).Stringify() );
 		}
 	}
 	
