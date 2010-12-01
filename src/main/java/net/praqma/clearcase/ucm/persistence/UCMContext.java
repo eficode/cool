@@ -68,7 +68,8 @@ public class UCMContext
 			/* This line is a new activity */
 			if( match.find() )
 			{
-				current = (Activity)UCMEntity.GetEntity( match.group( 1 ) );
+				//current = (Activity)UCMEntity.GetEntity( match.group( 1 ) );
+				current = UCMEntity.GetActivity( match.group( 1 ), true );
 				activities.add( current );
 				continue;
 			}
