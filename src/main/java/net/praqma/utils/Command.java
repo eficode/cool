@@ -38,7 +38,7 @@ public abstract class Command
 		
 		try
 		{
-			ProcessBuilder pb = new ProcessBuilder( cmd );
+			ProcessBuilder pb = new ProcessBuilder( cmds );
 			//Process p = Runtime.getRuntime().exec( cmd );
 			//Process p = Runtime.getRuntime().exec( cmd, null, dir );
 			

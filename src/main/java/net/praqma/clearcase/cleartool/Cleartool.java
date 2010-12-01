@@ -5,6 +5,7 @@ import net.praqma.utils.CmdResult;
 import net.praqma.utils.Command;
 import net.praqma.utils.CommandLineException;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +23,12 @@ public abstract class Cleartool extends Command
 {	
 	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
-		return Command.run( "cleartool " + cmd );
+		return run( cmd, null );
+	}
+	
+	public static CmdResult run( String cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException
+	{
+		return Command.run( "cleartool " + cmd, dir );
 	}
 	
 	/**
