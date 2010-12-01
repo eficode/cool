@@ -160,7 +160,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 						if( !files.get( i ).matches( "^lost+found@@.*" ) )
 						{
 							//files.remove( i );
-							result.add( files.get( i ) );
+							result.add( dir + filesep + files.get( i ) );
 						}
 					}
 				}
