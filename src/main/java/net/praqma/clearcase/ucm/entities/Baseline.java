@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.praqma.clearcase.ucm.view.SnapshotView;
+
 public class Baseline extends UCMEntity
 {
 	/* Baseline specific fields */
@@ -21,9 +23,14 @@ public class Baseline extends UCMEntity
 	public class BaselineDiff extends ArrayList<Activity>
 	{
 		
-		public BaselineDiff()
+//		public BaselineDiff()
+//		{
+//			this.addAll( context.GetBaselineDiff( Baseline.this ) );
+//		}
+		
+		public BaselineDiff( SnapshotView view )
 		{
-			this.addAll( context.GetBaselineDiff( Baseline.this ) );
+			this.addAll( context.GetBaselineDiff( view, Baseline.this ) );
 		}
 		
 		public void Print()
@@ -166,9 +173,9 @@ public class Baseline extends UCMEntity
 	 * Currently this method only support the previous Baseline and with -nmerge set.<br>
 	 * @return A BaselineDiff object containing a set of Activities.
 	 */
-	public BaselineDiff GetDiffs()
+	public BaselineDiff GetDiffs( SnapshotView view )
 	{
-		return new BaselineDiff();
+		return new BaselineDiff( view );
 	}
 	
 	public Component GetComponent()
