@@ -1,6 +1,7 @@
 package net.praqma.clearcase.cleartool;
 
 import net.praqma.utils.AbnormalProcessTerminationException;
+import net.praqma.utils.CmdResult;
 import net.praqma.utils.Command;
 import net.praqma.utils.CommandLineException;
 
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public abstract class Cleartool extends Command
 {	
-	public static List<String> run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
+	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
 		return Command.run( "cleartool " + cmd );
 	}
@@ -29,12 +30,12 @@ public abstract class Cleartool extends Command
 	 * @param cmd
 	 * @return The return value of the cleartool command as an array Strings, separated by new lines.
 	 */
-	public static String run_collapse( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
+	private static String run_collapse( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
 		logger.trace_function();
 		
 		/* Just call the run method an split the result */
-		List<String> result = run( cmd );
+		List<String> result = run( cmd ).stdoutList;
 		StringBuffer sb = new StringBuffer();
 		for( String s : result )
 		{
