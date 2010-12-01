@@ -250,9 +250,11 @@ public class UCMContext
 		String pl = plevel == null ? "" : plevel.toString();
 		logger.debug( "Getting baselines from " + stream.GetFQName() + " and " + component.GetFQName() + " with level " + plevel + " in VOB=" + pvob );
 		List<String> bls_str = strategy.GetBaselines( component.GetFQName(), stream.GetFQName(), pl );
+		
 		logger.debug( "I got " + bls_str.size() + " baselines." );
 		net.praqma.utils.Printer.ListPrinter( bls_str );
 		List<Baseline> bls = new ArrayList<Baseline>();
+		
 		for( String bl : bls_str )
 		{
 			System.out.println( "--->" + bl );

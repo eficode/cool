@@ -21,7 +21,7 @@ public class ViewTest
 	{
 		UCM.SetContext( UCM.ContextType.CLEARTOOL );
 		
-		String comp = "component:_Server@\\Cool_PVOB";
+		String comp = "component:_System@\\Cool_PVOB";
 		String stre = "stream:Server_int@\\Cool_PVOB";
 		File root = new File( "C:\\Temp\\views\\chw_Server_4_int" );
 		

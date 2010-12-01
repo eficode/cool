@@ -95,7 +95,34 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		
 		// cleartool('diffbl -pre -act -ver '.$sw_nmerge.$self->get_fqname );
 		String cmd = "diffbl -pre -act -ver -nmerge " + baseline;
-		return Cleartool.run( cmd ).stdoutList;
+		
+		try
+		{
+			return Cleartool.run( cmd, dir ).stdoutList;
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			if( e.getMessage().equalsIgnoreCase( "cleartool: Error: The -nmerge option requires that both baselines be from the same stream." ) )
+			{
+				logger.log( "The given Baseline, \"" + baseline + "\" is the first on the Stream" );
+				
+				List<String> files = Cleartool.run( "ls -s -rec", dir ).stdoutList;
+				
+				/* Remove lost + found folder */
+				for( int i = 0 ; i < files.size() ; i++ )
+				{
+					if( files.get( i ).matches( "^lost+found@@.*" ) )
+					{
+						files.remove( i );
+					}
+				}
+				
+				return files;
+			}
+			
+			/* The exception could not be handled! */
+			throw e;
+		}
 	}
 	
 	@Override
