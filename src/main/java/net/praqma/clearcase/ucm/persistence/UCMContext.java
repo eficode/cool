@@ -43,32 +43,20 @@ public class UCMContext
 	
 	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge )
 	{
-		/* Change current working directory to view context */
-		//strategy.ChangeDirectoryToView( view.GetViewRoot().getAbsolutePath() );
-		
 		/* Change if other than -pre */
 		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge, baseline.GetPvob() );
 		
-		//ArrayList<Version> list = new ArrayList<Version>();
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		
-
-//		result = result.replaceAll( "(?m)^>>.*$", "" );
-//		result = result.replaceAll( "(?m)\\@\\@.*$", "" );
-//		result = result.replaceAll( "(?m)^\\s+", "" );
-
-		//String[] rs = result.split( "\n" );
 		Activity current = null;
 		for( String s : result )
 		{
-//			System.out.println( "s="+s );
 			/* Get activity */
 			Matcher match = pattern_activity.matcher( s );
 			
 			/* This line is a new activity */
 			if( match.find() )
 			{
-				//current = (Activity)UCMEntity.GetEntity( match.group( 1 ) );
 				current = UCMEntity.GetActivity( match.group( 1 ), true );
 				activities.add( current );
 				continue;
@@ -76,7 +64,7 @@ public class UCMContext
 			
 			if( current == null )
 			{
-				logger.warning( "Whoops, the result does not start with an activity" );
+				logger.debug( "Not an activity: " + s );
 				continue;
 			}
 			
