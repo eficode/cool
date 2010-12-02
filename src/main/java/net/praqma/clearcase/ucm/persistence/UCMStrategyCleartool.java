@@ -436,6 +436,12 @@ wolles_baseline_02.6448
 		{
 			logger.debug( "Checking: " + f );
 			
+			if( !f.canWrite() )
+			{
+				logger.debug( "Write protected." );
+				continue;
+			}
+			
 			if( f.isDirectory() )
 			{
 				if( IsVob( f ) )
@@ -460,12 +466,18 @@ wolles_baseline_02.6448
 		/* Remove all other dirs */
 		for( File f : other )
 		{
+			logger.debug( "Removing " + f );
 			net.praqma.utils.IO.DeleteDirectory( f );
 		}
 		
 		String cmd = "ls -short -recurse -view_only " + fls;
 		List<String> result = Cleartool.run( cmd ).stdoutList;
 		List<File> rnew   = new ArrayList<File>();
+		
+		if( !excludeRoot )
+		{
+			rnew.addAll( root );
+		}
 		
 		int total = result.size();
 		
