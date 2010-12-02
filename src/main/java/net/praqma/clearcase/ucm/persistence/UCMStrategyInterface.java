@@ -19,6 +19,10 @@ interface UCMStrategyInterface
 	public void ChangeDirectoryToView( String path );
 	public void CheckViewContext( File dir );
 	
+	/* Project */
+	String GetProjectFromStream( String stream );
+	List<String> GetModifiableComponents( String project );
+	
 	/* Baseline */
 	public String LoadBaseline( String baseline );
 	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob );
@@ -28,6 +32,7 @@ interface UCMStrategyInterface
 	
 	/* Component */
 	public List<String> GetBaselines( String component, String stream, String plevel );
+	public String GetRootDir( String component );
 	
 	/* Stream */
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException;
@@ -38,6 +43,7 @@ interface UCMStrategyInterface
 	public void RebaseStream( String viewtag, String stream, String baseline, boolean complete );
 	public boolean IsRebaseInProgress( String stream );
 	public void CancelRebase( String stream );
+	public List<String> GetLatestBaselines( String stream );
 	
 	/* Version */
 	public String GetVersion( String version, String separator );
@@ -54,10 +60,10 @@ interface UCMStrategyInterface
 	/* Snapshot Views */
 	public void MakeSnapshotView( String stream, File viewroot, String viewtag );
 	public File GetCurrentViewRoot( File viewroot );
-	public String ViewrootIsValid( File viewroot ) throws IOException;
+	public String ViewrootIsValid( File viewroot );
 	public boolean ViewExists( String viewtag );
 	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException;
-	public void SwipeView( File viewroot, boolean excludeRoot, Set<String> firstlevel );
+	public boolean SwipeView( File viewroot, boolean excludeRoot );
 		
 	
 	/* TEST */

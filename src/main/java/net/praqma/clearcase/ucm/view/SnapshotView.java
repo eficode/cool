@@ -14,9 +14,13 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.Baseline;
+import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.utils.Tuple;
 
 /**
@@ -35,6 +39,12 @@ public class SnapshotView extends UCMView
 	private String pvob       = "";
 	private String uuid       = "";
 	private String globalPath = "";
+	
+	public enum COMP
+	{
+		ALL,
+		MODIFIABLE
+	}
 	
 	SnapshotView( File viewroot )
 	{
@@ -77,9 +87,9 @@ public class SnapshotView extends UCMView
 		System.out.println( viewtag );
 	}
 	
-	public void Swipe( boolean excludeRoot, Set<String> firstlevel )
+	public void Swipe( boolean excludeRoot )
 	{
-		context.SwipeView( viewroot, excludeRoot, firstlevel );
+		context.SwipeView( viewroot, excludeRoot );
 	}
 	
 	public String GetViewtag()
@@ -92,19 +102,57 @@ public class SnapshotView extends UCMView
 		return this.viewroot;
 	}
 	
-	public void Update( boolean swipe, boolean generate, boolean overwrite, boolean force, boolean excludeRoot, String components, String loadrules )
+	public String ViewrootIsValid() throws UCMException
 	{
+		return context.ViewrootIsValid( this );
+	}
+	
+	public void Update( boolean swipe, boolean generate, boolean overwrite, boolean force, boolean excludeRoot, COMP components, String loadrules )
+	{
+		logger.debug( "Updating view: " + components );
+		
 		if( ( components != null && loadrules != null ) || ( components == null && loadrules == null ) )
 		{
 			throw new UCMException( "Only one of LOAD RULES and COMPONENTS must be set." );
 		}
 		
+		String myloadrules = "";
+		
+		/* If the components part is set */
 		if( components != null )
-		{
-			if( !components.matches( "" ) )
+		{			
+			myloadrules = " -add_loadrules ";
+			
+			if( components == COMP.ALL )
 			{
-				
+				BaselineList bls = this.stream.GetLatestBaselines();
+				for( Baseline b : bls )
+				{
+					String rule  = b.GetComponent().GetRootDir();
+					rule         = rule.replaceFirst( "^\\", " " );
+					myloadrules += rule;
+				}
 			}
+			else
+			{
+				Project project = context.GetProjectFromStream( this.stream );
+				List<Component> comps = context.GetModifiableComponents( project );
+				for( Component c : comps )
+				{
+					String rule = c.GetRootDir();
+					rule         = rule.replaceFirst( "^\\", " " );
+					myloadrules += rule;
+				}
+			}
+		}
+		
+		// TODO Set the load rules from the applied parameter
+
+		// TODO generate the streams config spec if required
+		
+		if( swipe )
+		{
+			
 		}
 	}
 	

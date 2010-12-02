@@ -32,6 +32,7 @@ public abstract class UCMEntity extends UCM
 		Baseline,
 		Component,
 		Stream,
+		Project,
 		Tag,
 		Version,
 		Undefined;
@@ -45,6 +46,10 @@ public abstract class UCMEntity extends UCM
 			else if( type.equalsIgnoreCase( "activity" ) )
 			{
 				return Activity;
+			}
+			else if( type.equalsIgnoreCase( "project" ) )
+			{
+				return Project;
 			}
 			else if( type.equalsIgnoreCase( "stream" ) )
 			{
@@ -332,7 +337,33 @@ public abstract class UCMEntity extends UCM
 	 */
 	public static Component GetComponent( String name, boolean trusted )
 	{
+		if( !name.startsWith( "component:" ) )
+		{
+			name = "component:" + name;
+		}
 		Component entity = (Component)UCMEntity.GetEntity( name, trusted );
+		return entity;
+	}
+	
+	
+	public static Project GetProject( String name )
+	{
+		return GetProject( name, true );
+	}
+	
+	/**
+	 * Retrieve a Project object.
+	 * @param name Fully qualified name
+	 * @param trusted If not trusted, the entity's content is loaded from clear case.
+	 * @return a Project object
+	 */
+	public static Project GetProject( String name, boolean trusted )
+	{
+		if( !name.startsWith( "project:" ) )
+		{
+			name = "project:" + name;
+		}
+		Project entity = (Project)UCMEntity.GetEntity( name, trusted );
 		return entity;
 	}
 	

@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.entities;
 import java.util.ArrayList;
 
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 
 /**
@@ -94,6 +95,11 @@ public class Stream extends UCMEntity
 	public boolean RecommendBaseline( Baseline baseline )
 	{
 		return context.RecommendBaseline( this, baseline );
+	}
+	
+	public BaselineList GetLatestBaselines()
+	{
+		return new BaselineList( context.GetLatestBaselines( this ) );
 	}
 	
 	public String Stringify()

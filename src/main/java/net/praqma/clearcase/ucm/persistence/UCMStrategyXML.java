@@ -378,14 +378,14 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		return new File( list.get( 0 ).getAttribute( "viewroot" ) );
 	}
 	
-	public String ViewrootIsValid( File viewroot ) throws IOException
+	public String ViewrootIsValid( File viewroot )
 	{
 		List<Element> list = GetElementsWithAttribute( views, "viewroot", viewroot.toString() );
 		
 		if( list.size() != 1 )
 		{
 			logger.warning( "There is no unique view! Found " + list.size() + " views." );
-			throw new IOException( "There is no unique view! Found " + list.size() + " views." );
+			throw new UCMException( "There is no unique view! Found " + list.size() + " views." );
 		}
 		
 		return list.get( 0 ).getAttribute( "viewtag" );
@@ -786,8 +786,9 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void SwipeView( File viewroot, boolean excludeRoot, Set<String> firstlevel )
+	public boolean SwipeView( File viewroot, boolean excludeRoot )
 	{
+		return excludeRoot;
 		// TODO Auto-generated method stub
 		
 	}
@@ -804,6 +805,34 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	{
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String GetProjectFromStream( String stream )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> GetModifiableComponents( String project )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String GetRootDir( String component )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> GetLatestBaselines( String stream )
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

@@ -99,7 +99,11 @@ public class Component extends UCMEntity
 			
 			return bls;
 		}
-		
+	}
+	
+	public String GetRootDir()
+	{
+		return context.GetRootDir( this );
 	}
 	
 	public BaselineList GetBaselines( Stream stream )

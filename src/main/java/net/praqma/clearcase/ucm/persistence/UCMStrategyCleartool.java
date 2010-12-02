@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -82,7 +83,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	
 	public boolean IsVob( File dir )
 	{
-		logger.debug( "Testin " + dir );
+		logger.debug( "Testing " + dir );
 		
 		String cmd = "lsvob \\" + dir.getName();
 		try
@@ -320,6 +321,22 @@ wolles_baseline_02.6448
 		return null;
 	}
 	
+	public List<String> GetLatestBaselines( String stream )
+	{
+		String cmd = "desc -fmt %[latest_bls]p stream:" + stream;
+		String[] t = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
+		List<String> bls = new ArrayList<String>();
+		for( String s : t )
+		{
+			if( s.matches( "\\S+" ) )
+			{
+				bls.add( s );
+			}
+		}
+		
+		return bls;
+	}
+	
 	@Override
 	public void MakeSnapshotView( String stream, File viewroot, String viewtag )
 	{
@@ -403,25 +420,34 @@ wolles_baseline_02.6448
 	private final String rx_ctr_file = ".*\\.contrib";
 	private final String rx_keep_file = ".*\\.keep$";
 	
-	public void SwipeView( File viewroot, boolean excludeRoot, Set<String> firstlevel )
+	public boolean SwipeView( File viewroot, boolean excludeRoot )
 	{
 		logger.debug( viewroot.toString() );
+		
+		List<String> vobs = ListVobs( viewroot );
 		
 		File[] files = viewroot.listFiles();
 		//List<File> fls = new ArrayList<File>();
 		String fls = "";
 		List<File> other = new ArrayList<File>();
+		List<File> root = new ArrayList<File>();
 		
 		for( File f : files )
 		{
-			if( firstlevel.contains( f.getName() ) )
+			if( f.isDirectory() )
 			{
-				//fls.add( f );
-				fls += f.getAbsolutePath() + " ";
+				if( IsVob( f ) )
+				{
+					fls += f.getAbsolutePath() + " ";
+				}
+				else
+				{
+					other.add( f );
+				}
 			}
 			else
 			{
-				other.add( f );
+				root.add( f );
 			}
 		}
 		
@@ -440,6 +466,8 @@ wolles_baseline_02.6448
 		//for( int i = 0 ; i < result.size() ; i++ )
 		for( String s : result )
 		{
+			logger.debug( s );
+			
 			/* Speedy, because of lazy evaluation */
 			if( s.matches( rx_co_file ) || s.matches( rx_keep_file ) || s.matches( rx_ctr_file ) )
 			{
@@ -451,12 +479,27 @@ wolles_baseline_02.6448
 		
 		logger.debug( "Found " + total + " files, of which " + ( total - rnew.size() ) + " were CO, CTR or KEEP's." );
 		
+		List<File> dirs = new ArrayList<File>();
+		int dircount    = 0;
+		int filecount   = 0;
+		
+		/* Removing view private files, saving directories for later */
 		for( File f : rnew )
 		{
+			logger.debug( "FILE=" + f );
+			
 			if( f.exists() )
 			{
-				logger.debug( "Deleting " + f );
-				f.delete();
+				if( f.isDirectory() )
+				{
+					dirs.add( f );
+				}
+				else
+				{
+					logger.debug( "Deleting " + f );
+					f.delete();
+					filecount++;
+				}
 			}
 			else
 			{
@@ -465,6 +508,30 @@ wolles_baseline_02.6448
 		}
 		
 		/* TODO Remove the directories, somehow!? Only the empty!? */
+		for( File d : dirs )
+		{
+			try
+			{
+				d.delete();
+				dircount++;
+			} 
+			catch( SecurityException e )
+			{
+				logger.log( "Unable to delete \"" + d + "\". Probably not empty." );
+			}
+		}
+		
+		logger.print( "Deleted " + dircount + " director" + ( dircount == 1 ? "y" : "ies" ) + " and " + filecount + " file" + ( filecount == 1 ? "" : "s" ) );
+		
+		if( dircount + filecount == total )
+		{
+			return true;
+		}
+		else
+		{
+			logger.warning( "Some files were not deleted." );
+			return false;
+		}
 	}
 	
 	@Override
@@ -501,9 +568,10 @@ wolles_baseline_02.6448
 	
 	protected static final Pattern rx_view_uuid  = Pattern.compile( "view_uuid:(.*)" );
 	
-	public String ViewrootIsValid( File viewroot ) throws IOException
+	public String ViewrootIsValid( File viewroot )
 	{
-		logger.debug( "UNTESTED CODE" );
+		logger.debug( viewroot.getAbsolutePath() );
+		
 		//viewroot. 
 		//String viewdotdatpname = viewroot + filesep + "view.dat";
 		File viewdotdatpname = new File( viewroot, "view.dat" );
@@ -518,7 +586,7 @@ wolles_baseline_02.6448
 		catch ( FileNotFoundException e1 )
 		{
 			logger.warning( "\"" + viewdotdatpname + "\" not found!" );
-			throw new IOException( e1.getMessage() );
+			throw new UCMException( e1.getMessage() );
 		}
 		
 		BufferedReader br = new BufferedReader( fr );
@@ -534,7 +602,7 @@ wolles_baseline_02.6448
 		catch ( IOException e )
 		{
 			logger.warning( "Couldn't read lines from " + viewdotdatpname );
-			throw e;
+			throw new UCMException( e.getMessage() );
 		}
 		
 		logger.debug( "FILE CONTENT=" + result.toString() );
@@ -617,9 +685,30 @@ wolles_baseline_02.6448
 		String cmd = "rebase -cancel -force -stream " + stream;
 		Cleartool.run( cmd );
 	}
+
+
+	@Override
+	public String GetRootDir( String component )
+	{
+		logger.debug( component );
+		
+		//cleartool( "desc -fmt %[root_dir]p " . $self->get_fqname() );
+		String cmd = "desc -fmt %[root_dir]p " + component;
+		return Cleartool.run( cmd ).stdoutBuffer.toString();
+	}
 	
 	
+	public String GetProjectFromStream( String stream )
+	{
+		String cmd = "desc -fmt %[project]p stream: " + stream;
+		return Cleartool.run( cmd ).stdoutBuffer.toString().trim();
+	}
 	
+	public List<String> GetModifiableComponents( String project )
+	{
+		String cmd = "desc -fmt %[mod_comps]p project: " + project;
+		return Arrays.asList( Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" ) );
+	}
 	
 	
 }

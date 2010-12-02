@@ -10,7 +10,8 @@ public abstract class UCM
 	/* Make sure, that we're using the same instance of the context! */
 	//protected static UCMContext context = new UCMContext( new UCMStrategyXML() );
 	//protected static UCMContext context = new UCMContext( new UCMStrategyCleartool() );
-	protected static UCMContext context = null;
+	//protected static UCMContext context = null;
+	public static UCMContext context = null;
 	
 	public enum ContextType
 	{

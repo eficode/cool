@@ -268,9 +268,9 @@ public class UCMContext
 		strategy.RegenerateViewDotDat( dir, viewtag );
 	}
 	
-	public void SwipeView( File viewroot, boolean excludeRoot, Set<String> firstlevel )
+	public void SwipeView( File viewroot, boolean excludeRoot )
 	{
-		strategy.SwipeView( viewroot, excludeRoot, firstlevel );
+		strategy.SwipeView( viewroot, excludeRoot );
 	}
 	
 	public Stream CreateStream( Stream pstream, String nstream, boolean readonly, Baseline baseline )
@@ -302,6 +302,21 @@ public class UCMContext
 		return strategy.StreamExists( fqname );
 	}
 	
+	public List<Baseline> GetLatestBaselines( Stream stream )
+	{
+		logger.debug( "STREAM: " + stream.GetFQName() );
+		
+		List<String> bs = strategy.GetLatestBaselines( stream.GetFQName() );
+		List<Baseline> bls = new ArrayList<Baseline>();
+		
+		for( String s : bs )
+		{
+			bls.add( UCMEntity.GetBaseline( s.trim() ) );
+		}
+		
+		return bls;
+	}
+	
 	
 //	public Stream GetStreamFromView( String viewtag )
 //	{
@@ -321,16 +336,7 @@ public class UCMContext
 		// String wvroot = Cleartool.run_collapse( cmd ).trim();
 		File wvroot = strategy.GetCurrentViewRoot( viewroot );
 		
-		String viewtag = "";
-		try
-		{
-			viewtag = strategy.ViewrootIsValid( wvroot );
-		}
-		catch ( IOException e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String viewtag = strategy.ViewrootIsValid( wvroot );
 		
 		// cleartool( 'lsstream -fmt %Xn -view ' . $viewtag );
 		//cmd = "lsstream -fmt %Xn -view " + viewtag;
@@ -342,11 +348,35 @@ public class UCMContext
 		return new Tuple<Stream, String>( stream, viewtag );
 	}
 	
-	public static String ViewrootIsValid( String viewroot )
+	public String GetRootDir( Component component )
 	{
-		return "";
+		logger.debug( component.GetFQName() );
+		
+		return strategy.GetRootDir( component.GetFQName() );
 	}
 	
+	public String ViewrootIsValid( SnapshotView view )
+	{
+		return strategy.ViewrootIsValid( view.GetViewRoot() );
+	}
+	
+	public Project GetProjectFromStream( Stream stream )
+	{
+		return UCMEntity.GetProject( strategy.GetProjectFromStream( stream.GetFQName() ) + "@" + stream.GetPvob() );
+	}
+	
+	public List<Component> GetModifiableComponents( Project project )
+	{
+		List<String> cs = strategy.GetModifiableComponents( project.GetFQName() );
+		List<Component> comps = new ArrayList<Component>();
+		
+		for( String c : cs )
+		{
+			comps.add( UCMEntity.GetComponent( c + "@" + project.GetPvob() ) );
+		}
+		
+		return comps;
+	}
 	
 	
 	public String GetXML()
