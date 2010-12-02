@@ -434,6 +434,8 @@ wolles_baseline_02.6448
 		
 		for( File f : files )
 		{
+			logger.debug( "Checking: " + f );
+			
 			if( f.isDirectory() )
 			{
 				if( IsVob( f ) )
@@ -447,6 +449,10 @@ wolles_baseline_02.6448
 			}
 			else
 			{
+				if( f.getName().equalsIgnoreCase( "view.dat" ) )
+				{
+					continue;
+				}
 				root.add( f );
 			}
 		}
