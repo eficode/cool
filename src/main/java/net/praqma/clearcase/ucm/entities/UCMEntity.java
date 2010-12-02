@@ -64,36 +64,6 @@ public abstract class UCMEntity extends UCM
 		}
 	}
 	
-	public enum Plevel
-	{
-		REJECTED,
-		INITIAL,
-		BUILT,
-		TESTED,
-		RELEASED;
-	}
-	
-	/**
-	 * Given a String, return the corresponding Promotion Level.
-	 * @param str, if not a valid Promotion Level INITAL is returned.
-	 * @return A Promotion Level
-	 */
-	public static Plevel GetPlevelFromString( String str )
-	{
-		Plevel plevel = Plevel.INITIAL;
-		
-		try
-		{
-			plevel = Plevel.valueOf( str );
-		}
-		catch( Exception e )
-		{
-			/* Do nothing... */
-		}
-		
-		return plevel;
-	}
-	
 	/* Fields that need not to be loaded */
 	protected String fqname            = "";
 	protected String shortname         = "";

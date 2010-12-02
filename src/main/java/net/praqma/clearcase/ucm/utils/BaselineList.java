@@ -6,10 +6,10 @@ import java.util.List;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCM;
-import net.praqma.clearcase.ucm.entities.UCMEntity.Plevel;
 import net.praqma.utils.Debug;
 
 public class BaselineList extends ArrayList<Baseline>
@@ -32,7 +32,7 @@ public class BaselineList extends ArrayList<Baseline>
 		this.component = component;
 	}
 	
-	public BaselineList( Component component, Stream stream, Plevel plevel )
+	public BaselineList( Component component, Stream stream, Project.Plevel plevel )
 	{
 		logger.debug( "Getting Baselines from " + stream.GetFQName() + " and " + component.GetFQName() + " with plevel " + plevel );
 		

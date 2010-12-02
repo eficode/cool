@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.entities.UCMEntity.Plevel;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.utils.Debug;
 import net.praqma.utils.Printer;
@@ -234,7 +233,7 @@ public class UCMContext
 	}
 	
 	
-	public List<Baseline> GetBaselines( Stream stream, Component component, Plevel plevel, String pvob )
+	public List<Baseline> GetBaselines( Stream stream, Component component, Project.Plevel plevel, String pvob )
 	{
 		String pl = plevel == null ? "" : plevel.toString();
 		logger.debug( "Getting baselines from " + stream.GetFQName() + " and " + component.GetFQName() + " with level " + plevel + " in VOB=" + pvob );

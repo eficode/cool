@@ -40,7 +40,7 @@ public class Component extends UCMEntity
 			this.stream = stream;
 		}
 		
-		public BaselineList( Stream stream, Plevel plevel )
+		public BaselineList( Stream stream, Project.Plevel plevel )
 		{
 			logger.debug( "Getting Baselines from " + stream.GetFQName() + " with plevel " + plevel );
 			this.stream = stream;
@@ -111,7 +111,7 @@ public class Component extends UCMEntity
 		return new BaselineList( stream, null );
 	}
 	
-	public BaselineList GetBaselines( Stream stream, Plevel plevel )
+	public BaselineList GetBaselines( Stream stream, Project.Plevel plevel )
 	{
 		return new BaselineList( stream, plevel );
 	}

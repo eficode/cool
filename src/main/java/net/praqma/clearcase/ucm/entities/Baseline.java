@@ -11,7 +11,7 @@ public class Baseline extends UCMEntity
 {
 	/* Baseline specific fields */
 	private Component component            = null;
-	private Plevel plevel                  = Plevel.INITIAL;
+	private Project.Plevel plevel          = Project.Plevel.INITIAL;
 	private Stream stream                  = null;
 	private ArrayList<Activity> activities = null;
 	
@@ -77,7 +77,7 @@ public class Baseline extends UCMEntity
 		/* Now with factory creation! */
 		this.component = (Component)UCMEntity.GetEntity( c );
 		this.stream    = (Stream)UCMEntity.GetEntity( s );
-		this.plevel    = GetPlevelFromString( rs[3] );
+		this.plevel    = Project.GetPlevelFromString( rs[3] );
 		this.user      = rs[4];
 		
 		activities = new ArrayList<Activity>();
@@ -101,7 +101,7 @@ public class Baseline extends UCMEntity
 	 * @param cached Whether to use the cached promotion level or not
 	 * @return The promotion level of the Baseline
 	 */
-	public Plevel GetPromotionLevel( boolean cached )
+	public Project.Plevel GetPromotionLevel( boolean cached )
 	{
 		if( !loaded ) this.Load();
 		
@@ -128,27 +128,11 @@ public class Baseline extends UCMEntity
 	 * If the promotion level is not set, it is set to <code>INITAL</code>.
 	 * @return The new promotion level.
 	 */
-	public Plevel Promote()
+	public Project.Plevel Promote()
 	{
 		if( !loaded ) this.Load();
 		
-		switch( this.plevel )
-		{
-		case INITIAL:
-			this.plevel = Plevel.BUILT;
-			break;
-		case BUILT:
-			this.plevel = Plevel.TESTED;
-			break;
-		case TESTED:
-			this.plevel = Plevel.RELEASED;
-			break;
-		case RELEASED:
-			this.plevel = Plevel.RELEASED;
-			break;
-		default:
-			this.plevel = Plevel.BUILT;
-		}
+		this.plevel = Project.PromoteFrom( this.plevel );
 		
 		context.SetPromotionLevel( this );
 		
@@ -162,7 +146,7 @@ public class Baseline extends UCMEntity
 	{
 		if( !loaded ) this.Load();
 		
-		this.plevel = Plevel.REJECTED;
+		this.plevel = Project.Plevel.REJECTED;
 		
 		context.SetPromotionLevel( this );
 	}
