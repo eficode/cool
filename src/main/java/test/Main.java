@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.entities.Baseline.BaselineDiff;
 import net.praqma.clearcase.ucm.entities.Component.BaselineList;
-import net.praqma.clearcase.ucm.entities.UCMEntity.Plevel;
 import net.praqma.clearcase.ucm.utils.TagQuery;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
@@ -48,7 +47,7 @@ public class Main
 		
 		Stream st1 = UCMEntity.GetStream( "stream:STREAM_TEST1@\\PDS_PVOB", false );
 		Component co1 = UCMEntity.GetComponent( "component:COMPONENT_TEST1@\\PDS_PVOB", false );
-		BaselineList bls = co1.GetBaselines( st1, Plevel.INITIAL );
+		BaselineList bls = co1.GetBaselines( st1, Project.Plevel.INITIAL );
 		
 		System.out.println( "SIZE=" + bls.size() );
 		
@@ -74,7 +73,7 @@ public class Main
 	{
 		Stream st1 = UCMEntity.GetStream( "stream:STREAM_TEST1@\\PDS_PVOB" );
 		Component co1 = UCMEntity.GetComponent( "component:COMPONENT_TEST1@\\PDS_PVOB" );
-		BaselineList bls = co1.GetBaselines( st1, Plevel.INITIAL );
+		BaselineList bls = co1.GetBaselines( st1, Project.Plevel.INITIAL );
 		
 		
 		/* Preprocess */
@@ -110,7 +109,7 @@ public class Main
 	{
 		Stream st1 = UCMEntity.GetStream( "stream:STREAM_TEST1@\\PDS_PVOB" );
 		Component co1 = UCMEntity.GetComponent( "component:COMPONENT_TEST1@\\PDS_PVOB" );
-		BaselineList bls = co1.GetBaselines( st1, Plevel.INITIAL );
+		BaselineList bls = co1.GetBaselines( st1, Project.Plevel.INITIAL );
 		
 		
 		for( Baseline bl : bls )

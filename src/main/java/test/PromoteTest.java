@@ -2,12 +2,12 @@ package test;
 
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Component.BaselineList;
-import net.praqma.clearcase.ucm.entities.UCMEntity.Plevel;
 
 
 
@@ -28,7 +28,7 @@ public class PromoteTest
 		
 		Stream st1 = UCMEntity.GetStream( stre );
 		Component co1 = UCMEntity.GetComponent( comp );
-		BaselineList bls = co1.GetBaselines( st1, Plevel.INITIAL );
+		BaselineList bls = co1.GetBaselines( st1, Project.Plevel.INITIAL );
 
 		System.out.println( "SIZE=" + bls.size() );
 		
