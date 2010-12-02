@@ -466,7 +466,7 @@ wolles_baseline_02.6448
 		/* Remove all other dirs */
 		for( File f : other )
 		{
-			logger.debug( "Removing " + f );
+			logger.log( "Removing " + f );
 			net.praqma.utils.IO.DeleteDirectory( f );
 		}
 		

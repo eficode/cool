@@ -26,19 +26,7 @@ class TagPool extends UCM
 		return instance;
 	}
 	
-	/**
-	 * 
-	 * @param tagType
-	 * @param tagID
-	 * @param timestamp
-	 * @param buildStatus
-	 * @param entity
-	 * @return
-	 */
-	public Tag CreateTag( String tagType, String tagID, String timestamp, String buildStatus, UCMEntity entity )
-	{
-		return context.NewTag( tagType, tagID, entity, "timestamp=" + timestamp + "&buildstatus=" + buildStatus );
-	}
+
 	
 	public boolean TagExists( String tagType, String tagID, UCMEntity entity )
 	{

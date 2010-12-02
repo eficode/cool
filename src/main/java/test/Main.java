@@ -56,8 +56,9 @@ public class Main
 		
 		Baseline bl1 = bls.get( 0 );
 		
-		Tag tag = bl1.CreateTag( "hudson", "snade", "now", "building" );
+		Tag tag = bl1.GetTag( "hudson", "snade" );
 		tag.SetEntry( "buildnum", "1" );
+		tag.SetEntry( "buildstatus", "pending" );
 		tag = tag.Persist();
 		System.out.println( tag.Stringify() );
 		
@@ -79,7 +80,8 @@ public class Main
 		/* Preprocess */
 		for( Baseline bl : bls )
 		{
-			Tag t = bl.CreateTag( "hudson", "snade", "2010", "inprogres1s" );
+			Tag t = bl.GetTag( "hudson", "snade" );
+			t.SetEntry( "buildstatus", "pending" );
 		}
 		
 		
@@ -148,11 +150,11 @@ public class Main
 		}
 		
 		Baseline bl1 = bls.get( 0 );
-		Tag t1 = bl1.CreateTag( "hudson", "123", "2010 11 10", "aborted" );
+		Tag t1 = bl1.GetTag( "hudson", "123" );
 		
 		System.out.println( t1.Stringify() );
 		
-		t1 = bl1.CreateTag( "hudson", "123", "2010 11 10", "snade" );
+		t1 = bl1.GetTag( "hudson", "123" );
 		
 		System.out.println( t1.Stringify() );
 

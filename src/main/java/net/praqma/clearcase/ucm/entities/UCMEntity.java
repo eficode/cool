@@ -362,19 +362,6 @@ public abstract class UCMEntity extends UCM
 		return tp.GetTag( tagType, tagID, this );
 	}
 
-	/**
-	 * Create a Tag given a tag type, ID, timestamp and build status.
-	 * The tag type and ID in combination gives the Tags unique key. 
-	 * @param tagType The tag type
-	 * @param tagID The tag ID
-	 * @param timestamp A timestamp in no specific format
-	 * @param buildStatus The build status of the entity
-	 * @return A Tag object
-	 */
-	public Tag CreateTag( String tagType, String tagID, String timestamp, String buildStatus )
-	{
-		return tp.CreateTag( tagType, tagID, timestamp, buildStatus, this );
-	}
 	
 	/* Getters */
 	
