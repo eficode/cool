@@ -479,7 +479,7 @@ wolles_baseline_02.6448
 			rnew.addAll( root );
 		}
 		
-		int total = result.size();
+		int total = result.size() + rnew.size();
 		
 		//for( int i = 0 ; i < result.size() ; i++ )
 		for( String s : result )
