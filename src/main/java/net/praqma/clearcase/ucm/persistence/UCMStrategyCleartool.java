@@ -127,7 +127,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	}
 	
 	@Override
-	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge )
+	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob )
 	{
 		/* Check if we are in view context */
 		CheckViewContext( dir );
@@ -146,7 +146,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 				logger.log( "The given Baseline, \"" + baseline + "\" is the first on the Stream" );
 				
 				List<String> result = new ArrayList<String>();
-				result.add( ">> rebase.FAKE@\\Cool_PVOB \"FAKE ACTIVITY\"" );
+				//result.add( ">> no_activity@\\Cool_PVOB \"FAKE ACTIVITY\"" );
+				result.add( ">> no_activity@" + pvob + " \"NO ACTIVITY\"" );
 				
 				List<String> vobs = ListVobs( dir );
 				

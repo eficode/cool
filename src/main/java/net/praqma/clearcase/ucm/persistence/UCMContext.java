@@ -47,7 +47,7 @@ public class UCMContext
 		//strategy.ChangeDirectoryToView( view.GetViewRoot().getAbsolutePath() );
 		
 		/* Change if other than -pre */
-		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge );
+		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge, baseline.GetPvob() );
 		
 		//ArrayList<Version> list = new ArrayList<Version>();
 		ArrayList<Activity> activities = new ArrayList<Activity>();

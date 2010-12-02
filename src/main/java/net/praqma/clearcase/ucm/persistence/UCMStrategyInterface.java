@@ -21,7 +21,7 @@ interface UCMStrategyInterface
 	
 	/* Baseline */
 	public String LoadBaseline( String baseline );
-	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge );
+	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob );
 	public void SetPromotionLevel( String baseline, String plevel );
 	
 	public String GetBaselineActivities( String baseline );
