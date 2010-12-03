@@ -26,22 +26,22 @@ public class RebaseTest
 		String stre = "stream:chw_Server_int@\\Cool_PVOB";
 		File root = new File( "C:\\Temp\\views\\chw_Server_10_dev_view" );
 		
+		if( args.length > 0 )
+		{
+			comp = args[0];
+			System.out.println( "Setting component to " + comp );
+		}
+		
 		if( args.length > 1 )
 		{
-			comp = args[1];
-			System.out.println( "Setting component to " + comp );
+			stre = args[1];
+			System.out.println( "Setting stream to " + stre );
 		}
 		
 		if( args.length > 2 )
 		{
-			stre = args[2];
-			System.out.println( "Setting stream to " + stre );
-		}
-		
-		if( args.length > 3 )
-		{
-			root = new File( args[3] );
-			System.out.println( "Setting view root to " + comp );
+			root = new File( args[2] );
+			System.out.println( "Setting view root to " + root );
 		}
 		
 		

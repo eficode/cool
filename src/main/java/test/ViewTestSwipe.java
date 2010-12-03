@@ -22,6 +22,12 @@ public class ViewTestSwipe
 
 		File root = new File( "C:\\Temp\\views\\chw_Server_4_int" );
 		
+		if( args.length > 0 )
+		{
+			root = new File( args[0] );
+			System.out.println( "Setting view root to " + root );
+		}
+		
 		SnapshotView view = UCMView.GetSnapshotView( root );
 		
 		view.Swipe( false );
