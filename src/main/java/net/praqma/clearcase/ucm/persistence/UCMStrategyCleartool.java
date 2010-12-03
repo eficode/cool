@@ -672,14 +672,8 @@ wolles_baseline_02.6448
 	public void RebaseStream( String viewtag, String stream, String baseline, boolean complete )
 	{
 		logger.debug( "Rebasing " + viewtag );
-		/*cleartool( "rebase $complete -force -view "
-				  . $params{view}->get_viewtag()
-				  . " -stream "
-				  . $self->get_fqname()
-				  . " -baseline "
-				  . $params{baseline}->get_fqname() );*/
 		
-		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
+		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
 		Cleartool.run( cmd );
 	}
 	

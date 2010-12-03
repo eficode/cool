@@ -23,7 +23,8 @@ public class RebaseTest
 		UCM.SetContext( UCM.ContextType.CLEARTOOL );
 		
 		String comp = "component:_System@\\Cool_PVOB";
-		String stre = "stream:chw_Server_int@\\Cool_PVOB";
+		String stre = "stream:chw_Server_10_dev@\\Cool_PVOB";
+		String intstre = "stream:Server_int@\\Cool_PVOB";
 		File root = new File( "C:\\Temp\\views\\chw_Server_10_dev_view" );
 		
 		if( args.length > 0 )
@@ -40,13 +41,20 @@ public class RebaseTest
 		
 		if( args.length > 2 )
 		{
-			root = new File( args[2] );
+			intstre = args[1];
+			System.out.println( "Setting integration stream to " + intstre );
+		}
+		
+		if( args.length > 3 )
+		{
+			root = new File( args[3] );
 			System.out.println( "Setting view root to " + root );
 		}
 		
 		
 		
-		Stream st1 = UCMEntity.GetStream( stre );
+		Stream st1 = UCMEntity.GetStream( intstre );
+		Stream st2 = UCMEntity.GetStream( stre );
 		Component co1 = UCMEntity.GetComponent( comp );
 		BaselineList bls = co1.GetBaselines( st1, Project.Plevel.INITIAL );
 		
@@ -54,7 +62,7 @@ public class RebaseTest
 		
 		List<Baseline> rec_bls = st1.GetRecommendedBaselines();
 		
-		st1.Rebase( view, rec_bls.get( 0 ), true );		
+		st2.Rebase( view, rec_bls.get( 0 ), true );		
 		
 	}
 }
