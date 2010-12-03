@@ -678,7 +678,7 @@ wolles_baseline_02.6448
 		CmdResult res = Cleartool.run( cmd );
 		System.out.println( "err:" + res.errorBuffer.toString() );
 		System.out.println( "std" + res.stdoutBuffer.toString() );
-		if( res.errorBuffer.toString().matches( "^No rebase needed" ) )
+		if( res.stdoutBuffer.toString().matches( "^No rebase needed.*" ) )
 		{
 			return false;
 		}
