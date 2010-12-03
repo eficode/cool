@@ -679,7 +679,7 @@ wolles_baseline_02.6448
 				  . " -baseline "
 				  . $params{baseline}->get_fqname() );*/
 		
-		String cmd = "rebase " + ( complete ? "-complete " : "" ) + viewtag + " -stream " + stream + " -baseline " + baseline;
+		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
 		Cleartool.run( cmd );
 	}
 	
