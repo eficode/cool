@@ -87,6 +87,10 @@ public class SnapshotView extends UCMView
 		System.out.println( viewtag );
 	}
 	
+	/**
+	 * Swipe the view. Leaving only the ClearCase specific files and folders, deleting view private.
+	 * @param excludeRoot Whether to swipe the view root or not
+	 */
 	public void Swipe( boolean excludeRoot )
 	{
 		context.SwipeView( viewroot, excludeRoot );
@@ -102,11 +106,26 @@ public class SnapshotView extends UCMView
 		return this.viewroot;
 	}
 	
+	/**
+	 * Determine if the views view root is valid, returning its UUID as a string
+	 * @return The UUID as a string
+	 * @throws UCMException
+	 */
 	public String ViewrootIsValid() throws UCMException
 	{
 		return context.ViewrootIsValid( this );
 	}
 	
+	/**
+	 * Update the view
+	 * @param swipe
+	 * @param generate
+	 * @param overwrite
+	 * @param force
+	 * @param excludeRoot
+	 * @param components
+	 * @param loadrules
+	 */
 	public void Update( boolean swipe, boolean generate, boolean overwrite, boolean force, boolean excludeRoot, COMP components, String loadrules )
 	{
 		logger.debug( "Updating view: " + components );
