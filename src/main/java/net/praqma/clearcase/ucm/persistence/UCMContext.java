@@ -210,7 +210,8 @@ public class UCMContext
 			/* There is something in the element. */
 			if( rs[i].matches( "\\S+" ) )
 			{
-				bls.add( (Baseline)UCMEntity.GetEntity( rs[i], true ) );
+				//bls.add( (Baseline)UCMEntity.GetEntity( rs[i], true ) );
+				bls.add( UCMEntity.GetBaseline( rs[i] + "@" + stream.GetPvob(), true ) );
 			}
 		}
 		

@@ -209,7 +209,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	public String GetRecommendedBaselines( String stream )
 	{
 		// cleartool( 'desc -fmt %[rec_bls]p stream:' . $self->{'fqstream'} );
-		String cmd = "desc -fmt %[rec_bls]p stream " + stream;
+		String cmd = "desc -fmt %[rec_bls]p " + stream;
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	@Override
