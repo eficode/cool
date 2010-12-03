@@ -674,7 +674,7 @@ wolles_baseline_02.6448
 		logger.debug( "Rebasing " + viewtag );
 		
 		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
-		String res = Cleartool.run( cmd ).stdoutBuffer.toString();
+		String res = Cleartool.run( cmd ).errorBuffer.toString();
 		if( res.matches( "^No rebase needed" ) )
 		{
 			return false;
