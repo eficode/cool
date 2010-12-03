@@ -23,7 +23,7 @@ public class RebaseTest
 		UCM.SetContext( UCM.ContextType.CLEARTOOL );
 		
 		String comp = "component:_System@\\Cool_PVOB";
-		String stre = "stream:Server_int@\\Cool_PVOB";
+		String stre = "stream:chw_Server_int@\\Cool_PVOB";
 		File root = new File( "C:\\Temp\\views\\chw_Server_10_dev_view" );
 		
 		Stream st1 = UCMEntity.GetStream( stre );
