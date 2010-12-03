@@ -676,8 +676,7 @@ wolles_baseline_02.6448
 		
 		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
 		CmdResult res = Cleartool.run( cmd );
-		System.out.println( "err:" + res.errorBuffer.toString() );
-		System.out.println( "std" + res.stdoutBuffer.toString() );
+
 		if( res.stdoutBuffer.toString().matches( "^No rebase needed.*" ) )
 		{
 			return false;
