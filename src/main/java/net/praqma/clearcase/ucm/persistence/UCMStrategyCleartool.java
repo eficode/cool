@@ -18,6 +18,7 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.utils.AbnormalProcessTerminationException;
+import net.praqma.utils.CmdResult;
 import net.praqma.utils.Command;
 import net.praqma.utils.Debug;
 import net.praqma.utils.IO;
@@ -674,8 +675,10 @@ wolles_baseline_02.6448
 		logger.debug( "Rebasing " + viewtag );
 		
 		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
-		String res = Cleartool.run( cmd ).errorBuffer.toString();
-		if( res.matches( "^No rebase needed" ) )
+		CmdResult res = Cleartool.run( cmd );
+		System.out.println( res.errorBuffer.toString() );
+		System.out.println( res.stdoutBuffer.toString() );
+		if( res.errorBuffer.toString().matches( "^No rebase needed" ) )
 		{
 			return false;
 		}
