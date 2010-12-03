@@ -669,12 +669,18 @@ wolles_baseline_02.6448
 		}
 	}
 	
-	public void RebaseStream( String viewtag, String stream, String baseline, boolean complete )
+	public boolean RebaseStream( String viewtag, String stream, String baseline, boolean complete )
 	{
 		logger.debug( "Rebasing " + viewtag );
 		
 		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
-		Cleartool.run( cmd );
+		String res = Cleartool.run( cmd ).stdoutBuffer.toString();
+		if( res.matches( "^No rebase needed" ) )
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	private final String rx_rebase_in_progress = "^Rebase operation in progress on stream";

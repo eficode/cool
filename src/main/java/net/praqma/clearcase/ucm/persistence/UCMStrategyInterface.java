@@ -40,7 +40,7 @@ interface UCMStrategyInterface
 	public String GetStreamFromView( String viewtag );
 	public void CreateStream( String pstream, String nstream, boolean readonly, String baseline );
 	public boolean StreamExists( String fqname );
-	public void RebaseStream( String viewtag, String stream, String baseline, boolean complete );
+	public boolean RebaseStream( String viewtag, String stream, String baseline, boolean complete );
 	public boolean IsRebaseInProgress( String stream );
 	public void CancelRebase( String stream );
 	public List<String> GetLatestBaselines( String stream );

@@ -765,10 +765,10 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void RebaseStream( String viewtag, String stream, String baseline, boolean complete )
+	public boolean RebaseStream( String viewtag, String stream, String baseline, boolean complete )
 	{
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 	@Override

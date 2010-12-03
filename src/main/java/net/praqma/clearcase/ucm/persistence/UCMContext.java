@@ -284,7 +284,16 @@ public class UCMContext
 	
 	public void RebaseStream( SnapshotView view, Stream stream, Baseline baseline, boolean complete )
 	{
-		strategy.RebaseStream( view.GetViewtag(), stream.GetFQName(), baseline.GetFQName(), complete );
+		if( strategy.RebaseStream( view.GetViewtag(), stream.GetFQName(), baseline.GetFQName(), complete ) )
+		{
+			logger.debug( "Rebasing complete" );
+			System.out.println( "Rebasing complete" );
+		}
+		else
+		{
+			logger.debug( "No rebasing needed" );
+			System.out.println( "No rebasing needed" );
+		}
 	}
 	
 	public boolean IsRebaseInProgress( Stream stream )
