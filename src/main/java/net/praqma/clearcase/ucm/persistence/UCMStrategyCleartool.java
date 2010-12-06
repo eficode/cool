@@ -348,7 +348,7 @@ wolles_baseline_02.6448
 		
 	}
 	
-	public void Cache( File viewroot, boolean overwrite, String loadrules )
+	public String Cache( File viewroot, boolean overwrite, String loadrules )
 	{
 		//$params{generate} && cleartool('setcs -stream');
 		String cmd = "setcs -stream";
@@ -356,7 +356,7 @@ wolles_baseline_02.6448
 
 		//my $retval = cleartool( "update " . $force . $overwrite . $loadrules );
 		cmd = "update -force " +  ( overwrite ? " -overwrite " : "" ) + loadrules;
-		Cleartool.run( cmd, viewroot );
+		return Cleartool.run( cmd, viewroot ).stdoutBuffer.toString();
 	}
 	
 	private static final Pattern pattern_view_uuid = Pattern.compile( "^.*?View uuid: ([\\w\\.:]+).*?$" );

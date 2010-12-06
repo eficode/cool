@@ -362,6 +362,27 @@ public class UCMContext
 		return new Tuple<Stream, String>( stream, viewtag );
 	}
 	
+	private static final Pattern pattern_cache = Pattern.compile( "^\\s*log has been written to\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE );
+	
+	/**
+	 * Returns the update log on completion
+	 * @param view
+	 * @param overwrite
+	 * @param loadrules
+	 * @return
+	 */
+	public String Cache( SnapshotView view, boolean overwrite, String loadrules )
+	{
+		String result = strategy.Cache( view.GetViewRoot(), overwrite, loadrules );
+		Matcher match = pattern_cache.matcher( result );
+		if( match.find() )
+		{
+			return match.group( 1 );
+		}
+		
+		return "";
+	}
+	
 	public String GetRootDir( Component component )
 	{
 		logger.debug( component.GetFQName() );

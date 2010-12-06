@@ -62,7 +62,7 @@ public class RebaseTest
 		
 		List<Baseline> rec_bls = st1.GetRecommendedBaselines();
 		
-		st2.Rebase( view, rec_bls.get( 0 ), true );		
+		st2.Rebase( view, rec_bls.get( 0 ), true );
 		
 	}
 }

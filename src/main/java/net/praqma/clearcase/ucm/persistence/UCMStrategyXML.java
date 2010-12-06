@@ -843,10 +843,10 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void Cache( File viewroot, boolean overwrite, String loadrules )
+	public String Cache( File viewroot, boolean overwrite, String loadrules )
 	{
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 

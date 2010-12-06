@@ -181,6 +181,10 @@ public class SnapshotView extends UCMView
 		{
 			this.Swipe( excludeRoot );
 		}
+		
+		// Cache current directory and chdir into the viewroot
+		String result = context.Cache( this, overwrite, myloadrules );
+		logger.log( result );
 	}
 	
 	private void SwipeDir( File dir, FileFilter viewfilter )
