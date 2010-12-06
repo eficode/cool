@@ -341,11 +341,18 @@ wolles_baseline_02.6448
 	@Override
 	public void MakeSnapshotView( String stream, File viewroot, String viewtag )
 	{
+		logger.debug( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
+		
 		if( viewroot.exists() )
 		{
 			IO.DeleteDirectory( viewroot );
 		}
 		
+		this.Generate( stream );
+		
+		//cleartool( "mkview -snap -tag " . $params{tag} . " -stream " . $params{stream}->get_fqname . " " . $params{viewroot} );
+		String cmd = "mkview -snap -tag " + viewtag + " -stream " + stream + " " + viewroot.getAbsolutePath();
+		Cleartool.run( cmd );		
 	}
 	
 	public String Cache( File viewroot, boolean overwrite, String loadrules )

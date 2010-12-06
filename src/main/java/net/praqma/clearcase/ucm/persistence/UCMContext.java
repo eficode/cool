@@ -13,6 +13,7 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.utils.Debug;
 import net.praqma.utils.Printer;
 import net.praqma.utils.Tuple;
@@ -253,9 +254,10 @@ public class UCMContext
 		return bls;
 	}
 	
-	public void MakeSnapshotView( Stream stream, File viewroot, String viewtag )
+	public SnapshotView MakeSnapshotView( Stream stream, File viewroot, String viewtag )
 	{
 		strategy.MakeSnapshotView( stream.GetFQName(), viewroot, viewtag );
+		return UCMView.GetSnapshotView( viewroot );
 	}
 	
 	public boolean ViewExists( String viewtag )
