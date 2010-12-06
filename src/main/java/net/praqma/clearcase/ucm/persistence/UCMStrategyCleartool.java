@@ -217,7 +217,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	public String GetVersion( String version, String separator )
 	{
 		// 'desc -fmt [date:%d]\n[user:%u]\n[machine:%h]\n[comment:%c]\n[checkedout:%Rf]\n[kind:%m]\n[branch:%Vn]\n[xname:%Xn]\n ' . $self->{'fqpname'};
-		String cmd = "desc -fmt %d" + separator + "%u" + separator + "%h" + separator + "%c" + separator + "%Rf" + separator + "%m" + separator + "%Vn" + separator + "%Xn " + version;
+		String cmd = "desc -fmt %d" + separator + "%u" + separator + "%h" + separator + "%c" + separator + "%Rf" + separator + "%m" + separator + "%Vn" + separator + "%Xn \"" + version + "\"";
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	
