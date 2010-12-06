@@ -71,9 +71,9 @@ public class Debug
 			logger = new Debug( append );
 		}
 		
-		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-		System.out.println( "USING LOGGER: " + logger.toString() + " @ " + file.getAbsolutePath() );
-		System.out.println( "CLASS=" + stack[3] );
+		//StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		//System.out.println( "USING LOGGER: " + logger.toString() + " @ " + file.getAbsolutePath() );
+		//System.out.println( "CLASS=" + stack[3] );
 		//net.praqma.utils.Printer.ArrayPrinter( stack, 4 );
 		
 		

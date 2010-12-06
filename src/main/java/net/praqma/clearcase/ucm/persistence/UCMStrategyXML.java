@@ -35,7 +35,7 @@ import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.utils.Debug;
 import net.praqma.utils.Tuple;
 
-public class UCMStrategyXML implements UCMStrategyInterface
+class UCMStrategyXML implements UCMStrategyInterface
 {
 	private static Debug logger = Debug.GetLogger();
 	
