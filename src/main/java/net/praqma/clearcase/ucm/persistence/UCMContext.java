@@ -282,6 +282,11 @@ public class UCMContext
 		return stream;
 	}
 	
+	public void Genereate( Stream stream )
+	{
+		strategy.Generate( stream.GetFQName() );
+	}
+	
 	public void RebaseStream( SnapshotView view, Stream stream, Baseline baseline, boolean complete )
 	{
 		if( strategy.RebaseStream( view.GetViewtag(), stream.GetFQName(), baseline.GetFQName(), complete ) )

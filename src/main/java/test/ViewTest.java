@@ -23,7 +23,7 @@ public class ViewTest
 		
 		String comp = "component:_System@\\Cool_PVOB";
 		String stre = "stream:Server_int@\\Cool_PVOB";
-		File root = new File( "C:\\Temp\\views\\chw_Server_4_int" );
+		File root = new File( "C:\\Temp\\views\\chw_Server_10_dev_view" );
 		
 		Stream st1 = UCMEntity.GetStream( stre );
 		Component co1 = UCMEntity.GetComponent( comp );

@@ -656,9 +656,16 @@ wolles_baseline_02.6448
 		Cleartool.run( cmd );
 	}
 	
+	public void Generate( String stream )
+	{
+		//cleartool( 'chstream -generate ' . $self->get_fqname );
+		String cmd = "chstream -generate " + stream;
+		Cleartool.run( cmd );
+	}
+	
 	public boolean StreamExists( String fqname )
 	{
-		String cmd = "describe stream: " + fqname;
+		String cmd = "describe " + fqname;
 		try
 		{
 			Cleartool.run( cmd );
