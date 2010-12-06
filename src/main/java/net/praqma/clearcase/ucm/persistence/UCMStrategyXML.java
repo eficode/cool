@@ -835,5 +835,19 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		return null;
 	}
 
+	@Override
+	public void Generate( String stream )
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void Cache( File viewroot, boolean overwrite, String loadrules )
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }
