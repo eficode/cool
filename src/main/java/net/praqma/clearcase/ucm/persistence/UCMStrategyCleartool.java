@@ -25,7 +25,7 @@ import net.praqma.utils.IO;
 import net.praqma.utils.Tuple;
 
 
-class UCMStrategyCleartool implements UCMStrategyInterface
+public class UCMStrategyCleartool implements UCMStrategyInterface
 {
 	private static Debug logger = Debug.GetLogger();
 	
