@@ -79,6 +79,11 @@ public class Stream extends UCMEntity
 		return GetRecommendedBaselines( false );
 	}
 	
+	public void Generate()
+	{
+		context.Genereate( this );
+	}
+	
 	public ArrayList<Baseline> GetRecommendedBaselines( boolean force )
 	{
 		logger.trace_function();

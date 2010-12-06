@@ -44,6 +44,7 @@ interface UCMStrategyInterface
 	public boolean IsRebaseInProgress( String stream );
 	public void CancelRebase( String stream );
 	public List<String> GetLatestBaselines( String stream );
+	public void Generate( String stream );
 	
 	/* Version */
 	public String GetVersion( String version, String separator );

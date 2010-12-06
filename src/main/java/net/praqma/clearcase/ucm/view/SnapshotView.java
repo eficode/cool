@@ -126,7 +126,7 @@ public class SnapshotView extends UCMView
 	 * @param components
 	 * @param loadrules
 	 */
-	public void Update( boolean swipe, boolean generate, boolean overwrite, boolean force, boolean excludeRoot, COMP components, String loadrules )
+	public void Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, COMP components, String loadrules )
 	{
 		logger.debug( "Updating view: " + components );
 		
@@ -166,12 +166,20 @@ public class SnapshotView extends UCMView
 		}
 		
 		// TODO Set the load rules from the applied parameter
+		if( loadrules != null )
+		{
+			loadrules = " -add_loadrules " + loadrules;
+		}
 
 		// TODO generate the streams config spec if required
+		if( generate )
+		{
+			this.stream.Generate();
+		}
 		
 		if( swipe )
 		{
-			
+			this.Swipe( excludeRoot );
 		}
 	}
 	
