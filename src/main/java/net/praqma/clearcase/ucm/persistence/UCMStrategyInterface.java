@@ -65,6 +65,7 @@ interface UCMStrategyInterface
 	public boolean ViewExists( String viewtag );
 	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException;
 	public boolean SwipeView( File viewroot, boolean excludeRoot );
+	public void Cache( File viewroot, boolean overwrite, String loadrules );
 		
 	
 	/* TEST */

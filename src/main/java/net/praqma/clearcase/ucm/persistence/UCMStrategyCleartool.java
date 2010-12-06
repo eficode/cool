@@ -348,6 +348,17 @@ wolles_baseline_02.6448
 		
 	}
 	
+	public void Cache( File viewroot, boolean overwrite, String loadrules )
+	{
+		//$params{generate} && cleartool('setcs -stream');
+		String cmd = "setcs -stream";
+		Cleartool.run( cmd, viewroot );
+
+		//my $retval = cleartool( "update " . $force . $overwrite . $loadrules );
+		cmd = "update -force " +  ( overwrite ? " -overwrite " : "" ) + loadrules;
+		Cleartool.run( cmd, viewroot );
+	}
+	
 	private static final Pattern pattern_view_uuid = Pattern.compile( "^.*?View uuid: ([\\w\\.:]+).*?$" );
 	
 	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException
