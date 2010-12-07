@@ -67,6 +67,12 @@ public class Component extends UCMEntity
 			return bls;
 		}
 		
+		/**
+		 * This method is not implemented correctly and should not be used at the moment.
+		 * TODO Reimplement this method using timestamps.
+		 * @return
+		 * @throws UCMException
+		 */
 		public BaselineList NewerThanRecommended() throws UCMException
 		{
 			BaselineList bls = new BaselineList( this );

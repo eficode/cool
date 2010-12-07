@@ -225,7 +225,7 @@ public class Tag extends UCMEntity
 		sb.append( "Tag Type : " + this.tagType + linesep );
 		sb.append( "Tag OID  : " + this.OID + linesep );
 		
-		sb.append( "Tag Ent  : " + this.GetTagEntity().toString() + linesep );
+		sb.append( "From obj : " + this.GetTagEntity().toString() + linesep );
 		
 		sb.append( "Entries  : " + keyval.size() + " " );
 		Iterator<Entry<String, String>> it = keyval.entrySet().iterator();
