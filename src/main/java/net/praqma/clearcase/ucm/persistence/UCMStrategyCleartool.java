@@ -756,7 +756,7 @@ wolles_baseline_02.6448
 	
 	public String GetProjectFromStream( String stream )
 	{
-		String cmd = "desc -fmt %[project]p stream: " + stream;
+		String cmd = "desc -fmt %[project]p " + stream;
 		return Cleartool.run( cmd ).stdoutBuffer.toString().trim();
 	}
 	
