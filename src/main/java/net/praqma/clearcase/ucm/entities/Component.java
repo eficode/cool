@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.entities;
 import java.util.ArrayList;
 
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.clearcase.ucm.utils.TagQuery;
 
 public class Component extends UCMEntity
@@ -24,88 +25,6 @@ public class Component extends UCMEntity
 		return new Component();
 	}
 	
-	/* The encapsulated BaselineList class */
-	public class BaselineList extends ArrayList<Baseline>
-	{
-		private Stream stream = null;
-		
-		private BaselineList( BaselineList bls )
-		{
-			this.stream = bls.stream;
-			this.addAll( bls );
-		}
-		
-		private BaselineList( Stream stream )
-		{
-			this.stream = stream;
-		}
-		
-		public BaselineList( Stream stream, Project.Plevel plevel )
-		{
-			logger.debug( "Getting Baselines from " + stream.GetFQName() + " with plevel " + plevel );
-			this.stream = stream;
-			//System.out.println( "Me=" + Component.this.toString() + ". BPBV=" + Component.this.pvob );
-			this.addAll( context.GetBaselines( stream, Component.this, plevel, Component.this.pvob ) );
-		}
-		
-		public BaselineList Filter( TagQuery tq, String tagType, String tagID )
-		{
-			BaselineList bls = new BaselineList( this.stream );
-			
-			for( Baseline b : this )
-			{
-				Tag tag = b.GetTag( tagType, tagID );
-				
-				logger.debug( "BASELINE="+b.toString() + ". tag="+tag.toString() );
-				
-				if( tag.QueryTag( tq ) )
-				{
-					bls.add( b );
-				}
-			}
-			
-			return bls;
-		}
-		
-		/**
-		 * This method is not implemented correctly and should not be used at the moment.
-		 * TODO Reimplement this method using timestamps.
-		 * @return
-		 * @throws UCMException
-		 */
-		public BaselineList NewerThanRecommended() throws UCMException
-		{
-			BaselineList bls = new BaselineList( this );
-			ArrayList<Baseline> recommended = this.stream.GetRecommendedBaselines();
-			
-			if( recommended.size() != 1 )
-			{
-				logger.warning( "Only one baseline can be recommended simultaneously, " + recommended.size() + " found." );
-				throw new UCMException( "Only one baseline can be recommended simultaneously, " + recommended.size() + " found." );
-			}
-			
-			Baseline recbl = recommended.get( 0 );
-			logger.debug( "The recommended=" + recbl.toString() );
-			logger.debug( "REC COMP=" + recbl.GetComponent().GetFQName() );
-			logger.debug( "THIS COM=" + Component.this.GetFQName() );
-			
-			if( !recbl.GetComponent().GetFQName().equals( Component.this.GetFQName() ) )
-			{
-				logger.warning( Component.this.GetFQName() + " is not represented in " + stream.GetFQName() + " Recommended baseline" );
-				throw new UCMException( Component.this.GetFQName() + " is not represented in " + stream.GetFQName() + " Recommended baseline" );
-			}
-			
-			boolean match = false;
-			while( !bls.isEmpty() && !match )
-			{
-				Baseline b = bls.remove( 0 );
-				match = b.GetFQName().equals( recbl.GetFQName() );
-				logger.debug( "Matching: " + b.toString() + " == " + recbl.GetFQName() );
-			}
-			
-			return bls;
-		}
-	}
 	
 	public String GetRootDir()
 	{
@@ -114,12 +33,12 @@ public class Component extends UCMEntity
 	
 	public BaselineList GetBaselines( Stream stream )
 	{
-		return new BaselineList( stream, null );
+		return new BaselineList( this, stream, null );
 	}
 	
 	public BaselineList GetBaselines( Stream stream, Project.Plevel plevel )
 	{
-		return new BaselineList( stream, plevel );
+		return new BaselineList( this, stream, plevel );
 	}
 
 }
