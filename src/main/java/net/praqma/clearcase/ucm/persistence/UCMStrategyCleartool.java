@@ -669,8 +669,10 @@ wolles_baseline_02.6448
 	@Override
 	public void CreateStream( String pstream, String nstream, boolean readonly, String baseline )
 	{
+		logger.debug( "Creating stream " + nstream + " as child of " + pstream );
+		
 		// "mkstream $c $baseline $readonly -in stream:" . $params{'parent_stream'}->get_fqname() . " " . $stream_fqname );
-		String cmd = "mkstream " + ( baseline != null ? baseline + " " : "" ) + ( readonly ? " -readonly " : "" ) + " -in stream " + pstream + " "  + nstream;
+		String cmd = "mkstream " + ( baseline != null ? baseline + " " : "" ) + ( readonly ? " -readonly " : "" ) + " -in " + pstream + " "  + nstream;
 		Cleartool.run( cmd );
 	}
 	
