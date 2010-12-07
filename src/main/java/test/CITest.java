@@ -23,7 +23,7 @@ public class CITest
 	{
 		UCM.SetContext( UCM.ContextType.CLEARTOOL );
 		
-		String id = Calendar.getInstance().getTime().toString();
+		String id = Calendar.getInstance().getTime().getTime() + "";
 		String comp = "component:_System@\\Cool_PVOB";
 		String stre = "stream:chw_" + id + "@\\Cool_PVOB";
 		String intstre = "stream:Server_int@\\Cool_PVOB";
