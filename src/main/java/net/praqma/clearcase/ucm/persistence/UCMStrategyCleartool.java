@@ -672,7 +672,7 @@ wolles_baseline_02.6448
 		logger.debug( "Creating stream " + nstream + " as child of " + pstream );
 		
 		// "mkstream $c $baseline $readonly -in stream:" . $params{'parent_stream'}->get_fqname() . " " . $stream_fqname );
-		String cmd = "mkstream " + ( baseline != null ? baseline + " " : "" ) + ( readonly ? " -readonly " : "" ) + " -in " + pstream + " "  + nstream;
+		String cmd = "mkstream -in " + pstream + " " + ( baseline != null ? "-baseline " + baseline + " " : "" ) + ( readonly ? "-readonly " : "" ) + nstream;
 		Cleartool.run( cmd );
 	}
 	
