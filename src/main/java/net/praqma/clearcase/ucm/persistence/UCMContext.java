@@ -344,25 +344,25 @@ public class UCMContext
 	
 	public Tuple<Stream, String> GetStreamFromView( File viewroot )
 	{
-		
-		/* TODO vwroot and viewroot are the same! Right? */
-		/* Verify the (working)view root */
-		// cleartool("pwv -root");
-		// String cmd = "pwv -root";
-		// String wvroot = Cleartool.run_collapse( cmd ).trim();
 		File wvroot = strategy.GetCurrentViewRoot( viewroot );
 		
 		String viewtag = strategy.ViewrootIsValid( wvroot );
 		
-		// cleartool( 'lsstream -fmt %Xn -view ' . $viewtag );
-		//cmd = "lsstream -fmt %Xn -view " + viewtag;
-		//String fqstreamstr = Cleartool.run_collapse( cmd ).trim();
-		//Stream fqstreamstr = GetStreamFromView( viewtag );
 		String streamstr = strategy.GetStreamFromView( viewtag );
 		Stream stream    = UCMEntity.GetStream( streamstr );
 	
 		return new Tuple<Stream, String>( stream, viewtag );
 	}
+	
+	
+	public void LoadProject( Project project )
+	{
+		String result = strategy.LoadProject( project.GetFQName() );
+	
+		/* TODO currently result only returns the stream name */
+		project.SetStream( UCMEntity.GetStream( result ) );
+	}
+	
 	
 	private static final Pattern pattern_cache = Pattern.compile( "^\\s*log has been written to\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE );
 	

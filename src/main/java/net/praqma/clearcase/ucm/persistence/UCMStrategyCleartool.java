@@ -676,6 +676,14 @@ wolles_baseline_02.6448
 		Cleartool.run( cmd );
 	}
 	
+	public String LoadProject( String project )
+	{
+		logger.debug( project );
+		
+		String cmd = "lsproj -fmt %[istream]p " + project;
+		return Cleartool.run( cmd ).stdoutBuffer.toString();
+	}
+	
 	public void Generate( String stream )
 	{
 		//cleartool( 'chstream -generate ' . $self->get_fqname );

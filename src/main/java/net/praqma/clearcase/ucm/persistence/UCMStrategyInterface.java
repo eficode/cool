@@ -22,6 +22,7 @@ interface UCMStrategyInterface
 	/* Project */
 	String GetProjectFromStream( String stream );
 	List<String> GetModifiableComponents( String project );
+	public String LoadProject( String project );
 	
 	/* Baseline */
 	public String LoadBaseline( String baseline );

@@ -107,7 +107,7 @@ public class SnapshotView extends UCMView
 	}
 	
 	/**
-	 * Determine if the views view root is valid, returning its UUID as a string
+	 * Determine if the views view root is valid, returning its view tag
 	 * @return The UUID as a string
 	 * @throws UCMException
 	 */

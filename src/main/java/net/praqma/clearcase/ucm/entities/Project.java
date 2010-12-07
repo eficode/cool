@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Project extends UCMEntity
 {
 	/* Project specific fields */
-	
+	private Stream stream = null;
 	
 	Project()
 	{
@@ -74,5 +74,21 @@ public class Project extends UCMEntity
 		}
 		
 		return plevel;
+	}
+	
+	public void Load()
+	{
+		context.LoadProject( this );
+	}
+	
+	public void SetStream( Stream stream )
+	{
+		this.stream = stream;
+	}
+	
+	public Stream GetStream()
+	{
+		if( !this.loaded ) Load();
+		return stream;
 	}
 }
