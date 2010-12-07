@@ -148,7 +148,7 @@ public class SnapshotView extends UCMView
 				for( Baseline b : bls )
 				{
 					String rule  = b.GetComponent().GetRootDir();
-					rule         = rule.replaceFirst( "^\\", " " );
+					rule         = rule.replaceFirst( "^\\\\", " " );
 					myloadrules += rule;
 				}
 			}
@@ -159,7 +159,7 @@ public class SnapshotView extends UCMView
 				for( Component c : comps )
 				{
 					String rule = c.GetRootDir();
-					rule         = rule.replaceFirst( "^\\", " " );
+					rule         = rule.replaceFirst( "^\\\\", " " );
 					myloadrules += rule;
 				}
 			}
