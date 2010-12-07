@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.clearcase.ucm.view.UCMView;
+
 public class Version extends UCMEntity
 {
 	/* Version specific fields */
@@ -15,7 +18,10 @@ public class Version extends UCMEntity
 	private String comment     = null;
 	private String branch      = null;
 	
+	private SnapshotView view  = null;
+	
 	private String file        = null;
+	private String sfile       = null;
 	private int revision       = 0;
 	
 	private static String rx_revision = "(\\d+)$";
@@ -111,6 +117,21 @@ public class Version extends UCMEntity
 		this.branch     = result.get( "branch" );
 		
 		this.loaded = true;
+	}
+	
+	public void SetView( SnapshotView view )
+	{
+		this.view = view;
+	}
+	
+	public void SetSFile( String sfile )
+	{
+		this.sfile = sfile;
+	}
+	
+	public String GetSFile()
+	{
+		return sfile;
 	}
 	
 	

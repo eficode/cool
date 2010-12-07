@@ -46,7 +46,7 @@ public class ViewTest
 		{
 			for( Version v : a.changeset.versions )
 			{
-				System.out.println( "FILE=" + v.GetFile() + ". USER=" + v.Blame() );
+				System.out.println( "FILE=" + v.GetSFile() + ". USER=" + v.Blame() );
 			}
 		}
 	}

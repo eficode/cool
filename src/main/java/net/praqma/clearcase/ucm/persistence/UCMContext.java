@@ -48,6 +48,8 @@ public class UCMContext
 		
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		
+		int length = view.GetViewRoot().getAbsoluteFile().toString().length();
+		
 		Activity current = null;
 		for( String s : result )
 		{
@@ -69,7 +71,10 @@ public class UCMContext
 			}
 			
 			/* If not an activity, it must be a version */
-			current.changeset.versions.add( (Version)UCMEntity.GetEntity( s.trim() ) );
+			String f = s.trim();
+			Version v = (Version)UCMEntity.GetEntity( f );
+			v.SetSFile( s.substring( length ) );
+			current.changeset.versions.add( v );
 		}
 
 		return activities;
