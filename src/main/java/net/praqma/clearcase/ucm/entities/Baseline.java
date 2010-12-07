@@ -23,11 +23,6 @@ public class Baseline extends UCMEntity
 	public class BaselineDiff extends ArrayList<Activity>
 	{
 		
-//		public BaselineDiff()
-//		{
-//			this.addAll( context.GetBaselineDiff( Baseline.this ) );
-//		}
-		
 		public BaselineDiff( SnapshotView view )
 		{
 			this.addAll( context.GetBaselineDiff( view, Baseline.this ) );

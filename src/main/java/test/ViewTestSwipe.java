@@ -2,15 +2,7 @@ package test;
 
 import java.io.File;
 
-import net.praqma.clearcase.ucm.entities.Activity;
-import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.Baseline.BaselineDiff;
-import net.praqma.clearcase.ucm.entities.Component;
-import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
-import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.clearcase.ucm.entities.Component.BaselineList;
-import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 

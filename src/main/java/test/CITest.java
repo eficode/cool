@@ -13,7 +13,7 @@ import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.entities.Baseline.BaselineDiff;
-import net.praqma.clearcase.ucm.entities.Component.BaselineList;
+import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 

@@ -12,7 +12,7 @@ import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.clearcase.ucm.entities.Component.BaselineList;
+import net.praqma.clearcase.ucm.utils.BaselineList;
 
 public class GetBaselineTest
 {
