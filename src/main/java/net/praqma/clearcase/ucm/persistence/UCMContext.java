@@ -75,7 +75,7 @@ public class UCMContext
 			String f = s.trim();
 			System.out.println( s );
 			Version v = (Version)UCMEntity.GetEntity( f );
-			v.SetSFile( s.substring( length ) );
+			v.SetSFile( v.GetFile().substring( length ) );
 			current.changeset.versions.add( v );
 		}
 
