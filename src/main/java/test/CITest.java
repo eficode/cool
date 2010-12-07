@@ -23,11 +23,12 @@ public class CITest
 	{
 		UCM.SetContext( UCM.ContextType.CLEARTOOL );
 		
+		String id = Calendar.getInstance().getTime().toString();
 		String comp = "component:_System@\\Cool_PVOB";
-		String stre = "stream:chw_" + Calendar.getInstance().getTime() + "@\\Cool_PVOB";
+		String stre = "stream:chw_" + id + "@\\Cool_PVOB";
 		String intstre = "stream:Server_int@\\Cool_PVOB";
 		File root = new File( "C:\\Temp\\views\\" );
-		String tag = "tag";
+		String tag = "tag_" + id;
 		
 		if( args.length > 0 )
 		{
