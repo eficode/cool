@@ -324,7 +324,7 @@ wolles_baseline_02.6448
 	
 	public List<String> GetLatestBaselines( String stream )
 	{
-		String cmd = "desc -fmt %[latest_bls]p stream:" + stream;
+		String cmd = "desc -fmt %[latest_bls]p " + stream;
 		String[] t = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
 		List<String> bls = new ArrayList<String>();
 		for( String s : t )
@@ -762,7 +762,7 @@ wolles_baseline_02.6448
 	
 	public List<String> GetModifiableComponents( String project )
 	{
-		String cmd = "desc -fmt %[mod_comps]p project: " + project;
+		String cmd = "desc -fmt %[mod_comps]p " + project;
 		return Arrays.asList( Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" ) );
 	}
 	
