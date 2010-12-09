@@ -466,7 +466,7 @@ wolles_baseline_02.6448
 			{
 				if( IsVob( f ) )
 				{
-					fls += f.getAbsolutePath() + " ";
+					fls += "\"" + f.getAbsolutePath() + "\" ";
 				}
 				else
 				{
