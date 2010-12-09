@@ -44,6 +44,8 @@ public class ViewTest
 		
 		for( Activity a : bdiffs )
 		{
+			System.out.println( "ACT USER=" + a.GetUser() );
+			
 			for( Version v : a.changeset.versions )
 			{
 				System.out.println( "FILE=" + v.GetSFile() + ". USER=" + v.Blame() );
