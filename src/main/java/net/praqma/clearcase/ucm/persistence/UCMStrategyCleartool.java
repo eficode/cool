@@ -352,7 +352,7 @@ wolles_baseline_02.6448
 		this.Generate( stream );
 		
 		//cleartool( "mkview -snap -tag " . $params{tag} . " -stream " . $params{stream}->get_fqname . " " . $params{viewroot} );
-		String cmd = "mkview -snap -tag " + viewtag + " -stream " + stream + " " + viewroot.getAbsolutePath();
+		String cmd = "mkview -snap -tag " + viewtag + " -stream " + stream + " \"" + viewroot.getAbsolutePath() + "\"";
 		Cleartool.run( cmd );		
 	}
 	
