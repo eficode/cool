@@ -325,7 +325,7 @@ wolles_baseline_02.6448
 	
 	public List<String> GetLatestBaselines( String stream )
 	{
-		String cmd = "desc -fmt %[latest_bls]p " + stream;
+		String cmd = "desc -fmt %[latest_bls]Xp " + stream;
 		String[] t = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
 		List<String> bls = new ArrayList<String>();
 		for( String s : t )
