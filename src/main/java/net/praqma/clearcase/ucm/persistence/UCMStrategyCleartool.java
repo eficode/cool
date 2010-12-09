@@ -490,6 +490,12 @@ wolles_baseline_02.6448
 			net.praqma.utils.IO.DeleteDirectory( f );
 		}
 		
+		if( fls.length() == 0 )
+		{
+			logger.debug( "No files to delete" );
+			return true;
+		}
+		
 		String cmd = "ls -short -recurse -view_only " + fls;
 		List<String> result = Cleartool.run( cmd ).stdoutList;
 		List<File> rnew   = new ArrayList<File>();
