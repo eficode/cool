@@ -398,9 +398,9 @@ public class UCMContext
 		return strategy.GetRootDir( component.GetFQName() );
 	}
 	
-	public String ViewrootIsValid( SnapshotView view )
+	public String ViewrootIsValid( File view )
 	{
-		return strategy.ViewrootIsValid( view.GetViewRoot() );
+		return strategy.ViewrootIsValid( view );
 	}
 	
 	public Project GetProjectFromStream( Stream stream )

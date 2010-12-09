@@ -116,9 +116,9 @@ public class SnapshotView extends UCMView
 	 * @return The UUID as a string
 	 * @throws UCMException
 	 */
-	public String ViewrootIsValid() throws UCMException
+	public static String ViewrootIsValid( File view ) throws UCMException
 	{
-		return context.ViewrootIsValid( this );
+		return context.ViewrootIsValid( view );
 	}
 	
 	/**
