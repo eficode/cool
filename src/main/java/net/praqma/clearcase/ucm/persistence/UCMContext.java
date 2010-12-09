@@ -421,6 +421,12 @@ public class UCMContext
 		return comps;
 	}
 	
+	public void LoadActivity( Activity activity )
+	{
+		String result = strategy.LoadActivity( activity.GetFQName() );
+		activity.SetUser( result );
+	}
+	
 	
 	public String GetXML()
 	{

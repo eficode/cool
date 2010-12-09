@@ -126,7 +126,6 @@ public class SnapshotView extends UCMView
 	 * @param swipe
 	 * @param generate
 	 * @param overwrite
-	 * @param force
 	 * @param excludeRoot
 	 * @param components
 	 * @param loadrules

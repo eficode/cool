@@ -372,6 +372,11 @@ public abstract class UCMEntity extends UCM
 		return this.user;
 	}
 	
+	public void SetUser( String user )
+	{
+		this.user = user;
+	}
+	
 	public String GetFQName()
 	{
 		return this.fqname;

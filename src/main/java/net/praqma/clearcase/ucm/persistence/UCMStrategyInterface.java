@@ -24,6 +24,9 @@ interface UCMStrategyInterface
 	List<String> GetModifiableComponents( String project );
 	public String LoadProject( String project );
 	
+	/* Activity */
+	public String LoadActivity( String activity );
+	
 	/* Baseline */
 	public String LoadBaseline( String baseline );
 	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob );
@@ -67,6 +70,7 @@ interface UCMStrategyInterface
 	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException;
 	public boolean SwipeView( File viewroot, boolean excludeRoot );
 	public String Cache( File viewroot, boolean overwrite, String loadrules );
+
 		
 	
 	/* TEST */

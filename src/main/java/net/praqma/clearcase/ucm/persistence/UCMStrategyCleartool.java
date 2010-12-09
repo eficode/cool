@@ -767,5 +767,11 @@ wolles_baseline_02.6448
 		return Arrays.asList( Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" ) );
 	}
 	
+	public String LoadActivity( String activity )
+	{
+		String cmd = "describe -fmt %u " + activity;
+		return Cleartool.run( cmd ).stdoutBuffer.toString();
+	}
+	
 	
 }
