@@ -73,7 +73,6 @@ public class UCMContext
 			
 			/* If not an activity, it must be a version */
 			String f = s.trim();
-			System.out.println( s );
 			Version v = (Version)UCMEntity.GetEntity( f );
 			v.SetSFile( v.GetFile().substring( length ) );
 			current.changeset.versions.add( v );

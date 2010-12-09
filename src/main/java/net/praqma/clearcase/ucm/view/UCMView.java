@@ -16,9 +16,5 @@ public class UCMView extends UCM
 	{
 		return context.ViewExists( viewtag );
 	}
-	
-	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException
-	{
-		context.RegenerateViewDotDat( dir, viewtag );
-	}
+
 }

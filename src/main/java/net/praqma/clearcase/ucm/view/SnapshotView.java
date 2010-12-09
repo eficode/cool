@@ -96,6 +96,11 @@ public class SnapshotView extends UCMView
 		context.SwipeView( viewroot, excludeRoot );
 	}
 	
+	public static void RegenerateViewDotDat( File dir, String viewtag ) throws IOException
+	{
+		context.RegenerateViewDotDat( dir, viewtag );
+	}
+	
 	public String GetViewtag()
 	{
 		return this.viewtag;

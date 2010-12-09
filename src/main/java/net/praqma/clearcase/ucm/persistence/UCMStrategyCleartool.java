@@ -213,6 +213,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		String cmd = "desc -fmt %[rec_bls]p " + stream;
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
+
 	@Override
 	public String GetVersion( String version, String separator )
 	{
