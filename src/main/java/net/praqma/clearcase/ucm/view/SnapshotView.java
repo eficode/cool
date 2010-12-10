@@ -139,6 +139,8 @@ public class SnapshotView extends UCMView
 			throw new UCMException( "Only one of LOAD RULES and COMPONENTS must be set." );
 		}
 		
+		logger.debug( "components and loadrules" );
+		
 		String myloadrules = "";
 		
 		/* If the components part is set */
@@ -148,6 +150,8 @@ public class SnapshotView extends UCMView
 			
 			if( components == COMP.ALL )
 			{
+				logger.debug( "COMP=ALL" );
+				
 				BaselineList bls = this.stream.GetLatestBaselines();
 				for( Baseline b : bls )
 				{
@@ -158,6 +162,8 @@ public class SnapshotView extends UCMView
 			}
 			else
 			{
+				logger.debug( "COMP=MOD" );
+				
 				Project project = context.GetProjectFromStream( this.stream );
 				List<Component> comps = context.GetModifiableComponents( project );
 				for( Component c : comps )
@@ -169,11 +175,15 @@ public class SnapshotView extends UCMView
 			}
 		}
 		
+		logger.debug( "COMP DONE" );
+		
 		// TODO Set the load rules from the applied parameter
 		if( loadrules != null )
 		{
 			loadrules = " -add_loadrules " + loadrules;
 		}
+		
+		logger.debug( "LOAD RULES SET" );
 
 		// TODO generate the streams config spec if required
 		if( generate )
@@ -181,10 +191,14 @@ public class SnapshotView extends UCMView
 			this.stream.Generate();
 		}
 		
+		logger.debug( "STREAM GENEREATES" );
+		
 		if( swipe )
 		{
 			this.Swipe( excludeRoot );
 		}
+		
+		logger.debug( "SWIPED" );
 		
 		// Cache current directory and chdir into the viewroot
 		String result = context.Cache( this, overwrite, myloadrules );
