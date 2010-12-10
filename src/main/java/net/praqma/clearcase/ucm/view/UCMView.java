@@ -14,7 +14,9 @@ public class UCMView extends UCM
 	
 	public static boolean ViewExists( String viewtag )
 	{
-		return context.ViewExists( viewtag );
+		boolean b = context.ViewExists( viewtag );
+		logger.debug( "The view " + viewtag + " exists: " + b );
+		return b;
 	}
 
 }
