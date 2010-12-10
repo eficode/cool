@@ -32,6 +32,7 @@ public class StreamGobbler extends Thread
 			//while( ( line = br.readLine() ) != null )
 			while( true )
 			{
+				System.out.println( "Next line" );
 				line = br.readLine();
 				System.out.println( "LINE=" + line );
 				if( line == null ) break;
