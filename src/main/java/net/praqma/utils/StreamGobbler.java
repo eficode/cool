@@ -28,12 +28,16 @@ public class StreamGobbler extends Thread
 			InputStreamReader isr = new InputStreamReader( is );
 			BufferedReader br = new BufferedReader( isr );
 			String line = null;
-			
+			System.out.println( "BEFORE" );
 			while( ( line = br.readLine() ) != null )
 			{
+				System.out.println( "LINE1" );
 				sres.append( line );
+				System.out.println( "LINE2" );
 				lres.add( line );
+				System.out.println( "LINE3" );
 			}
+			System.out.println( "AFTER" );
 		}
 		catch ( IOException ioe )
 		{
