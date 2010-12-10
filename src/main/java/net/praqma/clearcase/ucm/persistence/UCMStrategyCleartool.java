@@ -14,6 +14,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteException;
+
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
@@ -368,7 +372,29 @@ wolles_baseline_02.6448
 
 		//my $retval = cleartool( "update " . $force . $overwrite . $loadrules );
 		cmd = "update -force " +  ( overwrite ? " -overwrite " : "" ) + loadrules;
-		return Cleartool.run( cmd, viewroot ).stdoutBuffer.toString();
+		//return Cleartool.run( cmd, viewroot ).stdoutBuffer.toString();
+		//return Cleartool.run( cmd, viewroot ).stdoutBuffer.toString();
+		CommandLine cl = CommandLine.parse( cmd );
+		DefaultExecutor executor = new DefaultExecutor();
+		executor.setExitValue(1);
+		executor.setWorkingDirectory( viewroot );
+		int exitValue = 0;
+		try
+		{
+			exitValue = executor.execute(cl);
+		}
+		catch ( ExecuteException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch ( IOException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println( "VALUE=" + exitValue );
+		return "";
 	}
 	
 	private static final Pattern pattern_view_uuid = Pattern.compile( "^.*?View uuid: ([\\w\\.:]+).*?$" );

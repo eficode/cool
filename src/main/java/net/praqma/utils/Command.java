@@ -50,21 +50,17 @@ public abstract class Command
 			}
 			
 			CmdResult result = new CmdResult();
-			logger.debug( "1" );
 			Process p = pb.start();
-			logger.debug( "2" );	
 			StreamGobbler output = new StreamGobbler( p.getInputStream() );
-			logger.debug( "3" );
 			StreamGobbler errors = new StreamGobbler( p.getErrorStream() );
-			logger.debug( "4" );
+			//StreamGobbler intput = new StreamGobbler( p.getOutputStream() );
+
 			//System.out.println( "Running output" );
 			output.run();
-			logger.debug( "5" );
 			//System.out.println( "Running errors" );
 			errors.run();
-			logger.debug( "6" );
+			
 			int exitValue = p.waitFor();
-			logger.debug( "7" );
 			/* Abnormal process termination, with error out as message */
 			if ( exitValue != 0 )
 			{
@@ -75,6 +71,8 @@ public abstract class Command
 			p.getErrorStream().close();
 			p.getOutputStream().close();
 			p.getInputStream().close();
+			
+			p.destroy();
 			
 			/* Setting command result */
 			result.stdoutBuffer = output.sres;
