@@ -29,13 +29,15 @@ public class StreamGobbler extends Thread
 			BufferedReader br = new BufferedReader( isr );
 			String line = null;
 			System.out.println( "BEFORE" );
-			while( ( line = br.readLine() ) != null )
+			//while( ( line = br.readLine() ) != null )
+			while( true )
 			{
+				line = br.readLine();
+				System.out.println( "LINE=" + line );
+				if( line == null ) break;
 				System.out.println( "LINE1" );
 				sres.append( line );
-				System.out.println( "LINE2" );
 				lres.add( line );
-				System.out.println( "LINE3" );
 			}
 			System.out.println( "AFTER" );
 		}
