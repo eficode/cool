@@ -427,11 +427,13 @@ wolles_baseline_02.6448
 		
 		try
 		{
-			Cleartool.run( cmd );
+			String s = Cleartool.run( cmd ).stdoutBuffer.toString();
+			logger.debug( "---->" + s );
 			return true;
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
+			logger.debug( "---->" + e.getMessage() );
 			return false;
 		}
 	}
