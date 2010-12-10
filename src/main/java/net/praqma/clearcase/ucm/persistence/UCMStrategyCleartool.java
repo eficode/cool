@@ -358,9 +358,13 @@ wolles_baseline_02.6448
 	
 	public String Cache( File viewroot, boolean overwrite, String loadrules )
 	{
+		logger.debug( "CACHING...." );
+		
 		//$params{generate} && cleartool('setcs -stream');
 		String cmd = "setcs -stream";
 		Cleartool.run( cmd, viewroot );
+		
+		logger.debug( "Updating view" );
 
 		//my $retval = cleartool( "update " . $force . $overwrite . $loadrules );
 		cmd = "update -force " +  ( overwrite ? " -overwrite " : "" ) + loadrules;
