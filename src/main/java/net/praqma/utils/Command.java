@@ -35,6 +35,7 @@ public abstract class Command
 		cmds[0] = "cmd.exe";
 		cmds[1] = "/C";
 		cmds[2] = cmd;
+		//cmds[3] = "2>&1";
 		
 		try
 		{

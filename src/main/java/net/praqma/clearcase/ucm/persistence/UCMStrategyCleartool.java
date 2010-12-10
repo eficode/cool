@@ -363,8 +363,7 @@ wolles_baseline_02.6448
 		Cleartool.run( cmd, viewroot );
 
 		//my $retval = cleartool( "update " . $force . $overwrite . $loadrules );
-//		cmd = "update -force " +  ( overwrite ? " -overwrite " : "" ) + loadrules;
-		cmd = "update -force " +  ( overwrite ? " -overwrite " : "" );
+		cmd = "update -force " +  ( overwrite ? " -overwrite " : "" ) + loadrules;
 		return Cleartool.run( cmd, viewroot ).stdoutBuffer.toString();
 	}
 	
@@ -379,9 +378,9 @@ wolles_baseline_02.6448
 		
 		String cmd = "lsview -l " + viewtag;
 		/* TODO Check this functions behavior, if the view doesn't exist */
-		List<String> result = Cleartool.run( cmd ).stdoutList;
+		String result = Cleartool.run( cmd ).stdoutBuffer.toString();
 		
-		Matcher match = pattern_view_uuid.matcher( result.get( 8 ) );
+		Matcher match = pattern_view_uuid.matcher( result );
 		if( !match.find() )
 		{
 			logger.warning( "The UUID of the view " + viewtag + " does not exist!" );
