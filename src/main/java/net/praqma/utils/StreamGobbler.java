@@ -33,19 +33,20 @@ public class StreamGobbler extends Thread
 			
 			System.out.println( "Gobbling..." );
 			
-//			while( ( line = br.readLine() ) != null )
-//			{
-//				sres.append( line );
-//				lres.add( line );
-//			}
+			while( ( line = br.readLine() ) != null )
+			{
+				System.out.println( "LINE="+line );
+				sres.append( line );
+				lres.add( line );
+			}
 			
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			
-			final byte[] buf = new byte[1024];
-			int length;
-            while ((length = is.read(buf)) > 0) {
-                bos.write(buf, 0, length);
-            }
+//			final byte[] buf = new byte[1024];
+//			int length;
+//            while ((length = is.read(buf)) > 0) {
+//                bos.write(buf, 0, length);
+//            }
 			
 			System.out.println( "End of gobbling..." );
 		}
