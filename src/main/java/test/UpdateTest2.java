@@ -28,7 +28,7 @@ public class UpdateTest2
 		
 		//SnapshotView view = UCMView.GetSnapshotView( root );
 		//String cmd = "cleartool update -force  -overwrite  -add_loadrules  Cool\\Model Cool\\Trace Cool\\ServerTest Cool\\Gui";
-		String[] cmd = { "cleartool", "update", "-force", "-overwrite", "-add_loadrules", "Cool\\Model Cool\\Trace Cool\\ServerTest Cool\\Gui"};
+		String[] cmd = { "cleartool", "update", "-force", "-overwrite", "-add_loadrules", "Cool\\Model", "Cool\\Trace", "Cool\\ServerTest", "Cool\\Gui" };
 		
 		Command.run( cmd, root );
 		
