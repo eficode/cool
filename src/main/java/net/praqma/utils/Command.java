@@ -27,6 +27,12 @@ public abstract class Command
 	
 	public static CmdResult run( String cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException
 	{
+		String[] cmds = {cmd};
+		return run( cmds, dir );
+	}
+	
+	public static CmdResult run( String[] cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException
+	{
 		logger.trace_function();
 		
 		logger.debug( "$ " + cmd );
@@ -34,7 +40,7 @@ public abstract class Command
 		String[] cmds = new String[3];
 		cmds[0] = "cmd.exe";
 		cmds[1] = "/C";
-		cmds[2] = cmd;
+		//cmds[2] = cmd;
 		
 		try
 		{
