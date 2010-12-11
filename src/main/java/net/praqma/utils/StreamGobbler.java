@@ -1,6 +1,7 @@
 package net.praqma.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,6 +35,14 @@ public class StreamGobbler extends Thread
 				sres.append( line );
 				lres.add( line );
 			}
+			
+//			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//			
+//			final byte[] buf = new byte[1024];
+//			int length;
+//            while ((length = is.read(buf)) > 0) {
+//                bos.write(buf, 0, length);
+//            }
 		}
 		catch ( IOException ioe )
 		{

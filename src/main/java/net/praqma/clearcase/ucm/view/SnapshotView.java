@@ -223,5 +223,7 @@ public class SnapshotView extends UCMView
 	
 	
 
+	}
+
 	
 }
