@@ -26,7 +26,7 @@ public class UpdateTest2
 
 		System.out.println( "Starting..." );
 		
-		SnapshotView view = UCMView.GetSnapshotView( root );
+		//SnapshotView view = UCMView.GetSnapshotView( root );
 		String cmd = "cleartool update -force  -overwrite  -add_loadrules  Cool\\Model Cool\\Trace Cool\\ServerTest Cool\\Gui";
 		
 		Command.run( cmd, root );

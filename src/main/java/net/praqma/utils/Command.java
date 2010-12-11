@@ -38,7 +38,7 @@ public abstract class Command
 		
 		try
 		{
-			ProcessBuilder pb = new ProcessBuilder( cmds );
+			ProcessBuilder pb = new ProcessBuilder( cmd );
 			//Process p = Runtime.getRuntime().exec( cmd );
 			//Process p = Runtime.getRuntime().exec( cmd, null, dir );
 			
@@ -54,6 +54,7 @@ public abstract class Command
 				
 			StreamGobbler output = new StreamGobbler( p.getInputStream() );
 			StreamGobbler errors = new StreamGobbler( p.getErrorStream() );
+			p.getOutputStream().close();
 
 			//System.out.println( "Running output" );
 			output.run();
@@ -100,7 +101,7 @@ public abstract class Command
 			
 			/* Closing streams */
 			p.getErrorStream().close();
-			p.getOutputStream().close();
+			//p.getOutputStream().close();
 			p.getInputStream().close();
 			
 			/* Setting command result */
