@@ -35,7 +35,6 @@ public abstract class Command
 		cmds[0] = "cmd.exe";
 		cmds[1] = "/C";
 		cmds[2] = cmd;
-		//cmds[3] = "2>&1";
 		
 		try
 		{
@@ -50,17 +49,30 @@ public abstract class Command
 			}
 			
 			CmdResult result = new CmdResult();
+			
 			Process p = pb.start();
+				
 			StreamGobbler output = new StreamGobbler( p.getInputStream() );
 			StreamGobbler errors = new StreamGobbler( p.getErrorStream() );
-			//StreamGobbler intput = new StreamGobbler( p.getOutputStream() );
 
 			//System.out.println( "Running output" );
 			output.run();
 			//System.out.println( "Running errors" );
 			errors.run();
 			
-			int exitValue = p.waitFor();
+			int exitValue = 0;
+			try{
+				exitValue = p.waitFor();
+			}
+			catch( InterruptedException e )
+			{
+				p.destroy();
+			}
+            finally {
+
+                Thread.interrupted();
+            } 
+			
 			/* Abnormal process termination, with error out as message */
 			if ( exitValue != 0 )
 			{
@@ -68,11 +80,28 @@ public abstract class Command
 				throw new AbnormalProcessTerminationException( errors.sres.toString() );
 			}
 			
+			try
+			{
+				output.join();
+			}
+			catch ( InterruptedException e )
+			{
+				logger.error( "Could not join output thread" );
+			}
+			
+			try
+			{
+				errors.join();
+			}
+			catch ( InterruptedException e )
+			{
+				logger.error( "Could not join errors thread" );
+			}
+			
+			/* Closing streams */
 			p.getErrorStream().close();
 			p.getOutputStream().close();
 			p.getInputStream().close();
-			
-			p.destroy();
 			
 			/* Setting command result */
 			result.stdoutBuffer = output.sres;
@@ -90,11 +119,6 @@ public abstract class Command
 		{
 			logger.warning( "Could not execute the command \"" + cmd + "\" correctly: " + e.getMessage() );
 			throw new CommandLineException( "Could not execute the command \"" + cmd + "\" correctly: " + e.getMessage() );
-		}
-		catch ( InterruptedException e )
-		{
-			logger.warning( "The command \"" + cmd + "\" was interrupted: " + e.getMessage() );
-			throw new CommandLineException( "The command \"" + cmd + "\" was interrupted: " + e.getMessage() );
 		}
 	}
 }
