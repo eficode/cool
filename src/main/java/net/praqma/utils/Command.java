@@ -27,7 +27,12 @@ public abstract class Command
 	
 	public static CmdResult run( String cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException
 	{
-		String[] cmds = {cmd};
+		String[] cmds = new String[3];
+		cmds[0] = "cmd.exe";
+		cmds[1] = "/C";
+		cmds[2] = cmd;
+		
+		//String[] cmds = {cmd};
 		return run( cmds, dir );
 	}
 	
@@ -37,11 +42,6 @@ public abstract class Command
 		//net.praqma.utils.Printer.ArrayPrinter( cmd );
 		
 		logger.debug( "$ " + net.praqma.utils.ToString.Array( cmd ) );
-		
-		String[] cmds = new String[3];
-		cmds[0] = "cmd.exe";
-		cmds[1] = "/C";
-		//cmds[2] = cmd;
 		
 		try
 		{
