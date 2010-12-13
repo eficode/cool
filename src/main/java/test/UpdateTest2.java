@@ -1,6 +1,17 @@
 package test;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.exec.PumpStreamHandler;
 
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
@@ -27,10 +38,54 @@ public class UpdateTest2
 		System.out.println( "Starting..." );
 		
 		//SnapshotView view = UCMView.GetSnapshotView( root );
-		//String cmd = "cleartool update -force  -overwrite  -add_loadrules  Cool\\Model Cool\\Trace Cool\\ServerTest Cool\\Gui";
-		String[] cmd = { "cleartool", "update", "-force", "-overwrite", "-add_loadrules", "Cool\\Model", "Cool\\Trace", "Cool\\ServerTest", "Cool\\Gui" };
+		String cmd = "cleartool update -force  -overwrite  -add_loadrules  Cool\\Model Cool\\Trace Cool\\ServerTest Cool\\Gui";
+		//String[] cmd = { "cleartool", "update", "-force", "-overwrite", "-add_loadrules", "Cool\\Model", "Cool\\Trace", "Cool\\ServerTest", "Cool\\Gui" };
 		
-		Command.run( cmd, root );
+		//Command.run( cmd, root );
+		
+		PipedOutputStream output = new PipedOutputStream();
+		PumpStreamHandler psh = new PumpStreamHandler(output);
+		DataInputStream is = null;
+		
+		CommandLine cl = CommandLine.parse( cmd );
+		DefaultExecutor executor = new DefaultExecutor();
+		executor.setExitValue( 0 );
+		executor.setWorkingDirectory( root );
+		int exitValue = 0;
+		try
+		{
+			is = new DataInputStream( new PipedInputStream( output ) );
+			executor.setStreamHandler(psh);
+			exitValue = executor.execute(cl);
+		}
+		catch ( ExecuteException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch ( IOException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println( "VALUE=" + exitValue );
+		
+		BufferedReader br = new BufferedReader( new InputStreamReader( is ) );
+		
+		String line = "";
+		try
+		{
+			while( ( line = br.readLine() ) != null )
+			{
+				System.out.println( "LINE="+line );
+				
+			}
+		}
+		catch ( IOException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 }
