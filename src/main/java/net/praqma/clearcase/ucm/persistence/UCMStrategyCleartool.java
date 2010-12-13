@@ -719,7 +719,7 @@ wolles_baseline_02.6448
 	{
 		logger.debug( project );
 		
-		String cmd = "lsproj -fmt %[istream]p " + project;
+		String cmd = "lsproj -fmt %[istream]Xp " + project;
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	
