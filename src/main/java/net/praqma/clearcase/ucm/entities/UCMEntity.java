@@ -352,6 +352,10 @@ public abstract class UCMEntity extends UCM
 	 */
 	public static Stream GetStream( String name, boolean trusted )
 	{
+		if( !name.startsWith( "stream:" ) )
+		{
+			name = "stream:" + name;
+		}
 		Stream entity = (Stream)UCMEntity.GetEntity( name, trusted );
 		return entity;
 	}
