@@ -41,7 +41,7 @@ public abstract class Command
 	{
 		logger.trace_function();
 		
-		//cmd += ( merge ? " 2>&1" : "" );
+		cmd += ( merge ? " 2>&1" : "" );
 
 		String[] cmds = new String[3];
 		cmds[0] = "cmd.exe";
@@ -53,7 +53,7 @@ public abstract class Command
 		try
 		{
 			ProcessBuilder pb = new ProcessBuilder( cmds );
-			pb.redirectErrorStream( merge );
+			//pb.redirectErrorStream( merge );
 			
 			if( dir != null )
 			{
