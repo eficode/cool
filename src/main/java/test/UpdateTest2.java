@@ -54,8 +54,8 @@ public class UpdateTest2
 		int exitValue = 0;
 		try
 		{
-			is = new DataInputStream( new PipedInputStream( output ) );
-			executor.setStreamHandler(psh);
+			//is = new DataInputStream( new PipedInputStream( output ) );
+			//executor.setStreamHandler(psh);
 			exitValue = executor.execute(cl);
 		}
 		catch ( ExecuteException e )
@@ -70,7 +70,7 @@ public class UpdateTest2
 		}
 		System.out.println( "VALUE=" + exitValue );
 		
-		BufferedReader br = new BufferedReader( new InputStreamReader( is ) );
+/*		BufferedReader br = new BufferedReader( new InputStreamReader( is ) );
 		
 		String line = "";
 		try
@@ -85,7 +85,7 @@ public class UpdateTest2
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 	}
 }
