@@ -5,17 +5,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.utils.Debug;
-import net.praqma.utils.Printer;
 import net.praqma.utils.Tuple;
 
 public class UCMContext
@@ -276,9 +274,9 @@ public class UCMContext
 		strategy.RegenerateViewDotDat( dir, viewtag );
 	}
 	
-	public void SwipeView( File viewroot, boolean excludeRoot )
+	public Map SwipeView( File viewroot, boolean excludeRoot )
 	{
-		strategy.SwipeView( viewroot, excludeRoot );
+		return strategy.SwipeView( viewroot, excludeRoot );
 	}
 	
 	public Stream CreateStream( Stream pstream, String nstream, boolean readonly, Baseline baseline )

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.praqma.clearcase.ucm.entities.*;
@@ -68,7 +69,7 @@ interface UCMStrategyInterface
 	public String ViewrootIsValid( File viewroot );
 	public boolean ViewExists( String viewtag );
 	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException;
-	public boolean SwipeView( File viewroot, boolean excludeRoot );
+	public Map SwipeView( File viewroot, boolean excludeRoot );
 	public String ViewUpdate( File viewroot, boolean overwrite, String loadrules );
 
 		

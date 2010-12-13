@@ -7,7 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,9 +93,9 @@ public class SnapshotView extends UCMView
 	 * Swipe the view. Leaving only the ClearCase specific files and folders, deleting view private.
 	 * @param excludeRoot Whether to swipe the view root or not
 	 */
-	public void Swipe( boolean excludeRoot )
+	public Map Swipe( boolean excludeRoot )
 	{
-		context.SwipeView( viewroot, excludeRoot );
+		return context.SwipeView( viewroot, excludeRoot );
 	}
 	
 	public static void RegenerateViewDotDat( File dir, String viewtag ) throws IOException
@@ -121,18 +123,25 @@ public class SnapshotView extends UCMView
 		return context.ViewrootIsValid( view );
 	}
 	
+
 	/**
-	 * Update the view
+	 * 
 	 * @param swipe
 	 * @param generate
 	 * @param overwrite
 	 * @param excludeRoot
 	 * @param components
 	 * @param loadrules
+	 * @return A Map of result info, currently only about the swipe. <br><br><code>success</code>: 0=false, 1=true
+	 * <br><code>total</code>: Number of files to delete, directories included
+	 * <br><code>files_deleted</code>: Number of files deleted
+	 * <br><code>dirs_deleted</code>: Number of directories deleted
 	 */
-	public void Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, COMP components, String loadrules )
+	public Map Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, COMP components, String loadrules )
 	{
 		logger.debug( "Updating view: " + components );
+		
+		Map<String, Integer> info = new HashMap<String, Integer>();
 		
 		if( ( components != null && loadrules != null ) || ( components == null && loadrules == null ) )
 		{
@@ -195,7 +204,8 @@ public class SnapshotView extends UCMView
 		
 		if( swipe )
 		{
-			this.Swipe( excludeRoot );
+			Map<String, Integer> sinfo = this.Swipe( excludeRoot );
+			info = sinfo;
 		}
 		
 		logger.debug( "SWIPED" );
@@ -203,6 +213,8 @@ public class SnapshotView extends UCMView
 		// Cache current directory and chdir into the viewroot
 		String result = context.UpdateView( this, overwrite, myloadrules );
 		logger.log( result );
+		
+		return info;
 	}
 	
 	private void SwipeDir( File dir, FileFilter viewfilter )

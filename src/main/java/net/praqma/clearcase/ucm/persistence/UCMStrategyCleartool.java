@@ -9,7 +9,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -475,7 +477,7 @@ wolles_baseline_02.6448
 	private final String rx_ctr_file = ".*\\.contrib";
 	private final String rx_keep_file = ".*\\.keep$";
 	
-	public boolean SwipeView( File viewroot, boolean excludeRoot )
+	public Map SwipeView( File viewroot, boolean excludeRoot )
 	{
 		logger.debug( viewroot.toString() );
 		
@@ -525,10 +527,13 @@ wolles_baseline_02.6448
 			net.praqma.utils.IO.DeleteDirectory( f );
 		}
 		
+		Map<String, Integer> info = new HashMap<String, Integer>();
+		info.put( "success", 1 );
+		
 		if( fls.length() == 0 )
 		{
 			logger.debug( "No files to delete" );
-			return true;
+			return info;
 		}
 		
 		String cmd = "ls -short -recurse -view_only " + fls;
@@ -541,6 +546,8 @@ wolles_baseline_02.6448
 		}
 		
 		int total = result.size() + rnew.size();
+		
+		info.put( "total", total );
 		
 		//for( int i = 0 ; i < result.size() ; i++ )
 		for( String s : result )
@@ -586,6 +593,8 @@ wolles_baseline_02.6448
 			}
 		}
 		
+		info.put( "files_deleted", filecount );
+		
 		/* TODO Remove the directories, somehow!? Only the empty!? */
 		for( File d : dirs )
 		{
@@ -600,17 +609,21 @@ wolles_baseline_02.6448
 			}
 		}
 		
+		info.put( "dirs_deleted", dircount );
+		
 		logger.print( "Deleted " + dircount + " director" + ( dircount == 1 ? "y" : "ies" ) + " and " + filecount + " file" + ( filecount == 1 ? "" : "s" ) );
 		
 		if( dircount + filecount == total )
 		{
-			return true;
+			info.put( "success", 1 );
 		}
 		else
 		{
 			logger.warning( "Some files were not deleted." );
-			return false;
+			info.put( "success", 0 );
 		}
+		
+		return info;
 	}
 	
 	@Override

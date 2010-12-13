@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -786,9 +787,9 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public boolean SwipeView( File viewroot, boolean excludeRoot )
+	public Map SwipeView( File viewroot, boolean excludeRoot )
 	{
-		return excludeRoot;
+		return null;
 		// TODO Auto-generated method stub
 		
 	}
