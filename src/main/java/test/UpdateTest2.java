@@ -54,9 +54,13 @@ public class UpdateTest2
 		int exitValue = 0;
 		try
 		{
-			//is = new DataInputStream( new PipedInputStream( output ) );
-			//executor.setStreamHandler(psh);
+			System.out.println( "1" );
+			is = new DataInputStream( new PipedInputStream( output ) );
+			System.out.println( "2" );
+			executor.setStreamHandler(psh);
+			System.out.println( "3" );
 			exitValue = executor.execute(cl);
+			System.out.println( "4" );
 		}
 		catch ( ExecuteException e )
 		{
