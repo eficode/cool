@@ -1,7 +1,6 @@
 package net.praqma.utils;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,7 +14,6 @@ public class StreamGobbler extends Thread
     InputStream is;
     public StringBuffer sres;
     public List<String> lres;
-    
     
     StreamGobbler( InputStream is )
     {
@@ -32,8 +30,6 @@ public class StreamGobbler extends Thread
 			BufferedReader br = new BufferedReader( isr );
 			String line = null;
 			
-			logger.debug( "Gobbling..." );
-			
 			while( ( line = br.readLine() ) != null )
 			{
 				sres.append( line );
@@ -44,8 +40,6 @@ public class StreamGobbler extends Thread
 			{
 				notifyAll();
 			}
-			
-			logger.debug( "... End of gobbling" );
 		}
 		catch ( IOException ioe )
 		{

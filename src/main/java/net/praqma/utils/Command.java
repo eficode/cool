@@ -3,8 +3,6 @@ package net.praqma.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.praqma.utils.Debug;
 
@@ -17,8 +15,6 @@ public abstract class Command
 {
 	protected static Debug logger = Debug.GetLogger();
 	protected static final String linesep = System.getProperty( "line.separator" );
-	
-
 	
 	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
@@ -45,7 +41,7 @@ public abstract class Command
 	{
 		logger.trace_function();
 		
-		cmd += ( merge ? " 2>&1" : "" );
+		//cmd += ( merge ? " 2>&1" : "" );
 
 		String[] cmds = new String[3];
 		cmds[0] = "cmd.exe";
@@ -57,6 +53,7 @@ public abstract class Command
 		try
 		{
 			ProcessBuilder pb = new ProcessBuilder( cmds );
+			pb.redirectErrorStream( merge );
 			
 			if( dir != null )
 			{
@@ -67,7 +64,7 @@ public abstract class Command
 			CmdResult result = new CmdResult();
 			
 			Process p = pb.start();
-				
+							
 			StreamGobbler output = new StreamGobbler( p.getInputStream() );
 			StreamGobbler errors = new StreamGobbler( p.getErrorStream() );
 			p.getOutputStream().close();
