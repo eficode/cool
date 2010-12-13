@@ -48,7 +48,7 @@ public abstract class Command
 		String[] cmds = new String[3];
 		cmds[0] = "cmd.exe";
 		cmds[1] = "/C";
-		cmds[2] = cmd;
+		cmds[2] = cmd + ( merge ? " 2>&1" : "" );
 		
 		logger.debug( "$ " + cmd );
 		
