@@ -23,12 +23,17 @@ public abstract class Cleartool extends Command
 {	
 	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
-		return run( cmd, null );
+		return run( cmd, null, false );
 	}
 	
 	public static CmdResult run( String cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException
 	{
-		return Command.run( "cleartool " + cmd, dir );
+		return Command.run( "cleartool " + cmd, dir, false );
+	}
+	
+	public static CmdResult run( String cmd, File dir, boolean merge ) throws CommandLineException, AbnormalProcessTerminationException
+	{
+		return Command.run( "cleartool " + cmd, dir, merge );
 	}
 	
 	/**

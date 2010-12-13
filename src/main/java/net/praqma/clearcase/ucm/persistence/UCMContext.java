@@ -379,9 +379,9 @@ public class UCMContext
 	 * @param loadrules
 	 * @return
 	 */
-	public String Cache( SnapshotView view, boolean overwrite, String loadrules )
+	public String UpdateView( SnapshotView view, boolean overwrite, String loadrules )
 	{
-		String result = strategy.Cache( view.GetViewRoot(), overwrite, loadrules );
+		String result = strategy.ViewUpdate( view.GetViewRoot(), overwrite, loadrules );
 		Matcher match = pattern_cache.matcher( result );
 		if( match.find() )
 		{

@@ -360,9 +360,9 @@ wolles_baseline_02.6448
 		Cleartool.run( cmd );		
 	}
 	
-	public String Cache( File viewroot, boolean overwrite, String loadrules )
+	public String ViewUpdate( File viewroot, boolean overwrite, String loadrules )
 	{
-		logger.debug( "CACHING...." );
+		logger.debug( viewroot.getAbsolutePath() );
 		
 		//$params{generate} && cleartool('setcs -stream');
 		String cmd = "setcs -stream";

@@ -201,7 +201,7 @@ public class SnapshotView extends UCMView
 		logger.debug( "SWIPED" );
 		
 		// Cache current directory and chdir into the viewroot
-		String result = context.Cache( this, overwrite, myloadrules );
+		String result = context.UpdateView( this, overwrite, myloadrules );
 		logger.log( result );
 	}
 	

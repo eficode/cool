@@ -41,9 +41,10 @@ public class UpdateTest2
 		String cmd = "cleartool update -force  -overwrite  -add_loadrules  Cool\\Model Cool\\Trace Cool\\ServerTest Cool\\Gui";
 		//String[] cmd = { "cleartool", "update", "-force", "-overwrite", "-add_loadrules", "Cool\\Model", "Cool\\Trace", "Cool\\ServerTest", "Cool\\Gui" };
 		
-		String s = Command.run( cmd, root ).stdoutBuffer.toString();
+		String s = Command.run( cmd, root, true ).stdoutBuffer.toString();
 		System.out.println( s );
 		
+		/*
 		PipedOutputStream output = new PipedOutputStream();
 		PumpStreamHandler psh = new PumpStreamHandler(output);
 		DataInputStream is = null;
@@ -73,7 +74,7 @@ public class UpdateTest2
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println( "VALUE=" + exitValue );
+		System.out.println( "VALUE=" + exitValue );*/
 		
 /*		BufferedReader br = new BufferedReader( new InputStreamReader( is ) );
 		
