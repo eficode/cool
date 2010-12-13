@@ -372,7 +372,7 @@ wolles_baseline_02.6448
 
 		//my $retval = cleartool( "update " . $force . $overwrite . $loadrules );
 		cmd = "update -force " +  ( overwrite ? " -overwrite " : "" ) + loadrules;
-		return Cleartool.run( cmd, viewroot ).stdoutBuffer.toString();
+		return Cleartool.run( cmd, viewroot, true ).stdoutBuffer.toString();
 		//return Cleartool.run( cmd, viewroot ).stdoutBuffer.toString();
 		
 		/*

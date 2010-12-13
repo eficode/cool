@@ -22,30 +22,39 @@ public abstract class Command
 	
 	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
-		return run( cmd, null );
+		return run( cmd, null, false );
 	}
 	
 	public static CmdResult run( String cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException
 	{
+		return run( cmd, dir, false );
+	}
+	
+//	public static CmdResult run( String cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException
+//	{
+//		String[] cmds = new String[3];
+//		cmds[0] = "cmd.exe";
+//		cmds[1] = "/C";
+//		cmds[2] = cmd;
+//		
+//		//String[] cmds = {cmd};
+//		return run( cmds, dir );
+//	}
+	
+	public static CmdResult run( String cmd, File dir, boolean merge ) throws CommandLineException, AbnormalProcessTerminationException
+	{
+		logger.trace_function();
+
 		String[] cmds = new String[3];
 		cmds[0] = "cmd.exe";
 		cmds[1] = "/C";
 		cmds[2] = cmd;
 		
-		//String[] cmds = {cmd};
-		return run( cmds, dir );
-	}
-	
-	public static CmdResult run( String[] cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException
-	{
-		logger.trace_function();
-		//net.praqma.utils.Printer.ArrayPrinter( cmd );
-		
-		logger.debug( "$ " + net.praqma.utils.ToString.Array( cmd ) );
+		logger.debug( "$ " + cmd );
 		
 		try
 		{
-			ProcessBuilder pb = new ProcessBuilder( cmd );
+			ProcessBuilder pb = new ProcessBuilder( cmds );
 			//Process p = Runtime.getRuntime().exec( cmd );
 			//Process p = Runtime.getRuntime().exec( cmd, null, dir );
 			
