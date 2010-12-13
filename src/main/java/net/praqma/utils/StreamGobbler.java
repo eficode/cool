@@ -10,6 +10,8 @@ import java.util.List;
 
 public class StreamGobbler extends Thread
 {
+	protected static Debug logger = Debug.GetLogger();
+	
     InputStream is;
     public StringBuffer sres;
     public List<String> lres;
@@ -30,11 +32,15 @@ public class StreamGobbler extends Thread
 			BufferedReader br = new BufferedReader( isr );
 			String line = null;
 			
+			logger.debug( "Gobbling..." );
+			
 			while( ( line = br.readLine() ) != null )
 			{
 				sres.append( line );
 				lres.add( line );
 			}
+			
+			logger.debug( "... End of gobbling" );
 		}
 		catch ( IOException ioe )
 		{

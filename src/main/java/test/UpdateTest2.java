@@ -41,7 +41,8 @@ public class UpdateTest2
 		String cmd = "cleartool update -force  -overwrite  -add_loadrules  Cool\\Model Cool\\Trace Cool\\ServerTest Cool\\Gui";
 		//String[] cmd = { "cleartool", "update", "-force", "-overwrite", "-add_loadrules", "Cool\\Model", "Cool\\Trace", "Cool\\ServerTest", "Cool\\Gui" };
 		
-		//Command.run( cmd, root );
+		String s = Command.run( cmd, root ).stdoutBuffer.toString();
+		System.out.println( s );
 		
 		PipedOutputStream output = new PipedOutputStream();
 		PumpStreamHandler psh = new PumpStreamHandler(output);
