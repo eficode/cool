@@ -30,25 +30,11 @@ public class StreamGobbler extends Thread
 			BufferedReader br = new BufferedReader( isr );
 			String line = null;
 			
-			
-			System.out.println( "Gobbling..." );
-			
 			while( ( line = br.readLine() ) != null )
 			{
-				System.out.println( "LINE="+line );
 				sres.append( line );
 				lres.add( line );
 			}
-			
-//			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			
-//			final byte[] buf = new byte[1024];
-//			int length;
-//            while ((length = is.read(buf)) > 0) {
-//                bos.write(buf, 0, length);
-//            }
-			
-			System.out.println( "End of gobbling..." );
 		}
 		catch ( IOException ioe )
 		{

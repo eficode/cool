@@ -55,8 +55,6 @@ public abstract class Command
 		try
 		{
 			ProcessBuilder pb = new ProcessBuilder( cmds );
-			//Process p = Runtime.getRuntime().exec( cmd );
-			//Process p = Runtime.getRuntime().exec( cmd, null, dir );
 			
 			if( dir != null )
 			{
@@ -85,8 +83,8 @@ public abstract class Command
 			{
 				p.destroy();
 			}
-            finally {
-
+            finally
+            {
                 Thread.interrupted();
             } 
 			
