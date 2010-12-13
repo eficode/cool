@@ -44,11 +44,13 @@ public abstract class Command
 	public static CmdResult run( String cmd, File dir, boolean merge ) throws CommandLineException, AbnormalProcessTerminationException
 	{
 		logger.trace_function();
+		
+		cmd += ( merge ? " 2>&1" : "" );
 
 		String[] cmds = new String[3];
 		cmds[0] = "cmd.exe";
 		cmds[1] = "/C";
-		cmds[2] = cmd + ( merge ? " 2>&1" : "" );
+		cmds[2] = cmd;
 		
 		logger.debug( "$ " + cmd );
 		

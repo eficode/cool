@@ -40,6 +40,11 @@ public class StreamGobbler extends Thread
 				lres.add( line );
 			}
 			
+			synchronized( this )
+			{
+				notifyAll();
+			}
+			
 			logger.debug( "... End of gobbling" );
 		}
 		catch ( IOException ioe )
