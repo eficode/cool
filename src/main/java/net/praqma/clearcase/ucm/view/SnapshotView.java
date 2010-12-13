@@ -132,10 +132,11 @@ public class SnapshotView extends UCMView
 	 * @param excludeRoot
 	 * @param components
 	 * @param loadrules
-	 * @return A Map of result info, currently only about the swipe. <br><br><code>success</code>: 0=false, 1=true
-	 * <br><code>total</code>: Number of files to delete, directories included
+	 * @return A Map of result info, currently only about the swipe. <br>
+	 * <br><code>success&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>: 0=false, 1=true
+	 * <br><code>total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>: Number of files to delete, directories included
 	 * <br><code>files_deleted</code>: Number of files deleted
-	 * <br><code>dirs_deleted</code>: Number of directories deleted
+	 * <br><code>dirs_deleted&nbsp;</code>: Number of directories deleted
 	 */
 	public Map Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, COMP components, String loadrules )
 	{
