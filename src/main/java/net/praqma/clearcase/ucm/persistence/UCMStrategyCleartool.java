@@ -372,8 +372,10 @@ wolles_baseline_02.6448
 
 		//my $retval = cleartool( "update " . $force . $overwrite . $loadrules );
 		cmd = "update -force " +  ( overwrite ? " -overwrite " : "" ) + loadrules;
+		return Cleartool.run( cmd, viewroot ).stdoutBuffer.toString();
 		//return Cleartool.run( cmd, viewroot ).stdoutBuffer.toString();
-		//return Cleartool.run( cmd, viewroot ).stdoutBuffer.toString();
+		
+		/*
 		CommandLine cl = CommandLine.parse( cmd );
 		DefaultExecutor executor = new DefaultExecutor();
 		executor.setExitValue(1);
@@ -395,6 +397,7 @@ wolles_baseline_02.6448
 		}
 		System.out.println( "VALUE=" + exitValue );
 		return "";
+		*/
 	}
 	
 	private static final Pattern pattern_view_uuid = Pattern.compile( "^.*?View uuid: ([\\w\\.:]+).*?$" );
