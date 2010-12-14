@@ -102,7 +102,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	
 	/**** Baseline *****/
 	
-	public String LoadBaseline( String baseline )
+	public String LoadBaseline( String baseline ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( baseline );
@@ -292,7 +292,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		e.setTextContent( baseline );
 	}
 	
-	public String GetRecommendedBaselines( String stream )
+	public String GetRecommendedBaselines( String stream ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( stream );
@@ -346,7 +346,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 	
 	
-	public String GetStreamFromView( String viewtag )
+	public String GetStreamFromView( String viewtag ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( viewtag );
@@ -363,7 +363,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		return GetElement( list.get( 0 ), "stream" ).getTextContent();
 	}
 	
-	public File GetCurrentViewRoot( File viewroot )
+	public File GetCurrentViewRoot( File viewroot ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( viewroot.toString() );
@@ -379,7 +379,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		return new File( list.get( 0 ).getAttribute( "viewroot" ) );
 	}
 	
-	public String ViewrootIsValid( File viewroot )
+	public String ViewrootIsValid( File viewroot ) throws UCMException
 	{
 		List<Element> list = GetElementsWithAttribute( views, "viewroot", viewroot.toString() );
 		
@@ -555,7 +555,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		return true;
 	}
 	
-	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException
+	public void RegenerateViewDotDat( File dir, String viewtag ) throws UCMException
 	{
 		/* This function is not applicable for XML */
 	}

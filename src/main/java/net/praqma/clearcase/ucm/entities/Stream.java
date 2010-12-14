@@ -38,7 +38,7 @@ public class Stream extends UCMEntity
 	 * @param readonly Whether the new Stream is read only or not
 	 * @return A new Stream given the parameters
 	 */
-	public static Stream Create( Stream pstream, String nstream, boolean readonly, Baseline baseline )
+	public static Stream Create( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException
 	{
 		if( pstream == null || nstream == null )
 		{
@@ -74,7 +74,7 @@ public class Stream extends UCMEntity
 		context.CancelRebase( this );
 	}
 	
-	public ArrayList<Baseline> GetRecommendedBaselines()
+	public ArrayList<Baseline> GetRecommendedBaselines() throws UCMException
 	{
 		return GetRecommendedBaselines( false );
 	}
@@ -84,7 +84,7 @@ public class Stream extends UCMEntity
 		context.Genereate( this );
 	}
 	
-	public ArrayList<Baseline> GetRecommendedBaselines( boolean force )
+	public ArrayList<Baseline> GetRecommendedBaselines( boolean force ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( "Getting recommended baselines" );
@@ -102,12 +102,12 @@ public class Stream extends UCMEntity
 		return context.RecommendBaseline( this, baseline );
 	}
 	
-	public BaselineList GetLatestBaselines()
+	public BaselineList GetLatestBaselines() throws UCMException
 	{
 		return new BaselineList( context.GetLatestBaselines( this ) );
 	}
 	
-	public String Stringify()
+	public String Stringify() throws UCMException
 	{
 		if( !this.loaded ) Load();
 		

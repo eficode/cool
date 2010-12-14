@@ -29,17 +29,17 @@ public class UCMContext
 	}
 	
 	/* Baseline specific */
-	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline )
+	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline ) throws UCMException
 	{
 		return GetBaselineDiff( view, baseline, null, true );
 	}
 	
-	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, boolean nmerge )
+	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, boolean nmerge ) throws UCMException
 	{
 		return GetBaselineDiff( view, baseline, null, nmerge );
 	}
 	
-	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge )
+	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge ) throws UCMException
 	{
 		/* Change if other than -pre */
 		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge, baseline.GetPvob() );
@@ -106,7 +106,7 @@ public class UCMContext
 	
 	/* Tags */
 	
-	public ArrayList<Tag> ListTags( UCMEntity entity )
+	public ArrayList<Tag> ListTags( UCMEntity entity ) throws UCMException
 	{
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		
@@ -126,7 +126,7 @@ public class UCMContext
 		return tags;
 	}
 	
-	public Tuple<String, String> GetTag( Tag tag )
+	public Tuple<String, String> GetTag( Tag tag ) throws UCMException
 	{
 		String result = strategy.GetTag( tag.GetFQName() );
 
@@ -135,7 +135,7 @@ public class UCMContext
 		return tuple;
 	}
 	
-	public Tag StoreTag( Tag tag )
+	public Tag StoreTag( Tag tag ) throws UCMException
 	{
 		/* Make the new tag */
 		Tag newtag = NewTag( tag.GetTagType(), tag.GetTagID(), tag.GetTagEntity(), Tag.HashToCGI( tag.GetEntries(), true ) );
@@ -146,7 +146,7 @@ public class UCMContext
 		return newtag;
 	}
 	
-	public void DeleteTag( Tag tag )
+	public void DeleteTag( Tag tag ) throws UCMException
 	{
 		strategy.DeleteTag( tag.GetFQName() );
 	}
@@ -161,7 +161,7 @@ public class UCMContext
 	 * @param cgi
 	 * @return
 	 */
-	public Tag NewTag( String tagType, String tagID, UCMEntity entity, String cgi )
+	public Tag NewTag( String tagType, String tagID, UCMEntity entity, String cgi ) throws UCMException
 	{
 		logger.debug( "ENTITY="+entity.toString() );
 		logger.debug( "CGI FOR NEW = " + cgi );
@@ -183,7 +183,7 @@ public class UCMContext
 		return tag;
 	}
 	
-	public String[] LoadBaseline( Baseline baseline )
+	public String[] LoadBaseline( Baseline baseline ) throws UCMException
 	{
 		logger.log( "Loading baseline " + baseline.GetFQName() );
 		
@@ -197,13 +197,13 @@ public class UCMContext
 	}
 	
 	
-	public void SetPromotionLevel( Baseline baseline )
+	public void SetPromotionLevel( Baseline baseline ) throws UCMException
 	{
 		strategy.SetPromotionLevel( baseline.GetFQName(), baseline.GetPromotionLevel( true ).toString() );
 	}
 	
 	
-	public ArrayList<Baseline> GetRecommendedBaselines( Stream stream )
+	public ArrayList<Baseline> GetRecommendedBaselines( Stream stream ) throws UCMException
 	{
 		ArrayList<Baseline> bls = new ArrayList<Baseline>();
 		
@@ -239,7 +239,7 @@ public class UCMContext
 	}
 	
 	
-	public List<Baseline> GetBaselines( Stream stream, Component component, Project.Plevel plevel, String pvob )
+	public List<Baseline> GetBaselines( Stream stream, Component component, Project.Plevel plevel, String pvob ) throws UCMException
 	{
 		String pl = plevel == null ? "" : plevel.toString();
 		logger.debug( "Getting baselines from " + stream.GetFQName() + " and " + component.GetFQName() + " with level " + plevel + " in VOB=" + pvob );
@@ -258,7 +258,7 @@ public class UCMContext
 		return bls;
 	}
 	
-	public SnapshotView MakeSnapshotView( Stream stream, File viewroot, String viewtag )
+	public SnapshotView MakeSnapshotView( Stream stream, File viewroot, String viewtag ) throws UCMException
 	{
 		strategy.MakeSnapshotView( stream.GetFQName(), viewroot, viewtag );
 		return UCMView.GetSnapshotView( viewroot );
@@ -269,7 +269,7 @@ public class UCMContext
 		return strategy.ViewExists( viewtag );
 	}
 	
-	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException
+	public void RegenerateViewDotDat( File dir, String viewtag ) throws UCMException
 	{
 		strategy.RegenerateViewDotDat( dir, viewtag );
 	}
@@ -279,7 +279,7 @@ public class UCMContext
 		return strategy.SwipeView( viewroot, excludeRoot );
 	}
 	
-	public Stream CreateStream( Stream pstream, String nstream, boolean readonly, Baseline baseline )
+	public Stream CreateStream( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException
 	{
 		strategy.CreateStream( pstream.GetFQName(), nstream, readonly, ( baseline != null ? baseline.GetFQName() : "" ) );
 		
@@ -322,7 +322,7 @@ public class UCMContext
 		return strategy.StreamExists( fqname );
 	}
 	
-	public List<Baseline> GetLatestBaselines( Stream stream )
+	public List<Baseline> GetLatestBaselines( Stream stream ) throws UCMException
 	{
 		logger.debug( "STREAM: " + stream.GetFQName() );
 		
@@ -346,7 +346,7 @@ public class UCMContext
 //		return UCMEntity.GetStream( stream );
 //	}
 	
-	public Tuple<Stream, String> GetStreamFromView( File viewroot )
+	public Tuple<Stream, String> GetStreamFromView( File viewroot ) throws UCMException
 	{
 		File wvroot = strategy.GetCurrentViewRoot( viewroot );
 		
@@ -359,7 +359,7 @@ public class UCMContext
 	}
 	
 	
-	public void LoadProject( Project project )
+	public void LoadProject( Project project ) throws UCMException
 	{
 		String result = strategy.LoadProject( project.GetFQName() );
 	
@@ -396,17 +396,17 @@ public class UCMContext
 		return strategy.GetRootDir( component.GetFQName() );
 	}
 	
-	public String ViewrootIsValid( File view )
+	public String ViewrootIsValid( File view ) throws UCMException
 	{
 		return strategy.ViewrootIsValid( view );
 	}
 	
-	public Project GetProjectFromStream( Stream stream )
+	public Project GetProjectFromStream( Stream stream ) throws UCMException
 	{
 		return UCMEntity.GetProject( strategy.GetProjectFromStream( stream.GetFQName() ) + "@" + stream.GetPvob() );
 	}
 	
-	public List<Component> GetModifiableComponents( Project project )
+	public List<Component> GetModifiableComponents( Project project ) throws UCMException
 	{
 		List<String> cs = strategy.GetModifiableComponents( project.GetFQName() );
 		List<Component> comps = new ArrayList<Component>();

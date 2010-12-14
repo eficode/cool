@@ -31,12 +31,12 @@ public class Component extends UCMEntity
 		return context.GetRootDir( this );
 	}
 	
-	public BaselineList GetBaselines( Stream stream )
+	public BaselineList GetBaselines( Stream stream ) throws UCMException
 	{
 		return new BaselineList( this, stream, null );
 	}
 	
-	public BaselineList GetBaselines( Stream stream, Project.Plevel plevel )
+	public BaselineList GetBaselines( Stream stream, Project.Plevel plevel ) throws UCMException
 	{
 		return new BaselineList( this, stream, plevel );
 	}

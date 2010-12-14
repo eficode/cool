@@ -18,7 +18,7 @@ interface UCMStrategyInterface
 	
 	/* General command line stuff */
 	public void ChangeDirectoryToView( String path );
-	public void CheckViewContext( File dir );
+	public void CheckViewContext( File dir ) throws UCMException;
 	
 	/* Project */
 	String GetProjectFromStream( String stream );
@@ -29,8 +29,8 @@ interface UCMStrategyInterface
 	public String LoadActivity( String activity );
 	
 	/* Baseline */
-	public String LoadBaseline( String baseline );
-	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob );
+	public String LoadBaseline( String baseline ) throws UCMException;
+	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob ) throws UCMException;
 	public void SetPromotionLevel( String baseline, String plevel );
 	
 	public String GetBaselineActivities( String baseline );
@@ -41,8 +41,8 @@ interface UCMStrategyInterface
 	
 	/* Stream */
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException;
-	public String GetRecommendedBaselines( String stream );
-	public String GetStreamFromView( String viewtag );
+	public String GetRecommendedBaselines( String stream ) throws UCMException;
+	public String GetStreamFromView( String viewtag ) throws UCMException;
 	public void CreateStream( String pstream, String nstream, boolean readonly, String baseline );
 	public boolean StreamExists( String fqname );
 	public boolean RebaseStream( String viewtag, String stream, String baseline, boolean complete );
@@ -55,20 +55,20 @@ interface UCMStrategyInterface
 	public String GetVersion( String version, String separator );
 	
 	/* Tag */
-	public List<Tuple<String, String>> GetTags( String fqname );
+	public List<Tuple<String, String>> GetTags( String fqname ) throws UCMException;
 	public String GetTag( String fqname );
-	public String NewTag( UCMEntity entity, String cgi );
+	public String NewTag( UCMEntity entity, String cgi ) throws UCMException;
 	public void DeleteTag( String fqname );
-	public void DeleteTagsWithID( String tagType, String tagID, String entity );
+	public void DeleteTagsWithID( String tagType, String tagID, String entity ) throws UCMException;
 	
 	public String PutTag( String fqname, String keyval, UCMEntity entity );
 	
 	/* Snapshot Views */
 	public void MakeSnapshotView( String stream, File viewroot, String viewtag );
-	public File GetCurrentViewRoot( File viewroot );
-	public String ViewrootIsValid( File viewroot );
+	public File GetCurrentViewRoot( File viewroot ) throws UCMException;
+	public String ViewrootIsValid( File viewroot ) throws UCMException;
 	public boolean ViewExists( String viewtag );
-	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException;
+	public void RegenerateViewDotDat( File dir, String viewtag ) throws UCMException;
 	public Map SwipeView( File viewroot, boolean excludeRoot );
 	public String ViewUpdate( File viewroot, boolean overwrite, String loadrules );
 

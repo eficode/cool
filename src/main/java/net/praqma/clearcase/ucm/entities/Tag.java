@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCMEntity.ClearcaseEntityType;
 import net.praqma.clearcase.ucm.utils.TagQuery;
 import net.praqma.utils.Printer;
@@ -117,7 +118,7 @@ public class Tag extends UCMEntity
 	/**
 	 * This function is actually never called.... Thus GetTag is never called as well!
 	 */
-	public void Load()
+	public void Load() throws UCMException
 	{
 		Tuple<String, String> t = context.GetTag( this );
 		//this.OID = t.t1;
@@ -162,22 +163,22 @@ public class Tag extends UCMEntity
 		return this.keyval;
 	}
 	
-	private void Set( String newFqname )
-	{
-		Matcher match = pattern_tag_fqname.matcher( newFqname );
-		if( match.find() )
-		{
-			/* Set the Entity variables */
-			shortname = match.group( 1 ); // This is also the oid
-			OID       = match.group( 1 );
-			pvob      = match.group( 2 );
-			fqname    = newFqname;
-		}
-		else
-		{
-			logger.warning( "The new fully qualified name was not correct!" );
-		}
-	}
+//	private void Set( String newFqname )
+//	{
+//		Matcher match = pattern_tag_fqname.matcher( newFqname );
+//		if( match.find() )
+//		{
+//			/* Set the Entity variables */
+//			shortname = match.group( 1 ); // This is also the oid
+//			OID       = match.group( 1 );
+//			pvob      = match.group( 2 );
+//			fqname    = newFqname;
+//		}
+//		else
+//		{
+//			logger.warning( "The new fully qualified name was not correct!" );
+//		}
+//	}
 	
 	public void SetTagEntity( UCMEntity entity )
 	{
@@ -194,7 +195,7 @@ public class Tag extends UCMEntity
 	 * Returns the new Tag from ClearCase.
 	 * @return The new Tag.
 	 */
-	public Tag Persist()
+	public Tag Persist() throws UCMException
 	{
 		Printer.HashMapPrinter( this.GetEntries() );
 		return context.StoreTag( this );
@@ -208,12 +209,12 @@ public class Tag extends UCMEntity
 		return this.tagType;
 	}
 	
-	public String GetTagID()
+	public String GetTagID() throws UCMException
 	{
 		return this.tagID;
 	}
 	
-	public String Stringify()
+	public String Stringify() throws UCMException
 	{
 		if( !this.loaded ) Load();
 		

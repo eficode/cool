@@ -64,7 +64,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 	}
 	
-	public void CheckViewContext( File dir )
+	public void CheckViewContext( File dir ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( "" );
@@ -132,7 +132,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	}
 	
 	@Override
-	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob )
+	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob ) throws UCMException
 	{
 		/* Check if we are in view context */
 		CheckViewContext( dir );
@@ -237,7 +237,7 @@ wolles_baseline_02.6448
 	private static final Pattern pattern_tags = Pattern.compile( "^\\s*(tag@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"(.*?)\"\\s*$" );
 		
 	@Override
-	public List<Tuple<String, String>> GetTags( String fqname )
+	public List<Tuple<String, String>> GetTags( String fqname ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( fqname );
@@ -292,7 +292,7 @@ wolles_baseline_02.6448
 	private static final Pattern pattern_tag_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB.*" );
 	
 	@Override
-	public String NewTag( UCMEntity entity, String cgi )
+	public String NewTag( UCMEntity entity, String cgi ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( entity.GetFQName() );
@@ -337,7 +337,7 @@ wolles_baseline_02.6448
 	}
 	
 	@Override
-	public void DeleteTagsWithID( String tagType, String tagID, String entity )
+	public void DeleteTagsWithID( String tagType, String tagID, String entity ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( tagType + tagID );
@@ -415,7 +415,7 @@ wolles_baseline_02.6448
 	
 	private static final Pattern pattern_view_uuid = Pattern.compile( "^.*?View uuid: ([\\w\\.:]+).*?$" );
 	
-	public void RegenerateViewDotDat( File dir, String viewtag ) throws IOException
+	public void RegenerateViewDotDat( File dir, String viewtag ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( dir + ", " +  viewtag );
@@ -455,11 +455,18 @@ wolles_baseline_02.6448
 			dir.mkdir();
 		}
 		
-		FileOutputStream fos = new FileOutputStream( viewdat );
-		fos.write( ( "ws_oid:00000000000000000000000000000000 view_uuid:" + uuid ).getBytes() );
-		fos.close();
+		try
+		{
+			FileOutputStream fos = new FileOutputStream( viewdat );
+			fos.write( ( "ws_oid:00000000000000000000000000000000 view_uuid:" + uuid ).getBytes() );
+			fos.close();
+		}
+		catch( IOException e )
+		{
+			throw new UCMException( "Could not create view.dat", UCMType.VIEW_ERROR );
+		}
 		
-		// cmd("attrib +h +r $view_dat_pn");
+		/* TODO Too much windows.... */
 		cmd = "attrib +h +r " + viewdat;
 		Command.run( cmd );
 	}
@@ -671,7 +678,7 @@ wolles_baseline_02.6448
 	
 	protected static final Pattern rx_view_uuid  = Pattern.compile( "view_uuid:(.*)" );
 	
-	public String ViewrootIsValid( File viewroot )
+	public String ViewrootIsValid( File viewroot ) throws UCMException
 	{
 		logger.debug( viewroot.getAbsolutePath() );
 		

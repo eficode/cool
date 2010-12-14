@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 
 public class Baseline extends UCMEntity
@@ -23,12 +24,12 @@ public class Baseline extends UCMEntity
 	public class BaselineDiff extends ArrayList<Activity>
 	{
 		
-		public BaselineDiff( SnapshotView view )
+		public BaselineDiff( SnapshotView view ) throws UCMException
 		{
 			this.addAll( context.GetBaselineDiff( view, Baseline.this ) );
 		}
 		
-		public void Print()
+		public void Print() throws UCMException
 		{
 			for( Activity a : this )
 			{
@@ -57,7 +58,7 @@ public class Baseline extends UCMEntity
 	 * Load the Baseline into memory from ClearCase.<br>
 	 * This function is automatically called when needed by other functions.
 	 */
-	public void Load()
+	public void Load() throws UCMException
 	{
 		String[] rs = context.LoadBaseline( this );
 		
@@ -96,7 +97,7 @@ public class Baseline extends UCMEntity
 	 * @param cached Whether to use the cached promotion level or not
 	 * @return The promotion level of the Baseline
 	 */
-	public Project.Plevel GetPromotionLevel( boolean cached )
+	public Project.Plevel GetPromotionLevel( boolean cached ) throws UCMException
 	{
 		if( !loaded ) this.Load();
 		
@@ -123,7 +124,7 @@ public class Baseline extends UCMEntity
 	 * If the promotion level is not set, it is set to <code>INITAL</code>.
 	 * @return The new promotion level.
 	 */
-	public Project.Plevel Promote()
+	public Project.Plevel Promote() throws UCMException
 	{
 		if( !loaded ) this.Load();
 		
@@ -137,7 +138,7 @@ public class Baseline extends UCMEntity
 	/**
 	 * Demotes the Baseline to <code>REJECTED</code>.
 	 */
-	public void Demote()
+	public void Demote() throws UCMException
 	{
 		if( !loaded ) this.Load();
 		
@@ -152,18 +153,18 @@ public class Baseline extends UCMEntity
 	 * Currently this method only support the previous Baseline and with -nmerge set.<br>
 	 * @return A BaselineDiff object containing a set of Activities.
 	 */
-	public BaselineDiff GetDiffs( SnapshotView view )
+	public BaselineDiff GetDiffs( SnapshotView view ) throws UCMException
 	{
 		return new BaselineDiff( view );
 	}
 	
-	public Component GetComponent()
+	public Component GetComponent() throws UCMException
 	{
 		if( !loaded ) Load();
 		return this.component;
 	}
 	
-	public String Stringify()
+	public String Stringify() throws UCMException
 	{
 		if( !this.loaded ) Load();
 		

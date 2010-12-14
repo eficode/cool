@@ -3,11 +3,12 @@ package net.praqma.clearcase.ucm.view;
 import java.io.File;
 import java.io.IOException;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCM;
 
 public class UCMView extends UCM
 {
-	public static SnapshotView GetSnapshotView( File viewroot )
+	public static SnapshotView GetSnapshotView( File viewroot ) throws UCMException
 	{
 		return new SnapshotView( viewroot );
 	}

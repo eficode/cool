@@ -88,7 +88,7 @@ public abstract class UCMEntity extends UCM
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UCMEntityException
 	 */
-	public static UCMEntity GetEntity( String fqname ) throws UCMEntityException
+	public static UCMEntity GetEntity( String fqname ) throws UCMEntityException, UCMException
 	{
 		return GetEntity( fqname, true, false );
 	}
@@ -100,7 +100,7 @@ public abstract class UCMEntity extends UCM
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UCMEntityException
 	 */
-	public static UCMEntity GetEntity( String fqname, boolean trusted ) throws UCMEntityException
+	public static UCMEntity GetEntity( String fqname, boolean trusted ) throws UCMEntityException, UCMException
 	{
 		return GetEntity( fqname, trusted, false );
 	}
@@ -113,7 +113,7 @@ public abstract class UCMEntity extends UCM
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UCMEntityException This exception is thrown if the type of the entity is not recognized, the entity class is not found or the default constructor is not found.
 	 */
-	public static UCMEntity GetEntity( String fqname, boolean trusted, boolean cachable ) throws UCMEntityException
+	public static UCMEntity GetEntity( String fqname, boolean trusted, boolean cachable ) throws UCMEntityException, UCMException
 	{
 		logger.debug( "GetEntity = " + fqname );
 		
@@ -241,8 +241,9 @@ public abstract class UCMEntity extends UCM
 	/**
 	 * Default load functionality for the entity.
 	 * Every UCM entity should implement this method itself.
+	 * @throws UCMException 
 	 */
-	public void Load()
+	public void Load() throws UCMException
 	{
 		logger.warning( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
@@ -252,7 +253,7 @@ public abstract class UCMEntity extends UCM
 	/* Syntactic static helper methods for retrieving entity objects */
 	
 	
-	public static Activity GetActivity( String name )
+	public static Activity GetActivity( String name ) throws UCMException
 	{
 		return GetActivity( name, true );
 	}
@@ -263,7 +264,7 @@ public abstract class UCMEntity extends UCM
 	 * @param trusted If not trusted, the entity's content is loaded from clear case.
 	 * @return An Activity object
 	 */
-	public static Activity GetActivity( String name, boolean trusted )
+	public static Activity GetActivity( String name, boolean trusted ) throws UCMException
 	{
 		if( !name.startsWith( "activity:" ) )
 		{
@@ -274,7 +275,7 @@ public abstract class UCMEntity extends UCM
 	}
 
 
-	public static Baseline GetBaseline( String name )
+	public static Baseline GetBaseline( String name ) throws UCMException
 	{
 		return GetBaseline( name, true );
 	}
@@ -285,7 +286,7 @@ public abstract class UCMEntity extends UCM
 	 * @param trusted If not trusted, the entity's content is loaded from clear case.
 	 * @return An Baseline object
 	 */
-	public static Baseline GetBaseline( String name, boolean trusted )
+	public static Baseline GetBaseline( String name, boolean trusted ) throws UCMException
 	{
 		if( !name.startsWith( "baseline:" ) )
 		{
@@ -296,7 +297,7 @@ public abstract class UCMEntity extends UCM
 	}
 	
 	
-	public static Component GetComponent( String name )
+	public static Component GetComponent( String name ) throws UCMException
 	{
 		return GetComponent( name, true );
 	}
@@ -307,7 +308,7 @@ public abstract class UCMEntity extends UCM
 	 * @param trusted If not trusted, the entity's content is loaded from clear case.
 	 * @return An Component object
 	 */
-	public static Component GetComponent( String name, boolean trusted )
+	public static Component GetComponent( String name, boolean trusted ) throws UCMException
 	{
 		if( !name.startsWith( "component:" ) )
 		{
@@ -318,7 +319,7 @@ public abstract class UCMEntity extends UCM
 	}
 	
 	
-	public static Project GetProject( String name )
+	public static Project GetProject( String name ) throws UCMException
 	{
 		return GetProject( name, true );
 	}
@@ -329,7 +330,7 @@ public abstract class UCMEntity extends UCM
 	 * @param trusted If not trusted, the entity's content is loaded from clear case.
 	 * @return a Project object
 	 */
-	public static Project GetProject( String name, boolean trusted )
+	public static Project GetProject( String name, boolean trusted ) throws UCMException
 	{
 		if( !name.startsWith( "project:" ) )
 		{
@@ -340,7 +341,7 @@ public abstract class UCMEntity extends UCM
 	}
 	
 	
-	public static Stream GetStream( String name )
+	public static Stream GetStream( String name ) throws UCMException
 	{
 		return GetStream( name, true );
 	}
@@ -351,7 +352,7 @@ public abstract class UCMEntity extends UCM
 	 * @param trusted If not trusted, the entity's content is loaded from clear case.
 	 * @return An Stream object
 	 */
-	public static Stream GetStream( String name, boolean trusted )
+	public static Stream GetStream( String name, boolean trusted ) throws UCMException
 	{
 		if( !name.startsWith( "stream:" ) )
 		{
@@ -371,7 +372,7 @@ public abstract class UCMEntity extends UCM
 	
 	/* Getters */
 	
-	public String GetUser()
+	public String GetUser() throws UCMException
 	{
 		if( !loaded ) Load();
 		return this.user;
@@ -400,8 +401,9 @@ public abstract class UCMEntity extends UCM
 	/**
 	 * Returns a string representation of the entity object
 	 * @return A String
+	 * @throws UCMException 
 	 */
-	public String Stringify()
+	public String Stringify() throws UCMException
 	{
 		StringBuffer sb = new StringBuffer();
 		

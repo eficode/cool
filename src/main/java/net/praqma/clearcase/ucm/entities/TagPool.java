@@ -29,14 +29,12 @@ class TagPool extends UCM
 	
 
 	
-	public boolean TagExists( String tagType, String tagID, UCMEntity entity )
+	public boolean TagExists( String tagType, String tagID, UCMEntity entity ) throws UCMException
 	{
 		ArrayList<Tag> tags = context.ListTags( entity );
 		
 		for( Tag t : tags )
-		{
-			//t.Load();
-			
+		{			
 			/* Is it the correct tag? Return it! */
 			if( t.GetTagType().equals( t.GetTagType() ) && t.GetTagID().equals( tagID ) )
 			{

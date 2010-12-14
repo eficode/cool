@@ -48,7 +48,7 @@ public class SnapshotView extends UCMView
 		MODIFIABLE
 	}
 	
-	SnapshotView( File viewroot )
+	SnapshotView( File viewroot ) throws UCMException
 	{
 		logger.debug( "Running experimental code." );
 		
@@ -71,7 +71,7 @@ public class SnapshotView extends UCMView
 	 * @param viewtag
 	 * @return
 	 */
-	public static SnapshotView Create( Stream stream, File viewroot, String viewtag )
+	public static SnapshotView Create( Stream stream, File viewroot, String viewtag ) throws UCMException
 	{		
 		context.MakeSnapshotView( stream, viewroot, viewtag );
 		
@@ -98,7 +98,7 @@ public class SnapshotView extends UCMView
 		return context.SwipeView( viewroot, excludeRoot );
 	}
 	
-	public static void RegenerateViewDotDat( File dir, String viewtag ) throws IOException
+	public static void RegenerateViewDotDat( File dir, String viewtag ) throws UCMException
 	{
 		context.RegenerateViewDotDat( dir, viewtag );
 	}
@@ -138,7 +138,7 @@ public class SnapshotView extends UCMView
 	 * <br><code>files_deleted</code>: Number of files deleted
 	 * <br><code>dirs_deleted&nbsp;</code>: Number of directories deleted
 	 */
-	public Map Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, COMP components, String loadrules )
+	public Map Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, COMP components, String loadrules ) throws UCMException
 	{
 		logger.debug( "Updating view: " + components );
 		

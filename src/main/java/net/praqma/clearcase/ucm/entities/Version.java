@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 
@@ -135,7 +136,7 @@ public class Version extends UCMEntity
 	}
 	
 	
-	public String Stringify()
+	public String Stringify() throws UCMException
 	{	
 		StringBuffer sb = new StringBuffer();
 		sb.append( super.Stringify() + linesep );

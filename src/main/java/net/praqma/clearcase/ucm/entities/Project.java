@@ -2,6 +2,8 @@ package net.praqma.clearcase.ucm.entities;
 
 import java.util.ArrayList;
 
+import net.praqma.clearcase.ucm.UCMException;
+
 
 public class Project extends UCMEntity
 {
@@ -76,7 +78,7 @@ public class Project extends UCMEntity
 		return plevel;
 	}
 	
-	public void Load()
+	public void Load() throws UCMException
 	{
 		context.LoadProject( this );
 	}
@@ -86,7 +88,7 @@ public class Project extends UCMEntity
 		this.stream = stream;
 	}
 	
-	public Stream GetStream()
+	public Stream GetStream() throws UCMException
 	{
 		if( !this.loaded ) Load();
 		return stream;

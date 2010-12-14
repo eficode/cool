@@ -8,7 +8,8 @@ public class UCMException extends RuntimeException
 	{
 		DEFAULT,
 		TAG_CREATION_FAILED,
-		UNKNOWN_TAG
+		UNKNOWN_TAG,
+		VIEW_ERROR
 	}
 	
 	public UCMException()

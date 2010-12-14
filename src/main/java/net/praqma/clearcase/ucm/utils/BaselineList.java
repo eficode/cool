@@ -32,7 +32,7 @@ public class BaselineList extends ArrayList<Baseline>
 		this.component = component;
 	}
 	
-	public BaselineList( Component component, Stream stream, Project.Plevel plevel )
+	public BaselineList( Component component, Stream stream, Project.Plevel plevel ) throws UCMException
 	{
 		logger.debug( "Getting Baselines from " + stream.GetFQName() + " and " + component.GetFQName() + " with plevel " + plevel );
 		
@@ -47,7 +47,7 @@ public class BaselineList extends ArrayList<Baseline>
 		this.addAll( bls );
 	}
 	
-	public BaselineList Filter( TagQuery tq, String tagType, String tagID )
+	public BaselineList Filter( TagQuery tq, String tagType, String tagID ) throws UCMException
 	{
 		BaselineList bls = new BaselineList( this );
 		
