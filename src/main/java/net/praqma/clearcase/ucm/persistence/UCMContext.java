@@ -45,6 +45,7 @@ public class UCMContext
 	{
 		logger.debug( "3" );
 		logger.log( view.GetViewtag() );
+		System.out.println( "---------------------------" );
 		
 		/* Change if other than -pre */
 		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge, baseline.GetPvob() );
