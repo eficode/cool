@@ -44,6 +44,7 @@ public class UCMContext
 	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge ) throws UCMException
 	{
 		logger.debug( "3" );
+		logger.log( view.GetViewtag() );
 		
 		/* Change if other than -pre */
 		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge, baseline.GetPvob() );
