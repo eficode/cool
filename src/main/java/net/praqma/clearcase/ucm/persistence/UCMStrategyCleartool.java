@@ -247,7 +247,24 @@ wolles_baseline_02.6448
 		logger.debug( fqname );
 		
 		String cmd = "describe -ahlink " + __TAG_NAME + " -l " + fqname;
-		List<String> list = Cleartool.run( cmd ).stdoutList;
+		CmdResult res = null;
+		try
+		{
+			//List<String> list = Cleartool.run( cmd ).stdoutList;
+			res = Cleartool.run( cmd );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			Matcher match = pattern_tag_missing.matcher( res.errorBuffer );
+			if( match.find() )
+			{
+				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_TAG );
+			}
+			
+			throw e;
+		}
+		
+		List<String> list = res.stdoutList;
 		
 		List<Tuple<String, String>> tags = new ArrayList<Tuple<String, String>>();
 				
@@ -276,7 +293,7 @@ wolles_baseline_02.6448
 	}
 	
 	private static final Pattern pattern_remove_verbose_tag = Pattern.compile( "^.*?\"(.*)\".*?$" );
-	private static final Pattern pattern_tag_missing = Pattern.compile( "Error: hyperlink type \"(.*?)\" not found in VOB" );
+	private static final Pattern pattern_tag_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB.*" );
 	
 	@Override
 	public String NewTag( UCMEntity entity, String cgi )
@@ -287,14 +304,16 @@ wolles_baseline_02.6448
 		// mkhlink -ttext "test nummer 2" tag baseline:wolles_baseline_02.6448@\Cool_PVOB
 		//String cmd = "mkhlink -ttext \"" + cgi + "\" tag " + entity.GetFQName();
 		String cmd = "mkhlink -ttext \"" + cgi + "\" " + __TAG_NAME + " " + entity.GetFQName();
-		String tag = "";
+		
+		CmdResult res = null;
 		try
 		{
-			tag = Cleartool.run( cmd ).stdoutBuffer.toString();
+			//tag = Cleartool.run( cmd ).stdoutBuffer.toString();
+			res = Cleartool.run( cmd );
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			Matcher match = pattern_tag_missing.matcher( tag );
+			Matcher match = pattern_tag_missing.matcher( res.stdoutBuffer );
 			if( match.find() )
 			{
 				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_TAG );
@@ -303,13 +322,15 @@ wolles_baseline_02.6448
 			throw e;
 		}
 		
+		String tag = res.stdoutBuffer.toString();
+		
 		Matcher match = pattern_remove_verbose_tag.matcher( tag );
-		if( match.find() )
+		if( !match.find() )
 		{
-			return match.group( 1 );
+			throw new UCMException( "Could not create tag", UCMType.TAG_CREATION_FAILED );
 		}
 		
-		return "";
+		return match.group( 1 );
 	}
 	
 	@Override
