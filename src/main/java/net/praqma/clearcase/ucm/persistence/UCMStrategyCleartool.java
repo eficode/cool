@@ -32,7 +32,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	
 	private static final String rx_ccdef_allowed = "[\\w\\.-_\\\\]";
 	
-	public static final String __TAG_NAME = "tag1";
+	public static final String __TAG_NAME = "tag";
 	
 	static
 	{

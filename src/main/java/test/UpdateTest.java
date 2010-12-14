@@ -1,9 +1,12 @@
 package test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
@@ -14,6 +17,27 @@ import net.praqma.clearcase.ucm.view.SnapshotView.COMP;
 public class UpdateTest
 {
 	private static Logger loggerj = Logger.getLogger( "test.UpdateTest" );
+	
+	static
+	{
+		System.out.println( "Setting configuration" );
+		//UCM.class.getClassLoader().getResourceAsStream( "log4j.conf" );
+		
+
+		Properties props = new Properties();
+		try
+		{
+			props.load( UCM.class.getClassLoader().getResourceAsStream( "log4j.xml" ) );
+		}
+		catch ( IOException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		PropertyConfigurator.configure( props );
+		//PropertyConfigurator.configure( "/log4j.conf" );
+	}
 	
 	public static void main( String[] args )
 	{

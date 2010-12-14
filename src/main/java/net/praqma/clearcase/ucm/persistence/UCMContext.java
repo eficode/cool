@@ -23,8 +23,6 @@ public class UCMContext
 	private Debug logger = Debug.GetLogger();
 	private UCMStrategyInterface strategy;
 	
-	private Logger loggerj = Logger.getLogger( this.getClass() );
-	
 	private final Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
 	
 	public UCMContext( UCMStrategyInterface strategy )
@@ -35,22 +33,17 @@ public class UCMContext
 	/* Baseline specific */
 	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline ) throws UCMException
 	{
-		logger.debug( "1" );
 		return GetBaselineDiff( view, baseline, null, true );
 	}
 	
 	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, boolean nmerge ) throws UCMException
 	{
-		logger.debug( "2" );
 		return GetBaselineDiff( view, baseline, null, nmerge );
 	}
 	
 	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge ) throws UCMException
 	{
-		logger.debug( "3" );
 		logger.log( view.GetViewtag() );
-		System.out.println( "---------------------------" );
-		loggerj.debug( "TESTING" );
 		
 		/* Change if other than -pre */
 		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge, baseline.GetPvob() );
@@ -70,8 +63,6 @@ public class UCMContext
 			if( match.find() )
 			{
 				current = UCMEntity.GetActivity( match.group( 1 ), true );
-				logger.debug( "SHORTNAME: " + current.GetShortname() );
-				System.out.println( "SHORTNAME: " + current.GetShortname() );
 				
 				/* A special case? */
 				if( current.GetShortname().equals( "no_activity" ) )
@@ -296,7 +287,6 @@ public class UCMContext
 	
 	public Map SwipeView( File viewroot, boolean excludeRoot )
 	{
-		loggerj.debug( "Swiping" );
 		return strategy.SwipeView( viewroot, excludeRoot );
 	}
 	
