@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
+
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
@@ -20,6 +22,8 @@ public class UCMContext
 {
 	private Debug logger = Debug.GetLogger();
 	private UCMStrategyInterface strategy;
+	
+	private Logger loggerj = Logger.getLogger( this.getClass() );
 	
 	private final Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
 	
@@ -46,6 +50,7 @@ public class UCMContext
 		logger.debug( "3" );
 		logger.log( view.GetViewtag() );
 		System.out.println( "---------------------------" );
+		loggerj.debug( "TESTING" );
 		
 		/* Change if other than -pre */
 		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge, baseline.GetPvob() );
