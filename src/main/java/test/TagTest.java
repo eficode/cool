@@ -1,5 +1,6 @@
 package test;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
@@ -40,7 +41,16 @@ public class TagTest
 		System.out.println( bls.get( 0 ).Stringify() );
 		Baseline bl1 = bls.get( 0 );
 		
-		Tag t = bl1.GetTag( "hudson", "001" );
+		Tag t = null;
+		try
+		{
+			t = bl1.GetTag( "hudson", "001" );
+		}
+		catch( UCMException e )
+		{
+			System.out.println( "UCMException: " + e.type );
+			return;
+		}
 		System.out.println( t.Stringify() );
 		
 		t.SetEntry( "status", "pending" );
