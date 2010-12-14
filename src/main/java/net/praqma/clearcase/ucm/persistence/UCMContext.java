@@ -41,6 +41,8 @@ public class UCMContext
 	
 	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge ) throws UCMException
 	{
+		logger.debug( view.GetViewtag() );
+		
 		/* Change if other than -pre */
 		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge, baseline.GetPvob() );
 		
@@ -62,6 +64,7 @@ public class UCMContext
 				/* A special case? */
 				if( current.GetShortname().equals( "no_activity" ) )
 				{
+					logger.debug( "Recorded a special activity case" );
 					current.SetSpecialCase( true );
 				}
 				activities.add( current );
