@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.persistence.*;
 import net.praqma.utils.Debug;
 
@@ -362,7 +363,7 @@ public abstract class UCMEntity extends UCM
 	
 	/* Tag stuff */
 
-	public Tag GetTag( String tagType, String tagID )
+	public Tag GetTag( String tagType, String tagID ) throws UCMException
 	{
 		return tp.GetTag( tagType, tagID, this );
 	}

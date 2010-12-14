@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.entities;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.persistence.UCMContext;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyXML;
 import net.praqma.utils.Debug;
@@ -46,7 +47,7 @@ class TagPool extends UCM
 		return false;
 	}
 	
-	public Tag GetTag( String tagType, String tagID, UCMEntity entity )
+	public Tag GetTag( String tagType, String tagID, UCMEntity entity ) throws UCMException
 	{
 		logger.debug( entity.toString() );
 		ArrayList<Tag> tags = context.ListTags( entity );

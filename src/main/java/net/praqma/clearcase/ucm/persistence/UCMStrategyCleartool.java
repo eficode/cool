@@ -22,6 +22,7 @@ import org.apache.commons.exec.ExecuteException;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.utils.AbnormalProcessTerminationException;
 import net.praqma.utils.CmdResult;
@@ -238,7 +239,7 @@ wolles_baseline_02.6448
 	 */
 	
 	private static final Pattern pattern_tags = Pattern.compile( "^\\s*(tag@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"(.*?)\"\\s*$" );
-	
+		
 	@Override
 	public List<Tuple<String, String>> GetTags( String fqname )
 	{
@@ -275,6 +276,7 @@ wolles_baseline_02.6448
 	}
 	
 	private static final Pattern pattern_remove_verbose_tag = Pattern.compile( "^.*?\"(.*)\".*?$" );
+	private static final Pattern pattern_tag_missing = Pattern.compile( "Error: hyperlink type \"(.*?)\" not found in VOB" );
 	
 	@Override
 	public String NewTag( UCMEntity entity, String cgi )
@@ -285,7 +287,22 @@ wolles_baseline_02.6448
 		// mkhlink -ttext "test nummer 2" tag baseline:wolles_baseline_02.6448@\Cool_PVOB
 		//String cmd = "mkhlink -ttext \"" + cgi + "\" tag " + entity.GetFQName();
 		String cmd = "mkhlink -ttext \"" + cgi + "\" " + __TAG_NAME + " " + entity.GetFQName();
-		String tag = Cleartool.run( cmd ).stdoutBuffer.toString();
+		String tag = "";
+		try
+		{
+			tag = Cleartool.run( cmd ).stdoutBuffer.toString();
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			Matcher match = pattern_tag_missing.matcher( tag );
+			if( match.find() )
+			{
+				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_TAG );
+			}
+			
+			throw e;
+		}
+		
 		Matcher match = pattern_remove_verbose_tag.matcher( tag );
 		if( match.find() )
 		{
