@@ -5,14 +5,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,101 +41,63 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	
 	
 	private static final String filesep = System.getProperty( "file.separator" );
-	private static final String linesep = System.getProperty( "line.separator" );
 	
 	public UCMStrategyCleartool()
 	{
 		logger.log( "Using ClearTool strategy" );
 	}
 	
+	/************************************************************************
+	 *  PROJECT FUNCTIONALITY
+	 ************************************************************************/
 	
-	public void ChangeDirectoryToView( String path )
+	public String GetProjectFromStream( String stream )
 	{
-		logger.trace_function();
-		logger.debug( path );
-		
-		String cwd = System.getProperty( "user.dir" );
-		
-		if( !cwd.equals( path ) )
-		{
-			System.setProperty( "user.dir", path );
-		}
+		String cmd = "desc -fmt %[project]p " + stream;
+		return Cleartool.run( cmd ).stdoutBuffer.toString().trim();
 	}
 	
-	public void CheckViewContext( File dir ) throws UCMException
+	public List<String> GetModifiableComponents( String project )
 	{
-		logger.trace_function();
-		logger.debug( "" );
-		
-		String cmd = "pwv -root";
-		try
-		{
-			Cleartool.run( cmd, dir ).stdoutBuffer.toString();
-		}
-		catch( AbnormalProcessTerminationException e )
-		{
-			if( e.getMessage().equalsIgnoreCase( "cleartool: Error: operation requires a view" ) )
-			{
-				throw new UCMException( "operation requires a view" );
-			}
-			
-			throw e;
-		}
+		String cmd = "desc -fmt %[mod_comps]p " + project;
+		return Arrays.asList( Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" ) );
 	}
 	
-	public boolean IsVob( File dir )
+	public String LoadProject( String project )
 	{
-		logger.debug( "Testing " + dir );
+		logger.debug( project );
 		
-		String cmd = "lsvob \\" + dir.getName();
-		try
-		{
-			Cleartool.run( cmd );
-		}
-		catch( Exception e )
-		{
-			logger.debug( "E=" + e.getMessage() );
-			return false;
-		}
-		
-		return true;
+		String cmd = "lsproj -fmt %[istream]Xp " + project;
+		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	
-	public List<String> ListVobs( File viewroot )
+	/************************************************************************
+	 *  ACTIVITY FUNCTIONALITY
+	 ************************************************************************/
+	
+	public String LoadActivity( String activity )
 	{
-		logger.debug( "Listing vobs at " + viewroot );
-		
-		File[] files = viewroot.listFiles();
-		List<String> vobs = new ArrayList<String>();
-		
-		for( File f : files )
-		{
-			if( f.isDirectory() )
-			{
-				if( IsVob( f ) )
-				{
-					vobs.add( f.getName() );
-				}
-			}
-		}
-		
-		return vobs;
+		String cmd = "describe -fmt %u " + activity;
+		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	
-	@Override
+	/************************************************************************
+	 *  BASELINE FUNCTIONALITY
+	 ************************************************************************/
+
+
 	public String LoadBaseline( String baseline )
 	{
 		String cmd = "desc -fmt %n" + delim + "%[component]p" + delim + "%[bl_stream]p" + delim + "%[plevel]p" + delim + "%u " + baseline;
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
-	
-	@Override
+
+
 	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob ) throws UCMException
 	{
 		/* Check if we are in view context */
 		CheckViewContext( dir );
 		
-		// cleartool('diffbl -pre -act -ver '.$sw_nmerge.$self->get_fqname );
 		String cmd = "diffbl -pre -act -ver -nmerge " + baseline;
 		
 		try
@@ -165,7 +125,6 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 					{
 						if( !files.get( i ).matches( "^lost+found@@.*" ) )
 						{
-							//files.remove( i );
 							result.add( dir + filesep + files.get( i ) );
 						}
 					}
@@ -182,7 +141,6 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	@Override
 	public void SetPromotionLevel( String baseline, String plevel )
 	{
-		// cleartool( 'chbl -level ' . $plevel . ' ' . $self->get_fqname() )
 		String cmd = "chbl -level " + plevel + " " + baseline;
 		Cleartool.run( cmd );
 	}
@@ -194,49 +152,161 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		return null;
 	}
 	
+	/************************************************************************
+	 *  COMPONENT FUNCTIONALITY
+	 ************************************************************************/
+	
 	@Override
 	public List<String> GetBaselines( String component, String stream, String plevel )
 	{
-		// my @retval = cleartool_qx(' lsbl -s -component '.$self->get_fqname().' -stream '.$stream->get_fqname().' -level '.$params{'plevel'});
 		String cmd = "lsbl -s -component " + component + " -stream " + stream + " -level " + plevel;
 		return Cleartool.run( cmd ).stdoutList;
 	}
+	
 	@Override
+	public String GetRootDir( String component )
+	{
+		logger.debug( component );
+		
+		String cmd = "desc -fmt %[root_dir]p " + component;
+		return Cleartool.run( cmd ).stdoutBuffer.toString();
+	}
+	
+	/************************************************************************
+	 *  STREAM FUNCTIONALITY
+	 ************************************************************************/
+	
+	private final String rx_rebase_in_progress = "^Rebase operation in progress on stream";
+	
+	
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException
 	{
-		// "chstream " . $comment . " -recommend " . $baseline->get_fqname() . ' ' . $self->get_fqname();
 		String cmd = "chstream -recommend " + baseline + " " + stream;
 		Cleartool.run( cmd );
 		
 	}
-	@Override
+	
+	
 	public String GetRecommendedBaselines( String stream )
 	{
-		// cleartool( 'desc -fmt %[rec_bls]p stream:' . $self->{'fqstream'} );
 		String cmd = "desc -fmt %[rec_bls]p " + stream;
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
+	
+	
+	public String GetStreamFromView( String viewtag )
+	{
+		String fqstreamstr =  Cleartool.run( "lsstream -fmt %Xn -view " + viewtag ).stdoutBuffer.toString();
 
-	@Override
+		return fqstreamstr;
+	}
+	
+	
+	public void CreateStream( String pstream, String nstream, boolean readonly, String baseline )
+	{
+		logger.debug( "Creating stream " + nstream + " as child of " + pstream );
+		
+		String cmd = "mkstream -in " + pstream + " " + ( baseline != null ? "-baseline " + baseline + " " : "" ) + ( readonly ? "-readonly " : "" ) + nstream;
+		Cleartool.run( cmd );
+	}
+	
+
+	public void Generate( String stream )
+	{
+		String cmd = "chstream -generate " + stream;
+		Cleartool.run( cmd );
+	}
+
+	
+	public boolean StreamExists( String fqname )
+	{
+		String cmd = "describe " + fqname;
+		try
+		{
+			Cleartool.run( cmd );
+			return true;
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			return false;
+		}
+	}
+	
+	
+	public boolean RebaseStream( String viewtag, String stream, String baseline, boolean complete )
+	{
+		logger.debug( "Rebasing " + viewtag );
+		
+		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
+		CmdResult res = Cleartool.run( cmd );
+
+		if( res.stdoutBuffer.toString().matches( "^No rebase needed.*" ) )
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
+	public boolean IsRebaseInProgress( String stream )
+	{
+		String cmd = "rebase -status -stream " + stream;
+		String result = Cleartool.run( cmd ).stdoutBuffer.toString();
+		if( result.matches( rx_rebase_in_progress ) )
+		{
+			return true;
+		}
+			
+		return false;
+	}
+	
+	
+	public void CancelRebase( String stream )
+	{
+		String cmd = "rebase -cancel -force -stream " + stream;
+		Cleartool.run( cmd );
+	}
+	
+	
+	public List<String> GetLatestBaselines( String stream )
+	{
+		String cmd = "desc -fmt %[latest_bls]Xp " + stream;
+		String[] t = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
+		List<String> bls = new ArrayList<String>();
+		for( String s : t )
+		{
+			if( s.matches( "\\S+" ) )
+			{
+				bls.add( s );
+			}
+		}
+		
+		return bls;
+	}
+	
+	
+	/************************************************************************
+	 *  VERSION FUNCTIONALITY
+	 ************************************************************************/
+	
 	public String GetVersion( String version, String separator )
 	{
-		// 'desc -fmt [date:%d]\n[user:%u]\n[machine:%h]\n[comment:%c]\n[checkedout:%Rf]\n[kind:%m]\n[branch:%Vn]\n[xname:%Xn]\n ' . $self->{'fqpname'};
 		String cmd = "desc -fmt %d" + separator + "%u" + separator + "%h" + separator + "%c" + separator + "%Rf" + separator + "%m" + separator + "%Vn" + separator + "%Xn \"" + version + "\"";
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	
-	/*
-wolles_baseline_02.6448
-  Hyperlinks:
-    tag@377@\Cool_PVOB ->  "test"
-    tag@394@\Cool_PVOB ->  "test nummer 2"
-    
-    describe -ahlink tag -l
-	 */
 	
-	private static final Pattern pattern_tags = Pattern.compile( "^\\s*(tag@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"(.*?)\"\\s*$" );
+	
+	/************************************************************************
+	 *  TAG FUNCTIONALITY
+	 ************************************************************************/
 		
-	@Override
+	private static final Pattern pattern_tags = Pattern.compile( "^\\s*(tag@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"(.*?)\"\\s*$" );
+	private static final Pattern pattern_remove_verbose_tag = Pattern.compile( "^.*?\"(.*)\".*?$" );
+	private static final Pattern pattern_tag_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB.*" );
+		
+	
 	public List<Tuple<String, String>> GetTags( String fqname ) throws UCMException
 	{
 		logger.trace_function();
@@ -246,7 +316,6 @@ wolles_baseline_02.6448
 		CmdResult res = null;
 		try
 		{
-			//List<String> list = Cleartool.run( cmd ).stdoutList;
 			res = Cleartool.run( cmd );
 		}
 		catch( AbnormalProcessTerminationException e )
@@ -281,30 +350,24 @@ wolles_baseline_02.6448
 		return tags;
 	}
 	
-	@Override
+	
 	public String GetTag( String fqname )
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	private static final Pattern pattern_remove_verbose_tag = Pattern.compile( "^.*?\"(.*)\".*?$" );
-	private static final Pattern pattern_tag_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB.*" );
-	
-	@Override
+
 	public String NewTag( UCMEntity entity, String cgi ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( entity.GetFQName() );
 		
-		// mkhlink -ttext "test nummer 2" tag baseline:wolles_baseline_02.6448@\Cool_PVOB
-		//String cmd = "mkhlink -ttext \"" + cgi + "\" tag " + entity.GetFQName();
 		String cmd = "mkhlink -ttext \"" + cgi + "\" " + __TAG_NAME + " " + entity.GetFQName();
 		
 		CmdResult res = null;
 		try
 		{
-			//tag = Cleartool.run( cmd ).stdoutBuffer.toString();
 			res = Cleartool.run( cmd );
 		}
 		catch( AbnormalProcessTerminationException e )
@@ -329,14 +392,14 @@ wolles_baseline_02.6448
 		return match.group( 1 );
 	}
 	
-	@Override
+	
 	public void DeleteTag( String fqname )
 	{
 		// TODO Auto-generated method stub
 		
 	}
 	
-	@Override
+	
 	public void DeleteTagsWithID( String tagType, String tagID, String entity ) throws UCMException
 	{
 		logger.trace_function();
@@ -356,30 +419,88 @@ wolles_baseline_02.6448
 		}
 		
 	}
-	@Override
+
+
 	public String PutTag( String fqname, String keyval, UCMEntity entity )
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	public List<String> GetLatestBaselines( String stream )
+	/************************************************************************
+	 *  SNAPSHOT VIEW FUNCTIONALITY
+	 ************************************************************************/
+	
+	private static final Pattern pattern_view_uuid = Pattern.compile( "^.*?View uuid: ([\\w\\.:]+).*?$" );
+	protected static final Pattern rx_view_uuid  = Pattern.compile( "view_uuid:(.*)" );
+	private final String rx_co_file = ".*CHECKEDOUT$";
+	private final String rx_ctr_file = ".*\\.contrib";
+	private final String rx_keep_file = ".*\\.keep$";
+	
+	
+	public void CheckViewContext( File dir ) throws UCMException
 	{
-		String cmd = "desc -fmt %[latest_bls]Xp " + stream;
-		String[] t = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
-		List<String> bls = new ArrayList<String>();
-		for( String s : t )
+		logger.trace_function();
+		logger.debug( "" );
+		
+		String cmd = "pwv -root";
+		try
 		{
-			if( s.matches( "\\S+" ) )
+			Cleartool.run( cmd, dir ).stdoutBuffer.toString();
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			if( e.getMessage().equalsIgnoreCase( "cleartool: Error: operation requires a view" ) )
 			{
-				bls.add( s );
+				throw new UCMException( "operation requires a view" );
+			}
+			
+			throw e;
+		}
+	}
+	
+	
+	public boolean IsVob( File dir )
+	{
+		logger.debug( "Testing " + dir );
+		
+		String cmd = "lsvob \\" + dir.getName();
+		try
+		{
+			Cleartool.run( cmd );
+		}
+		catch( Exception e )
+		{
+			logger.debug( "E=" + e.getMessage() );
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
+	public List<String> ListVobs( File viewroot )
+	{
+		logger.debug( "Listing vobs at " + viewroot );
+		
+		File[] files = viewroot.listFiles();
+		List<String> vobs = new ArrayList<String>();
+		
+		for( File f : files )
+		{
+			if( f.isDirectory() )
+			{
+				if( IsVob( f ) )
+				{
+					vobs.add( f.getName() );
+				}
 			}
 		}
 		
-		return bls;
+		return vobs;
 	}
 	
-	@Override
+
 	public void MakeSnapshotView( String stream, File viewroot, String viewtag )
 	{
 		logger.debug( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
@@ -391,30 +512,26 @@ wolles_baseline_02.6448
 		
 		this.Generate( stream );
 		
-		//cleartool( "mkview -snap -tag " . $params{tag} . " -stream " . $params{stream}->get_fqname . " " . $params{viewroot} );
 		String cmd = "mkview -snap -tag " + viewtag + " -stream " + stream + " \"" + viewroot.getAbsolutePath() + "\"";
 		Cleartool.run( cmd );		
 	}
+	
 	
 	public String ViewUpdate( File viewroot, boolean overwrite, String loadrules )
 	{
 		logger.debug( viewroot.getAbsolutePath() );
 		
-		//$params{generate} && cleartool('setcs -stream');
 		String cmd = "setcs -stream";
 		Cleartool.run( cmd, viewroot );
 		
 		logger.debug( "Updating view" );
 
-		//my $retval = cleartool( "update " . $force . $overwrite . $loadrules );
 		cmd = "update -force " +  ( overwrite ? " -overwrite " : "" ) + loadrules;
 		return Cleartool.run( cmd, viewroot, true ).stdoutBuffer.toString();
-		//return Cleartool.run( cmd, viewroot ).stdoutBuffer.toString();
 		
 	}
 	
-	private static final Pattern pattern_view_uuid = Pattern.compile( "^.*?View uuid: ([\\w\\.:]+).*?$" );
-	
+		
 	public void RegenerateViewDotDat( File dir, String viewtag ) throws UCMException
 	{
 		logger.trace_function();
@@ -491,18 +608,12 @@ wolles_baseline_02.6448
 		}
 	}
 	
-	private final String rx_co_file = ".*CHECKEDOUT$";
-	private final String rx_ctr_file = ".*\\.contrib";
-	private final String rx_keep_file = ".*\\.keep$";
-	
-	public Map SwipeView( File viewroot, boolean excludeRoot )
+
+	public Map<String, Integer> SwipeView( File viewroot, boolean excludeRoot )
 	{
 		logger.debug( viewroot.toString() );
 		
-		List<String> vobs = ListVobs( viewroot );
-		
 		File[] files = viewroot.listFiles();
-		//List<File> fls = new ArrayList<File>();
 		String fls = "";
 		List<File> other = new ArrayList<File>();
 		List<File> root = new ArrayList<File>();
@@ -567,7 +678,6 @@ wolles_baseline_02.6448
 		
 		info.put( "total", total );
 		
-		//for( int i = 0 ; i < result.size() ; i++ )
 		for( String s : result )
 		{
 			logger.debug( s );
@@ -644,27 +754,7 @@ wolles_baseline_02.6448
 		return info;
 	}
 	
-	@Override
-	public String GetXML()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void SaveState()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String GetStreamFromView( String viewtag )
-	{
-		String fqstreamstr =  Cleartool.run( "lsstream -fmt %Xn -view " + viewtag ).stdoutBuffer.toString();
-
-		return fqstreamstr;
-	}
-
+	
 	@Override
 	public File GetCurrentViewRoot( File viewroot )
 	{
@@ -676,14 +766,11 @@ wolles_baseline_02.6448
 		return new File( wvroot );
 	}
 	
-	protected static final Pattern rx_view_uuid  = Pattern.compile( "view_uuid:(.*)" );
-	
+		
 	public String ViewrootIsValid( File viewroot ) throws UCMException
 	{
 		logger.debug( viewroot.getAbsolutePath() );
 		
-		//viewroot. 
-		//String viewdotdatpname = viewroot + filesep + "view.dat";
 		File viewdotdatpname = new File( viewroot, "view.dat" );
 		
 		logger.debug( "The view file = " + viewdotdatpname );
@@ -732,118 +819,31 @@ wolles_baseline_02.6448
 			throw new UCMException( "UUID not found" );
 		}
 		
-		//my $viewtag = cleartool("lsview -s -uuid $1");
 		String cmd = "lsview -s -uuid " + uuid;
 		String viewtag = Cleartool.run( cmd ).stdoutBuffer.toString().trim();
 		
 		return viewtag;
 	}
+	
 
-	@Override
-	public void CreateStream( String pstream, String nstream, boolean readonly, String baseline )
-	{
-		logger.debug( "Creating stream " + nstream + " as child of " + pstream );
-		
-		// "mkstream $c $baseline $readonly -in stream:" . $params{'parent_stream'}->get_fqname() . " " . $stream_fqname );
-		String cmd = "mkstream -in " + pstream + " " + ( baseline != null ? "-baseline " + baseline + " " : "" ) + ( readonly ? "-readonly " : "" ) + nstream;
-		Cleartool.run( cmd );
-	}
 	
-	public String LoadProject( String project )
-	{
-		logger.debug( project );
-		
-		String cmd = "lsproj -fmt %[istream]Xp " + project;
-		return Cleartool.run( cmd ).stdoutBuffer.toString();
-	}
+	/*****************************
+	 *  OTHER STUFF
+	 *****************************/
 	
-	public void Generate( String stream )
-	{
-		//cleartool( 'chstream -generate ' . $self->get_fqname );
-		String cmd = "chstream -generate " + stream;
-		Cleartool.run( cmd );
-	}
-	
-	public boolean StreamExists( String fqname )
-	{
-		String cmd = "describe " + fqname;
-		try
-		{
-			Cleartool.run( cmd );
-			return true;
-		}
-		catch( AbnormalProcessTerminationException e )
-		{
-			return false;
-		}
-	}
-	
-	public boolean RebaseStream( String viewtag, String stream, String baseline, boolean complete )
-	{
-		logger.debug( "Rebasing " + viewtag );
-		
-		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
-		CmdResult res = Cleartool.run( cmd );
 
-		if( res.stdoutBuffer.toString().matches( "^No rebase needed.*" ) )
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	private final String rx_rebase_in_progress = "^Rebase operation in progress on stream";
-	
-	public boolean IsRebaseInProgress( String stream )
+	public String GetXML()
 	{
-		//my ($rebase_in_progress) = grep( /^Rebase operation in progress on stream/, cleartool_qx( 'rebase -status -stream ' . $self->get_fqname ) );
-		String cmd = "rebase -status -stream " + stream;
-		String result = Cleartool.run( cmd ).stdoutBuffer.toString();
-		if( result.matches( rx_rebase_in_progress ) )
-		{
-			return true;
-		}
-			
-		return false;
-	}
-	
-	public void CancelRebase( String stream )
-	{
-		// cleartool( 'rebase -cancel -force -stream ' . $self->get_fqname );
-		String cmd = "rebase -cancel -force -stream " + stream;
-		Cleartool.run( cmd );
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
-	@Override
-	public String GetRootDir( String component )
+	public void SaveState()
 	{
-		logger.debug( component );
+		// TODO Auto-generated method stub
 		
-		//cleartool( "desc -fmt %[root_dir]p " . $self->get_fqname() );
-		String cmd = "desc -fmt %[root_dir]p " + component;
-		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
-	
-	
-	public String GetProjectFromStream( String stream )
-	{
-		String cmd = "desc -fmt %[project]p " + stream;
-		return Cleartool.run( cmd ).stdoutBuffer.toString().trim();
-	}
-	
-	public List<String> GetModifiableComponents( String project )
-	{
-		String cmd = "desc -fmt %[mod_comps]p " + project;
-		return Arrays.asList( Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" ) );
-	}
-	
-	public String LoadActivity( String activity )
-	{
-		String cmd = "describe -fmt %u " + activity;
-		return Cleartool.run( cmd ).stdoutBuffer.toString();
-	}
-	
+
 	
 }

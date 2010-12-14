@@ -17,7 +17,6 @@ interface UCMStrategyInterface
 	public static final String delim = "::";
 	
 	/* General command line stuff */
-	public void ChangeDirectoryToView( String path );
 	public void CheckViewContext( File dir ) throws UCMException;
 	
 	/* Project */
@@ -74,7 +73,10 @@ interface UCMStrategyInterface
 
 		
 	
-	/* TEST */
+	/* 
+	 * OTHER STUFF
+	 * TODO Should be phased out
+	 */
 	public String GetXML();
 	public void SaveState();
 }
