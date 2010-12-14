@@ -31,17 +31,19 @@ public class UCMContext
 	/* Baseline specific */
 	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline ) throws UCMException
 	{
+		logger.debug( "1" );
 		return GetBaselineDiff( view, baseline, null, true );
 	}
 	
 	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, boolean nmerge ) throws UCMException
 	{
+		logger.debug( "2" );
 		return GetBaselineDiff( view, baseline, null, nmerge );
 	}
 	
 	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge ) throws UCMException
 	{
-		logger.debug( view.GetViewtag() );
+		logger.debug( "3" );
 		
 		/* Change if other than -pre */
 		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge, baseline.GetPvob() );
