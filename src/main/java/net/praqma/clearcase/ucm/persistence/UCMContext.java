@@ -59,6 +59,11 @@ public class UCMContext
 			if( match.find() )
 			{
 				current = UCMEntity.GetActivity( match.group( 1 ), true );
+				/* A special case? */
+				if( current.GetShortname().equals( "no_activity" ) )
+				{
+					current.SetSpecialCase( true );
+				}
 				activities.add( current );
 				continue;
 			}
@@ -421,7 +426,17 @@ public class UCMContext
 	
 	public void LoadActivity( Activity activity )
 	{
-		String result = strategy.LoadActivity( activity.GetFQName() );
+		String result = "";
+		
+		/* The special case branch */
+		if( activity.GetSpecialCase() )
+		{
+			result = "System";
+		}
+		else
+		{
+			result = strategy.LoadActivity( activity.GetFQName() );
+		}
 		activity.SetUser( result );
 	}
 	

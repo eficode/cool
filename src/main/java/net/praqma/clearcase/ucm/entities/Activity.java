@@ -4,10 +4,21 @@ public class Activity extends UCMEntity
 {
 	/* Activity specific fields */
 	public Changeset changeset = new Changeset();
+	private boolean specialCase = false;
 	
 	
 	Activity()
 	{
+	}
+	
+	public void SetSpecialCase( boolean b )
+	{
+		this.specialCase = b;
+	}
+	
+	public boolean GetSpecialCase()
+	{
+		return this.specialCase;
 	}
 	
 	/**
