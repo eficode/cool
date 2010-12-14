@@ -21,7 +21,7 @@ public abstract class Cleartool
 {	
 	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
-		return run( cmd, null, false );
+		return Command.run( cmd, null, false );
 	}
 	
 	public static CmdResult run( String cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException

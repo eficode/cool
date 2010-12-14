@@ -251,7 +251,7 @@ wolles_baseline_02.6448
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			Matcher match = pattern_tag_missing.matcher( res.errorBuffer );
+			Matcher match = pattern_tag_missing.matcher( e.getMessage() );
 			if( match.find() )
 			{
 				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_TAG );
@@ -309,7 +309,7 @@ wolles_baseline_02.6448
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			Matcher match = pattern_tag_missing.matcher( res.errorBuffer.toString() );
+			Matcher match = pattern_tag_missing.matcher( e.getMessage() );
 			if( match.find() )
 			{
 				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_TAG );
