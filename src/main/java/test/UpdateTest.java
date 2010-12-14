@@ -3,6 +3,8 @@ package test;
 import java.io.File;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.SnapshotView.UpdateInfo;
@@ -11,9 +13,13 @@ import net.praqma.clearcase.ucm.view.SnapshotView.COMP;
 
 public class UpdateTest
 {
+	private static Logger loggerj = Logger.getLogger( "test.UpdateTest" );
+	
 	public static void main( String[] args )
 	{
 		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		
+		loggerj.debug( "YEAH" );
 		
 		//File root = new File( "C:\\Temp\\views\\chw_Server_11_dev_view\\" );
 		File root = new File( "C:\\Documents and Settings\\chw\\.hudson\\jobs\\test10\\workspace\\view" );
