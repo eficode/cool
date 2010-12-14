@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.clearcase.ucm.view.SnapshotView.UpdateInfo;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.view.SnapshotView.COMP;
 
@@ -27,11 +28,14 @@ public class UpdateTest
 		System.out.println( "Starting..." );
 		
 		SnapshotView view = UCMView.GetSnapshotView( root );
-		Map<String, Integer> info = view.Update( true, true, true, false, COMP.ALL, null );
+		UpdateInfo info = view.Update( true, true, true, false, COMP.ALL, null );
 		
-		System.out.println( "Total files to delete: " + info.get( "total" ) );
-		System.out.println( "Files deleted: " + info.get( "files_deleted" ) );
-		System.out.println( "Dirs deleted: " + info.get( "dirs_deleted" ) );
+		
+		System.out.println( "The update operations succeeded: " + info.success );
+		
+		System.out.println( "Total files to delete: " + info.totalFilesToBeDeleted );
+		System.out.println( "Files deleted: " + info.filesDeleted );
+		System.out.println( "Dirs deleted: " + info.dirsDeleted );
 		
 	}
 }

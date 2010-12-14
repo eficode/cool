@@ -123,6 +123,14 @@ public class SnapshotView extends UCMView
 		return context.ViewrootIsValid( view );
 	}
 	
+	public class UpdateInfo
+	{
+		public Integer totalFilesToBeDeleted = 0;
+		public boolean success = false;
+		public Integer filesDeleted = 0;
+		public Integer dirsDeleted = 0;		
+	}
+	
 
 	/**
 	 * 
@@ -132,17 +140,11 @@ public class SnapshotView extends UCMView
 	 * @param excludeRoot
 	 * @param components
 	 * @param loadrules
-	 * @return A Map of result info, currently only about the swipe. <br>
-	 * <br><code>success&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>: 0=false, 1=true
-	 * <br><code>total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>: Number of files to delete, directories included
-	 * <br><code>files_deleted</code>: Number of files deleted
-	 * <br><code>dirs_deleted&nbsp;</code>: Number of directories deleted
+	 * @return A Class of result info, currently only about the swipe. 
 	 */
-	public Map<String, Integer> Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, COMP components, String loadrules ) throws UCMException
+	public UpdateInfo Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, COMP components, String loadrules ) throws UCMException
 	{
 		logger.debug( "Updating view: " + components );
-		
-		Map<String, Integer> info = new HashMap<String, Integer>();
 		
 		if( ( components != null && loadrules != null ) || ( components == null && loadrules == null ) )
 		{
@@ -152,6 +154,8 @@ public class SnapshotView extends UCMView
 		logger.debug( "components and loadrules" );
 		
 		String myloadrules = "";
+		
+		UpdateInfo info = new UpdateInfo();
 		
 		/* If the components part is set */
 		if( components != null )
@@ -206,7 +210,10 @@ public class SnapshotView extends UCMView
 		if( swipe )
 		{
 			Map<String, Integer> sinfo = this.Swipe( excludeRoot );
-			info = sinfo;
+			info.success = sinfo.get( "success" ).equals( "1" ) ? true : false;
+			info.totalFilesToBeDeleted = sinfo.get( "total" );
+			info.dirsDeleted = sinfo.get( "dirs_deleted" );
+			info.filesDeleted = sinfo.get( "files_deleted" );
 		}
 		
 		logger.debug( "SWIPED" );
