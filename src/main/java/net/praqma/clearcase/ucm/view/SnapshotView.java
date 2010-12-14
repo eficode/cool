@@ -138,7 +138,7 @@ public class SnapshotView extends UCMView
 	 * <br><code>files_deleted</code>: Number of files deleted
 	 * <br><code>dirs_deleted&nbsp;</code>: Number of directories deleted
 	 */
-	public Map Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, COMP components, String loadrules ) throws UCMException
+	public Map<String, Integer> Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, COMP components, String loadrules ) throws UCMException
 	{
 		logger.debug( "Updating view: " + components );
 		

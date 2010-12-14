@@ -1,6 +1,7 @@
 package test;
 
 import java.io.File;
+import java.util.Map;
 
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
@@ -26,7 +27,11 @@ public class UpdateTest
 		System.out.println( "Starting..." );
 		
 		SnapshotView view = UCMView.GetSnapshotView( root );
-		view.Update( true, true, true, false, COMP.ALL, null );
+		Map<String, Integer> info = view.Update( true, true, true, false, COMP.ALL, null );
+		
+		System.out.println( "Total files to delete: " + info.get( "total" ) );
+		System.out.println( "Files deleted: " + info.get( "files_deleted" ) );
+		System.out.println( "Dirs deleted: " + info.get( "dirs_deleted" ) );
 		
 	}
 }
