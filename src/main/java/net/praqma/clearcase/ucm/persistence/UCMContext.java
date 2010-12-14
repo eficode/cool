@@ -296,6 +296,7 @@ public class UCMContext
 	
 	public Map SwipeView( File viewroot, boolean excludeRoot )
 	{
+		loggerj.debug( "Swiping" );
 		return strategy.SwipeView( viewroot, excludeRoot );
 	}
 	
