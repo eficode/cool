@@ -210,7 +210,7 @@ public class SnapshotView extends UCMView
 		if( swipe )
 		{
 			Map<String, Integer> sinfo = this.Swipe( excludeRoot );
-			info.success = sinfo.get( "success" ).equals( "1" ) ? true : false;
+			info.success = sinfo.get( "success" ) == 1 ? true : false;
 			info.totalFilesToBeDeleted = sinfo.get( "total" );
 			info.dirsDeleted = sinfo.get( "dirs_deleted" );
 			info.filesDeleted = sinfo.get( "files_deleted" );
