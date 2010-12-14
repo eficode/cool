@@ -64,6 +64,8 @@ public class UCMContext
 			{
 				current = UCMEntity.GetActivity( match.group( 1 ), true );
 				logger.debug( "SHORTNAME: " + current.GetShortname() );
+				System.out.println( "SHORTNAME: " + current.GetShortname() );
+				
 				/* A special case? */
 				if( current.GetShortname().equals( "no_activity" ) )
 				{
