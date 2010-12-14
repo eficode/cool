@@ -8,11 +8,6 @@ import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.PumpStreamHandler;
-
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
@@ -44,54 +39,6 @@ public class UpdateTest2
 		String s = Command.run( cmd, root, true ).stdoutBuffer.toString();
 		System.out.println( s );
 		
-		/*
-		PipedOutputStream output = new PipedOutputStream();
-		PumpStreamHandler psh = new PumpStreamHandler(output);
-		DataInputStream is = null;
-		
-		CommandLine cl = CommandLine.parse( cmd );
-		DefaultExecutor executor = new DefaultExecutor();
-		executor.setExitValue( 0 );
-		executor.setWorkingDirectory( root );
-		int exitValue = 0;
-		try
-		{
-			System.out.println( "1" );
-			is = new DataInputStream( new PipedInputStream( output ) );
-			System.out.println( "2" );
-			executor.setStreamHandler(psh);
-			System.out.println( "3" );
-			exitValue = executor.execute(cl);
-			System.out.println( "4" );
-		}
-		catch ( ExecuteException e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch ( IOException e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println( "VALUE=" + exitValue );*/
-		
-/*		BufferedReader br = new BufferedReader( new InputStreamReader( is ) );
-		
-		String line = "";
-		try
-		{
-			while( ( line = br.readLine() ) != null )
-			{
-				System.out.println( "LINE="+line );
-				
-			}
-		}
-		catch ( IOException e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 		
 	}
 }
