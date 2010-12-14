@@ -61,6 +61,7 @@ public class UCMContext
 			if( match.find() )
 			{
 				current = UCMEntity.GetActivity( match.group( 1 ), true );
+				logger.debug( "SHORTNAME: " + current.GetShortname() );
 				/* A special case? */
 				if( current.GetShortname().equals( "no_activity" ) )
 				{
