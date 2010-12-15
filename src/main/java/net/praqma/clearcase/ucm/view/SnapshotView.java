@@ -23,7 +23,7 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.utils.BaselineList;
-import net.praqma.utils.Tuple;
+import net.praqma.util.Tuple;
 
 /**
  * The OO implementation of the ClearCase entity Snapshot view.
@@ -232,7 +232,7 @@ public class SnapshotView extends UCMView
 		{
 			if( f.isDirectory() )
 			{
-				net.praqma.utils.IO.DeleteDirectory( f );
+				net.praqma.util.IO.DeleteDirectory( f );
 			}
 			else
 			{

@@ -1,10 +1,10 @@
-package net.praqma.utils;
+package net.praqma.util;
 
 
 import java.io.File;
 import java.io.IOException;
 
-import net.praqma.utils.Debug;
+import net.praqma.util.Debug;
 
 /**
  * UNTESTED cmd class

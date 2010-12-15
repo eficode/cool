@@ -10,7 +10,7 @@ import java.util.Set;
 
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.utils.Tuple;
+import net.praqma.util.Tuple;
 
 interface UCMStrategyInterface
 {

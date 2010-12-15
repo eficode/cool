@@ -4,7 +4,7 @@ package net.praqma.clearcase.ucm.entities;
 import net.praqma.clearcase.ucm.persistence.UCMContext;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyCleartool;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyXML;
-import net.praqma.utils.Debug;
+import net.praqma.util.Debug;
 
 public abstract class UCM
 {

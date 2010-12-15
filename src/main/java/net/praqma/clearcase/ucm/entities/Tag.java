@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCMEntity.ClearcaseEntityType;
 import net.praqma.clearcase.ucm.utils.TagQuery;
-import net.praqma.utils.Printer;
-import net.praqma.utils.Tuple;
+import net.praqma.util.Printer;
+import net.praqma.util.Tuple;
 
 public class Tag extends UCMEntity
 {

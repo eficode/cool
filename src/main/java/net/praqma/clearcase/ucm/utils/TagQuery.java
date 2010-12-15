@@ -3,7 +3,7 @@ package net.praqma.clearcase.ucm.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.praqma.utils.Tuple;
+import net.praqma.util.Tuple;
 
 public class TagQuery extends ArrayList<Tuple<String, String>>
 {

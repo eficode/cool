@@ -15,8 +15,8 @@ import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.utils.Debug;
-import net.praqma.utils.Tuple;
+import net.praqma.util.Debug;
+import net.praqma.util.Tuple;
 
 public class UCMContext
 {
@@ -257,7 +257,7 @@ public class UCMContext
 		List<String> bls_str = strategy.GetBaselines( component.GetFQName(), stream.GetFQName(), pl );
 		
 		logger.debug( "I got " + bls_str.size() + " baselines." );
-		net.praqma.utils.Printer.ListPrinter( bls_str );
+		net.praqma.util.Printer.ListPrinter( bls_str );
 		List<Baseline> bls = new ArrayList<Baseline>();
 		
 		for( String bl : bls_str )

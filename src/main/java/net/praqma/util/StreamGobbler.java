@@ -1,4 +1,4 @@
-package net.praqma.utils;
+package net.praqma.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;

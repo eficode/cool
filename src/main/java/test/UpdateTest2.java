@@ -12,7 +12,7 @@ import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.view.SnapshotView.COMP;
-import net.praqma.utils.Command;
+import net.praqma.util.Command;
 
 public class UpdateTest2
 {

@@ -33,8 +33,8 @@ import org.w3c.dom.NodeList;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.utils.Debug;
-import net.praqma.utils.Tuple;
+import net.praqma.util.Debug;
+import net.praqma.util.Tuple;
 
 public class UCMStrategyXML implements UCMStrategyInterface
 {

@@ -18,12 +18,12 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.utils.AbnormalProcessTerminationException;
-import net.praqma.utils.CmdResult;
-import net.praqma.utils.Command;
-import net.praqma.utils.Debug;
-import net.praqma.utils.IO;
-import net.praqma.utils.Tuple;
+import net.praqma.util.AbnormalProcessTerminationException;
+import net.praqma.util.CmdResult;
+import net.praqma.util.Command;
+import net.praqma.util.Debug;
+import net.praqma.util.IO;
+import net.praqma.util.Tuple;
 
 
 public class UCMStrategyCleartool implements UCMStrategyInterface
@@ -653,7 +653,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		for( File f : other )
 		{
 			logger.log( "Removing " + f );
-			net.praqma.utils.IO.DeleteDirectory( f );
+			net.praqma.util.IO.DeleteDirectory( f );
 		}
 		
 		Map<String, Integer> info = new HashMap<String, Integer>();

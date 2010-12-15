@@ -1,4 +1,4 @@
-package net.praqma.utils;
+package net.praqma.util;
 
 public class Tuple<T1, T2>
 {

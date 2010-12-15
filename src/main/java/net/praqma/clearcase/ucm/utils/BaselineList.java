@@ -10,7 +10,7 @@ import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCM;
-import net.praqma.utils.Debug;
+import net.praqma.util.Debug;
 
 public class BaselineList extends ArrayList<Baseline>
 {

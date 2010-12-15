@@ -9,7 +9,7 @@ import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.clearcase.ucm.utils.TagQuery;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.utils.Debug;
+import net.praqma.util.Debug;
 
 public class Main
 {

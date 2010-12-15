@@ -1,4 +1,4 @@
-package net.praqma.utils;
+package net.praqma.util;
 
 import java.util.ArrayList;
 import java.util.List;

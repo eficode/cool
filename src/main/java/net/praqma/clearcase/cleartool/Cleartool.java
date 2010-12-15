@@ -1,9 +1,9 @@
 package net.praqma.clearcase.cleartool;
 
-import net.praqma.utils.AbnormalProcessTerminationException;
-import net.praqma.utils.CmdResult;
-import net.praqma.utils.Command;
-import net.praqma.utils.CommandLineException;
+import net.praqma.util.AbnormalProcessTerminationException;
+import net.praqma.util.CmdResult;
+import net.praqma.util.Command;
+import net.praqma.util.CommandLineException;
 
 import java.io.File;
 

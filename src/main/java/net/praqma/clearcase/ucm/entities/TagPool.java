@@ -6,8 +6,8 @@ import java.util.HashMap;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.persistence.UCMContext;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyXML;
-import net.praqma.utils.Debug;
-import net.praqma.utils.Printer;
+import net.praqma.util.Debug;
+import net.praqma.util.Printer;
 
 class TagPool extends UCM
 {
