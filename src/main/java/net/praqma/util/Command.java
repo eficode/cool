@@ -53,7 +53,7 @@ public abstract class Command
 		try
 		{
 			ProcessBuilder pb = new ProcessBuilder( cmds );
-			//pb.redirectErrorStream( merge );
+			pb.redirectErrorStream( merge );
 			
 			if( dir != null )
 			{
@@ -64,14 +64,13 @@ public abstract class Command
 			CmdResult result = new CmdResult();
 			
 			Process p = pb.start();
-							
+
+			/* Starting Gobbler threads */
 			StreamGobbler output = new StreamGobbler( p.getInputStream() );
 			StreamGobbler errors = new StreamGobbler( p.getErrorStream() );
 			p.getOutputStream().close();
 
-			//System.out.println( "Running output" );
 			output.start();
-			//System.out.println( "Running errors" );
 			errors.start();
 			
 			int exitValue = 0;
@@ -115,7 +114,6 @@ public abstract class Command
 			
 			/* Closing streams */
 			p.getErrorStream().close();
-			//p.getOutputStream().close();
 			p.getInputStream().close();
 			
 			/* Setting command result */
@@ -125,9 +123,6 @@ public abstract class Command
 			result.errorBuffer  = errors.sres;
 			result.errorList    = errors.lres;
 			
-			//net.praqma.utils.Printer.ListPrinter( output.lres );
-			
-			//return output.lres;
 			return result;
 		}
 		catch ( IOException e )

@@ -1,9 +1,11 @@
 package net.praqma.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +33,18 @@ public class StreamGobbler extends Thread
 			BufferedReader br = new BufferedReader( isr );
 			String line = null;
 			
+//			StringWriter sw = new StringWriter();
+//			BufferedWriter bw = new BufferedWriter( sw );
+//
+//			int ch;
+//			while( ( ch = br.read() ) > -1 )
+//			{
+//				sw.write( ch );
+//			}
+			
 			while( ( line = br.readLine() ) != null )
 			{
-				sres.append( line );
+				sres.append( line + linesep );
 				lres.add( line );
 			}
 			
