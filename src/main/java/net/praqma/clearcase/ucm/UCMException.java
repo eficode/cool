@@ -7,6 +7,7 @@ public class UCMException extends RuntimeException
 	public enum UCMType
 	{
 		DEFAULT,
+		LOAD_FAILED,
 		TAG_CREATION_FAILED,
 		UNKNOWN_TAG,
 		VIEW_ERROR

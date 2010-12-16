@@ -10,6 +10,7 @@ import java.util.List;
 public class StreamGobbler extends Thread
 {
 	protected static Debug logger = Debug.GetLogger();
+	private static String linesep = System.getProperty( "line.separator" );
 	
     InputStream is;
     public StringBuffer sres;
@@ -32,7 +33,7 @@ public class StreamGobbler extends Thread
 			
 			while( ( line = br.readLine() ) != null )
 			{
-				sres.append( line );
+				sres.append( line + linesep );
 				lres.add( line );
 			}
 			

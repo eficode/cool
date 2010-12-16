@@ -25,6 +25,11 @@ public class Component extends UCMEntity
 		return new Component();
 	}
 	
+	public void Load()
+	{
+		context.LoadComponent( this );
+	}
+	
 	
 	public String GetRootDir()
 	{

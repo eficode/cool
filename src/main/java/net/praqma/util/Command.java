@@ -75,7 +75,8 @@ public abstract class Command
 			errors.run();
 			
 			int exitValue = 0;
-			try{
+			try
+			{
 				exitValue = p.waitFor();
 			}
 			catch( InterruptedException e )

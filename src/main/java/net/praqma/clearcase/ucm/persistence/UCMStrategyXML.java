@@ -858,5 +858,19 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		return null;
 	}
 
+	@Override
+	public String LoadComponent( String component )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String LoadStream( String stream )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

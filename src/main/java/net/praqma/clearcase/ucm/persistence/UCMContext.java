@@ -446,6 +446,16 @@ public class UCMContext
 		activity.SetUser( result );
 	}
 	
+	public String LoadComponent( Component component )
+	{
+		return strategy.LoadComponent( component.GetFQName() );
+	}
+	
+	public String LoadStream( Stream stream )
+	{
+		return strategy.LoadStream( stream.GetFQName() );
+	}
+	
 	
 	public String GetXML()
 	{

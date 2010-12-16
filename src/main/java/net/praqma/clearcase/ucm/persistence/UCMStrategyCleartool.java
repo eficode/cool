@@ -156,6 +156,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	 *  COMPONENT FUNCTIONALITY
 	 ************************************************************************/
 	
+	private static final String rx_component_load = "\\s*Error: component not found\\s*";
+	
 	@Override
 	public List<String> GetBaselines( String component, String stream, String plevel )
 	{
@@ -172,11 +174,34 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	
+	public String LoadComponent( String component )
+	{
+		String cmd = "describe -fmt %[name]p " + component;
+		try
+		{
+			Cleartool.run( cmd );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			if( e.getMessage().matches( rx_component_load ) )
+			{
+				throw new UCMException( "The component \"" + component + "\", does not exist.", UCMType.LOAD_FAILED );
+			}
+			else
+			{
+				throw new UCMException( e.getMessage(), UCMType.LOAD_FAILED );
+			}
+		}
+		
+		return "";
+	}
+	
 	/************************************************************************
 	 *  STREAM FUNCTIONALITY
 	 ************************************************************************/
 	
 	private final String rx_rebase_in_progress = "^Rebase operation in progress on stream";
+	private static final String rx_stream_load = "\\s*Error: stream not found\\s*";
 	
 	
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException
@@ -283,6 +308,29 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 		
 		return bls;
+	}
+	
+	
+	public String LoadStream( String stream )
+	{
+		String cmd = "describe -fmt %[name]p " + stream;
+		try
+		{
+			Cleartool.run( cmd );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			if( e.getMessage().matches( rx_stream_load ) )
+			{
+				throw new UCMException( "The component \"" + stream + "\", does not exist.", UCMType.LOAD_FAILED );
+			}
+			else
+			{
+				throw new UCMException( e.getMessage(), UCMType.LOAD_FAILED );
+			}
+		}
+		
+		return "";
 	}
 	
 	

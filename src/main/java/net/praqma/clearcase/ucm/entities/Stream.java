@@ -49,6 +49,11 @@ public class Stream extends UCMEntity
 		return context.CreateStream( pstream, nstream, readonly, baseline );
 	}
 	
+	public void Load()
+	{
+		context.LoadStream( this );
+	}
+	
 	/**
 	 * Determines whether a Stream exists, given a fully qualified name
 	 * @param fqname Fully qualified name
