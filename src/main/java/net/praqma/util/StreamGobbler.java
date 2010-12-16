@@ -41,7 +41,11 @@ public class StreamGobbler extends Thread
 			{
 				sres.append( lres.get( i ) + linesep );
 			}
-			sres.append( lres.get( lres.size()-1 ) );
+			
+			if( lres.size() > 0 )
+			{
+				sres.append( lres.get( lres.size()-1 ) );
+			}
 			
 			
 			synchronized( this )
