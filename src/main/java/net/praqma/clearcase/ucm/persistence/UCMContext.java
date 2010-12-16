@@ -446,12 +446,12 @@ public class UCMContext
 		activity.SetUser( result );
 	}
 	
-	public String LoadComponent( Component component )
+	public String LoadComponent( Component component ) throws UCMException
 	{
 		return strategy.LoadComponent( component.GetFQName() );
 	}
 	
-	public String LoadStream( Stream stream )
+	public String LoadStream( Stream stream ) throws UCMException
 	{
 		return strategy.LoadStream( stream.GetFQName() );
 	}

@@ -1,6 +1,7 @@
 package net.praqma.clearcase.ucm;
 
-public class UCMException extends RuntimeException
+//public class UCMException extends RuntimeException
+public class UCMException extends Exception
 {
 	public UCMType type = UCMType.DEFAULT;
 	

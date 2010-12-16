@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
@@ -34,18 +35,25 @@ public class GetBaselineTest
 		String comp = "component:_Server@\\Cool_PVOB";
 		String stre = "stream:Server_int@\\Cool_PVOB";
 		
-		Stream st1 = UCMEntity.GetStream( stre );
-		Component co1 = UCMEntity.GetComponent( comp );
-		BaselineList bls = co1.GetBaselines( st1, Project.Plevel.INITIAL );
-
-		System.out.println( "SIZE=" + bls.size() );
-		
-		for( Baseline b : bls )
+		try
 		{
-			System.out.println( b.toString() );
+			Stream st1 = UCMEntity.GetStream( stre );
+			Component co1 = UCMEntity.GetComponent( comp );
+			BaselineList bls = co1.GetBaselines( st1, Project.Plevel.INITIAL );
+	
+			System.out.println( "SIZE=" + bls.size() );
+			
+			for( Baseline b : bls )
+			{
+				System.out.println( b.toString() );
+			}
+			
+			System.out.println( bls.get( 0 ).Stringify() );
 		}
-		
-		System.out.println( bls.get( 0 ).Stringify() );
+		catch( UCMException e )
+		{
+			
+		}
 	}
 	
 	public class Options

@@ -174,7 +174,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	
-	public String LoadComponent( String component )
+	public String LoadComponent( String component ) throws UCMException
 	{
 		String cmd = "describe -fmt %[name]p " + component;
 		try
@@ -311,7 +311,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	}
 	
 	
-	public String LoadStream( String stream )
+	public String LoadStream( String stream ) throws UCMException
 	{
 		String cmd = "describe -fmt %[name]p " + stream;
 		try

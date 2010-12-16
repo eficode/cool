@@ -2,6 +2,7 @@ package test;
 
 import java.io.File;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
@@ -20,8 +21,16 @@ public class ViewTestSwipe
 			System.out.println( "Setting view root to " + root );
 		}
 		
-		SnapshotView view = UCMView.GetSnapshotView( root );
+		try
+		{
+			SnapshotView view = UCMView.GetSnapshotView( root );
+			
 		
-		view.Swipe( false );
+			view.Swipe( false );
+		}
+		catch( UCMException e )
+		{
+			
+		}
 	}
 }

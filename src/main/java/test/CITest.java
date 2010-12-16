@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
@@ -57,20 +58,27 @@ public class CITest
 		root = new File( root, tag );
 		root.mkdir();
 		
-		Stream integrationStream = UCMEntity.GetStream( intstre );
-		
-		//Stream developmentStream = UCMEntity.GetStream( stre );
-		Component co1 = UCMEntity.GetComponent( comp );
-		BaselineList bls = co1.GetBaselines( integrationStream, Project.Plevel.INITIAL );
-		
-		List<Baseline> rec_bls = integrationStream.GetRecommendedBaselines();
-		
-		Baseline bl = rec_bls.get( 0 );
-		
-		Stream developmentStream = Stream.Create( integrationStream, stre, false, bl );
-		SnapshotView view = SnapshotView.Create( developmentStream, root, tag );
-		
-		developmentStream.Rebase( view, bl, true );
+		try
+		{
+			Stream integrationStream = UCMEntity.GetStream( intstre );
+			
+			//Stream developmentStream = UCMEntity.GetStream( stre );
+			Component co1 = UCMEntity.GetComponent( comp );
+			BaselineList bls = co1.GetBaselines( integrationStream, Project.Plevel.INITIAL );
+			
+			List<Baseline> rec_bls = integrationStream.GetRecommendedBaselines();
+			
+			Baseline bl = rec_bls.get( 0 );
+			
+			Stream developmentStream = Stream.Create( integrationStream, stre, false, bl );
+			SnapshotView view = SnapshotView.Create( developmentStream, root, tag );
+			
+			developmentStream.Rebase( view, bl, true );
+		}
+		catch( UCMException e )
+		{
+			
+		}
 		
 	}
 }

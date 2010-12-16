@@ -25,7 +25,7 @@ public class Component extends UCMEntity
 		return new Component();
 	}
 	
-	public void Load()
+	public void Load() throws UCMException
 	{
 		context.LoadComponent( this );
 	}

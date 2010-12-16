@@ -37,7 +37,7 @@ interface UCMStrategyInterface
 	/* Component */
 	public List<String> GetBaselines( String component, String stream, String plevel );
 	public String GetRootDir( String component );
-	public String LoadComponent( String component );
+	public String LoadComponent( String component ) throws UCMException;
 	
 	/* Stream */
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException;
@@ -50,7 +50,7 @@ interface UCMStrategyInterface
 	public void CancelRebase( String stream );
 	public List<String> GetLatestBaselines( String stream );
 	public void Generate( String stream );
-	public String LoadStream( String stream );
+	public String LoadStream( String stream ) throws UCMException;
 	
 	/* Version */
 	public String GetVersion( String version, String separator );

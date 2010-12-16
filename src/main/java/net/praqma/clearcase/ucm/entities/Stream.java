@@ -49,7 +49,7 @@ public class Stream extends UCMEntity
 		return context.CreateStream( pstream, nstream, readonly, baseline );
 	}
 	
-	public void Load()
+	public void Load() throws UCMException
 	{
 		context.LoadStream( this );
 	}

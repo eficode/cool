@@ -3,6 +3,7 @@ package test;
 import java.io.File;
 import java.util.List;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
@@ -52,17 +53,23 @@ public class RebaseTest
 		}
 		
 		
-		
-		Stream st1 = UCMEntity.GetStream( intstre );
-		Stream st2 = UCMEntity.GetStream( stre );
-		Component co1 = UCMEntity.GetComponent( comp );
-		BaselineList bls = co1.GetBaselines( st1, Project.Plevel.INITIAL );
-		
-		SnapshotView view = UCMView.GetSnapshotView( root );
-		
-		List<Baseline> rec_bls = st1.GetRecommendedBaselines();
-		
-		st2.Rebase( view, rec_bls.get( 0 ), true );
+		try
+		{
+			Stream st1 = UCMEntity.GetStream( intstre );
+			Stream st2 = UCMEntity.GetStream( stre );
+			Component co1 = UCMEntity.GetComponent( comp );
+			BaselineList bls = co1.GetBaselines( st1, Project.Plevel.INITIAL );
+			
+			SnapshotView view = UCMView.GetSnapshotView( root );
+			
+			List<Baseline> rec_bls = st1.GetRecommendedBaselines();
+			
+			st2.Rebase( view, rec_bls.get( 0 ), true );
+		}
+		catch( UCMException e )
+		{
+			
+		}
 		
 	}
 }
