@@ -41,7 +41,7 @@ public abstract class Command
 	{
 		logger.trace_function();
 		
-		cmd += ( merge ? " 2>&1" : "" );
+		//cmd += ( merge ? " 2>&1" : "" );
 
 		String[] cmds = new String[3];
 		cmds[0] = "cmd.exe";
@@ -70,9 +70,9 @@ public abstract class Command
 			p.getOutputStream().close();
 
 			//System.out.println( "Running output" );
-			output.run();
+			output.start();
 			//System.out.println( "Running errors" );
-			errors.run();
+			errors.start();
 			
 			int exitValue = 0;
 			try
