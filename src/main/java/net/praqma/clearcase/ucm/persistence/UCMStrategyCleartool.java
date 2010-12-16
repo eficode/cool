@@ -585,7 +585,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		logger.trace_function();
 		logger.debug( dir + ", " +  viewtag );
 		
-		File viewdat = new File( dir, "view.dat" );
+		File viewdat = new File( dir + File.separator + "view.dat" );
 		
 		String cmd = "lsview -l " + viewtag;
 		/* TODO Check this functions behavior, if the view doesn't exist */

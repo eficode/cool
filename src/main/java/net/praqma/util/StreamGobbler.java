@@ -44,12 +44,16 @@ public class StreamGobbler extends Thread
 			
 			while( ( line = br.readLine() ) != null )
 			{
-				sres.append( line + linesep );
+				//sres.append( line + linesep );
 				lres.add( line );
 			}
 			
-			/* Delete the last line break */
-			sres.deleteCharAt( sres.length()-1 );
+			for( int i = 0 ; i < lres.size() - 1 ; ++i )
+			{
+				sres.append( lres.get( i ) + linesep );
+			}
+			sres.append( lres.get( lres.size()-1 ) );
+			
 			
 			
 			synchronized( this )
