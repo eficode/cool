@@ -33,9 +33,10 @@ public class StreamGobbler extends Thread
 			
 			while( ( line = br.readLine() ) != null )
 			{
-				sres.append( line + linesep );
+				sres.append( line );
 				lres.add( line );
 			}
+			
 			
 			synchronized( this )
 			{
