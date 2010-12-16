@@ -7,7 +7,7 @@ import java.io.IOException;
 import net.praqma.util.Debug;
 
 /**
- * UNTESTED cmd class
+ * CLI class
  * @author wolfgang
  *
  */
