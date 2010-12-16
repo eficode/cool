@@ -86,7 +86,7 @@ public class SnapshotView extends UCMView
 	public static void CreateEnvironment( File viewroot, String viewtagsuffix )
 	{
 		String viewtag = "cool_" + System.getenv( "COMPUTERNAME" ) + "_env" + viewtagsuffix;
-		System.out.println( viewtag );
+		//System.out.println( viewtag );
 	}
 	
 	/**

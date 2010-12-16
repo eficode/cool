@@ -51,7 +51,7 @@ public class UCMContext
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		
 		int length = view.GetViewRoot().getAbsoluteFile().toString().length();
-		System.out.println( view.GetViewRoot().getAbsoluteFile().toString() );
+		//System.out.println( view.GetViewRoot().getAbsoluteFile().toString() );
 		
 		Activity current = null;
 		for( String s : result )
@@ -262,7 +262,6 @@ public class UCMContext
 		
 		for( String bl : bls_str )
 		{
-			System.out.println( "--->" + bl );
 			bls.add( UCMEntity.GetBaseline( bl + "@" + pvob, true ) );
 		}
 		
@@ -309,12 +308,10 @@ public class UCMContext
 		if( strategy.RebaseStream( view.GetViewtag(), stream.GetFQName(), baseline.GetFQName(), complete ) )
 		{
 			logger.debug( "Rebasing complete" );
-			System.out.println( "Rebasing complete" );
 		}
 		else
 		{
 			logger.debug( "No rebasing needed" );
-			System.out.println( "No rebasing needed" );
 		}
 	}
 	
