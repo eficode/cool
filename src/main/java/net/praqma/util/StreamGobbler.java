@@ -48,6 +48,9 @@ public class StreamGobbler extends Thread
 				lres.add( line );
 			}
 			
+			/* Delete the last line break */
+			sres.deleteCharAt( sres.length()-1 );
+			
 			
 			synchronized( this )
 			{
