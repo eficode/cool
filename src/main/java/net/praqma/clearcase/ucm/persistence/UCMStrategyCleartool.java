@@ -819,9 +819,11 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	{
 		logger.debug( viewroot.getAbsolutePath() );
 		
-		File viewdotdatpname = new File( viewroot, "view.dat" );
+		//File viewdotdatpname = new File( viewroot, "view.dat" );
+		File viewdotdatpname = new File( viewroot + File.separator + "view.dat" );
 		
 		logger.debug( "The view file = " + viewdotdatpname );
+		logger.debug( "PATH: " + File.pathSeparator + " SEP:" + File.separator );
 		
 		FileReader fr = null;
 		try
