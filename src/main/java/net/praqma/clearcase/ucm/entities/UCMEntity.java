@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.persistence.*;
 import net.praqma.util.Debug;
 
@@ -88,7 +89,7 @@ public abstract class UCMEntity extends UCM
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UCMEntityException
 	 */
-	public static UCMEntity GetEntity( String fqname ) throws UCMEntityException, UCMException
+	public static UCMEntity GetEntity( String fqname ) throws UCMException
 	{
 		return GetEntity( fqname, true, false );
 	}
@@ -100,7 +101,7 @@ public abstract class UCMEntity extends UCM
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UCMEntityException
 	 */
-	public static UCMEntity GetEntity( String fqname, boolean trusted ) throws UCMEntityException, UCMException
+	public static UCMEntity GetEntity( String fqname, boolean trusted ) throws UCMException
 	{
 		return GetEntity( fqname, trusted, false );
 	}
@@ -113,7 +114,7 @@ public abstract class UCMEntity extends UCM
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UCMEntityException This exception is thrown if the type of the entity is not recognized, the entity class is not found or the default constructor is not found.
 	 */
-	public static UCMEntity GetEntity( String fqname, boolean trusted, boolean cachable ) throws UCMEntityException, UCMException
+	public static UCMEntity GetEntity( String fqname, boolean trusted, boolean cachable ) throws UCMException
 	{
 		logger.debug( "GetEntity = " + fqname );
 		
@@ -178,7 +179,7 @@ public abstract class UCMEntity extends UCM
 		if( type == ClearcaseEntityType.Undefined )
 		{
 			logger.error( "The entity type of " + fqname + " was not recognized" );
-			throw new UCMEntityException( "The entity type of " + fqname + " was not recognized" );
+			throw new UCMException( "The entity type of " + fqname + " was not recognized", UCMType.ENTITY_ERROR );
 		}
 		
 		/* Load the Entity class */
@@ -190,7 +191,7 @@ public abstract class UCMEntity extends UCM
 		catch ( ClassNotFoundException e )
 		{
 			logger.error( "The class " + type + " is not available." );
-			throw new UCMEntityException( "The class " + type + " is not available." );
+			throw new UCMException( "The class " + type + " is not available.", UCMType.ENTITY_ERROR );
 		}
 		
 		/* Try to instantiate the Entity object */
@@ -201,7 +202,7 @@ public abstract class UCMEntity extends UCM
 		catch ( Exception e )
 		{
 			logger.error( "Could not instantiate the class " + type );
-			throw new UCMEntityException( "Could not instantiate the class " + type );
+			throw new UCMException( "Could not instantiate the class " + type, UCMType.ENTITY_ERROR );
 		}
 		
 		/* Storing the variables in the object */

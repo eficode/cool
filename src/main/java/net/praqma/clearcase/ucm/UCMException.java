@@ -8,6 +8,7 @@ public class UCMException extends Exception
 	public enum UCMType
 	{
 		DEFAULT,
+		ENTITY_ERROR,
 		LOAD_FAILED,
 		TAG_CREATION_FAILED,
 		UNKNOWN_TAG,
