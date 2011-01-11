@@ -66,13 +66,19 @@ public class Baseline extends UCMEntity
 		String c = ( rs[1].matches( "^component:.*$" ) ? "" : "component:" ) + ( rs[1].matches( ".*@\\\\.*$" ) ? rs[1] : rs[1] + "@" + this.pvob );
 		logger.debug( "Component = " + c );
 		/* Stream */
-		String s = ( rs[2].matches( "^stream:.*$" ) ? "" : "stream:" ) + ( rs[2].matches( ".*@\\\\.*$" ) ? rs[2] : rs[2] + "@" + this.pvob );
-		logger.debug( "Stream = " + s );
-		
-		
+		if( rs[2].trim().length() > 0 )
+		{
+			String s = ( rs[2].matches( "^stream:.*$" ) ? "" : "stream:" ) + ( rs[2].matches( ".*@\\\\.*$" ) ? rs[2] : rs[2] + "@" + this.pvob );
+			logger.debug( "Stream = " + s );
+			this.stream = (Stream)UCMEntity.GetEntity( s );
+		}
+		else
+		{
+			logger.warning( "The stream was not set. Propably because the baseline was INITIAL." );
+		}
+
 		/* Now with factory creation! */
 		this.component = (Component)UCMEntity.GetEntity( c );
-		this.stream    = (Stream)UCMEntity.GetEntity( s );
 		this.plevel    = Project.GetPlevelFromString( rs[3] );
 		this.user      = rs[4];
 		
