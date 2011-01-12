@@ -568,6 +568,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
+			logger.warning( "Could not create snapshot view \"" + viewtag + "\"" );
 			throw new UCMException( "Could not create snapshot view \"" + viewtag + "\"", UCMType.VIEW_ERROR );
 		}
 	}
