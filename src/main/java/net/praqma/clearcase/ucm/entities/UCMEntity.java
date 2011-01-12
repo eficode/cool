@@ -17,10 +17,11 @@ import net.praqma.util.Debug;
 public abstract class UCMEntity extends UCM
 {
 	private static final String rx_ccdef_allowed = "[\\w\\.-]";
-	private static final Pattern pattern_std_fqname     = Pattern.compile( "^(\\w+):(" + rx_ccdef_allowed + "+)@(\\\\\\w+)$" );
+	private static final String rx_ccdef_vob     = "[\\w\\.-]";
+	private static final Pattern pattern_std_fqname     = Pattern.compile( "^(\\w+):(" + rx_ccdef_allowed + "+)@(" + rx_ccdef_vob + "+)$" );
 	/* TODO Make a better character class definition for files(Version) */
-	private static final Pattern pattern_version_fqname = Pattern.compile( "^(\\w:[\\S\\s\\\\\\.]+)@@([\\\\\\w]+)$" );
-	protected static final Pattern pattern_tag_fqname   = Pattern.compile( "^tag@(\\w+)@(\\\\\\w+)$" );
+	private static final Pattern pattern_version_fqname = Pattern.compile( "^(\\w:[\\S\\s\\\\\\.]+)@@(" + rx_ccdef_vob + "+)$" );
+	protected static final Pattern pattern_tag_fqname   = Pattern.compile( "^tag@(\\w+)@(" + rx_ccdef_vob + "+)$" );
 	
 	private static ClassLoader classloader = UCMEntity.class.getClassLoader();
 		
