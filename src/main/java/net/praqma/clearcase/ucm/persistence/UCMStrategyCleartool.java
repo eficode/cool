@@ -111,7 +111,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 				logger.log( "The given Baseline, \"" + baseline + "\" is the first on the Stream" );
 				
 				List<String> result = new ArrayList<String>();
-				//result.add( ">> no_activity@\\Cool_PVOB \"FAKE ACTIVITY\"" );
+
 				result.add( ">> no_activity@" + pvob + " \"NO ACTIVITY\"" );
 				
 				List<String> vobs = ListVobs( dir );
