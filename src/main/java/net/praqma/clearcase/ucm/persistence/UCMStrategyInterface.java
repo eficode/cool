@@ -65,7 +65,7 @@ interface UCMStrategyInterface
 	public String PutTag( String fqname, String keyval, UCMEntity entity );
 	
 	/* Snapshot Views */
-	public void MakeSnapshotView( String stream, File viewroot, String viewtag );
+	public void MakeSnapshotView( String stream, File viewroot, String viewtag ) throws UCMException;
 	public File GetCurrentViewRoot( File viewroot ) throws UCMException;
 	public String ViewrootIsValid( File viewroot ) throws UCMException;
 	public boolean ViewExists( String viewtag );

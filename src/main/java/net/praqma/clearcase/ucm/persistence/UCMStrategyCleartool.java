@@ -549,7 +549,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	}
 	
 
-	public void MakeSnapshotView( String stream, File viewroot, String viewtag )
+	public void MakeSnapshotView( String stream, File viewroot, String viewtag ) throws UCMException
 	{
 		logger.debug( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
 		
@@ -561,7 +561,15 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		this.Generate( stream );
 		
 		String cmd = "mkview -snap -tag " + viewtag + " -stream " + stream + " \"" + viewroot.getAbsolutePath() + "\"";
-		Cleartool.run( cmd );		
+		
+		try
+		{
+			Cleartool.run( cmd );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "Could not create snapshot view \"" + viewtag + "\"", UCMType.VIEW_ERROR );
+		}
 	}
 	
 	
