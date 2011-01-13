@@ -16,9 +16,10 @@ public class BuildNumberStamper
 	private File src = null;
 	private File dst = null;
 	
-	//private final Pattern rx_major_pattern = Pattern.compile( "=\".*\"(\\s*;\\s*[\\/#]{2}\\s*buildnumber\\.major.*$)" );
-	//private final Pattern rx_major_pattern = Pattern.compile( "(buildnumber\\.major).*$" );
-	private final Pattern rx_major_pattern = Pattern.compile( "(=\\s*)\".*\"(\\s*;\\s*[\\/#]{2,2}\\s*buildnumber\\.major.*$)" );
+	private final Pattern rx_major_pattern    = Pattern.compile( "(=\\s*)\".*\"(\\s*;\\s*[\\/#]{2,2}\\s*buildnumber\\.major.*$)" );
+	private final Pattern rx_minor_pattern    = Pattern.compile( "(=\\s*)\".*\"(\\s*;\\s*[\\/#]{2,2}\\s*buildnumber\\.minor.*$)" );
+	private final Pattern rx_patch_pattern    = Pattern.compile( "(=\\s*)\".*\"(\\s*;\\s*[\\/#]{2,2}\\s*buildnumber\\.patch.*$)" );
+	private final Pattern rx_sequence_pattern = Pattern.compile( "(=\\s*)\".*\"(\\s*;\\s*[\\/#]{2,2}\\s*buildnumber\\.sequence.*$)" );
 	
 	private static final String linesep = System.getProperty( "line.separator" );
 	
@@ -37,11 +38,32 @@ public class BuildNumberStamper
 		
 		while( ( s = reader.readLine() ) != null )
 		{
+			/* Stamp major */
 			if( major != null )
 			{
 				s = rx_major_pattern.matcher( s ).replaceAll( "$1\"" + major + "\"$2" );
-				writer.write( s + linesep );
 			}
+			
+			/* Stamp minor */
+			if( minor != null )
+			{
+				s = rx_minor_pattern.matcher( s ).replaceAll( "$1\"" + minor + "\"$2" );
+			}
+			
+			/* Stamp patch */
+			if( patch != null )
+			{
+				s = rx_patch_pattern.matcher( s ).replaceAll( "$1\"" + patch + "\"$2" );
+			}
+			
+			/* Stamp sequence */
+			if( sequence != null )
+			{
+				s = rx_sequence_pattern.matcher( s ).replaceAll( "$1\"" + sequence + "\"$2" );
+			}
+			
+			/* Write back */
+			writer.write( s + linesep );
 		}
 		
 		writer.close();
@@ -60,6 +82,7 @@ public class BuildNumberStamper
 
 		FileChannel source = null;
 		FileChannel destination = null;
+		
 		try
 		{
 			source = new FileInputStream( sourceFile ).getChannel();
