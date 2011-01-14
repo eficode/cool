@@ -197,7 +197,7 @@ public class Tag extends UCMEntity
 	 */
 	public Tag Persist() throws UCMException
 	{
-		Printer.HashMapPrinter( this.GetEntries() );
+		Printer.MapPrinter( this.GetEntries() );
 		return context.StoreTag( this );
 	}
 	

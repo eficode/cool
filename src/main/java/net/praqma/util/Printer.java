@@ -25,9 +25,8 @@ public class Printer
 	    }
 	}
 	
-	public static <T1, T2> void HashMapPrinter ( HashMap<T1, T2> hm )
+	public static <T1, T2> void MapPrinter ( Map<T1, T2> hm )
 	{
-		StringBuffer sb = new StringBuffer();
 		Iterator<Entry<T1, T2>> it = hm.entrySet().iterator();
 	    while( it.hasNext() )
 	    {
