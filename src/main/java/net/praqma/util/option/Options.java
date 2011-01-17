@@ -30,12 +30,6 @@ public class Options
 	
 	public void parse( String[] args )
 	{
-		if( args.length < 1 )
-		{
-			System.err.println( "The program could not be recognized." );
-			System.exit( 1 );
-		}
-		
 		String currentStr = null;
 		Option current = null;
 		
@@ -51,13 +45,9 @@ public class Options
 					
 					currentStr = args[i].substring( 2 );
 					current = null;
-					String[] val = currentStr.split( "=" );
+					String[] val = currentStr.split( "=", 1 );
 
-					if( val.length != 2 )
-					{
-						System.err.println( "Could not deduce " + current );
-					}
-					else
+					if( val.length == 2 )
 					{
 						currentStr = val[0];
 					}
@@ -67,7 +57,10 @@ public class Options
 						if( currentStr.equalsIgnoreCase( o.longName ) )
 						{
 							current = o;
-							o.addValue( val[1] );
+							if( val.length == 2 )
+							{
+								o.addValue( val[1] );
+							}
 
 							
 							o.setUsed();
@@ -122,16 +115,21 @@ public class Options
 		
 		for( Option o : options )
 		{
-			System.out.println( "--- " + o.longName + " ---" );
-			System.out.println( "Required: " + o.required );
-			System.out.println( "User: " + o.used );
-			System.out.println( "Values:" );
-			int c = 0;
-			for( String s : o.values )
+			System.out.print( o.longName + ": " );
+			//System.out.print( ( o.required ? "Required " : "Optional " ) );
+			System.out.print( ( o.used ? "Used " : "Unused " ) );
+			if( o.values.size() > 0 )
 			{
-				c++;
-				System.out.println( "[" + c + "] " + s );
+				System.out.print( "Values:" );
+				int c = 0;
+				for( String s : o.values )
+				{
+					c++;
+					System.out.print( " [" + c + "] " + s );
+				}
+				
 			}
+			System.out.println( "" );
 		}
 	}
 	

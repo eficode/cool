@@ -65,6 +65,11 @@ public class Option
 	{
 		StringBuffer sb = new StringBuffer();
 		
+		if( values.size() == 0 )
+		{
+			return null;
+		}
+		
 		for( String s : values )
 		{
 			sb.append( s );

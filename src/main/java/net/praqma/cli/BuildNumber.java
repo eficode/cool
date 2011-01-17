@@ -7,6 +7,13 @@ import net.praqma.util.BuildNumberStamper;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
+/*
+ * Usage
+ * java -classpath COOL-0.1.5.jar net.praqma.cli.BuildNumber -f stamptest.txt -m 12 -p 1234 -s 22221 --minor 22b
+ * 
+ * 
+ */
+
 public class BuildNumber
 {
 	
@@ -62,17 +69,15 @@ public class BuildNumber
 			System.exit( 1 );
 		}
 		
-		//o.print();
-		
-		System.exit(0);
+		o.print();
 		
 		try
 		{
-			stamp.stampIntoCode( omajor.getString(), ominor.getString(), opatch.getString(), osequence.toString() );
+			stamp.stampIntoCode( omajor.getString(), ominor.getString(), opatch.getString(), osequence.getString() );
 		}
 		catch ( IOException e )
 		{
-			System.err.println( "Could not edit file" );
+			System.err.println( "Could not edit file: " + e.getMessage() );
 			System.exit( 1 );
 		}
 	}
