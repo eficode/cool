@@ -3,6 +3,12 @@ package net.praqma.util.option;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This represents an CLI option.
+ * 
+ * @author wolfgang
+ *
+ */
 public class Option
 {
 	public List<String> values = new ArrayList<String>();
@@ -41,6 +47,14 @@ public class Option
 		this.arguments = arguments;
 	}
 	
+	/**
+	 * Constructor for Option, given a full set of parameters.
+	 * @param longName The long name for an option. Multiple characters.<br>Of the form:<br>--option="some option"<br>--option=a b c<br>--option a b c
+	 * @param shortName The short name of an option. A single character.<br>Of the form:<br>-o<br>-o 1
+	 * @param required Is the option required? true / false.
+	 * @param arguments How many arguments does the option have? 0 ... n
+	 * @param description A description for the display method.
+	 */
 	public Option( String longName, String shortName, boolean required, int arguments, String description )
 	{
 		this.longName    = longName;

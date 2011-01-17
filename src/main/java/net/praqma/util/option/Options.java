@@ -9,6 +9,20 @@ import java.util.Map.Entry;
 
 import net.praqma.util.Tuple;
 
+/**
+ * An Option has a longName and an optional shortName. The longName is prefixed with double dashes, "--" and followed by an optional equal sign, "=".<br>
+ * The shortName is prefixed with a single dash, "-".<br>
+ * Options can have an arbitrary number of values, for example, --option=a b c d, --option a b e f, -o a b "c d e f"<br>
+ * <br>
+ * An Option is initialized:<br>
+ * Option o1 = new Option( "major", "m", false, 1, "The major version of the change set to stamp" );<br>
+ * <br>
+ * The Option is then set into the Options. Parsed. And checked.<br>
+ * The Option's can then be used to extract option values from the CLI.
+ * 
+ * @author wolfgang
+ *
+ */
 public class Options
 {
 	public List<Option> options = new ArrayList<Option>();
