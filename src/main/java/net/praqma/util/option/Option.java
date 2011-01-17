@@ -10,7 +10,7 @@ public class Option
 	public String shortName = "";
 	public int arguments = 0;
 	public boolean used = false;
-	public boolean optional = false;
+	public boolean required = true;
 	public String description = "";
 	
 	public Option( String longName, String shortName, String value )
@@ -26,26 +26,26 @@ public class Option
 		this.shortName = shortName;
 	}
 	
-	public Option( String longName, String shortName, boolean optional )
+	public Option( String longName, String shortName, boolean required )
 	{
 		this.longName  = longName;
 		this.shortName = shortName;
-		this.optional  = optional;
+		this.required  = required;
 	}
 	
 	public Option( String longName, String shortName, boolean optional, int arguments )
 	{
 		this.longName  = longName;
 		this.shortName = shortName;
-		this.optional  = optional;
+		this.required  = optional;
 		this.arguments = arguments;
 	}
 	
-	public Option( String longName, String shortName, boolean optional, int arguments, String description )
+	public Option( String longName, String shortName, boolean required, int arguments, String description )
 	{
 		this.longName    = longName;
 		this.shortName   = shortName;
-		this.optional    = optional;
+		this.required    = required;
 		this.arguments   = arguments;
 		this.description = description;
 	}

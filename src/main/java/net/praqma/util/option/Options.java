@@ -12,7 +12,6 @@ import net.praqma.util.Tuple;
 public class Options
 {
 	public List<Option> options = new ArrayList<Option>();
-	public String program = "";
 	public String syntax = "";
 	
 	public Options( )
@@ -37,13 +36,10 @@ public class Options
 			System.exit( 1 );
 		}
 		
-		this.program = args[0];
-		System.out.println( "The program is set to " + this.program );
-		
 		String currentStr = null;
 		Option current = null;
 		
-		for( int i = 1 ; i < args.length ; i++ )
+		for( int i = 0 ; i < args.length ; i++ )
 		{
 			/* New option */
 			if( args[i].startsWith( "-" ) )
@@ -108,7 +104,7 @@ public class Options
 	{
 		for( Option o : options )
 		{
-			if( !o.optional && !o.used )
+			if( o.required && !o.used )
 			{
 				throw new Exception( o.longName + " is not used and is not optional." );
 			}
@@ -127,7 +123,7 @@ public class Options
 		for( Option o : options )
 		{
 			System.out.println( "--- " + o.longName + " ---" );
-			System.out.println( "Optional: " + o.optional );
+			System.out.println( "Required: " + o.required );
 			System.out.println( "User: " + o.used );
 			System.out.println( "Values:" );
 			int c = 0;
@@ -152,7 +148,7 @@ public class Options
 				System.out.print( new String(new char[15 - o.longName.length()]).replace("\0", " ") + "-" + o.shortName );
 			}
 			
-			System.out.print( "\t" + ( o.optional ? "Optional" : "Required" ) );
+			System.out.print( "\t" + ( o.required ? "Required" : "Optional" ) );
 			
 			System.out.println( "\t" + o.description );
 		}
