@@ -5,20 +5,41 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import net.praqma.util.BuildNumberStamper;
+import net.praqma.util.option.Option;
+import net.praqma.util.option.Options;
 
 public class BuildNumberStamperTest
 {
-	public static void main( String[] args ) throws IOException
+	public static void main( String[] args ) throws Exception
 	{
 		File myfile = new File( "stamptest.txt" );
 		
 		net.praqma.util.Printer.ArrayPrinter( args );
 		
+		Options o = new Options();
+		
+		Option o1 = new net.praqma.util.option.Option( "major", "", true, 1 );
+		Option o2 = new net.praqma.util.option.Option( "minor", "", true, 1 );
+		Option o3 = new net.praqma.util.option.Option( "patch", "p", true, 1 );
+		Option o4 = new net.praqma.util.option.Option( "do", "", false, 1 );
+		
+		o.setOption( o1 );
+		o.setOption( o2 );
+		o.setOption( o3 );
+		o.setOption( o4 );
+		
+		//o.print();
+		
+		o.parse( args );
+		o.checkOptions();
+		
+		o.print();
+		
 		System.out.println( "MYFILE=" + myfile.exists() );
 		
 		BuildNumberStamper stamp = new BuildNumberStamper( myfile );
 		
-		stamp.stampIntoCode( "1", "2", "3", Calendar.getInstance().getTimeInMillis() + "" );
+		stamp.stampIntoCode( o1.getString(), o2.getString(), o3.getString(), Calendar.getInstance().getTimeInMillis() + "" );
 		
 		System.out.println( "out!" );
 	}
