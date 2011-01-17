@@ -11,6 +11,7 @@ public class Option
 	public int arguments = 0;
 	public boolean used = false;
 	public boolean optional = false;
+	public String description = "";
 	
 	public Option( String longName, String shortName, String value )
 	{
@@ -38,6 +39,15 @@ public class Option
 		this.shortName = shortName;
 		this.optional  = optional;
 		this.arguments = arguments;
+	}
+	
+	public Option( String longName, String shortName, boolean optional, int arguments, String description )
+	{
+		this.longName    = longName;
+		this.shortName   = shortName;
+		this.optional    = optional;
+		this.arguments   = arguments;
+		this.description = description;
 	}
 	
 	public void setUsed()

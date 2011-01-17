@@ -11,20 +11,17 @@ import net.praqma.util.Tuple;
 
 public class Options
 {
-	public enum OptionType
-	{
-		SINGLE_CHAR,
-		STRING
-	}
-	
-
-	
-	//public Map<String, Option> options = new HashMap<String, Option>();
 	public List<Option> options = new ArrayList<Option>();
 	public String program = "";
+	public String syntax = "";
 	
-	public Options()
+	public Options( )
 	{
+	}
+	
+	public Options( String syntax )
+	{
+		this.syntax = syntax;
 	}
 	
 	public void setOption( Option option )
@@ -116,7 +113,7 @@ public class Options
 				throw new Exception( o.longName + " is not used and is not optional." );
 			}
 			
-			if( o.arguments != o.values.size() )
+			if( o.arguments != o.values.size() && o.used )
 			{
 				throw new Exception( "Incorrect arguments for option " + o.longName + ". " + o.arguments + " required." );
 			}
@@ -139,6 +136,25 @@ public class Options
 				c++;
 				System.out.println( "[" + c + "] " + s );
 			}
+		}
+	}
+	
+	public void display()
+	{
+		System.out.println( "Usage: " + this.syntax + "\n" );
+		
+		for( Option o : options )
+		{
+			System.out.print( "  --" + o.longName );
+			
+			if( o.shortName.length() > 0 )
+			{
+				System.out.print( new String(new char[15 - o.longName.length()]).replace("\0", " ") + "-" + o.shortName );
+			}
+			
+			System.out.print( "\t" + ( o.optional ? "Optional" : "Required" ) );
+			
+			System.out.println( "\t" + o.description );
 		}
 	}
 	
