@@ -40,6 +40,8 @@ public class Stream extends UCMEntity
 	 */
 	public static Stream Create( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException
 	{
+		UCMEntity.GetNamePart( nstream );
+		
 		if( pstream == null || nstream == null )
 		{
 			logger.error( "Incorrect CreateStream() parameters" );
