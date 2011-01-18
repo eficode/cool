@@ -24,6 +24,7 @@ public class UCMContext
 	private UCMStrategyInterface strategy;
 	
 	private final Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
+	private final Pattern pattern_cc_name  = Pattern.compile( "[\\w\\.][\\w\\.-]*" );
 	
 	public UCMContext( UCMStrategyInterface strategy )
 	{

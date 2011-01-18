@@ -58,9 +58,13 @@ public class Stream extends UCMEntity
 	 * Determines whether a Stream exists, given a fully qualified name
 	 * @param fqname Fully qualified name
 	 * @return True if the Stream exists, false otherwise
+	 * @throws UCMException Is thrown if the fully qualified name is not a valid name
 	 */
-	public static boolean StreamExists( String fqname )
+	public static boolean StreamExists( String fqname ) throws UCMException
 	{
+		/* Determine the name of the entity */
+		UCMEntity.GetNamePart( fqname );
+		
 		return context.StreamExists( fqname );
 	}
 	
