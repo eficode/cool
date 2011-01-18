@@ -9,6 +9,7 @@ public class UCMException extends Exception
 	{
 		DEFAULT,
 		ENTITY_ERROR,
+		ENTITY_NAME_ERROR,
 		LOAD_FAILED,
 		TAG_CREATION_FAILED,
 		UNKNOWN_TAG,

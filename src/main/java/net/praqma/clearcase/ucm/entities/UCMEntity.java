@@ -437,7 +437,7 @@ public abstract class UCMEntity extends UCM
 			}
 		}
 
-		throw new UCMException( "Not a valid UCM name." );
+		throw new UCMException( "Not a valid UCM name.", UCMType.ENTITY_NAME_ERROR );
 	}
 	
 	/**
