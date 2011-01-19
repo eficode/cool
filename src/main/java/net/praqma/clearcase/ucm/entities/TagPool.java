@@ -52,7 +52,6 @@ class TagPool extends UCM
 		
 		for( Tag t : tags )
 		{
-			//t.Load();
 			
 			/* Is it the correct tag? Return it! */
 			if( t.GetTagType().equals( tagType ) && t.GetTagID().equals( tagID ) )
@@ -66,6 +65,7 @@ class TagPool extends UCM
 		
 		/* Create new Tag */
 		Tag tag = context.NewTag( tagType, tagID, entity, "" );
+		tag.SetCreated( true );
 		
 		return tag;
 	}
