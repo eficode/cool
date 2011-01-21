@@ -17,9 +17,12 @@ import net.praqma.util.Tuple;
 public class Tag extends UCMEntity
 {
 	/* Tag specific fields */
-	private String tagType = "";
-	private String tagID   = "";
-	private String OID     = "";
+	private String tagType  = "";
+	private String tagID    = "";
+	private String OID      = "";
+	
+	/* Indicates that the tag is newly created */
+	private boolean created = false;
 	
 	private UCMEntity entity = null;
 	
@@ -201,6 +204,16 @@ public class Tag extends UCMEntity
 		return context.StoreTag( this );
 	}
 	
+	
+	public void SetCreated( boolean created )
+	{
+		this.created = created;
+	}
+	
+	public boolean IsCreated()
+	{
+		return this.created;
+	}
 	
 
 	

@@ -12,7 +12,7 @@ import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.view.SnapshotView.COMP;
-import net.praqma.util.Command;
+
 
 public class UpdateTest2
 {
@@ -36,7 +36,7 @@ public class UpdateTest2
 		String cmd = "cleartool update -force  -overwrite  -add_loadrules  Cool\\Model Cool\\Trace Cool\\ServerTest Cool\\Gui";
 		//String[] cmd = { "cleartool", "update", "-force", "-overwrite", "-add_loadrules", "Cool\\Model", "Cool\\Trace", "Cool\\ServerTest", "Cool\\Gui" };
 		
-		String s = Command.run( cmd, root, true ).stdoutBuffer.toString();
+		String s = net.praqma.util.execute.Command.run( cmd, root, true ).stdoutBuffer.toString();
 		System.out.println( s );
 		
 		

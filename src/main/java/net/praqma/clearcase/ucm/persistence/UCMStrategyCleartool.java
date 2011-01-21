@@ -18,17 +18,17 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.util.AbnormalProcessTerminationException;
-import net.praqma.util.CmdResult;
-import net.praqma.util.Command;
-import net.praqma.util.Debug;
 import net.praqma.util.IO;
 import net.praqma.util.Tuple;
+import net.praqma.util.debug.Logger;
+import net.praqma.util.execute.AbnormalProcessTerminationException;
+import net.praqma.util.execute.CmdResult;
+import net.praqma.util.execute.Command;
 
 
 public class UCMStrategyCleartool implements UCMStrategyInterface
 {
-	private static Debug logger = Debug.GetLogger();
+	private static Logger logger = Logger.getLogger();
 	
 	private static final String rx_ccdef_allowed = "[\\w\\.-_\\\\]";
 	

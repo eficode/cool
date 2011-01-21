@@ -10,11 +10,11 @@ import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCM;
-import net.praqma.util.Debug;
+import net.praqma.util.debug.Logger;
 
 public class BaselineList extends ArrayList<Baseline>
 {
-	protected static Debug logger = Debug.GetLogger( false );
+	protected static Logger logger = Logger.getLogger( false );
 	
 	private Stream stream       = null;
 	private Component component = null;

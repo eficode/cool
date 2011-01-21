@@ -9,18 +9,16 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
-
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.util.Debug;
 import net.praqma.util.Tuple;
+import net.praqma.util.debug.Logger;
 
 public class UCMContext
 {
-	private Debug logger = Debug.GetLogger();
+	private Logger logger = Logger.getLogger();
 	private UCMStrategyInterface strategy;
 	
 	private final Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );

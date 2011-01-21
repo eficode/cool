@@ -6,14 +6,11 @@ import java.util.HashMap;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.persistence.UCMContext;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyXML;
-import net.praqma.util.Debug;
 import net.praqma.util.Printer;
 
 class TagPool extends UCM
 {
 	private static TagPool instance = new TagPool();
-	
-	protected static Debug logger = Debug.GetLogger();
 	
 	HashMap<String, Tag> pool = null;
 	
@@ -52,7 +49,6 @@ class TagPool extends UCM
 		
 		for( Tag t : tags )
 		{
-			//t.Load();
 			
 			/* Is it the correct tag? Return it! */
 			if( t.GetTagType().equals( tagType ) && t.GetTagID().equals( tagID ) )
@@ -66,6 +62,7 @@ class TagPool extends UCM
 		
 		/* Create new Tag */
 		Tag tag = context.NewTag( tagType, tagID, entity, "" );
+		tag.SetCreated( true );
 		
 		return tag;
 	}

@@ -4,7 +4,7 @@ package net.praqma.clearcase.ucm.entities;
 import net.praqma.clearcase.ucm.persistence.UCMContext;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyCleartool;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyXML;
-import net.praqma.util.Debug;
+import net.praqma.util.debug.Logger;
 
 public abstract class UCM
 {
@@ -40,7 +40,7 @@ public abstract class UCM
 		}
 	}
 	
-	protected static Debug logger = Debug.GetLogger( false );
+	protected static Logger logger = Logger.getLogger( false );
 	
 	protected static final String filesep = System.getProperty( "file.separator" );
 	protected static final String linesep = System.getProperty( "line.separator" );
