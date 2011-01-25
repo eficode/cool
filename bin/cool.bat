@@ -7,9 +7,9 @@ set package=net.praqma.cli
 
 IF NOT "%program%"=="" GOTO programok
 
-echo .
+echo.
 echo The program was not given
-echo .
+echo.
 
 EXIT /B 1
 
@@ -17,9 +17,9 @@ EXIT /B 1
 
 IF NOT "%COOL_HOME%"=="" GOTO coolhomeok
 
-echo .
+echo.
 echo COOL_HOME is not set
-echo .
+echo.
 
 EXIT /B 1
 
