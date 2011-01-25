@@ -64,7 +64,7 @@ public class SetTag
 			{
 				if( o.verbose() )
 				{
-					System.out.println( "(" + entry[0] + ", " + entry[1] + ") " );
+					System.out.print( "+(" + entry[0] + ", " + entry[1] + ") " );
 				}
 				
 				tag.SetEntry( entry[0].trim(), entry[1].trim() );
@@ -73,7 +73,7 @@ public class SetTag
 			{
 				if( o.verbose() )
 				{
-					System.err.println( "Removing tag entry " + entry[0] );
+					System.err.println( "-(" + entry[0] + ") " );
 				}
 				tag.RemoveEntry( entry[0] );
 			}
@@ -94,11 +94,11 @@ public class SetTag
 		
 		if( tag.IsCreated() )
 		{
-			System.out.println( "Tag created" );
+			System.out.println( "Tag created." );
 		}
 		else
 		{
-			System.out.println( "Tag updated" );
+			System.out.println( "Tag updated." );
 		}
 	}
 		
