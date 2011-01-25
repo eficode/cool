@@ -53,8 +53,6 @@ public class BuildNumber
 		
 		File file = new File( ofile.getString() );
 		
-		System.out.println( "Stamping file " + file );
-		
 		BuildNumberStamper stamp = null;
 		try
 		{
@@ -74,6 +72,7 @@ public class BuildNumber
 		try
 		{
 			stamp.stampIntoCode( omajor.getString(), ominor.getString(), opatch.getString(), osequence.getString() );
+			System.out.println( "Stamping file " + file );
 		}
 		catch ( IOException e )
 		{
