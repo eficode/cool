@@ -1,10 +1,9 @@
 package test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 
-import net.praqma.util.BuildNumberStamper;
+import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
@@ -14,7 +13,7 @@ public class BuildNumberStamperTest
 	{
 		File myfile = new File( "stamptest.txt" );
 		
-		net.praqma.util.Printer.ArrayPrinter( args );
+		net.praqma.util.structure.Printer.arrayPrinter( args );
 		
 		Options o = new Options();
 		

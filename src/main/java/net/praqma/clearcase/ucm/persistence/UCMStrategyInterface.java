@@ -1,16 +1,12 @@
 package net.praqma.clearcase.ucm.persistence;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.util.Tuple;
+import net.praqma.util.structure.Tuple;
 
 interface UCMStrategyInterface
 {

@@ -4,7 +4,7 @@
 	<groupId>net.praqma</groupId>
 	<artifactId>COOL</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2.0</version>
+	<version>0.2.1</version>
 	<name>ClearCase Oriented Open Library</name>
 	<url>http://maven.apache.org</url>
 
@@ -39,6 +39,11 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<!-- 
+					<finalName>${project.artifactId}-${project.version}-complete</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+					 -->
+
 				</configuration>
 				<executions>
 					<execution>

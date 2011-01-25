@@ -1,6 +1,5 @@
 package net.praqma.clearcase.ucm.entities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -9,10 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.entities.UCMEntity.ClearcaseEntityType;
 import net.praqma.clearcase.ucm.utils.TagQuery;
-import net.praqma.util.Printer;
-import net.praqma.util.Tuple;
+import net.praqma.util.structure.Printer;
+import net.praqma.util.structure.Tuple;
 
 public class Tag extends UCMEntity
 {
@@ -200,7 +198,7 @@ public class Tag extends UCMEntity
 	 */
 	public Tag Persist() throws UCMException
 	{
-		Printer.MapPrinter( this.GetEntries() );
+		Printer.mapPrinter( this.GetEntries() );
 		return context.StoreTag( this );
 	}
 	

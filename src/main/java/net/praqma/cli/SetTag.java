@@ -8,7 +8,7 @@ import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.util.BuildNumberStamper;
+import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
