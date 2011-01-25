@@ -86,7 +86,10 @@ public class SetTag
 			}
 		}
 		
-		System.out.println( "" );
+		if( o.verbose() )
+		{
+			System.out.println( "" );
+		}
 		
 		try
 		{
