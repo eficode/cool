@@ -369,6 +369,11 @@ public abstract class UCMEntity extends UCM
 
 	public Tag GetTag( String tagType, String tagID ) throws UCMException
 	{
+		if( UCM.verbose() )
+		{
+			System.out.println( "Retrieving tags for " + tagType + ", " + tagID );
+		}
+		
 		return tp.GetTag( tagType, tagID, this );
 	}
 

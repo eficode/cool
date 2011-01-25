@@ -46,6 +46,8 @@ public class SetTag
 		/* Do the ClearCase thing... */
 		UCM.SetContext( UCM.ContextType.CLEARTOOL );
 		
+		UCM.setVerbose( o.verbose() );
+		
 		UCMEntity e = UCMEntity.GetEntity( oentity.getString() );
 		
 		Tag tag = e.GetTag( otagtype.getString(), otagid.getString() );

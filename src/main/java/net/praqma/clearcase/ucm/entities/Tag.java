@@ -106,11 +106,18 @@ public class Tag extends UCMEntity
 	{
 		StringBuffer sb = new StringBuffer();
 		Iterator<Entry<String, String>> it = keyval.entrySet().iterator();
+		int c = 0;
 	    while( it.hasNext() )
 	    {
 	    	Map.Entry<String, String> entry = (Map.Entry<String, String>)it.next();
 	    	if( skiptaginfo && ( entry.getKey().equalsIgnoreCase( "tagid" ) || entry.getKey().equalsIgnoreCase( "tagtype" ) ) ) continue;
 	    	sb.append( entry.getKey() + "=" + entry.getValue() + "&" );
+	    	c++;
+	    }
+	    
+	    if( c > 0 )
+	    {
+	    	sb.deleteCharAt( sb.length() - 1 );
 	    }
 	    
 	    return sb.toString();
@@ -179,22 +186,6 @@ public class Tag extends UCMEntity
 		return this.keyval;
 	}
 	
-//	private void Set( String newFqname )
-//	{
-//		Matcher match = pattern_tag_fqname.matcher( newFqname );
-//		if( match.find() )
-//		{
-//			/* Set the Entity variables */
-//			shortname = match.group( 1 ); // This is also the oid
-//			OID       = match.group( 1 );
-//			pvob      = match.group( 2 );
-//			fqname    = newFqname;
-//		}
-//		else
-//		{
-//			logger.warning( "The new fully qualified name was not correct!" );
-//		}
-//	}
 	
 	public void SetTagEntity( UCMEntity entity )
 	{
@@ -213,7 +204,12 @@ public class Tag extends UCMEntity
 	 */
 	public Tag Persist() throws UCMException
 	{
-		Printer.mapPrinter( this.GetEntries() );
+		if( UCM.verbose() )
+		{
+			System.out.println( "Persisting tags:" );
+			Printer.mapPrinter( this.GetEntries() );
+		}
+		
 		return context.StoreTag( this );
 	}
 	

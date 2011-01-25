@@ -45,4 +45,16 @@ public abstract class UCM
 	protected static final String filesep = System.getProperty( "file.separator" );
 	protected static final String linesep = System.getProperty( "line.separator" );
 	public static final String delim      = "::";
+	
+	private static boolean verbose = false;
+	
+	public static void setVerbose( boolean verbose )
+	{
+		UCM.verbose = verbose;
+	}
+	
+	public static boolean verbose()
+	{
+		return verbose;
+	}
 }
