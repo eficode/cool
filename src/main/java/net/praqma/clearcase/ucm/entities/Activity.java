@@ -1,5 +1,7 @@
 package net.praqma.clearcase.ucm.entities;
 
+import net.praqma.clearcase.ucm.UCMException;
+
 public class Activity extends UCMEntity
 {
 	/* Activity specific fields */
@@ -34,8 +36,9 @@ public class Activity extends UCMEntity
 	/**
 	 * Load the Activity into memory from ClearCase.<br>
 	 * This function is automatically called when needed by other functions.
+	 * @throws UCMException 
 	 */
-	public void Load()
+	public void Load() throws UCMException
 	{
 		context.LoadActivity( this );
 	}

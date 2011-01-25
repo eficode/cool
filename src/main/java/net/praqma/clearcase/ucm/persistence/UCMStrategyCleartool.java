@@ -63,33 +63,57 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		return Arrays.asList( Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" ) );
 	}
 	
-	public String LoadProject( String project )
+	public String LoadProject( String project ) throws UCMException
 	{
 		logger.debug( project );
 		
 		String cmd = "lsproj -fmt %[istream]Xp " + project;
-		return Cleartool.run( cmd ).stdoutBuffer.toString();
+		
+		try
+		{
+			return Cleartool.run( cmd ).stdoutBuffer.toString();
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( e.getMessage() );
+		}
 	}
 	
 	/************************************************************************
 	 *  ACTIVITY FUNCTIONALITY
+	 * @throws UCMException 
 	 ************************************************************************/
 	
-	public String LoadActivity( String activity )
+	public String LoadActivity( String activity ) throws UCMException
 	{
 		String cmd = "describe -fmt %u " + activity;
-		return Cleartool.run( cmd ).stdoutBuffer.toString();
+		try
+		{
+			return Cleartool.run( cmd ).stdoutBuffer.toString();
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( e.getMessage() );
+		}
 	}
 	
 	/************************************************************************
 	 *  BASELINE FUNCTIONALITY
+	 * @throws UCMException 
 	 ************************************************************************/
 
 
-	public String LoadBaseline( String baseline )
+	public String LoadBaseline( String baseline ) throws UCMException
 	{
 		String cmd = "desc -fmt %n" + delim + "%[component]p" + delim + "%[bl_stream]p" + delim + "%[plevel]p" + delim + "%u " + baseline;
-		return Cleartool.run( cmd ).stdoutBuffer.toString();
+		try
+		{
+			return Cleartool.run( cmd ).stdoutBuffer.toString();
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "Could not load the Baseline " + baseline );
+		}
 	}
 
 

@@ -426,7 +426,7 @@ public class UCMContext
 		return comps;
 	}
 	
-	public void LoadActivity( Activity activity )
+	public void LoadActivity( Activity activity ) throws UCMException
 	{
 		String result = "";
 		

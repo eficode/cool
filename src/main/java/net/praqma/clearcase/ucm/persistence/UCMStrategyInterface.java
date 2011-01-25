@@ -18,10 +18,10 @@ interface UCMStrategyInterface
 	/* Project */
 	String GetProjectFromStream( String stream );
 	List<String> GetModifiableComponents( String project );
-	public String LoadProject( String project );
+	public String LoadProject( String project ) throws UCMException;
 	
 	/* Activity */
-	public String LoadActivity( String activity );
+	public String LoadActivity( String activity ) throws UCMException;
 	
 	/* Baseline */
 	public String LoadBaseline( String baseline ) throws UCMException;
