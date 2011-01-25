@@ -19,29 +19,26 @@ public class BuildNumber
 	
 	public static void main( String[] args )
 	{
-		Options o = new Options();
+		Options o = new Options( net.praqma.cool.Version.version );
 		
 		Option omajor    = new Option( "major", "m", false, 1, "The major version of the change set to stamp" );
 		Option ominor    = new Option( "minor", "i", false, 1, "The minor version of the change set to stamp" );
 		Option opatch    = new Option( "patch", "p", false, 1, "The patch version of the change set to stamp" );
 		Option osequence = new Option( "sequence", "s", false, 1, "The sequence version of the change set to stamp" );
 		Option ofile     = new Option( "file", "f", true, 1, "The file to stamp" );
-		Option ohelp     = new Option( "help", "h", false, 0, "The help" );
 		
 		o.setOption( omajor );
 		o.setOption( ominor );
 		o.setOption( opatch );
 		o.setOption( osequence );
 		o.setOption( ofile );
-		o.setOption( ohelp );
+		
+		o.setDefaultOptions();
+		
+		o.setSyntax( "BuildNumber <options> -f file" );
+		o.setDescription( "Automatically stamp a build number into a source/header file." + Options.linesep + "For example:" + Options.linesep + "private static final String major = \"0\"; // buildnumber.major" );
 		
 		o.parse( args );
-		
-		if( ohelp.used )
-		{
-			o.display();
-			System.exit( 0 );
-		}
 		
 		try
 		{
@@ -69,7 +66,10 @@ public class BuildNumber
 			System.exit( 1 );
 		}
 		
-		o.print();
+		if( o.verbose() )
+		{
+			o.print();
+		}
 		
 		try
 		{
