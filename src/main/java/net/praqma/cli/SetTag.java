@@ -57,8 +57,6 @@ public class SetTag
 		
 		for( String t : tags )
 		{
-
-			System.out.println( "Tag entry: " + t );
 			
 			String[] entry = t.split( "=" );
 
@@ -66,7 +64,7 @@ public class SetTag
 			{
 				if( o.verbose() )
 				{
-					System.out.println( entry[0] + ", " + entry[1] );
+					System.out.println( "Current tag entry: (" + entry[0] + ", " + entry[1] + ")" );
 				}
 				
 				tag.SetEntry( entry[0].trim(), entry[1].trim() );
