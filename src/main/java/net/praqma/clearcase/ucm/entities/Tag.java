@@ -149,6 +149,21 @@ public class Tag extends UCMEntity
 		keyval.put( key, value );
 	}
 	
+	public boolean RemoveEntry( String key )
+	{
+		if( keyval.containsKey( key ) )
+		{
+			logger.log( "Removing " + key );
+			keyval.remove( key );
+			return true;
+		}
+		else
+		{
+			logger.log( "Could not remove " + key );
+			return false;
+		}
+	}
+	
 	public String GetEntry( String key )
 	{
 		if( keyval.containsKey( key ) )

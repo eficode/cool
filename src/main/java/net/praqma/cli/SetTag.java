@@ -71,7 +71,8 @@ public class SetTag
 			}
 			catch( ArrayIndexOutOfBoundsException ea )
 			{
-				System.err.println( "Incorrect tag entry. Skipping." );
+				System.err.println( "Incorrect tag entry. Removing." );
+				tag.RemoveEntry( entry[0] );
 			}
 		}
 		
