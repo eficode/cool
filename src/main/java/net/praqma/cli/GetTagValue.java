@@ -59,7 +59,7 @@ public class GetTagValue
 		
 		if( value == null )
 		{
-			System.out.println( "Unknown key" );
+			System.out.println( "Unknown key, " + okey.getString() );
 		}
 		else
 		{
