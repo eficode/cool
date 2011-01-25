@@ -45,7 +45,7 @@ public class GetTagValue
 		
 		try
 		{
-			e = UCMEntity.GetEntity( oentity.getString() );
+			e = UCMEntity.GetEntity( oentity.getString(), false );
 		}
 		catch( UCMException ex )
 		{
@@ -59,7 +59,7 @@ public class GetTagValue
 		
 		if( value == null )
 		{
-			System.out.println( "" );
+			System.out.println( "Unknown key" );
 		}
 		else
 		{

@@ -1,14 +1,11 @@
 package net.praqma.cli;
 
-import java.io.File;
-import java.io.IOException;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
@@ -48,7 +45,17 @@ public class SetTag
 		
 		UCM.setVerbose( o.verbose() );
 		
-		UCMEntity e = UCMEntity.GetEntity( oentity.getString() );
+		UCMEntity e = null;
+		
+		try
+		{
+			e = UCMEntity.GetEntity( oentity.getString(), false );
+		}
+		catch( UCMException ex )
+		{
+			System.err.println( ex.getMessage() );
+			System.exit( 1 );
+		}
 		
 		Tag tag = e.GetTag( otagtype.getString(), otagid.getString() );
 		
@@ -73,11 +80,13 @@ public class SetTag
 			{
 				if( o.verbose() )
 				{
-					System.err.println( "-(" + entry[0] + ") " );
+					System.out.print( "-(" + entry[0] + ") " );
 				}
 				tag.RemoveEntry( entry[0] );
 			}
 		}
+		
+		System.out.println( "" );
 		
 		try
 		{
