@@ -22,21 +22,15 @@ public class SetTag
 		Option otag     = new Option( "tag", "t", true, 1, "The tag. Given as: \"key1=val1&key2=val2\"" );
 		Option otagtype = new Option( "tagtype", "y", true, 1, "The tag type" );
 		Option otagid   = new Option( "tagid", "i", true, 1, "The tag id" );
-		Option ohelp    = new Option( "help", "h", false, 0, "The help" );
 		
 		o.setOption( oentity );
 		o.setOption( otag );
 		o.setOption( otagtype );
 		o.setOption( otagid );
-		o.setOption( ohelp );
+		
+		o.setDefaultOptions();
 		
 		o.parse( args );
-		
-		if( ohelp.used )
-		{
-			o.display();
-			System.exit( 0 );
-		}
 		
 		try
 		{
@@ -58,18 +52,27 @@ public class SetTag
 		
 		/* Split key value structure */
 		String[] tags = otag.getString().split( "&" );
-
-		System.out.println( "TAGS IN USE: " + otag.getString() );
 		
 		for( String t : tags )
 		{
-			System.out.println( "TAG: " + t );
+
+			System.out.println( "Tag entry: " + t );
 			
 			String[] entry = t.split( "=" );
-			
-			System.out.println( entry[0] + ", " + entry[1] );
-			
-			tag.SetEntry( entry[0].trim(), entry[1].trim() );
+
+			try
+			{
+				if( o.verbose() )
+				{
+					System.out.println( entry[0] + ", " + entry[1] );
+				}
+				
+				tag.SetEntry( entry[0].trim(), entry[1].trim() );
+			}
+			catch( ArrayIndexOutOfBoundsException ea )
+			{
+				System.err.println( "Incorrect tag entry. Skipping." );
+			}
 		}
 		
 		try

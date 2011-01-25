@@ -17,21 +17,15 @@ public class GetTagValue
 		Option okey     = new Option( "key", "k", true, 1, "The tag key" );
 		Option otagtype = new Option( "tagtype", "y", true, 1, "The tag type" );
 		Option otagid   = new Option( "tagid", "i", true, 1, "The tag id" );
-		Option ohelp    = new Option( "help", "h", false, 0, "The help" );
 		
 		o.setOption( oentity );
 		o.setOption( okey );
 		o.setOption( otagtype );
 		o.setOption( otagid );
-		o.setOption( ohelp );
+
+		o.setDefaultOptions();
 		
 		o.parse( args );
-		
-		if( ohelp.used )
-		{
-			o.display();
-			System.exit( 0 );
-		}
 		
 		try
 		{
