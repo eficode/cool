@@ -206,8 +206,8 @@ public class Tag extends UCMEntity
 	{
 		if( UCM.verbose() )
 		{
-			System.out.println( "Persisting tags:" );
-			Printer.mapPrinter( this.GetEntries() );
+			System.out.println( "Persisting tags." );
+			//Printer.mapPrinter( this.GetEntries() );
 		}
 		
 		return context.StoreTag( this );

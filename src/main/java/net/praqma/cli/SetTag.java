@@ -64,14 +64,17 @@ public class SetTag
 			{
 				if( o.verbose() )
 				{
-					System.out.println( "Current tag entry: (" + entry[0] + ", " + entry[1] + ")" );
+					System.out.println( "(" + entry[0] + ", " + entry[1] + ") " );
 				}
 				
 				tag.SetEntry( entry[0].trim(), entry[1].trim() );
 			}
 			catch( ArrayIndexOutOfBoundsException ea )
 			{
-				System.err.println( "Incorrect tag entry. Removing." );
+				if( o.verbose() )
+				{
+					System.err.println( "Removing tag entry " + entry[0] );
+				}
 				tag.RemoveEntry( entry[0] );
 			}
 		}
