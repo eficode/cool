@@ -69,6 +69,9 @@ interface UCMStrategyInterface
 	public Map SwipeView( File viewroot, boolean excludeRoot );
 	public String ViewUpdate( File viewroot, boolean overwrite, String loadrules );
 
+	/* Build Number / Attributes */
+	public String GetBuildNumber( String entity ) throws UCMException;
+	public String GetAttribute( String fqname, String attribute ) throws UCMException;
 		
 	
 	/* 
