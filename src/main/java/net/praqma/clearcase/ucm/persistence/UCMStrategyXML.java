@@ -872,5 +872,19 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		return null;
 	}
 
+	@Override
+	public String GetBuildNumber( String entity ) throws UCMException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String GetAttribute( String fqname, String attribute ) throws UCMException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

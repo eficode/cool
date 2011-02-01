@@ -69,7 +69,7 @@ public class BaselineList extends ArrayList<Baseline>
 	public BaselineList NewerThanRecommended() throws UCMException
 	{
 		BaselineList bls = new BaselineList( this );
-		ArrayList<Baseline> recommended = this.stream.GetRecommendedBaselines();
+		List<Baseline> recommended = this.stream.GetRecommendedBaselines();
 		
 		if( recommended.size() != 1 )
 		{

@@ -32,7 +32,9 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	
 	private static final String rx_ccdef_allowed = "[\\w\\.-_\\\\]";
 	
-	public static final String __TAG_NAME = "tag";
+	/* Some relatively hard coded "variables" */
+	public static final String __TAG_NAME     = "tag";
+	public static final String __BUILD_NUMBER = "buildnumber.sequence"; 
 	
 	static
 	{
@@ -904,6 +906,43 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		String viewtag = Cleartool.run( cmd ).stdoutBuffer.toString().trim();
 		
 		return viewtag;
+	}
+	
+	
+	/*****************************
+	 *  Build Number / Attributes
+	 *****************************/
+	
+	/**
+	 * 
+	 */
+	public String GetBuildNumber( String fqname ) throws UCMException
+	{
+		return GetAttribute( fqname, __BUILD_NUMBER );
+	}
+	
+	/**
+	 * 
+	 * @param fqname
+	 * @param attribute
+	 * @return
+	 * @throws UCMException
+	 */
+	public String GetAttribute( String fqname, String attribute ) throws UCMException
+	{
+		String cmd = "describe -aattr " + attribute + " -l " + fqname;
+		
+		CmdResult res = null;
+		try
+		{
+			res = Cleartool.run( cmd );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "Could not find attribute with name: " + attribute + " on " + fqname + ". Recieved: " + e.getMessage() );
+		}
+		
+		return res.toString();
 	}
 	
 
