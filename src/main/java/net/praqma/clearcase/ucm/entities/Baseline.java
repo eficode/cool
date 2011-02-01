@@ -170,6 +170,12 @@ public class Baseline extends UCMEntity
 		return this.component;
 	}
 	
+	public Stream GetStream() throws UCMException
+	{
+		if( !loaded ) Load();
+		return this.stream;
+	}
+	
 	public String Stringify() throws UCMException
 	{
 		if( !this.loaded ) Load();

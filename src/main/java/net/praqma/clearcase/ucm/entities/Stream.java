@@ -1,6 +1,7 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.utils.BaselineList;
@@ -85,7 +86,7 @@ public class Stream extends UCMEntity
 		context.CancelRebase( this );
 	}
 	
-	public ArrayList<Baseline> GetRecommendedBaselines() throws UCMException
+	public List<Baseline> GetRecommendedBaselines() throws UCMException
 	{
 		return GetRecommendedBaselines( false );
 	}
@@ -116,6 +117,18 @@ public class Stream extends UCMEntity
 	public BaselineList GetLatestBaselines() throws UCMException
 	{
 		return new BaselineList( context.GetLatestBaselines( this ) );
+	}
+	
+	public Component GetSingleTopComponent() throws UCMException
+	{
+		List<Baseline> bls = this.GetRecommendedBaselines();
+		
+		if( bls.size() != 1 )
+		{
+			throw new UCMException( "The Stream " + this.GetShortname() + " does not have a single composite component." );
+		}
+		
+		return bls.get( 0 ).GetComponent();
 	}
 	
 	public String Stringify() throws UCMException
