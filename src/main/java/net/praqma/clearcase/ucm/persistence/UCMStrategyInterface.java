@@ -27,6 +27,7 @@ interface UCMStrategyInterface
 	public String LoadBaseline( String baseline ) throws UCMException;
 	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob ) throws UCMException;
 	public void SetPromotionLevel( String baseline, String plevel );
+	public void createBaseline( String baseline, String component, File view, boolean incremental, boolean identical ) throws UCMException;
 	
 	public String GetBaselineActivities( String baseline );
 	
@@ -34,6 +35,10 @@ interface UCMStrategyInterface
 	public List<String> GetBaselines( String component, String stream, String plevel );
 	public String GetRootDir( String component );
 	public String LoadComponent( String component ) throws UCMException;
+	
+	/* Hyper Links */
+	public String LoadHyperLink( String fqname, File dir ) throws UCMException;
+	public List<Tuple<String, String>> getHlinks( String fqname, String hlinkType, File dir ) throws UCMException;
 	
 	/* Stream */
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException;
@@ -50,6 +55,7 @@ interface UCMStrategyInterface
 	
 	/* Version */
 	public String GetVersion( String version, String separator );
+	public String getVersionExtension( String file, File viewroot ) throws UCMException;
 	
 	/* Tag */
 	public List<Tuple<String, String>> GetTags( String fqname ) throws UCMException;
@@ -69,9 +75,11 @@ interface UCMStrategyInterface
 	public Map SwipeView( File viewroot, boolean excludeRoot );
 	public String ViewUpdate( File viewroot, boolean overwrite, String loadrules );
 
-	/* Build Number / Attributes */
-	public String GetBuildNumber( String entity ) throws UCMException;
-	public String GetAttribute( String fqname, String attribute ) throws UCMException;
+	/* Attributes */
+	public String getAttribute( String fqname, String attribute ) throws UCMException;
+	public Map<String, String> getAttributes( String fqname ) throws UCMException;
+	public Map<String, String> getAttributes( String fqname, File dir ) throws UCMException;
+	public void setAttribute( String fqname, String attribute, String value ) throws UCMException;
 		
 	
 	/* 

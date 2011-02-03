@@ -873,14 +873,56 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public String GetBuildNumber( String entity ) throws UCMException
+	public Map<String, String> getAttributes( String fqname ) throws UCMException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String GetAttribute( String fqname, String attribute ) throws UCMException
+	public void setAttribute( String fqname, String attribute, String value ) throws UCMException
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getVersionExtension( String file, File viewroot ) throws UCMException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getAttribute( String fqname, String attribute ) throws UCMException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createBaseline( String baseline, String component, File view, boolean incremental, boolean identical) throws UCMException
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<String, String> getAttributes( String fqname, File dir ) throws UCMException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Tuple<String, String>> getHlinks( String fqname, String hlinkType, File dir ) throws UCMException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String LoadHyperLink( String fqname, File dir ) throws UCMException
 	{
 		// TODO Auto-generated method stub
 		return null;

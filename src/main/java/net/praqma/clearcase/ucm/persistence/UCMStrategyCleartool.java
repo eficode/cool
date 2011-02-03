@@ -34,11 +34,6 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	
 	/* Some relatively hard coded "variables" */
 	public static final String __TAG_NAME     = "tag";
-	public static final String __BUILD_NUMBER_MAJOR    = "buildnumber.major";
-	public static final String __BUILD_NUMBER_MINOR    = "buildnumber.minor";
-	public static final String __BUILD_NUMBER_PATCH    = "buildnumber.patch";
-	public static final String __BUILD_NUMBER_SEQUENCE = "buildnumber.sequence";
-	
 	
 	static
 	{
@@ -165,6 +160,19 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 			
 			/* The exception could not be handled! */
 			throw e;
+		}
+	}
+	
+	public void createBaseline( String fqname, String component, File view, boolean incremental, boolean identical ) throws UCMException
+	{
+		String cmd = "mkbl -component " + component + ( identical ? " -identical " : " " ) + ( incremental ? "-incremental" : "-full" ) + " \"" + fqname + "\"";
+		try
+		{
+			Cleartool.run( cmd, view );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "Could not create Baseline " + fqname );
 		}
 	}
 	
@@ -343,10 +351,14 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	
 	public String LoadStream( String stream ) throws UCMException
 	{
-		String cmd = "describe -fmt %[name]p " + stream;
+		logger.debug( "Loading " + stream );
+		
+		CmdResult res = null;
+		
+		String cmd = "describe -fmt %[name]p" + this.delim + "%[project]Xp " + stream;
 		try
 		{
-			Cleartool.run( cmd );
+			res = Cleartool.run( cmd );
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
@@ -360,7 +372,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 			}
 		}
 		
-		return "";
+		return res.stdoutBuffer.toString();
 	}
 	
 	
@@ -374,6 +386,18 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 	
+	public String getVersionExtension( String file, File viewroot ) throws UCMException
+	{
+		if( !( new File( file ).exists() ) )
+		{
+			throw new UCMException( "The file " + file + " does not exist." );
+		}
+		
+		String cmd = "desc -fmt %Xp " + file;
+		CmdResult r = Cleartool.run( cmd, viewroot );
+		return r.stdoutBuffer.toString();
+	}
+	
 	
 	
 	/************************************************************************
@@ -381,8 +405,9 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	 ************************************************************************/
 		
 	private static final Pattern pattern_tags = Pattern.compile( "^\\s*(tag@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"(.*?)\"\\s*$" );
+	private static final Pattern pattern_hlink = Pattern.compile( "^\\s*(" + rx_ccdef_allowed + "+@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"*(.*?)\"*\\s*$" );
 	private static final Pattern pattern_remove_verbose_tag = Pattern.compile( "^.*?\"(.*)\".*?$" );
-	private static final Pattern pattern_tag_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB.*" );
+	private static final Pattern pattern_hlink_type_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB.*" );
 		
 	
 	public List<Tuple<String, String>> GetTags( String fqname ) throws UCMException
@@ -398,10 +423,10 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			Matcher match = pattern_tag_missing.matcher( e.getMessage() );
+			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
 			if( match.find() )
 			{
-				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_TAG );
+				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_HLINK_TYPE );
 			}
 			
 			throw e;
@@ -450,10 +475,10 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			Matcher match = pattern_tag_missing.matcher( e.getMessage() );
+			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
 			if( match.find() )
 			{
-				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_TAG );
+				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_HLINK_TYPE );
 			}
 			
 			throw e;
@@ -503,6 +528,64 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public String LoadHyperLink( String fqname, File dir ) throws UCMException
+	{
+		String cmd = "describe " + fqname;
+		
+		CmdResult res = null;
+		try
+		{
+			res = Cleartool.run( cmd, dir );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException();
+		}
+		
+		return res.stdoutBuffer.toString();
+	}
+	
+	public List<Tuple<String, String>> getHlinks( String fqname, String hlinkType, File dir ) throws UCMException
+	{
+		String cmd = "describe -ahlink " + hlinkType + " -l " + fqname;
+		
+		CmdResult res = null;
+		try
+		{
+			res = Cleartool.run( cmd, dir );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
+			if( match.find() )
+			{
+				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_HLINK_TYPE );
+			}
+			
+			throw e;
+		}
+		
+		List<String> list = res.stdoutList;
+		
+		List<Tuple<String, String>> hlinks = new ArrayList<Tuple<String, String>>();
+				
+		/* There are elements */
+		if( list.size() > 2 )
+		{
+			for( int i = 2 ; i < list.size() ; i++ )
+			{
+				logger.debug( "["+i+"]" + list.get( i ) );
+				Matcher match = pattern_hlink.matcher( list.get( i ) );
+				if( match.find() )
+				{
+					hlinks.add( new Tuple<String, String>( match.group( 1 ).trim(), match.group( 2 ).trim() ) );
+				}
+			}
+		}
+		
+		return hlinks;
 	}
 	
 	/************************************************************************
@@ -914,17 +997,9 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	
 	
 	/*****************************
-	 *  Build Number / Attributes
+	 *  Attributes
 	 *****************************/
-	
-	/**
-	 * 
-	 */
-	public String GetBuildNumber( String fqname ) throws UCMException
-	{
-		return GetAttribute( fqname, __BUILD_NUMBER_SEQUENCE );
-	}
-	
+
 	/**
 	 * 
 	 * @param fqname
@@ -932,7 +1007,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	 * @return
 	 * @throws UCMException
 	 */
-	public String GetAttribute( String fqname, String attribute ) throws UCMException
+	public String getAttribute( String fqname, String attribute ) throws UCMException
 	{
 		String cmd = "describe -aattr " + attribute + " -l " + fqname;
 		
@@ -947,6 +1022,64 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 		
 		return res.toString();
+	}
+	
+	private static final String rx_attr_find = "^\\s*\\S+\\s*=\\s*\\S*\\s*$";
+	
+	
+	
+	public Map<String, String> getAttributes( String fqname ) throws UCMException
+	{
+		return getAttributes( fqname, null );
+	}
+	
+	public Map<String, String> getAttributes( String fqname, File dir ) throws UCMException
+	{
+		logger.debug( "Getting attributes for " + fqname );
+		
+		String cmd = "describe -aattr -all " + fqname;
+		
+		CmdResult res = null;
+		try
+		{
+			res = Cleartool.run( cmd, dir );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "Could not find attributes on " + fqname + ". Recieved: " + e.getMessage() );
+		}
+		
+		Map<String, String> atts = new HashMap<String, String>();
+		
+		for( String s : res.stdoutList )
+		{
+			logger.debug( "S=" + s );
+			
+			/* A valid attribute */
+			if( s.matches( rx_attr_find ) )
+			{
+				String[] data = s.split( "=" );
+				atts.put( data[0].trim(), data[1].trim() );
+			}
+		}
+		
+		return atts;
+	}
+	
+	
+	public void setAttribute( String fqname, String attribute, String value ) throws UCMException
+	{
+		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + fqname );
+		
+		String cmd = "mkattr -replace " + attribute + " " + value + " "  + fqname;
+		try
+		{
+			Cleartool.run( cmd );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "Could not create the attribute " + attribute );
+		}		
 	}
 	
 

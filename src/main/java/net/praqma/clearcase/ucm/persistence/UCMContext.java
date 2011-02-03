@@ -114,6 +114,12 @@ public class UCMContext
 		return v;
 	}
 	
+	public Version getVersionExtension( String file, File viewroot ) throws UCMException
+	{
+		String f = strategy.getVersionExtension( file, viewroot );
+		return (Version)UCMEntity.GetEntity( file, false );
+	}
+	
 	/* Tags */
 	
 	public ArrayList<Tag> ListTags( UCMEntity entity ) throws UCMException
@@ -204,6 +210,11 @@ public class UCMContext
 		String[] rs = result.split( UCMEntity.delim );
 		
 		return rs;
+	}
+	
+	public void createBaseline( String fqname, Component component, File view, boolean incremental, boolean identical ) throws UCMException
+	{
+		strategy.createBaseline( fqname, component.GetFQName(), view, incremental, identical );
 	}
 	
 	
@@ -370,7 +381,7 @@ public class UCMContext
 	{
 		String result = strategy.LoadProject( project.GetFQName() );
 	
-		/* TODO currently result only returns the stream name */
+		/* TODO currently the result only returns the stream name. Add more? */
 		project.SetStream( UCMEntity.GetStream( result ) );
 	}
 	
@@ -449,7 +460,66 @@ public class UCMContext
 	
 	public String LoadStream( Stream stream ) throws UCMException
 	{
+		logger.log( "Loading stream " + stream.GetFQName() );
+
 		return strategy.LoadStream( stream.GetFQName() );
+	}
+	
+	
+	
+	/* Attributes */
+
+	/**
+	 * Retrieve the attributes for an entity, executed from the current working directory
+	 * @param entity The given entity
+	 * @return A Map of key, value pairs of the attributes
+	 * @throws UCMException
+	 */
+	public Map<String, String> getAttributes( UCMEntity entity ) throws UCMException
+	{
+		return strategy.getAttributes( entity.GetFQName() );
+	}
+	
+	/**
+	 * Retrieve the attributes for an entity
+	 * @param entity The given entity
+	 * @param dir A File object of the directory where the command should be executed
+	 * @return A Map of key, value pairs of the attributes
+	 * @throws UCMException
+	 */
+	public Map<String, String> getAttributes( UCMEntity entity, File dir ) throws UCMException
+	{
+		return strategy.getAttributes( entity.GetFQName(), dir );
+	}
+	
+	public void setAttribute( UCMEntity entity, String attribute, String value ) throws UCMException
+	{
+		strategy.setAttribute( entity.GetFQName(), attribute, value );
+	}
+	
+	
+	public List<HyperLink> getHlinks( UCMEntity entity, String hlinkType, File dir ) throws UCMException
+	{
+		List<Tuple<String, String>> result = strategy.getHlinks( entity.GetFQName(), hlinkType, dir );
+		
+		List<HyperLink> hlinks = new ArrayList<HyperLink>();
+		
+		for( Tuple<String, String> t : result )
+		{
+			HyperLink h = HyperLink.getHyperLink( t.t1, t.t2 );
+			
+			hlinks.add( h );
+		}
+		
+		return hlinks;
+	}
+	
+	
+	public HyperLink loadHyperLink( HyperLink hlink, File dir ) throws UCMException
+	{
+		String result = strategy.LoadHyperLink( hlink.GetFQName(), dir );
+		
+		return null;
 	}
 	
 	
