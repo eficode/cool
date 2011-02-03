@@ -48,15 +48,22 @@ public class BaselineTest
 	}
 
 	@Test
-	public void testStringify()
+	public void testStringify() throws UCMException
 	{
-		fail( "Not yet implemented" );
+		Baseline bl = UCMEntity.GetBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
+		assertNotNull( bl.Stringify() );
 	}
 
 	@Test
-	public void testBaseline()
+	public void testBaseline() throws UCMException
 	{
-		fail( "Not yet implemented" );
+		Baseline bl = UCMEntity.GetBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
+		assertNotNull( bl.Stringify() );
+		
+		assertEquals( "baseline:CHW_BASELINE_51@\\Cool_PVOB", bl.GetFQName() );
+		assertEquals( "\\Cool_PVOB", bl.pvob );
+		assertEquals( "CHW_BASELINE_51", bl.shortname );
+		assertEquals( "chw", bl.user );
 	}
 
 	@Test
@@ -66,15 +73,21 @@ public class BaselineTest
 	}
 
 	@Test
-	public void testGetPromotionLevel()
+	public void testGetPromotionLevel() throws UCMException
 	{
-		fail( "Not yet implemented" );
+		Baseline bl = UCMEntity.GetBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
+		
+		assertEquals( "tested", bl.GetPromotionLevel( true ) );
+		
+		assertEquals( "tested", bl.GetPromotionLevel( false ) );
 	}
 
 	@Test
-	public void testPromote()
+	public void testPromote() throws UCMException
 	{
-		fail( "Not yet implemented" );
+		Baseline bl = UCMEntity.GetBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
+		
+		bl.Promote();
 	}
 
 	@Test
