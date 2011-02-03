@@ -34,7 +34,11 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	
 	/* Some relatively hard coded "variables" */
 	public static final String __TAG_NAME     = "tag";
-	public static final String __BUILD_NUMBER = "buildnumber.sequence"; 
+	public static final String __BUILD_NUMBER_MAJOR    = "buildnumber.major";
+	public static final String __BUILD_NUMBER_MINOR    = "buildnumber.minor";
+	public static final String __BUILD_NUMBER_PATCH    = "buildnumber.patch";
+	public static final String __BUILD_NUMBER_SEQUENCE = "buildnumber.sequence";
+	
 	
 	static
 	{
@@ -918,7 +922,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	 */
 	public String GetBuildNumber( String fqname ) throws UCMException
 	{
-		return GetAttribute( fqname, __BUILD_NUMBER );
+		return GetAttribute( fqname, __BUILD_NUMBER_SEQUENCE );
 	}
 	
 	/**

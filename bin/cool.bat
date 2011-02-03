@@ -31,7 +31,7 @@ if exist "%COOL_HOME%\cool.bat" goto start
 
 :start
 
-set cool=java -classpath %COOL_HOME% %package%.%program% %args%
+set cool=java -Dtest="1" -classpath %COOL_HOME% %package%.%program% %args%
 
 rem echo %cool%
 
