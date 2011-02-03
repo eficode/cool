@@ -1,5 +1,6 @@
 package net.praqma.clearcase.ucm.entities;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,6 +24,7 @@ public class Version extends UCMEntity
 	
 	private String file        = null;
 	private String sfile       = null;
+	private File version       = null;
 	private int revision       = 0;
 	
 	private static String rx_revision = "(\\d+)$";
@@ -46,7 +48,6 @@ public class Version extends UCMEntity
 	{
 		logger.trace_function();
 
-		
 		String fqname = this.fqname.matches( "^\\S:\\\\.*" ) ? this.fqname : System.getProperty( "user.dir" ) + filesep + this.fqname;
 		
 		this.fqname = fqname;
@@ -66,10 +67,28 @@ public class Version extends UCMEntity
 		tmp        = tmp.replaceFirst( "(?m)\\@\\@.*$", "" );
 		tmp        = tmp.replaceFirst( "(?m)^\\s+", "" );
 		this.file  = tmp;
+		
+		this.version = new File( tmp );
+	}
+	
+	public boolean hijack()
+	{
+		if( this.version.canWrite() )
+		{
+			return true;
+		}
+		
+		return this.version.setWritable( true );
 	}
 	
 	/* Getters */
 	
+	public static Version getUnextendedVersion( String file, File viewroot ) throws UCMException
+	{
+		return context.getVersionExtension( file, viewroot );
+	}
+
+
 	public String GetUser()
 	{
 		if( !loaded ) Load();

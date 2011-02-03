@@ -1,5 +1,6 @@
 package net.praqma.clearcase.ucm.entities;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -85,6 +86,19 @@ public class Baseline extends UCMEntity
 		activities = new ArrayList<Activity>();
 		
 		this.loaded = true;
+	}
+	
+	public static Baseline create( String fqname, Component component, File view, boolean incremental, boolean identical ) throws UCMException
+	{
+		if( fqname.toLowerCase().startsWith( "baseline:" ) )
+		{
+			logger.warning( "The baseline name should not be prefixed with \"baseline:\", removing it" );
+			fqname = fqname.replaceFirst( "baseline:", "" );
+		}
+		
+		context.createBaseline( fqname, component, view, incremental, identical );
+		
+		return UCMEntity.GetBaseline( fqname + "@" + component.GetPvob(), true );
 	}
 	
 	/**

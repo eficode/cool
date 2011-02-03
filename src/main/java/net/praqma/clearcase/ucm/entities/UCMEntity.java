@@ -1,12 +1,16 @@
 package net.praqma.clearcase.ucm.entities;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.persistence.*;
+import net.praqma.util.structure.Tuple;
 
 /**
  * 
@@ -20,6 +24,7 @@ public abstract class UCMEntity extends UCM
 	private static final Pattern pattern_std_fqname     = Pattern.compile( "^(\\w+):(" + rx_ccdef_allowed + "+)@(" + rx_ccdef_vob + "+)$" );
 	/* TODO Make a better character class definition for files(Version) */
 	private static final Pattern pattern_version_fqname = Pattern.compile( "^(\\w:[\\S\\s\\\\\\.]+)@@(" + rx_ccdef_vob + "+)$" );
+	public static final Pattern pattern_hlink_fqname    = Pattern.compile( "^hlink:(" + rx_ccdef_allowed + "+)@(\\d+)@(" + rx_ccdef_vob + "+)$" );
 	protected static final Pattern pattern_tag_fqname   = Pattern.compile( "^tag@(\\w+)@(" + rx_ccdef_vob + "+)$" );
 	
 	protected static final String rx_ccdef_cc_name      = "[\\w\\.][\\w\\.-]*";
@@ -36,6 +41,7 @@ public abstract class UCMEntity extends UCM
 		Activity,
 		Baseline,
 		Component,
+		HyperLink,
 		Stream,
 		Project,
 		Tag,
@@ -173,6 +179,18 @@ public abstract class UCMEntity extends UCM
 					shortname = match.group( 1 ); // This is also the eid
 					pvob      = match.group( 2 );
 					type      = ClearcaseEntityType.Tag;
+				}
+				else
+				{
+					/* Not a Tag entity, lets try HLink(which really is a Tag) */
+					match = pattern_hlink_fqname.matcher( fqname );
+					if( match.find() )
+					{
+						/* Set the Entity variables */
+						shortname = match.group( 1 );
+						pvob      = match.group( 3 );
+						type      = ClearcaseEntityType.HyperLink;
+					}
 				}
 			}
 		}
@@ -322,6 +340,29 @@ public abstract class UCMEntity extends UCM
 	}
 	
 	
+	public static HyperLink GetHyperLink( String name ) throws UCMException
+	{
+		return GetHyperLink( name, true );
+	}
+	
+	/**
+	 * Retrieve an HyperLink object.
+	 * @param name Fully qualified name
+	 * @param trusted If not trusted, the entity's content is loaded from clear case.
+	 * @return An Stream object
+	 */
+	public static HyperLink GetHyperLink( String name, boolean trusted ) throws UCMException
+	{
+		if( !name.startsWith( "hlink:" ) )
+		{
+			name = "hlink:" + name;
+		}
+		
+		HyperLink entity = (HyperLink)UCMEntity.GetEntity( name, trusted );	
+		return entity;
+	}
+	
+	
 	public static Project GetProject( String name ) throws UCMException
 	{
 		return GetProject( name, true );
@@ -365,6 +406,7 @@ public abstract class UCMEntity extends UCM
 		return entity;
 	}
 	
+	
 	/* Tag stuff */
 
 	public Tag GetTag( String tagType, String tagID ) throws UCMException
@@ -375,6 +417,38 @@ public abstract class UCMEntity extends UCM
 		}
 		
 		return tp.GetTag( tagType, tagID, this );
+	}
+
+	/**
+	 * Retrieve the attributes for an entity, executed from the current working directory
+	 * @return A Map of key, value pairs of the attributes
+	 * @throws UCMException
+	 */
+	public Map<String, String> getAttributes() throws UCMException
+	{
+		return context.getAttributes( this );
+	}
+	
+	/**
+	 * Retrieve the attributes for an entity
+	 * @param dir A File object of the directory where the command should be executed
+	 * @return A Map of key, value pairs of the attributes
+	 * @throws UCMException
+	 */
+	public Map<String, String> getAttributes( File dir ) throws UCMException
+	{
+		return context.getAttributes( this, dir );
+	}
+	
+	public void setAttribute( String attribute, String value ) throws UCMException
+	{
+		context.setAttribute( this, attribute, value );
+	}
+	
+	
+	public List<HyperLink> getHlinks( String hlinkType, File dir ) throws UCMException
+	{
+		return context.getHlinks( this, hlinkType, dir );
 	}
 
 	

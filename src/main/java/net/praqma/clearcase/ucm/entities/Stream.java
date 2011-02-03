@@ -16,6 +16,7 @@ public class Stream extends UCMEntity
 {
 	/* Stream specific fields */
 	private ArrayList<Baseline> recommendedBaselines = null;
+	private Project project                          = null;
 	
 	
 	Stream()
@@ -54,7 +55,12 @@ public class Stream extends UCMEntity
 	
 	public void Load() throws UCMException
 	{
-		context.LoadStream( this );
+		String[] data = context.LoadStream( this ).split( UCM.delim );
+		
+		/* name::project */
+		this.project = UCMEntity.GetProject( data[1] );
+		
+		this.loaded = true;
 	}
 	
 	/**
@@ -129,6 +135,13 @@ public class Stream extends UCMEntity
 		}
 		
 		return bls.get( 0 ).GetComponent();
+	}
+	
+	public Project getProject() throws UCMException
+	{
+		if( !this.loaded ) Load();
+		
+		return this.project;
 	}
 	
 	public String Stringify() throws UCMException
