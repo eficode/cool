@@ -5,8 +5,9 @@ import java.io.File;
 
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
-import net.praqma.util.execute.Command;
+import net.praqma.util.execute.CommandLine;
 import net.praqma.util.execute.CommandLineException;
+import net.praqma.util.execute.CommandLineInterface;
 
 
 
@@ -19,19 +20,39 @@ import net.praqma.util.execute.CommandLineException;
  *
  */
 public abstract class Cleartool
-{	
+{
+
+	private static CommandLineInterface cli = null;
+	
+	static
+	{
+		System.out.println( System.getProperty( "test" ) );
+		if( System.getProperty( "test" ) != null )
+		{
+			cli = CommandLineMock.getInstance();
+			System.out.println( "Setting cli to MOCK" );
+		}
+		else
+		{
+			cli = CommandLine.getInstance();
+			System.out.println( "Setting cli to THE REAL THING" );
+		}
+	}
+	
 	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException
 	{
-		return Command.run( "cleartool " + cmd, null, false );
+		return cli.run( "cleartool " + cmd, null, false );
 	}
 	
 	public static CmdResult run( String cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException
 	{
-		return Command.run( "cleartool " + cmd, dir, false );
+		return cli.run( "cleartool " + cmd, dir, false );
 	}
 	
 	public static CmdResult run( String cmd, File dir, boolean merge ) throws CommandLineException, AbnormalProcessTerminationException
 	{
-		return Command.run( "cleartool " + cmd, dir, merge );
+		return cli.run( "cleartool " + cmd, dir, merge );
 	}
 }
+
+
