@@ -380,6 +380,8 @@ public class UCMContext
 	public void LoadProject( Project project ) throws UCMException
 	{
 		String result = strategy.LoadProject( project.GetFQName() );
+		
+		logger.debug( "Result: " + result );
 	
 		/* TODO currently the result only returns the stream name. Add more? */
 		project.SetStream( UCMEntity.GetStream( result ) );

@@ -106,6 +106,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 
 	public String LoadBaseline( String baseline ) throws UCMException
 	{
+		logger.debug( "Loading " + baseline );
+		
 		String cmd = "desc -fmt %n" + delim + "%[component]p" + delim + "%[bl_stream]p" + delim + "%[plevel]p" + delim + "%u " + baseline;
 		try
 		{
@@ -1053,8 +1055,6 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		
 		for( String s : res.stdoutList )
 		{
-			logger.debug( "S=" + s );
-			
 			/* A valid attribute */
 			if( s.matches( rx_attr_find ) )
 			{

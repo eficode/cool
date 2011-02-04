@@ -3,6 +3,7 @@ package net.praqma.clearcase.cleartool;
 
 import java.io.File;
 
+import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLine;
@@ -23,11 +24,13 @@ public abstract class Cleartool
 {
 
 	private static CommandLineInterface cli = null;
+	private static Logger logger = Logger.getLogger();
 	
 	static
 	{
-		System.out.println( System.getProperty( "test" ) );
-		if( System.getProperty( "test" ) != null )
+		System.out.println( System.getProperty( "cleartool" ) );
+		logger.debug( System.getProperty( "cleartool" ) );
+		if( System.getProperty( "cleartool" ) != null && System.getProperty( "cleartool" ).equalsIgnoreCase( "mock" ) )
 		{
 			cli = CommandLineMock.getInstance();
 			System.out.println( "Setting cli to MOCK" );
