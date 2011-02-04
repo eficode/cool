@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.entities;
 import static org.junit.Assert.*;
 
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.UCM;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
