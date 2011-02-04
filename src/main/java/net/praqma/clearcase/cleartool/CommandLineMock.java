@@ -67,6 +67,11 @@ public class CommandLineMock implements CommandLineInterface
 			res.stdoutBuffer.append( "CHW_BASELINE_51::_System::Server_int::TESTED::chw" );
 		}
 		
+		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u baseline:CHW_BASELINE_51_no@\\Cool_PVOB" ) )
+		{
+			throw new AbnormalProcessTerminationException( "cleartool: Error: Baseline not found: \"CHW_BASELINE_51_no\"." );
+		}
+		
 		if( cmd.equals( "cleartool chbl -level RELEASED baseline baseline:CHW_BASELINE_51@\\Cool_PVOB" ) )
 		{
 			

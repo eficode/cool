@@ -35,7 +35,7 @@ public class BaselineTest
 	@Test
 	public void testLoadNotExist()
 	{
-		String baseline = "baseline:CHW_BASELINE_51_111@\\Cool_PVOB";
+		String baseline = "baseline:CHW_BASELINE_51_no@\\Cool_PVOB";
 		Baseline bl = null;
 		try
 		{
@@ -67,20 +67,22 @@ public class BaselineTest
 		assertEquals( "chw", bl.user );
 	}
 
+	/*
 	@Test
 	public void testGetEntity()
 	{
 		fail( "Not yet implemented" );
 	}
+	*/
 
 	@Test
 	public void testGetPromotionLevel() throws UCMException
 	{
 		Baseline bl = UCMEntity.GetBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
 		
-		assertEquals( "tested", bl.GetPromotionLevel( true ) );
+		assertEquals( "TESTED", bl.GetPromotionLevel( true ).toString() );
 		
-		assertEquals( "tested", bl.GetPromotionLevel( false ) );
+		assertEquals( "TESTED", bl.GetPromotionLevel( false ).toString() );
 	}
 
 	@Test
@@ -91,6 +93,7 @@ public class BaselineTest
 		bl.Promote();
 	}
 
+	/*
 	@Test
 	public void testDemote()
 	{
@@ -114,5 +117,6 @@ public class BaselineTest
 	{
 		fail( "Not yet implemented" );
 	}
+	*/
 
 }
