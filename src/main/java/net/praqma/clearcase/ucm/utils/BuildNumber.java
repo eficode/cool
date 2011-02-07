@@ -119,6 +119,7 @@ public class BuildNumber
 		{
 			stamp.stampIntoCode( major, minor, patch, sequence );
 			System.out.println( "Stamping file " + file );
+			logger.log( "Stamping file " + file );
 		}
 		catch ( IOException e )
 		{
@@ -130,6 +131,7 @@ public class BuildNumber
 			{
 				stamp.stampIntoCode( major, minor, patch, sequence );
 				System.out.println( "Stamping file " + file );
+				logger.log( "Stamping file " + file );
 			}
 			catch ( IOException e2 )
 			{

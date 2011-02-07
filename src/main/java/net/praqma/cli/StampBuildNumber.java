@@ -5,8 +5,10 @@ import java.io.IOException;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
+import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.utils.BuildNumber;
+import net.praqma.util.debug.Logger;
 import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
@@ -20,6 +22,8 @@ import net.praqma.util.option.Options;
 
 public class StampBuildNumber
 {
+	
+	private static Logger logger = Logger.getLogger();
 	
 	public static void main( String[] args ) throws UCMException
 	{
@@ -37,6 +41,8 @@ public class StampBuildNumber
 		
 		o.parse( args );
 		
+		o.print();
+		
 		try
 		{
 			o.checkOptions();
@@ -48,7 +54,9 @@ public class StampBuildNumber
 			System.exit( 1 );
 		}
 		
-		Baseline baseline = UCMEntity.GetBaseline( obaseline.getString() );
+		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		
+		Baseline baseline = UCMEntity.GetBaseline( obaseline.getString(), false );
 		File dir = new File( odir.getString() );
 		BuildNumber.stampIntoCode( baseline, dir );
 	}

@@ -31,8 +31,6 @@ public class HyperLink extends UCMEntity
 	{
 		Matcher match = UCMEntity.pattern_hlink_fqname.matcher( this.fqname );
 		
-		logger.debug( "HLINK=" + this.fqname );
-		
 		if( !match.find() )
 		{
 			logger.warning( "Rather odd, this shouldn've happened...." );
