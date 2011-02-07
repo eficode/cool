@@ -27,21 +27,21 @@ public class UCMException extends Exception
 	{
 		super();
 		
-		logger.exceptionWarning( "Unnamed UCMException thrown" );
+		//logger.exceptionWarning( "Unnamed UCMException thrown" );
 	}
 	
 	public UCMException( String s )
 	{
 		super( s );
 		
-		logger.exceptionWarning( s );
+		//logger.exceptionWarning( s );
 	}
 	
 	public UCMException( String s, UCMType type )
 	{
 		super( s );
 		
-		logger.exceptionWarning( s );
+		//logger.exceptionWarning( s );
 		
 		this.type = type;
 	}
