@@ -18,7 +18,9 @@ import net.praqma.util.structure.Tuple;
 
 public class BuildNumber
 {
-	private final static Pattern pattern_parse_baseline = Pattern.compile( "^\\S+__(\\d+)_(\\d+)_(\\d+)_(\\d+)$" );
+	private final static String rx_buildnumber = "\\S+__(\\d+)_(\\d+)_(\\d+)_(\\d+)";
+	private final static Pattern pattern_buildnumber = Pattern.compile( "^" + rx_buildnumber + "$" );
+	//private final static Pattern pattern_parse_baseline = Pattern.compile( "baseline:" + rx_buildnumber + "@.*?$" );
 	
 	private static Logger logger = Logger.getLogger();
 	
@@ -28,9 +30,28 @@ public class BuildNumber
 	public static final String __BUILD_NUMBER_SEQUENCE = "buildnumber.sequence";
 	public static final String __BUILD_NUMBER_FILE     = "buildnumber.file";
 	
+	public static String[] isBuildNumber( Baseline baseline ) throws UCMException
+	{
+		Matcher match = pattern_buildnumber.matcher( baseline.GetShortname() );
+		
+		if( !match.find() )
+		{
+			throw new UCMException( "The given Baseline was not a valid build number" );
+		}
+		
+		String[] result = new String[4];
+		
+		result[0] = match.group( 1 );
+		result[1] = match.group( 2 );
+		result[2] = match.group( 3 );
+		result[3] = match.group( 4 );
+		
+		return result;
+	}
+	
 	public static Tuple<Baseline, String[]> createBuildNumber( String baseline, Component component, File view ) throws UCMException
 	{
-		Matcher match = pattern_parse_baseline.matcher( baseline );
+		Matcher match = pattern_buildnumber.matcher( baseline );
 		
 		if( !match.find() )
 		{
@@ -50,20 +71,11 @@ public class BuildNumber
 		result.t2[3] = match.group( 4 );
 		
 		return result;
-		
-		/*
-		major    = Integer.parseInt( match.group( 1 ) );
-		minor    = Integer.parseInt( match.group( 2 ) );
-		patch    = Integer.parseInt( match.group( 3 ) );
-		sequence = Integer.parseInt( match.group( 4 ) );
-		*/		
 	}
 	
 	public static void stampFromComponent( Component component, File dir, String major, String minor, String patch, String sequence ) throws UCMException
 	{
 		List<HyperLink> result = component.getHlinks( __BUILD_NUMBER_FILE, dir );
-		
-		System.out.println( "I am here!" );
 		
 		for( HyperLink h : result )
 		{
@@ -71,6 +83,19 @@ public class BuildNumber
 			File stampee = new File( f );
 			BuildNumber.stampIntoCode( stampee, major, minor, patch, sequence );
 		}
+	}
+	
+	public static void stampIntoCode( Baseline baseline ) throws UCMException
+	{
+		stampIntoCode( baseline, null );
+	}
+	
+	public static void stampIntoCode( Baseline baseline, File dir ) throws UCMException
+	{
+		String[] numbers = isBuildNumber( baseline );
+		Component component = baseline.GetComponent();
+		
+		stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3] );
 	}
 	
 	public static void stampIntoCode( File file, String major, String minor, String patch, String sequence ) throws UCMException

@@ -14,7 +14,6 @@ import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.structure.Tuple;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -44,6 +43,14 @@ public class BuildNumberTest
 		
 		assertEquals( "Baseline", result.t1.GetFQName(), "baseline:bls__1_2_3_123@\\Cool_PVOB" );
 		
+	}
+	
+	@Test
+	public void testStampIntoCodeBaseline() throws UCMException
+	{
+		Baseline blbn = UCMEntity.GetBaseline( "bn__1_2_3_1234@\\Cool_PVOB" );
+		
+		BuildNumber.stampIntoCode( blbn );
 	}
 
 	

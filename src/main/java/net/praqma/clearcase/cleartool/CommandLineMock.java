@@ -111,6 +111,11 @@ public class CommandLineMock implements CommandLineInterface
 			res.stdoutBuffer.append( "rec_baseline000002" );
 		}
 		
+		if( cmd.equals( "cleartool desc -fmt %[rec_bls]p stream:Server_int@\\Cool_PVOB" ) )
+		{
+			res.stdoutBuffer.append( "rec_baseline000001" );
+		}
+		
 		/* Baselines */
 		
 		/*cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u baseline:rec_baseline000001@\Cool_PVOB*/
@@ -122,6 +127,11 @@ public class CommandLineMock implements CommandLineInterface
 		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u baseline:rec_baseline000002@\\Cool_PVOB" ) )
 		{
 			res.stdoutBuffer.append( "rec_baseline000002::_System_2::Server_int::INITIAL::chw" );
+		}
+		
+		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u baseline:bn__1_2_3_1234@\\Cool_PVOB" ) )
+		{
+			res.stdoutBuffer.append( "rec_baseline000002::_System::Server_int::INITIAL::chw" );
 		}
 		
 		
