@@ -3,7 +3,6 @@ package net.praqma.cli;
 import java.io.File;
 import java.io.IOException;
 
-import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
@@ -14,7 +13,7 @@ import net.praqma.util.option.Options;
  * 
  */
 
-public class BuildNumber
+public class BuildNumberStamper
 {
 	
 	public static void main( String[] args )
@@ -53,10 +52,10 @@ public class BuildNumber
 		
 		File file = new File( ofile.getString() );
 		
-		BuildNumberStamper stamp = null;
+		net.praqma.util.io.BuildNumberStamper stamp = null;
 		try
 		{
-			stamp = new BuildNumberStamper( file );
+			stamp = new net.praqma.util.io.BuildNumberStamper( file );
 		}
 		catch ( IOException e )
 		{
