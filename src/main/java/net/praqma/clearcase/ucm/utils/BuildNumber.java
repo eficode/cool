@@ -18,15 +18,9 @@ import net.praqma.util.structure.Tuple;
 
 public class BuildNumber
 {
-	private Baseline baseline = null;
 	private final static Pattern pattern_parse_baseline = Pattern.compile( "^\\S+__(\\d+)_(\\d+)_(\\d+)_(\\d+)$" );
 	
 	private static Logger logger = Logger.getLogger();
-	
-	private Integer major    = null;
-	private Integer minor    = null;
-	private Integer patch    = null;
-	private Integer sequence = null;
 	
 	public static final String __BUILD_NUMBER_MAJOR    = "buildnumber.major";
 	public static final String __BUILD_NUMBER_MINOR    = "buildnumber.minor";
@@ -81,6 +75,11 @@ public class BuildNumber
 	
 	public static void stampIntoCode( File file, String major, String minor, String patch, String sequence ) throws UCMException
 	{
+		if( !file.exists() )
+		{
+			throw new UCMException( "The file " + file + " does not exist." );
+		}
+		
 		BuildNumberStamper stamp = null;
 		try
 		{
@@ -109,7 +108,7 @@ public class BuildNumber
 			}
 			catch ( IOException e2 )
 			{
-				throw new UCMException( "Could not access file" );
+				throw new UCMException( "Failed hijacking. Could not access file" );
 			}
 		}
 		

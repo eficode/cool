@@ -50,7 +50,7 @@ public class CommandLineMock implements CommandLineInterface
 		/* This is the final  */
 		
 		logger.debug( "$ " + cmd + ", " + dir + ", " + merge + ", " + ignore );
-		System.out.println( "$ " + cmd + ", " + dir + ", " + merge + ", " + ignore );
+		//System.out.println( "$ " + cmd + ", " + dir + ", " + merge + ", " + ignore );
 		
 		CmdResult res    = new CmdResult();
 		res.stdoutBuffer = new StringBuffer();
@@ -146,8 +146,15 @@ public class CommandLineMock implements CommandLineInterface
 			res.stdoutList.add( "More bogus" );
 			res.stdoutList.add( " buildnumber.major = 1 " );
 			res.stdoutList.add( " buildnumber.minor = 2 " );
-			res.stdoutList.add( " buildnumber.patch = 3 " );
-			
+			res.stdoutList.add( " buildnumber.patch = 3 " );	
+		}
+		
+		// cleartool describe -ahlink buildnumber.file -l component:System@\Cool_PVOB
+		if( cmd.equals( "cleartool describe -ahlink buildnumber.file -l component:System@\\Cool_PVOB" ) )
+		{
+			res.stdoutList.add( "bogus" );
+			res.stdoutList.add( " Hyperlinks:" );
+			res.stdoutList.add( "   buildnumber.file@1234@\\Cool_PVOB ->  version.h " );
 		}
 		
 		return res;
