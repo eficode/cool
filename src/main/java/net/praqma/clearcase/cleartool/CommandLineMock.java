@@ -79,6 +79,17 @@ public class CommandLineMock implements CommandLineInterface
 		
 		/****
 		 * 
+		 *  Component Tests 
+		 *  
+		 **** */
+		
+		if( cmd.equals( "component:_System@\\Cool_PVOB" ) )
+		{
+			res.stdoutBuffer.append( "" );
+		}
+		
+		/****
+		 * 
 		 *  BuildNumber Tests 
 		 *  
 		 **** */
