@@ -79,11 +79,40 @@ public class CommandLineMock implements CommandLineInterface
 		
 		/****
 		 * 
+		 *  Tag Tests 
+		 *  
+		 **** */
+		
+		/*
+		CHW_BASELINE_51
+		  Hyperlinks:
+		    tag@949@\Cool_PVOB ->  "tagtype=hudson&tagid=PraqmaticTest&buildstatus=SUCCESS&"
+		    */
+		
+		if( cmd.equals( "cleartool describe -ahlink tag -l baseline:bn__1_2_3_1234@\\Cool_PVOB" ) )
+		{
+			res.stdoutList.add( "Something" );
+			res.stdoutList.add( "  Hyperlinks:" );
+			res.stdoutList.add( "     tag@949@\\Cool_PVOB ->  \"tagtype=a&tagid=1&k1=v1&k2=v2\"" );
+		}
+		
+		/* Created hyperlink "tag@1512@\Cool_PVOB". */
+		String s1 = "cleartool mkhlink -ttext \"tagtype=tt&tagid=001&k1=v1&k2=v2\" tag baseline:tagtest@\\Cool_PVOB";
+		if( cmd.equals( s1 ) && cmd.length() == s1.length() )
+		{
+			System.out.println( "CMD=" + cmd );
+			System.out.println( "s1=" + s1 );
+			System.out.println( cmd.length() + "=" + s1.length() );
+			res.stdoutBuffer.append( "Created hyperlink \"tag@1512@\\Cool_PVOB\"." );
+		}
+		
+		/****
+		 * 
 		 *  Component Tests 
 		 *  
 		 **** */
 		
-		if( cmd.equals( "component:_System@\\Cool_PVOB" ) )
+		if( cmd.equals( "cleartool describe component:_System@\\Cool_PVOB" ) )
 		{
 			res.stdoutBuffer.append( "" );
 		}

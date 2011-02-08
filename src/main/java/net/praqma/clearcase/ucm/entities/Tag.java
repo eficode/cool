@@ -26,7 +26,7 @@ public class Tag extends UCMEntity
 	
 	//private static final Pattern pattern_cgi = Pattern.compile( "" );
 	
-	private HashMap<String, String> keyval = new HashMap<String, String>();
+	private Map<String, String> keyval = new HashMap<String, String>();
 	
 	Tag()
 	{
@@ -47,7 +47,7 @@ public class Tag extends UCMEntity
 		this.OID = this.shortname;
 	}
 	
-	public static HashMap<String, String> CGIToHash( String cgi )
+	public static Map<String, String> CGIToHash( String cgi )
 	{
 		HashMap<String, String> hash = new HashMap<String, String>();
 		logger.debug( "cgi="+ cgi );
@@ -64,12 +64,6 @@ public class Tag extends UCMEntity
 		return hash;
 	}
 	
-	public static String HashToCGI( HashMap<String, String> keyval )
-	{
-		return HashToCGI( keyval, false );
-	}
-	
-	//public boolean QueryTag( ArrayList<Tuple<String, String>> query )
 	public boolean QueryTag( TagQuery query )
 	{
 		for( Tuple<String, String> t : query )
@@ -102,7 +96,12 @@ public class Tag extends UCMEntity
 		return true;
 	}
 	
-	public static String HashToCGI( HashMap<String, String> keyval, boolean skiptaginfo )
+	public static String HashToCGI( Map<String, String> keyval )
+	{
+		return HashToCGI( keyval, false );
+	}
+	
+	public static String HashToCGI( Map<String, String> keyval, boolean skiptaginfo )
 	{
 		StringBuffer sb = new StringBuffer();
 		Iterator<Entry<String, String>> it = keyval.entrySet().iterator();
@@ -124,7 +123,7 @@ public class Tag extends UCMEntity
 	}
 	
 	/**
-	 * This function is actually never called.... Thus GetTag is never called as well!
+	 * Is used by Stringify
 	 */
 	public void Load() throws UCMException
 	{
@@ -181,7 +180,7 @@ public class Tag extends UCMEntity
 		return null;
 	}
 	
-	public HashMap<String, String> GetEntries()
+	public Map<String, String> GetEntries()
 	{
 		return this.keyval;
 	}

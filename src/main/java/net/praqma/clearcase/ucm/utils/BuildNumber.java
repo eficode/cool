@@ -20,7 +20,6 @@ public class BuildNumber
 {
 	private final static String rx_buildnumber = "\\S+__(\\d+)_(\\d+)_(\\d+)_(\\d+)";
 	private final static Pattern pattern_buildnumber = Pattern.compile( "^" + rx_buildnumber + "$" );
-	//private final static Pattern pattern_parse_baseline = Pattern.compile( "baseline:" + rx_buildnumber + "@.*?$" );
 	
 	private static Logger logger = Logger.getLogger();
 	
