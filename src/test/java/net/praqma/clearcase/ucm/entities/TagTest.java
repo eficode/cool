@@ -150,6 +150,22 @@ public class TagTest
 		assertTrue( hash.containsKey( "k1" ) );
 		assertFalse( hash.containsKey( "k2" ) );
 	}
+	
+	@Test
+	public void testRemoveEntryFail() throws UCMException
+	{
+		Tag tag = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
+		String cgi = "tagid=001&tagtype=tt&k1=v1&k2=v2";
+		
+		tag.SetKeyValue( cgi );
+		tag.RemoveEntry( "k3" );
+		
+		Map<String, String> hash = tag.GetEntries();
+		
+		assertTrue( hash.containsKey( "k1" ) );
+		assertTrue( hash.containsKey( "k2" ) );
+		assertFalse( hash.containsKey( "k3" ) );
+	}
 
 	@Test
 	public void testGetEntry() throws UCMException
@@ -163,6 +179,20 @@ public class TagTest
 		
 		assertEquals( "v1", value );
 	}
+	
+	@Test
+	public void testGetEntryFail() throws UCMException
+	{
+		Tag tag = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
+		String cgi = "tagid=001&tagtype=tt&k1=v1&k2=v2";
+		
+		tag.SetKeyValue( cgi );
+
+		String value = tag.GetEntry( "k3" );
+		
+		assertNull( value );
+	}
+
 
 	@Test
 	public void testGetEntries() throws UCMException
