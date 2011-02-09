@@ -72,32 +72,36 @@ public class BuildNumber
 		return result;
 	}
 	
-	public static void stampFromComponent( Component component, File dir, String major, String minor, String patch, String sequence ) throws UCMException
+	public static int stampFromComponent( Component component, File dir, String major, String minor, String patch, String sequence ) throws UCMException
 	{
 		List<HyperLink> result = component.getHlinks( __BUILD_NUMBER_FILE, dir );
+		
+		int number = 0;
 		
 		for( HyperLink h : result )
 		{
 			String f = h.getValue().replaceFirst( "@@\\s*$", "" );
 			File stampee = new File( f );
-			BuildNumber.stampIntoCode( stampee, major, minor, patch, sequence );
+			number += BuildNumber.stampIntoCode( stampee, major, minor, patch, sequence );
 		}
+		
+		return number;
 	}
 	
-	public static void stampIntoCode( Baseline baseline ) throws UCMException
+	public static int stampIntoCode( Baseline baseline ) throws UCMException
 	{
-		stampIntoCode( baseline, null );
+		return stampIntoCode( baseline, null );
 	}
 	
-	public static void stampIntoCode( Baseline baseline, File dir ) throws UCMException
+	public static int stampIntoCode( Baseline baseline, File dir ) throws UCMException
 	{
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.GetComponent();
 		
-		stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3] );
+		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3] );
 	}
 	
-	public static void stampIntoCode( File file, String major, String minor, String patch, String sequence ) throws UCMException
+	public static int stampIntoCode( File file, String major, String minor, String patch, String sequence ) throws UCMException
 	{
 		if( !file.exists() )
 		{
@@ -114,9 +118,12 @@ public class BuildNumber
 			throw new UCMException( "Could not create temporary file" );
 		}
 		
+		int number = 0;
+		
+		/* This is where the stamping is called */
 		try
 		{
-			stamp.stampIntoCode( major, minor, patch, sequence );
+			number = stamp.stampIntoCode( major, minor, patch, sequence );
 			System.out.println( "Stamping file " + file );
 			logger.log( "Stamping file " + file );
 		}
@@ -128,9 +135,11 @@ public class BuildNumber
 			
 			try
 			{
-				stamp.stampIntoCode( major, minor, patch, sequence );
+				number = stamp.stampIntoCode( major, minor, patch, sequence );
 				System.out.println( "Stamping file " + file );
 				logger.log( "Stamping file " + file );
+				
+				
 			}
 			catch ( IOException e2 )
 			{
@@ -138,7 +147,13 @@ public class BuildNumber
 			}
 		}
 		
-
+		/* It is also considered an error, if zero occurrences found */
+		if( number == 0 )
+		{
+			throw new UCMException( "No occurrences found" );
+		}
+		
+		return number;
 	}
 	
 	/**

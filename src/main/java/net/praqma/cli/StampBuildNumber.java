@@ -58,6 +58,18 @@ public class StampBuildNumber
 		
 		Baseline baseline = UCMEntity.GetBaseline( obaseline.getString(), false );
 		File dir = new File( odir.getString() );
-		BuildNumber.stampIntoCode( baseline, dir );
+		int number = BuildNumber.stampIntoCode( baseline, dir );
+		
+		/* Determine the return value */
+		if( number > 0 )
+		{
+			System.out.println( number + " occurrence" + ( number > 1 ? "s" : "" ) + " found" );
+			System.exit( 0 );
+		}
+		else
+		{
+			System.err.println( "No occurrences found" );
+			System.exit( 1 );
+		}
 	}
 }

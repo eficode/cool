@@ -70,8 +70,17 @@ public class BuildNumberStamper
 		
 		try
 		{
-			stamp.stampIntoCode( omajor.getString(), ominor.getString(), opatch.getString(), osequence.getString() );
 			System.out.println( "Stamping file " + file );
+			int number = stamp.stampIntoCode( omajor.getString(), ominor.getString(), opatch.getString(), osequence.getString() );
+			if( number > 0 )
+			{
+				System.out.println( number + " occurrence" + ( number > 1 ? "s" : "" ) + " found" );
+			}
+			else
+			{
+				System.err.println( "No occurrences found" );
+				System.exit( 1 );
+			}
 		}
 		catch ( IOException e )
 		{
