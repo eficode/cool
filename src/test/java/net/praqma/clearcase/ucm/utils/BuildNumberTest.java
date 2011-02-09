@@ -62,7 +62,7 @@ public class BuildNumberTest
 		
 		Tuple<Baseline, String[]> result = BuildNumber.createBuildNumber( "bls__1_2_3_123", component, view );
 		
-		BuildNumber.stampFromComponent( component, view, result.t2[0], result.t2[1], result.t2[2], result.t2[3] );
+		BuildNumber.stampFromComponent( component, view, result.t2[0], result.t2[1], result.t2[2], result.t2[3], false );
 	}
 
 	@Test

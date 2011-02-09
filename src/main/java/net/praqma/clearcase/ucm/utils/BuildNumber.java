@@ -8,10 +8,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.HyperLink;
 import net.praqma.clearcase.ucm.entities.Project;
+import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.structure.Tuple;
@@ -72,7 +74,7 @@ public class BuildNumber
 		return result;
 	}
 	
-	public static int stampFromComponent( Component component, File dir, String major, String minor, String patch, String sequence ) throws UCMException
+	public static int stampFromComponent( Component component, File dir, String major, String minor, String patch, String sequence, boolean ignoreErrors ) throws UCMException
 	{
 		List<HyperLink> result = component.getHlinks( __BUILD_NUMBER_FILE, dir );
 		
@@ -82,7 +84,17 @@ public class BuildNumber
 		{
 			String f = h.getValue().replaceFirst( "@@\\s*$", "" );
 			File stampee = new File( f );
-			number += BuildNumber.stampIntoCode( stampee, major, minor, patch, sequence );
+			try
+			{
+				number += BuildNumber.stampIntoCode( stampee, major, minor, patch, sequence );
+			}
+			catch( UCMException e )
+			{
+				if( !ignoreErrors )
+				{
+					throw e;
+				}
+			}
 		}
 		
 		return number;
@@ -90,7 +102,7 @@ public class BuildNumber
 	
 	public static int stampIntoCode( Baseline baseline ) throws UCMException
 	{
-		return stampIntoCode( baseline, null );
+		return stampIntoCode( baseline, null, false );
 	}
 	
 	public static int stampIntoCode( Baseline baseline, File dir ) throws UCMException
@@ -98,14 +110,22 @@ public class BuildNumber
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.GetComponent();
 		
-		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3] );
+		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], false );
+	}
+	
+	public static int stampIntoCode( Baseline baseline, File dir, boolean ignoreErrors ) throws UCMException
+	{
+		String[] numbers = isBuildNumber( baseline );
+		Component component = baseline.GetComponent();
+		
+		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], ignoreErrors );
 	}
 	
 	public static int stampIntoCode( File file, String major, String minor, String patch, String sequence ) throws UCMException
 	{
 		if( !file.exists() )
 		{
-			throw new UCMException( "The file " + file + " does not exist." );
+			throw new UCMException( "The file " + file + " does not exist.", UCMType.EXISTENCE );
 		}
 		
 		BuildNumberStamper stamp = null;
@@ -124,12 +144,10 @@ public class BuildNumber
 		try
 		{
 			number = stamp.stampIntoCode( major, minor, patch, sequence );
-			System.out.println( "Stamping file " + file );
-			logger.log( "Stamping file " + file );
 		}
 		catch ( IOException e )
 		{
-			logger.log( "Cannot access file, trying to hijack it" );
+			logger.warning( "Cannot access file, trying to hijack it" );
 			
 			file.setWritable( true );
 			
@@ -137,9 +155,7 @@ public class BuildNumber
 			{
 				number = stamp.stampIntoCode( major, minor, patch, sequence );
 				System.out.println( "Stamping file " + file );
-				logger.log( "Stamping file " + file );
-				
-				
+				logger.log( "Stamping file " + file );				
 			}
 			catch ( IOException e2 )
 			{
@@ -147,10 +163,21 @@ public class BuildNumber
 			}
 		}
 		
-		/* It is also considered an error, if zero occurrences found */
 		if( number == 0 )
 		{
-			throw new UCMException( "No occurrences found" );
+			logger.debug( "Stamping file " + file + ": No occurrences found" );
+			if( UCM.verbose() )
+			{
+				System.err.println( "Stamping file " + file + ": No occurrences found"  );
+			}
+		}
+		else
+		{
+			logger.debug( "Stamping file " + file + ": Occurrences found" );
+			if( UCM.verbose() )
+			{
+				System.out.println( "Stamping file " + file + ": Occurrences found"  );
+			}
 		}
 		
 		return number;
