@@ -3,7 +3,6 @@ package net.praqma.clearcase.ucm.entities;
 
 import net.praqma.clearcase.ucm.persistence.UCMContext;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyCleartool;
-import net.praqma.clearcase.ucm.persistence.UCMStrategyXML;
 import net.praqma.util.debug.Logger;
 
 public abstract class UCM
@@ -32,7 +31,7 @@ public abstract class UCM
 		switch( ct )
 		{
 		case XML:
-			context = new UCMContext( new UCMStrategyXML() );
+			//context = new UCMContext( new UCMStrategyXML() );
 			break;
 			
 		default:
