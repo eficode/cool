@@ -25,13 +25,20 @@ EXIT /B 1
 
 :coolhomeok
 
+set COOL_JAR=%COOL_HOME%\build\COOL-0.2.1-jar-with-dependencies.jar
 
-if exist "%COOL_HOME%\build\COOL-0.2.1-jar-with-dependencies.jar" goto start
+if exist "%COOL_JAR%" goto start
 
+
+echo.
+echo %COOL_JAR% was not found
+echo.
+
+EXIT /B 1
 
 :start
 
-set cool=java -Dtest="1" -classpath %COOL_HOME% %package%.%program% %args%
+set cool=java -Dtest="1" -classpath %COOL_JAR% %package%.%program% %args%
 
 rem echo %cool%
 
