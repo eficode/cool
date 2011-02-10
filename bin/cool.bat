@@ -26,7 +26,7 @@ EXIT /B 1
 :coolhomeok
 
 
-if exist "%COOL_HOME%\cool.bat" goto start
+if exist "%COOL_HOME%\build\COOL-0.2.1-jar-with-dependencies.jar" goto start
 
 
 :start
