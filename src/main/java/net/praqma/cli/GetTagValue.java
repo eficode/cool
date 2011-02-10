@@ -11,6 +11,19 @@ public class GetTagValue
 {
 	public static void main( String[] args ) throws UCMException
 	{
+		try
+		{
+			run( args );
+		}
+		catch( UCMException e )
+		{
+			System.err.println( UCM.getMessagesAsString() );
+			throw e;
+		}
+	}
+	
+	public static void run( String[] args ) throws UCMException
+	{
 		Options o = new Options();
 		
 		Option oentity  = new Option( "entity", "e", true, 1, "The UCM entity" );
