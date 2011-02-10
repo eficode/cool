@@ -78,10 +78,12 @@ public class BuildNumber
 	{
 		List<HyperLink> result = component.getHlinks( __BUILD_NUMBER_FILE, dir );
 		
+		/* TODO enable this again
 		if( result.size() == 0 )
 		{
 			throw new UCMException( "No build number file found." );
 		}
+		*/
 		
 		int number = 0;
 		
@@ -115,6 +117,8 @@ public class BuildNumber
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.GetComponent();
 		
+		logger.debug( "I got " + component.GetFQName() );
+		
 		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], false );
 	}
 	
@@ -122,6 +126,8 @@ public class BuildNumber
 	{
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.GetComponent();
+		
+		logger.debug( "I got " + component.GetFQName() );
 		
 		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], ignoreErrors );
 	}

@@ -32,7 +32,8 @@ public abstract class Cleartool
 		if( System.getProperty( "cleartool" ) != null && System.getProperty( "cleartool" ).equalsIgnoreCase( "mock" ) )
 		{
 			cli = CommandLineMock.getInstance();
-			System.out.println( "Setting cli to MOCK" );
+			//System.out.println( "Setting cli to MOCK" );
+			//logger.debug( "Setting cli to MOCK" );
 		}
 		else
 		{

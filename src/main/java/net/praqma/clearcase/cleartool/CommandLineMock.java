@@ -200,7 +200,7 @@ public class CommandLineMock implements CommandLineInterface
 		}
 		
 		// cleartool describe -ahlink buildnumber.file -l component:System@\Cool_PVOB
-		if( cmd.equals( "cleartool describe -ahlink buildnumber.file -l component:System@\\Cool_PVOB" ) )
+		if( cmd.equals( "cleartool describe -ahlink buildnumber.file -l component:_System@\\Cool_PVOB" ) )
 		{
 			res.stdoutList.add( "bogus" );
 			res.stdoutList.add( " Hyperlinks:" );

@@ -502,6 +502,8 @@ public class UCMContext
 	
 	public List<HyperLink> getHlinks( UCMEntity entity, String hlinkType, File dir ) throws UCMException
 	{
+		logger.debug( "Entity: " + entity.GetFQName() );
+		
 		List<Tuple<String, String>> result = strategy.getHlinks( entity.GetFQName(), hlinkType, dir );
 		
 		List<HyperLink> hlinks = new ArrayList<HyperLink>();
