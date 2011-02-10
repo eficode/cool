@@ -78,6 +78,11 @@ public class BuildNumber
 	{
 		List<HyperLink> result = component.getHlinks( __BUILD_NUMBER_FILE, dir );
 		
+		if( result.size() == 0 )
+		{
+			throw new UCMException( "No build number file found." );
+		}
+		
 		int number = 0;
 		
 		for( HyperLink h : result )
