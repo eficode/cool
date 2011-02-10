@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
+import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -34,6 +35,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	
 	/* Some relatively hard coded "variables" */
 	public static final String __TAG_NAME     = "tag";
+	
+	public static final String tag_install_description = "Installation: \"cleartool mkhltype " + __TAG_NAME + " -c \"Hyperlink type for tagging entities\"\"";
 	
 	static
 	{
@@ -428,7 +431,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
 			if( match.find() )
 			{
-				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_HLINK_TYPE );
+				UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + __TAG_NAME + " -c \"Hyperlink type for tagging entities\"\"" );
+				throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", UCMType.UNKNOWN_HLINK_TYPE );
 			}
 			
 			throw e;
@@ -480,7 +484,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
 			if( match.find() )
 			{
-				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_HLINK_TYPE );
+				UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + __TAG_NAME + " -c \"Hyperlink type for tagging entities\"\"" );
+				throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found.", UCMType.UNKNOWN_HLINK_TYPE );
 			}
 			
 			throw e;
@@ -563,7 +568,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
 			if( match.find() )
 			{
-				throw new UCMException( "ClearCase hyperlink " + match.group( 1 ) + " was not found", UCMType.UNKNOWN_HLINK_TYPE );
+				UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + hlinkType + " -nc\"" );
+				throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", UCMType.UNKNOWN_HLINK_TYPE );
 			}
 			
 			throw e;

@@ -1,6 +1,11 @@
 package net.praqma.clearcase.ucm.entities;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.praqma.clearcase.ucm.persistence.UCMContext;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyCleartool;
 import net.praqma.util.debug.Logger;
@@ -44,6 +49,8 @@ public abstract class UCM
 	protected static final String filesep = System.getProperty( "file.separator" );
 	protected static final String linesep = System.getProperty( "line.separator" );
 	public static final String delim      = "::";
+
+	private static final int HashMap = 0;
 	
 	private static boolean verbose = false;
 	
@@ -55,5 +62,31 @@ public abstract class UCM
 	public static boolean verbose()
 	{
 		return verbose;
+	}
+	
+	//private static HashMap<Integer,List<String>> messages = new java.util.HashMap<Integer, List<String>>();
+	private static List<String> messages = new ArrayList<String>();
+	
+	
+	public static void addMessage( String msg )
+	{
+		messages.add( msg );
+	}
+	
+	public static List<String> getMessages()
+	{
+		return messages;
+	}
+	
+	public static String getMessagesAsString()
+	{
+		StringBuffer sb = new StringBuffer();
+		
+		for( String s : messages )
+		{
+			sb.append( s );
+		}
+		
+		return sb.toString();
 	}
 }
