@@ -3,6 +3,8 @@ package net.praqma.cli;
 import java.io.File;
 import java.io.IOException;
 
+import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
@@ -16,7 +18,20 @@ import net.praqma.util.option.Options;
 public class BuildNumberStamper
 {
 	
-	public static void main( String[] args )
+	public static void main( String[] args ) throws UCMException
+	{
+		try
+		{
+			run( args );
+		}
+		catch( UCMException e )
+		{
+			System.err.println( UCM.getMessagesAsString() );
+			throw e;
+		}
+	}
+	
+	public static void run( String[] args ) throws UCMException
 	{
 		Options o = new Options( net.praqma.cool.Version.version );
 		

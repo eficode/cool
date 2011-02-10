@@ -28,7 +28,7 @@ public abstract class Cleartool
 	
 	static
 	{
-		logger.debug( System.getProperty( "cleartool" ) );
+		logger.debug( "Cleartool environment: " + System.getProperty( "cleartool" ) );
 		if( System.getProperty( "cleartool" ) != null && System.getProperty( "cleartool" ).equalsIgnoreCase( "mock" ) )
 		{
 			cli = CommandLineMock.getInstance();

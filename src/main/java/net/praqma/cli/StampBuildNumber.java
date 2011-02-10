@@ -27,6 +27,19 @@ public class StampBuildNumber
 	
 	public static void main( String[] args ) throws UCMException
 	{
+		try
+		{
+			run( args );
+		}
+		catch( UCMException e )
+		{
+			System.err.println( UCM.getMessagesAsString() );
+			throw e;
+		}
+	}
+	
+	public static void run( String[] args ) throws UCMException
+	{
 		Options o = new Options( net.praqma.cool.Version.version );
 		
 		Option obaseline = new Option( "baseline", "b", true, 1, "Given a Baseline, the buildnumber.file is stamped" );
