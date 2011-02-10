@@ -28,7 +28,6 @@ public abstract class Cleartool
 	
 	static
 	{
-		System.out.println( System.getProperty( "cleartool" ) );
 		logger.debug( System.getProperty( "cleartool" ) );
 		if( System.getProperty( "cleartool" ) != null && System.getProperty( "cleartool" ).equalsIgnoreCase( "mock" ) )
 		{
@@ -38,7 +37,7 @@ public abstract class Cleartool
 		else
 		{
 			cli = CommandLine.getInstance();
-			System.out.println( "Setting cli to THE REAL THING" );
+			//System.out.println( "Setting cli to THE REAL THING" );
 		}
 	}
 	
