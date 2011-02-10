@@ -78,7 +78,7 @@ public class StampBuildNumber
 		UCM.SetContext( UCM.ContextType.CLEARTOOL );
 		
 		Baseline baseline = UCMEntity.GetBaseline( obaseline.getString(), false );
-		File dir = new File( odir.getString() );
+		File dir = odir.used ? new File( odir.getString() ) : null;
 		int number = BuildNumber.stampIntoCode( baseline, dir, ignoreErrors );
 		
 		/* Determine the return value */
