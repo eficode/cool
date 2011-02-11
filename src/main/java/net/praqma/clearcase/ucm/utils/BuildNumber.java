@@ -78,12 +78,11 @@ public class BuildNumber
 	{
 		List<HyperLink> result = component.getHlinks( __BUILD_NUMBER_FILE, dir );
 		
-		/* TODO enable this again
+		/* TODO enable this again */
 		if( result.size() == 0 )
 		{
-			throw new UCMException( "No build number file found." );
+			throw new UCMException( "No build number file found.", UCMType.HLINK_ZERO_MATCHES );
 		}
-		*/
 		
 		int number = 0;
 		
@@ -202,7 +201,7 @@ public class BuildNumber
 	 */
 	public static Integer getNextBuildSequence( Project project ) throws UCMException
 	{
-		Component c = project.GetStream().GetSingleTopComponent();
+		Component c = project.getIntegrationStream().GetSingleTopComponent();
 		
 		/* Get the build number sequence */
 		Map<String, String> catts = c.getAttributes();

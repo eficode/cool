@@ -88,7 +88,7 @@ public class Project extends UCMEntity
 		this.stream = stream;
 	}
 	
-	public Stream GetStream() throws UCMException
+	public Stream getIntegrationStream() throws UCMException
 	{
 		if( !this.loaded ) Load();
 		return stream;

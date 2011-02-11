@@ -448,6 +448,7 @@ public abstract class UCMEntity extends UCM
 	
 	public List<HyperLink> getHlinks( String hlinkType, File dir ) throws UCMException
 	{
+		logger.debug( "THIS=" + this.GetFQName() );
 		return context.getHlinks( this, hlinkType, dir );
 	}
 

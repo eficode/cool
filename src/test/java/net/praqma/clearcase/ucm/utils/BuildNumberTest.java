@@ -6,6 +6,7 @@ import java.io.File;
 
 
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
@@ -57,14 +58,36 @@ public class BuildNumberTest
 	@Test
 	public void testStampFromComponent() throws UCMException
 	{
-		Component component = UCMEntity.GetComponent( "System@\\Cool_PVOB" );
+		Component component = UCMEntity.GetComponent( "_System@\\Cool_PVOB" );
 		File view = new File( "c:\\" );
 		
 		Tuple<Baseline, String[]> result = BuildNumber.createBuildNumber( "bls__1_2_3_123", component, view );
 		
 		BuildNumber.stampFromComponent( component, view, result.t2[0], result.t2[1], result.t2[2], result.t2[3], false );
 	}
-
+	
+	@Test
+	public void testStampFromComponentNoBuildNumberFile() throws UCMException
+	{
+		Component component = UCMEntity.GetComponent( "_System_no@\\Cool_PVOB" );
+		File view = new File( "c:\\" );
+		
+		Tuple<Baseline, String[]> result = BuildNumber.createBuildNumber( "bls__1_2_3_123", component, view );
+		
+		try
+		{
+			BuildNumber.stampFromComponent( component, view, result.t2[0], result.t2[1], result.t2[2], result.t2[3], false );
+		}
+		catch( UCMException e )
+		{
+			if( e.type != UCMType.HLINK_ZERO_MATCHES )
+			{
+				fail( "Did not find zero hlinks...." );
+			}
+		}
+	}
+	
+	
 	@Test
 	public void testStampIntoCode()
 	{

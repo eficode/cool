@@ -207,6 +207,13 @@ public class CommandLineMock implements CommandLineInterface
 			res.stdoutList.add( "   buildnumber.file@1234@\\Cool_PVOB ->  version.h " );
 		}
 		
+		if( cmd.equals( "cleartool describe -ahlink buildnumber.file -l component:_System_no@\\Cool_PVOB" ) )
+		{
+			res.stdoutList.add( "bogus" );
+			res.stdoutList.add( " Hyperlinks:" );
+			res.stdoutList.add( "   nobuildnumber.file@1234@\\Cool_PVOB ->  version.h " );
+		}
+		
 		return res;
 	}
 
