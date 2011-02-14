@@ -56,8 +56,6 @@ public class StampBuildNumber
 		
 		o.parse( args );
 		
-		o.print();
-		
 		try
 		{
 			o.checkOptions();
