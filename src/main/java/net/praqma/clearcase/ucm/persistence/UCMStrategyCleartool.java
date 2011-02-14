@@ -51,6 +51,26 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		logger.log( "Using ClearTool strategy" );
 	}
 	
+	
+	/**/
+	public String getMastership( String fqname ) throws UCMException
+	{
+		String cmd = "describe -fmt %[master]p " + fqname;
+		
+		CmdResult ms = null;
+		
+		try
+		{
+			ms = Cleartool.run( cmd );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "The mastership was undefined. " );
+		}
+		
+		return ms.stdoutBuffer.toString();
+	}
+	
 	/************************************************************************
 	 *  PROJECT FUNCTIONALITY
 	 ************************************************************************/
@@ -415,7 +435,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	private static final Pattern pattern_hlink_type_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB.*" );
 		
 	
-	public List<Tuple<String, String>> GetTags( String fqname ) throws UCMException
+	//public List<Tuple<String, String>> GetTags( String fqname ) throws UCMException
+	public List<String[]> GetTags( String fqname ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( fqname );
@@ -440,7 +461,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		
 		List<String> list = res.stdoutList;
 		
-		List<Tuple<String, String>> tags = new ArrayList<Tuple<String, String>>();
+		//List<Tuple<String, String>> tags = new ArrayList<Tuple<String, String>>();
+		List<String[]> tags = new ArrayList<String[]>();
 				
 		/* There are tags */
 		if( list.size() > 2 )
@@ -451,7 +473,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 				Matcher match = pattern_tags.matcher( list.get( i ) );
 				if( match.find() )
 				{
-					tags.add( new Tuple<String, String>( match.group( 1 ), match.group( 2 ) ) );
+					//tags.add( new Tuple<String, String>( match.group( 1 ), match.group( 2 ) ) );
+					tags.add( new String[]{ match.group( 1 ), match.group( 2 ) } );
 				}
 			}
 		}
@@ -515,15 +538,15 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		logger.trace_function();
 		logger.debug( tagType + tagID );
 		
-		List<Tuple<String, String>> list = GetTags( entity );
+		List<String[]> list = GetTags( entity );
 		logger.debug( list.size() + " Tags!" );
 		
-		for( Tuple<String, String> t : list )
+		for( String[] t : list )
 		{
-			logger.debug( "Testing " + t.t1 + " > " + t.t2 );
-			if( t.t2.matches( "^.*tagtype=" + tagType + ".*$" ) && t.t2.matches( "^.*tagid=" + tagID + ".*$" ) )
+			logger.debug( "Testing " + t[0] + " > " + t[1] );
+			if( t[1].matches( "^.*tagtype=" + tagType + ".*$" ) && t[1].matches( "^.*tagid=" + tagID + ".*$" ) )
 			{
-				String cmd = "rmhlink " + t.t1;
+				String cmd = "rmhlink " + t[0];
 				Cleartool.run( cmd );
 			}
 		}

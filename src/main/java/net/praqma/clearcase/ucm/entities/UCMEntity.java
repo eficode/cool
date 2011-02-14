@@ -81,6 +81,8 @@ public abstract class UCMEntity extends UCM
 	protected ClearcaseEntityType type = ClearcaseEntityType.Undefined;
 	protected String pvob              = "";
 	
+	protected String mastership        = null;
+	
 	/* Loadable standard fields */
 	protected String user = "";
 	
@@ -479,6 +481,16 @@ public abstract class UCMEntity extends UCM
 	public String GetPvob()
 	{
 		return this.pvob;
+	}
+	
+	public String getMastership() throws UCMException
+	{
+		if( this.mastership == null )
+		{
+			this.mastership = context.getMastership( this );
+		}
+		
+		return this.mastership;
 	}
 	
 	/**

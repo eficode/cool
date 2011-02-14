@@ -15,6 +15,9 @@ interface UCMStrategyInterface
 	/* General command line stuff */
 	public void CheckViewContext( File dir ) throws UCMException;
 	
+	/* Common entity */
+	public String getMastership( String fqname ) throws UCMException;
+	
 	/* Project */
 	String GetProjectFromStream( String stream );
 	List<String> GetModifiableComponents( String project );
@@ -58,7 +61,7 @@ interface UCMStrategyInterface
 	public String getVersionExtension( String file, File viewroot ) throws UCMException;
 	
 	/* Tag */
-	public List<Tuple<String, String>> GetTags( String fqname ) throws UCMException;
+	public List<String[]> GetTags( String fqname ) throws UCMException;
 	public String GetTag( String fqname );
 	public String NewTag( UCMEntity entity, String cgi ) throws UCMException;
 	public void DeleteTag( String fqname );

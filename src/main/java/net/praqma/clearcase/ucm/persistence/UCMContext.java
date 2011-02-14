@@ -29,6 +29,12 @@ public class UCMContext
 		this.strategy = strategy;
 	}
 	
+	/* COMMON */
+	public String getMastership( UCMEntity entity ) throws UCMException
+	{
+		return strategy.getMastership( entity.GetFQName() );
+	}
+	
 	/* Baseline specific */
 	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline ) throws UCMException
 	{
@@ -127,14 +133,14 @@ public class UCMContext
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		
 		/* Load Tags from clearcase */
-		List<Tuple<String, String>> result = strategy.GetTags( entity.GetFQName() );
+		List<String[]> result = strategy.GetTags( entity.GetFQName() );
 		
 		if( result.size() > 0 )
 		{
-			for( Tuple<String, String> s : result )
+			for( String[] s : result )
 			{
-				Tag tag = (Tag)UCMEntity.GetEntity( s.t1.trim() );
-				tag.SetKeyValue( s.t2 );
+				Tag tag = (Tag)UCMEntity.GetEntity( s[0].trim() );
+				tag.SetKeyValue( s[1] );
 				tags.add( tag );
 			}
 		}
