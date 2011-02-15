@@ -211,7 +211,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Could not set promotion level to " + plevel + " for " + baseline );
+			throw new UCMException( "Could not set promotion level to " + plevel + " for " + baseline + ": " + e.getMessage() );
 		}
 	}
 	
@@ -277,7 +277,14 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	public void RecommendBaseline( String stream, String baseline ) throws UCMException
 	{
 		String cmd = "chstream -recommend " + baseline + " " + stream;
-		Cleartool.run( cmd );
+		try
+		{
+			Cleartool.run( cmd );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "Could not recommend Baseline: " + e.getMessage() );
+		}
 		
 	}
 	
