@@ -202,10 +202,17 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	}
 	
 	@Override
-	public void SetPromotionLevel( String baseline, String plevel )
+	public void SetPromotionLevel( String baseline, String plevel ) throws UCMException
 	{
 		String cmd = "chbl -level " + plevel + " " + baseline;
-		Cleartool.run( cmd );
+		try
+		{
+			Cleartool.run( cmd );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "Could not set promotion level to " + plevel + " for " + baseline );
+		}
 	}
 	
 	@Override

@@ -29,7 +29,7 @@ interface UCMStrategyInterface
 	/* Baseline */
 	public String LoadBaseline( String baseline ) throws UCMException;
 	public List<String> GetBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob ) throws UCMException;
-	public void SetPromotionLevel( String baseline, String plevel );
+	public void SetPromotionLevel( String baseline, String plevel ) throws UCMException;
 	public void createBaseline( String baseline, String component, File view, boolean incremental, boolean identical ) throws UCMException;
 	
 	public String GetBaselineActivities( String baseline );
