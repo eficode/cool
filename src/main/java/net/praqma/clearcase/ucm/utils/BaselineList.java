@@ -19,6 +19,12 @@ public class BaselineList extends ArrayList<Baseline>
 	private Stream stream       = null;
 	private Component component = null;
 	
+	/* Default constructor */
+	public BaselineList()
+	{
+		
+	}
+	
 	private BaselineList( BaselineList bls )
 	{
 		this.stream    = bls.stream;

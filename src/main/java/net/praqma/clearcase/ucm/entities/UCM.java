@@ -59,6 +59,15 @@ public abstract class UCM
 		UCM.verbose = verbose;
 	}
 	
+	static 
+	{
+		String v = System.getenv( "verbose" );
+		if( v != null )
+		{
+			UCM.verbose = true;
+		}
+	}
+	
 	public static boolean verbose()
 	{
 		return verbose;

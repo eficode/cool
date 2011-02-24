@@ -126,7 +126,7 @@ public abstract class UCMEntity extends UCM
 	 */
 	public static UCMEntity GetEntity( String fqname, boolean trusted, boolean cachable ) throws UCMException
 	{
-		logger.debug( "GetEntity = " + fqname );
+		//logger.debug( "GetEntity = " + fqname );
 		
 		/* Is this needed? */
 		fqname = fqname.trim();
@@ -233,7 +233,7 @@ public abstract class UCMEntity extends UCM
 		entity.type      = type;
 		entity.pvob      = pvob;
 		
-		logger.log( "Created entity of type " + entity.type );
+		//logger.debug( "Created entity of type " + entity.type );
 		
 		entity.PostProcess();
 		

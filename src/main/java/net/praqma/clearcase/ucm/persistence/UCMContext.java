@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
@@ -87,9 +88,21 @@ public class UCMContext
 			
 			/* If not an activity, it must be a version */
 			String f = s.trim();
-			Version v = (Version)UCMEntity.GetEntity( f );
-			v.SetSFile( v.GetFile().substring( length ) );
-			current.changeset.versions.add( v );
+			
+			/* If the version cannot be instantiated and is a special case, skip it */
+			try
+			{
+				Version v = (Version)UCMEntity.GetEntity( f );
+				v.SetSFile( v.GetFile().substring( length ) );
+				current.changeset.versions.add( v );
+			}
+			catch( UCMException e )
+			{
+				if( e.type == UCMType.ENTITY_ERROR && !current.isSpecialCase() )
+				{
+					throw e;
+				}
+			}
 		}
 
 		return activities;
@@ -450,7 +463,7 @@ public class UCMContext
 		String result = "";
 		
 		/* The special case branch */
-		if( activity.GetSpecialCase() )
+		if( activity.isSpecialCase() )
 		{
 			result = "System";
 		}

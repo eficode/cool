@@ -72,7 +72,7 @@ public class Project extends UCMEntity
 			plevel = Plevel.RELEASED;
 			break;
 		default:
-			plevel = Plevel.BUILT;
+			plevel = Plevel.REJECTED;
 		}
 		
 		return plevel;

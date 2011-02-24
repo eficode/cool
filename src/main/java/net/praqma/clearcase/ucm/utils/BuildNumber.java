@@ -163,7 +163,7 @@ public class BuildNumber
 			try
 			{
 				number = stamp.stampIntoCode( major, minor, patch, sequence );
-				logger.log( "Stamping file " + file );				
+				logger.log( "Stamping file " + file );
 			}
 			catch ( IOException e2 )
 			{

@@ -18,7 +18,7 @@ public class Activity extends UCMEntity
 		this.specialCase = b;
 	}
 	
-	public boolean GetSpecialCase()
+	public boolean isSpecialCase()
 	{
 		return this.specialCase;
 	}

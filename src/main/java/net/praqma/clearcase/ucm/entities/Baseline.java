@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.utils.BaselineDiff;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 
 public class Baseline extends UCMEntity
@@ -22,33 +23,7 @@ public class Baseline extends UCMEntity
 	 * @author wolfgang
 	 *
 	 */
-	public class BaselineDiff extends ArrayList<Activity>
-	{
-		
-		public BaselineDiff( SnapshotView view ) throws UCMException
-		{
-			this.addAll( context.GetBaselineDiff( view, Baseline.this ) );
-		}
-		
-		public void Print() throws UCMException
-		{
-			for( Activity a : this )
-			{
-				System.out.println( "----- Activity:" );
-				System.out.println( a.Stringify() );
-				for( Version v : a.changeset.versions )
-				{
-					//System.out.println( v.Stringify() );
-					System.out.println( v.toString() );
-				}
-			}
-		}
-		
-		public ArrayList<Version> GetUniqueFiles()
-		{
-			return null;
-		}
-	}
+
 	
 	
 	Baseline()
@@ -175,7 +150,7 @@ public class Baseline extends UCMEntity
 	 */
 	public BaselineDiff GetDiffs( SnapshotView view ) throws UCMException
 	{
-		return new BaselineDiff( view );
+		return new BaselineDiff( view, this );
 	}
 	
 	public Component GetComponent() throws UCMException

@@ -50,7 +50,10 @@ public class Tag extends UCMEntity
 	public static Map<String, String> CGIToHash( String cgi )
 	{
 		HashMap<String, String> hash = new HashMap<String, String>();
-		logger.debug( "cgi="+ cgi );
+		if( UCM.verbose() )
+		{
+			logger.debug( "cgi="+ cgi );
+		}
 		String[] entries = cgi.split( "&" );
 		for( String e : entries )
 		{

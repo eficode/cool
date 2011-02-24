@@ -483,7 +483,10 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		{
 			for( int i = 2 ; i < list.size() ; i++ )
 			{
-				logger.debug( "["+i+"]" + list.get( i ) );
+				if( UCM.verbose() )
+				{
+					logger.debug( "["+i+"]" + list.get( i ) );
+				}
 				Matcher match = pattern_tags.matcher( list.get( i ) );
 				if( match.find() )
 				{
@@ -557,7 +560,10 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		
 		for( String[] t : list )
 		{
-			logger.debug( "Testing " + t[0] + " > " + t[1] );
+			if( UCM.verbose() )
+			{
+				logger.debug( "Testing " + t[0] + " > " + t[1] );
+			}
 			if( t[1].matches( "^.*tagtype=" + tagType + ".*$" ) && t[1].matches( "^.*tagid=" + tagID + ".*$" ) )
 			{
 				String cmd = "rmhlink " + t[0];
@@ -895,9 +901,6 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		
 		for( String s : result )
 		{
-			logger.debug( s );
-			
-			/* Speedy, because of lazy evaluation */
 			if( s.matches( rx_co_file ) || s.matches( rx_keep_file ) || s.matches( rx_ctr_file ) )
 			{
 				continue;
@@ -915,7 +918,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		/* Removing view private files, saving directories for later */
 		for( File f : rnew )
 		{
-			logger.debug( "FILE=" + f );
+			//logger.debug( "FILE=" + f );
 			
 			if( f.exists() )
 			{
@@ -925,7 +928,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 				}
 				else
 				{
-					logger.debug( "Deleting " + f );
+					//logger.debug( "Deleting " + f );
 					f.delete();
 					filecount++;
 				}
