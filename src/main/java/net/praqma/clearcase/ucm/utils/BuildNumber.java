@@ -174,7 +174,7 @@ public class BuildNumber
 		if( number == 0 )
 		{
 			logger.debug( "Stamping file " + file + ": No occurrences found" );
-			if( UCM.verbose() )
+			if( UCM.isVerbose() )
 			{
 				System.err.println( "Stamping file " + file + ": No occurrences found"  );
 			}
@@ -182,7 +182,7 @@ public class BuildNumber
 		else
 		{
 			logger.debug( "Stamping file " + file + ": Occurrences found" );
-			if( UCM.verbose() )
+			if( UCM.isVerbose() )
 			{
 				System.out.println( "Stamping file " + file + ": Occurrences found"  );
 			}

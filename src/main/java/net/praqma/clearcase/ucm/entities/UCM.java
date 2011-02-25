@@ -68,7 +68,7 @@ public abstract class UCM
 		}
 	}
 	
-	public static boolean verbose()
+	public static boolean isVerbose()
 	{
 		return verbose;
 	}

@@ -483,7 +483,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		{
 			for( int i = 2 ; i < list.size() ; i++ )
 			{
-				if( UCM.verbose() )
+				if( UCM.isVerbose() )
 				{
 					logger.debug( "["+i+"]" + list.get( i ) );
 				}
@@ -560,7 +560,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		
 		for( String[] t : list )
 		{
-			if( UCM.verbose() )
+			if( UCM.isVerbose() )
 			{
 				logger.debug( "Testing " + t[0] + " > " + t[1] );
 			}
@@ -760,6 +760,11 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		
 		File viewdat = new File( dir + File.separator + "view.dat" );
 		
+		if( viewdat.exists() )
+		{
+			throw new UCMException( "view.dat file already exist. No need for regenrating." );
+		}
+		
 		String cmd = "lsview -l " + viewtag;
 		/* TODO Check this functions behavior, if the view doesn't exist */
 		String result = Cleartool.run( cmd ).stdoutBuffer.toString();
@@ -790,7 +795,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 		else
 		{
-			dir.mkdir();
+			dir.mkdirs();
 		}
 		
 		try
@@ -841,11 +846,9 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		
 		for( File f : files )
 		{
-			logger.debug( "Checking: " + f );
-			
 			if( !f.canWrite() )
 			{
-				logger.debug( "Write protected." );
+				logger.debug( f + " is write protected." );
 				continue;
 			}
 			
@@ -873,7 +876,10 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		/* Remove all other dirs */
 		for( File f : other )
 		{
-			logger.log( "Removing " + f );
+			if( UCM.isVerbose() )
+			{
+				logger.log( "Removing " + f );
+			}
 			net.praqma.util.io.IO.deleteDirectory( f );
 		}
 		

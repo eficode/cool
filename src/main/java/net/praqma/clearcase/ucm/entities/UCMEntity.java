@@ -413,7 +413,7 @@ public abstract class UCMEntity extends UCM
 
 	public Tag GetTag( String tagType, String tagID ) throws UCMException
 	{
-		if( UCM.verbose() )
+		if( UCM.isVerbose() )
 		{
 			System.out.println( "Retrieving tags for " + tagType + ", " + tagID );
 		}
