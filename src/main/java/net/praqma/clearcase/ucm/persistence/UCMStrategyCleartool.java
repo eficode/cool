@@ -643,7 +643,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	 *  SNAPSHOT VIEW FUNCTIONALITY
 	 ************************************************************************/
 	
-	private static final Pattern pattern_view_uuid = Pattern.compile( "^.*?View uuid: ([\\w\\.:]+).*?$" );
+	// View uuid: b2b51957.41a24c7a.b998.67:b8:4a:93:60:01
+	private static final Pattern pattern_view_uuid = Pattern.compile( "^\\s*View uuid:\\s*([\\w\\.:]+).*$", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE );
 	protected static final Pattern rx_view_uuid  = Pattern.compile( "view_uuid:(.*)" );
 	private final String rx_co_file = ".*CHECKEDOUT$";
 	private final String rx_ctr_file = ".*\\.contrib";
@@ -769,6 +770,8 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		/* TODO Check this functions behavior, if the view doesn't exist */
 		String result = Cleartool.run( cmd ).stdoutBuffer.toString();
 		
+		System.out.println(result);
+		
 		Matcher match = pattern_view_uuid.matcher( result );
 		if( !match.find() )
 		{
@@ -810,8 +813,14 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 		}
 		
 		/* TODO Too much windows.... */
-		cmd = "attrib +h +r " + viewdat;
-		Command.run( cmd );
+		//cmd = "attrib +h +r " + viewdat;
+		if( !viewdat.setReadOnly() )
+		{
+			logger.warning( "Could set view.dat as read only" );
+			throw new UCMException( "Could set view.dat as read only" );
+		}
+		//viewdat.set
+		//Command.run( cmd );
 	}
 	
 	public boolean ViewExists( String viewtag )
