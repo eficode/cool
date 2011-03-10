@@ -8,15 +8,13 @@ import java.util.Map;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.PraqmaLogger.Logger;
+import net.praqma.clearcase.ucm.entities.Cool;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TagTest
-{
-	
-	private static Logger logger = PraqmaLogger.getLogger( false );
-	
+public class TagTest extends Cool
+{	
 	@BeforeClass
 	public static void startup()
 	{

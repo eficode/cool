@@ -16,13 +16,13 @@ import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.PraqmaLogger.Logger;
 import net.praqma.util.structure.Tuple;
 
+import net.praqma.clearcase.ucm.entities.Cool;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class BuildNumberTest
-{
-	private static Logger logger = PraqmaLogger.getLogger( false );
-	
+public class BuildNumberTest extends Cool
+{	
 	@BeforeClass
 	public static void startup()
 	{

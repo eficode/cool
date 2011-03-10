@@ -12,6 +12,8 @@ import net.praqma.clearcase.ucm.utils.TagQuery;
 import net.praqma.util.structure.Printer;
 import net.praqma.util.structure.Tuple;
 
+import net.praqma.clearcase.ucm.entities.Cool;
+
 public class Tag extends UCMEntity
 {
 	/* Tag specific fields */
