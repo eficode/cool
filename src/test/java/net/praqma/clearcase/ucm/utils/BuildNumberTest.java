@@ -12,7 +12,8 @@ import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.PraqmaLogger;
+import net.praqma.util.debug.PraqmaLogger.Logger;
 import net.praqma.util.structure.Tuple;
 
 import org.junit.BeforeClass;
@@ -20,7 +21,7 @@ import org.junit.Test;
 
 public class BuildNumberTest
 {
-	private static Logger logger = Logger.getLogger( false );
+	private static Logger logger = PraqmaLogger.getLogger( false );
 	
 	@BeforeClass
 	public static void startup()

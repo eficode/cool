@@ -5,7 +5,8 @@ import static org.junit.Assert.*;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.utils.BaselineList;
-import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.PraqmaLogger;
+import net.praqma.util.debug.PraqmaLogger.Logger;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,7 +14,7 @@ import org.junit.Test;
 public class ComponentTest
 {
 	
-	private static Logger logger = Logger.getLogger( false );
+	private static Logger logger = PraqmaLogger.getLogger( false );
 	
 	@BeforeClass
 	public static void startup()

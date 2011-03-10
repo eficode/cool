@@ -11,19 +11,17 @@ import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Cool;
 import net.praqma.clearcase.ucm.entities.HyperLink;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.UCM;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.structure.Tuple;
 
-public class BuildNumber
+public class BuildNumber extends Cool
 {
 	private final static String rx_buildnumber = "\\S+__(\\d+)_(\\d+)_(\\d+)_(\\d+)";
 	private final static Pattern pattern_buildnumber = Pattern.compile( "^" + rx_buildnumber + "$" );
-	
-	private static Logger logger = Logger.getLogger();
 	
 	public static final String __BUILD_NUMBER_MAJOR    = "buildnumber.major";
 	public static final String __BUILD_NUMBER_MINOR    = "buildnumber.minor";

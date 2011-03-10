@@ -1,15 +1,13 @@
 package net.praqma.cli;
 
 import java.io.File;
-import java.io.IOException;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
+import net.praqma.clearcase.ucm.entities.Cool;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.utils.BuildNumber;
-import net.praqma.util.debug.Logger;
-import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
@@ -20,10 +18,8 @@ import net.praqma.util.option.Options;
  * 
  */
 
-public class StampBuildNumber
+public class StampBuildNumber extends Cool
 {
-	
-	private static Logger logger = Logger.getLogger();
 	
 	public static void main( String[] args ) throws UCMException
 	{

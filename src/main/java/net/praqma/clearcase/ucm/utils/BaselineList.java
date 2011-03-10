@@ -6,16 +6,16 @@ import java.util.List;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Cool;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCM;
-import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.PraqmaLogger;
+import net.praqma.util.debug.PraqmaLogger.Logger;
 
 public class BaselineList extends ArrayList<Baseline>
-{
-	protected static Logger logger = Logger.getLogger( false );
-	
+{	
 	private Stream stream       = null;
 	private Component component = null;
 	
@@ -40,7 +40,7 @@ public class BaselineList extends ArrayList<Baseline>
 	
 	public BaselineList( Component component, Stream stream, Project.Plevel plevel ) throws UCMException
 	{
-		logger.debug( "Getting Baselines from " + stream.GetFQName() + " and " + component.GetFQName() + " with plevel " + plevel );
+		Cool.logger.debug( "Getting Baselines from " + stream.GetFQName() + " and " + component.GetFQName() + " with plevel " + plevel );
 		
 		this.stream    = stream;
 		this.component = component;
@@ -61,7 +61,7 @@ public class BaselineList extends ArrayList<Baseline>
 		{
 			Tag tag = b.GetTag( tagType, tagID );
 			
-			logger.debug( "BASELINE="+b.toString() + ". tag="+tag.toString() );
+			Cool.logger.debug( "BASELINE="+b.toString() + ". tag="+tag.toString() );
 			
 			if( tag.QueryTag( tq ) )
 			{
@@ -79,18 +79,18 @@ public class BaselineList extends ArrayList<Baseline>
 		
 		if( recommended.size() != 1 )
 		{
-			logger.warning( "Only one baseline can be recommended simultaneously, " + recommended.size() + " found." );
+			Cool.logger.warning( "Only one baseline can be recommended simultaneously, " + recommended.size() + " found." );
 			throw new UCMException( "Only one baseline can be recommended simultaneously, " + recommended.size() + " found." );
 		}
 		
 		Baseline recbl = recommended.get( 0 );
-		logger.debug( "The recommended=" + recbl.toString() );
-		logger.debug( "REC COMP=" + recbl.GetComponent().GetFQName() );
-		logger.debug( "THIS COM=" + component.GetFQName() );
+		Cool.logger.debug( "The recommended=" + recbl.toString() );
+		Cool.logger.debug( "REC COMP=" + recbl.GetComponent().GetFQName() );
+		Cool.logger.debug( "THIS COM=" + component.GetFQName() );
 		
 		if( !recbl.GetComponent().GetFQName().equals( component.GetFQName() ) )
 		{
-			logger.warning( component.GetFQName() + " is not represented in " + stream.GetFQName() + " Recommended baseline" );
+			Cool.logger.warning( component.GetFQName() + " is not represented in " + stream.GetFQName() + " Recommended baseline" );
 			throw new UCMException( component.GetFQName() + " is not represented in " + stream.GetFQName() + " Recommended baseline" );
 		}
 		
@@ -99,7 +99,7 @@ public class BaselineList extends ArrayList<Baseline>
 		{
 			Baseline b = bls.remove( 0 );
 			match = b.GetFQName().equals( recbl.GetFQName() );
-			logger.debug( "Matching: " + b.toString() + " == " + recbl.GetFQName() );
+			Cool.logger.debug( "Matching: " + b.toString() + " == " + recbl.GetFQName() );
 		}
 		
 		return bls;

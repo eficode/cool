@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.PraqmaLogger;
+import net.praqma.util.debug.PraqmaLogger.Logger;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,7 +15,7 @@ import org.junit.Test;
 public class TagTest
 {
 	
-	private static Logger logger = Logger.getLogger( false );
+	private static Logger logger = PraqmaLogger.getLogger( false );
 	
 	@BeforeClass
 	public static void startup()

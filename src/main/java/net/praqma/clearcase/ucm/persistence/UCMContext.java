@@ -15,11 +15,11 @@ import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.structure.Tuple;
-import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.PraqmaLogger;
+import net.praqma.util.debug.PraqmaLogger.Logger;
 
-public class UCMContext
+public class UCMContext extends Cool
 {
-	private Logger logger = Logger.getLogger();
 	private UCMStrategyInterface strategy;
 	
 	private final Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );

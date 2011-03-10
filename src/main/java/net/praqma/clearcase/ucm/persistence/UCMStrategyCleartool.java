@@ -17,9 +17,11 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
+import net.praqma.clearcase.ucm.entities.Cool;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.PraqmaLogger;
+import net.praqma.util.debug.PraqmaLogger.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.Command;
@@ -27,10 +29,8 @@ import net.praqma.util.io.IO;
 import net.praqma.util.structure.Tuple;
 
 
-public class UCMStrategyCleartool implements UCMStrategyInterface
-{
-	private static Logger logger = Logger.getLogger();
-	
+public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
+{	
 	private static final String rx_ccdef_allowed = "[\\w\\.-_\\\\]";
 	
 	/* Some relatively hard coded "variables" */
@@ -50,8 +50,7 @@ public class UCMStrategyCleartool implements UCMStrategyInterface
 	{
 		logger.log( "Using ClearTool strategy" );
 	}
-	
-	
+		
 	/**/
 	public String getMastership( String fqname ) throws UCMException
 	{
