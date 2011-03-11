@@ -60,7 +60,15 @@ public class Stream extends UCMEntity
 		
 		/* name::project::target_stream */
 		this.project       = UCMEntity.GetProject( data[1] );
-		this.defaultTarget = UCMEntity.GetStream( data[2] );
+		try
+		{
+			this.defaultTarget = UCMEntity.GetStream( data[2] );
+		}
+		catch( UCMException e )
+		{
+			logger.info( "The Stream did not have a default target." );
+			this.defaultTarget = null;
+		}
 		
 		this.loaded = true;
 	}
