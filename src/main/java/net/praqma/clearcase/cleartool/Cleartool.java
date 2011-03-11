@@ -3,7 +3,8 @@ package net.praqma.clearcase.cleartool;
 
 import java.io.File;
 
-import net.praqma.util.debug.Logger;
+import net.praqma.clearcase.ucm.entities.Cool;
+import net.praqma.util.debug.PraqmaLogger.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLine;
@@ -20,11 +21,10 @@ import net.praqma.util.execute.CommandLineInterface;
  * @author wolfgang
  *
  */
-public abstract class Cleartool
+public abstract class Cleartool extends Cool
 {
 
 	private static CommandLineInterface cli = null;
-	private static Logger logger = Logger.getLogger();
 	
 	static
 	{
@@ -40,6 +40,11 @@ public abstract class Cleartool
 			cli = CommandLine.getInstance();
 			//System.out.println( "Setting cli to THE REAL THING" );
 		}
+	}
+	
+	public static void setCLILogger( Logger logger )
+	{
+		cli.setLogger( logger );
 	}
 	
 	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException

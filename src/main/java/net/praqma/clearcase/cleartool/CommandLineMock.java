@@ -3,7 +3,8 @@ package net.praqma.clearcase.cleartool;
 import java.io.File;
 import java.util.ArrayList;
 
-import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.PraqmaLogger;
+import net.praqma.util.debug.PraqmaLogger.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLine;
@@ -12,7 +13,7 @@ import net.praqma.util.execute.CommandLineInterface;
 
 public class CommandLineMock implements CommandLineInterface
 {
-	private static Logger logger = Logger.getLogger();
+	private Logger logger = PraqmaLogger.getLogger();
 	
 	private CommandLineMock()
 	{
@@ -24,6 +25,11 @@ public class CommandLineMock implements CommandLineInterface
 	public static CommandLineMock getInstance()
 	{
 		return instance;
+	}
+	
+	public void setLogger( Logger logger )
+	{
+		this.logger = logger;
 	}
 
 	@Override

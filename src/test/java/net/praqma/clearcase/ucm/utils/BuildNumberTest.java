@@ -12,16 +12,17 @@ import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.PraqmaLogger;
+import net.praqma.util.debug.PraqmaLogger.Logger;
 import net.praqma.util.structure.Tuple;
+
+import net.praqma.clearcase.ucm.entities.Cool;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class BuildNumberTest
-{
-	private static Logger logger = Logger.getLogger( false );
-	
+public class BuildNumberTest extends Cool
+{	
 	@BeforeClass
 	public static void startup()
 	{

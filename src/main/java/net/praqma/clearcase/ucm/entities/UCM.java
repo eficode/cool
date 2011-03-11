@@ -2,15 +2,12 @@ package net.praqma.clearcase.ucm.entities;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.praqma.clearcase.ucm.persistence.UCMContext;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyCleartool;
-import net.praqma.util.debug.Logger;
 
-public abstract class UCM
+public abstract class UCM extends Cool
 {
 
 	
@@ -43,8 +40,6 @@ public abstract class UCM
 			context = new UCMContext( new UCMStrategyCleartool() );
 		}
 	}
-	
-	protected static Logger logger = Logger.getLogger( false );
 	
 	protected static final String filesep = System.getProperty( "file.separator" );
 	protected static final String linesep = System.getProperty( "line.separator" );

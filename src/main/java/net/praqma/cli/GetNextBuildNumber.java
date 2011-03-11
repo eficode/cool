@@ -4,18 +4,17 @@ import java.io.File;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
+import net.praqma.clearcase.ucm.entities.Cool;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.utils.BuildNumber;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
-public class GetNextBuildNumber
+public class GetNextBuildNumber extends Cool
 {
-	private static Logger logger = Logger.getLogger();
 	
 	public static void main( String[] args ) throws UCMException
 	{

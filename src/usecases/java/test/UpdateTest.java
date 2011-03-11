@@ -11,7 +11,7 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.SnapshotView.UpdateInfo;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.view.SnapshotView.COMP;
-import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.PraqmaLogger;
 
 public class UpdateTest
 {

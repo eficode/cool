@@ -3,6 +3,8 @@ package net.praqma.clearcase.ucm.entities;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.praqma.clearcase.ucm.entities.Cool;
+
 import net.praqma.clearcase.ucm.UCMException;
 
 class TagPool extends UCM
@@ -41,7 +43,7 @@ class TagPool extends UCM
 	
 	public Tag GetTag( String tagType, String tagID, UCMEntity entity ) throws UCMException
 	{
-		logger.debug( entity.toString() );
+		Cool.logger.debug( entity.toString() );
 		ArrayList<Tag> tags = context.ListTags( entity );
 		
 		for( Tag t : tags )
@@ -55,7 +57,7 @@ class TagPool extends UCM
 			}
 		}
 		
-		logger.log( "Could not find the Tag with ID " + tagType + tagID + ". Creating new." );
+		Cool.logger.log( "Could not find the Tag with ID " + tagType + tagID + ". Creating new." );
 		
 		/* Create new Tag */
 		Tag tag = context.NewTag( tagType, tagID, entity, "" );
