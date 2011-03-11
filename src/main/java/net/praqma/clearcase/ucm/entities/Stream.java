@@ -17,6 +17,7 @@ public class Stream extends UCMEntity
 	/* Stream specific fields */
 	private ArrayList<Baseline> recommendedBaselines = null;
 	private Project project                          = null;
+	private Stream defaultTarget                     = null;
 	
 	
 	Stream()
@@ -57,8 +58,9 @@ public class Stream extends UCMEntity
 	{
 		String[] data = context.LoadStream( this ).split( UCM.delim );
 		
-		/* name::project */
-		this.project = UCMEntity.GetProject( data[1] );
+		/* name::project::target_stream */
+		this.project       = UCMEntity.GetProject( data[1] );
+		this.defaultTarget = UCMEntity.GetStream( data[2] );
 		
 		this.loaded = true;
 	}
@@ -142,6 +144,17 @@ public class Stream extends UCMEntity
 		if( !this.loaded ) Load();
 		
 		return this.project;
+	}
+	
+	/**
+	 * This method returns the default Stream the given Stream will deliver to.
+	 * @return A Stream
+	 * @throws UCMException 
+	 */
+	public Stream getDefaultTarget() throws UCMException
+	{
+		if( !this.loaded ) Load();
+		return this.defaultTarget;
 	}
 	
 	public String Stringify() throws UCMException

@@ -393,7 +393,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		
 		CmdResult res = null;
 		
-		String cmd = "describe -fmt %[name]p" + this.delim + "%[project]Xp " + stream;
+		String cmd = "describe -fmt %[name]p" + UCMStrategyInterface.delim + "%[project]Xp" + UCMStrategyInterface.delim + "%[def_deliver_tgt]Xn " + stream;
 		try
 		{
 			res = Cleartool.run( cmd );
