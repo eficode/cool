@@ -1,5 +1,6 @@
 package net.praqma.clearcase.ucm.entities;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class Stream extends UCMEntity
 	private ArrayList<Baseline> recommendedBaselines = null;
 	private Project project                          = null;
 	private Stream defaultTarget                     = null;
+	private boolean readonly                         = true;
 	
 	
 	Stream()
@@ -56,9 +58,12 @@ public class Stream extends UCMEntity
 	
 	public void Load() throws UCMException
 	{
-		String[] data = context.LoadStream( this ).split( UCM.delim );
+		String r = context.LoadStream( this );
+		String[] data = r.split( UCM.delim );
 		
-		/* name::project::target_stream */
+		logger.debug( "RESULT=" + r );
+		
+		/* name::project::target_stream::readonly */
 		this.project       = UCMEntity.GetProject( data[1] );
 		try
 		{
@@ -68,6 +73,22 @@ public class Stream extends UCMEntity
 		{
 			logger.info( "The Stream did not have a default target." );
 			this.defaultTarget = null;
+		}
+		
+		if( data.length > 3 )
+		{
+			if( data[3].length() > 0 )
+			{
+				this.readonly = true;
+			}
+			else
+			{
+				this.readonly = false;
+			}
+		}
+		else
+		{
+			this.readonly = false;
 		}
 		
 		this.loaded = true;
@@ -163,6 +184,28 @@ public class Stream extends UCMEntity
 	{
 		if( !this.loaded ) Load();
 		return this.defaultTarget;
+	}
+	
+	public boolean deliver( Baseline baseline, Stream target, File viewcontext, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException
+	{
+		try
+		{
+			context.deliver( baseline, this, target, viewcontext, viewtag, force, complete, abort );
+		}
+		catch( UCMException e )
+		{
+			logger.warning( "Could not deliver baseline: " + e.getMessage() );
+			logger.warning( e );
+			throw e;
+		}
+		
+		return true;
+	}
+	
+	public boolean isReadOnly() throws UCMException
+	{
+		if( !this.loaded ) Load();
+		return readonly;
 	}
 	
 	public String Stringify() throws UCMException

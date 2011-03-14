@@ -221,6 +221,27 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		return null;
 	}
 	
+	
+	public void deliver( String baseline, String stream, String target, File context, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException
+	{
+		String cmd  = "deliver" + ( force ? " -force" : "" ) + ( complete ? " -complete" : "" ) + ( abort ? " -abort" : "" );
+		cmd        += ( baseline != null  ? " -baseline " + baseline : "" );
+		cmd        += ( stream   != null  ? " -stream " + stream : "" );
+		cmd        += ( target   != null  ? " -target " + target : "" );
+		cmd        += ( viewtag  != null  ? " -to " + viewtag : "" );
+		
+		try
+		{
+			Cleartool.run( cmd, context );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			logger.warning( "Could not deliver to target " + target );
+			logger.warning( e );
+			throw new UCMException( "Could not deliver to target " + target + ": " + e.getMessage() );
+		}
+	}
+	
 	/************************************************************************
 	 *  COMPONENT FUNCTIONALITY
 	 ************************************************************************/
@@ -393,7 +414,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		
 		CmdResult res = null;
 		
-		String cmd = "describe -fmt %[name]p" + UCMStrategyInterface.delim + "%[project]Xp" + UCMStrategyInterface.delim + "%[def_deliver_tgt]Xn " + stream;
+		String cmd = "describe -fmt %[name]p" + UCMStrategyInterface.delim + "%[project]Xp" + UCMStrategyInterface.delim + "%[def_deliver_tgt]Xn" + UCMStrategyInterface.delim + "%[read_only]p " + stream;
 		try
 		{
 			res = Cleartool.run( cmd );

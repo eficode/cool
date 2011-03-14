@@ -165,6 +165,52 @@ public class Baseline extends UCMEntity
 		return this.stream;
 	}
 	
+	
+	public boolean deliverForced( Stream stream, Stream target, File viewcontext, String viewtag ) throws UCMException
+	{
+		//logger.info( "Trying to deliver the Baseline " + this.GetFQName() + " from " + stream.GetFQName() + " to " + target.GetFQName() );
+		
+		try
+		{
+			context.deliver( this, stream, target, viewcontext, viewtag, true, true, true );
+		}
+		catch( UCMException e )
+		{
+			logger.warning( "Could not deliver baseline: " + e.getMessage() );
+			throw e;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Deliver a {@link Baseline} from a {@link Stream} stream to a {@link Stream} target.
+	 * @param stream The source {@link Stream}
+	 * @param target The target {@link Stream}
+	 * @param viewcontext The view context as a {@link File}
+	 * @param viewtag A view tag
+	 * @param force
+	 * @param complete
+	 * @param abort
+	 * @return
+	 * @throws UCMException
+	 */
+	public boolean deliver( Stream stream, Stream target, File viewcontext, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException
+	{
+		try
+		{
+			context.deliver( this, stream, target, viewcontext, viewtag, force, complete, abort );
+		}
+		catch( UCMException e )
+		{
+			logger.warning( "Could not deliver baseline: " + e.getMessage() );
+			logger.warning( e );
+			throw e;
+		}
+		
+		return true;
+	}
+	
 	public String Stringify() throws UCMException
 	{
 		if( !this.loaded ) Load();
@@ -179,4 +225,5 @@ public class Baseline extends UCMEntity
 
 		return sb.toString();
 	}
+
 }

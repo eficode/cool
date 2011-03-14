@@ -34,6 +34,8 @@ interface UCMStrategyInterface
 	
 	public String GetBaselineActivities( String baseline );
 	
+	public void deliver( String baseline, String stream, String target, File viewroot, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException;
+	
 	/* Component */
 	public List<String> GetBaselines( String component, String stream, String plevel );
 	public String GetRootDir( String component );
