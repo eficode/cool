@@ -63,17 +63,27 @@ public class Baseline extends UCMEntity
 		this.loaded = true;
 	}
 	
-	public static Baseline create( String fqname, Component component, File view, boolean incremental, boolean identical ) throws UCMException
+	/**
+	 * Given a baseline basename, a component and a view, the baseline is created.
+	 * @param basename The basename of the Baseline. Without the vob.
+	 * @param component
+	 * @param view
+	 * @param incremental
+	 * @param identical
+	 * @return
+	 * @throws UCMException
+	 */
+	public static Baseline create( String basename, Component component, File view, boolean incremental, boolean identical ) throws UCMException
 	{
-		if( fqname.toLowerCase().startsWith( "baseline:" ) )
+		if( basename.toLowerCase().startsWith( "baseline:" ) )
 		{
 			logger.warning( "The baseline name should not be prefixed with \"baseline:\", removing it" );
-			fqname = fqname.replaceFirst( "baseline:", "" );
+			basename = basename.replaceFirst( "baseline:", "" );
 		}
 		
-		context.createBaseline( fqname, component, view, incremental, identical );
+		context.createBaseline( basename, component, view, incremental, identical );
 		
-		return UCMEntity.GetBaseline( fqname + "@" + component.GetPvob(), true );
+		return UCMEntity.GetBaseline( basename + "@" + component.GetPvob(), true );
 	}
 	
 	/**
