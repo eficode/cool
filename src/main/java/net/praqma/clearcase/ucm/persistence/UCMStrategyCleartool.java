@@ -222,7 +222,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 	}
 	
 	
-	public void deliver( String baseline, String stream, String target, File context, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException
+	public String deliver( String baseline, String stream, String target, File context, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException
 	{
 		String cmd  = "deliver" + ( force ? " -force" : "" ) + ( complete ? " -complete" : "" ) + ( abort ? " -abort" : "" );
 		cmd        += ( baseline != null  ? " -baseline " + baseline : "" );
@@ -232,13 +232,27 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		
 		try
 		{
-			Cleartool.run( cmd, context );
+			String result = Cleartool.run( cmd, context ).stdoutBuffer.toString();
+			return result;
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
 			logger.warning( "Could not deliver to target " + target );
 			logger.warning( e );
 			throw new UCMException( "Could not deliver to target " + target + ": " + e.getMessage() );
+		}
+	}
+	
+	public void cancelDeliver( File viewcontext ) throws UCMException
+	{
+		try
+		{
+			String cmd = "deliver -cancel";
+			Cleartool.run( cmd, viewcontext );
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "Could not cancel deliver: " + e.getMessage() );
 		}
 	}
 	

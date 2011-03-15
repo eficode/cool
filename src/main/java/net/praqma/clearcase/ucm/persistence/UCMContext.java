@@ -297,14 +297,23 @@ public class UCMContext extends Cool
 		return bls;
 	}
 	
-	public void deliver( Baseline baseline, Stream stream, Stream target, File context, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException
+	public boolean deliver( Baseline baseline, Stream stream, Stream target, File context, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException
 	{
 		logger.debug( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );
 		String bl = baseline != null ? baseline.GetFQName() : null;
 		String st = stream   != null ? stream.GetFQName() : null;
 		String ta = target   != null ? target.GetFQName() : null;
 		//strategy.deliver( baseline.GetFQName(), stream.GetFQName(), target.GetFQName(), view.GetViewRoot(), view.GetViewtag(), force, complete, abort );
-		strategy.deliver( bl, st, ta, context, viewtag, force, complete, abort );
+		String result = strategy.deliver( bl, st, ta, context, viewtag, force, complete, abort );
+		
+		System.out.println( "I GOT=" + result );
+		
+		return true;
+	}
+	
+	public void cancelDeliver( File viewcontext ) throws UCMException
+	{
+		strategy.cancelDeliver( viewcontext );
 	}
 	
 	public SnapshotView MakeSnapshotView( Stream stream, File viewroot, String viewtag ) throws UCMException

@@ -190,7 +190,7 @@ public class Stream extends UCMEntity
 	{
 		try
 		{
-			context.deliver( baseline, this, target, viewcontext, viewtag, force, complete, abort );
+			return context.deliver( baseline, this, target, viewcontext, viewtag, force, complete, abort );
 		}
 		catch( UCMException e )
 		{
@@ -198,8 +198,11 @@ public class Stream extends UCMEntity
 			logger.warning( e );
 			throw e;
 		}
-		
-		return true;
+	}
+	
+	public void cancelDeliver( File viewcontext ) throws UCMException
+	{
+		context.cancelDeliver( viewcontext );
 	}
 	
 	public boolean isReadOnly() throws UCMException

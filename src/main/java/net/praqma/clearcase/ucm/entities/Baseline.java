@@ -209,7 +209,7 @@ public class Baseline extends UCMEntity
 	{
 		try
 		{
-			context.deliver( this, stream, target, viewcontext, viewtag, force, complete, abort );
+			return context.deliver( this, stream, target, viewcontext, viewtag, force, complete, abort );
 		}
 		catch( UCMException e )
 		{
@@ -217,8 +217,6 @@ public class Baseline extends UCMEntity
 			logger.warning( e );
 			throw e;
 		}
-		
-		return true;
 	}
 	
 	public String Stringify() throws UCMException
