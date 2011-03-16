@@ -239,7 +239,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		{
 			logger.warning( "Could not deliver to target " + target );
 			logger.warning( e );
-			throw new UCMException( "Could not deliver to target " + target + ": " + e.getMessage() );
+			throw new UCMException( "Could not deliver: " + e.getMessage() );
 		}
 	}
 	
@@ -253,6 +253,19 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		catch( AbnormalProcessTerminationException e )
 		{
 			throw new UCMException( "Could not cancel deliver: " + e.getMessage() );
+		}
+	}
+	
+	public String deliverStatus( String stream ) throws UCMException
+	{
+		try
+		{
+			String cmd = "deliver -status -stream " + stream;
+			return Cleartool.run( cmd ).stdoutBuffer.toString();
+		}
+		catch( AbnormalProcessTerminationException e )
+		{
+			throw new UCMException( "Could not get deliver status: " + e.getMessage() );
 		}
 	}
 	

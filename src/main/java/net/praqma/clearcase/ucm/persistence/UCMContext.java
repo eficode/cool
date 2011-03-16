@@ -316,6 +316,20 @@ public class UCMContext extends Cool
 		strategy.cancelDeliver( viewcontext );
 	}
 	
+	private static final Pattern rx_deliver_status = Pattern.compile( "" );
+	
+	public boolean isDelivering( Stream stream ) throws UCMException
+	{
+		String r = strategy.deliverStatus( stream.GetFQName() ).trim();
+		
+		if( r.startsWith( "No deliver operation in progress on stream" ) )
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public SnapshotView MakeSnapshotView( Stream stream, File viewroot, String viewtag ) throws UCMException
 	{
 		strategy.MakeSnapshotView( stream.GetFQName(), viewroot, viewtag );

@@ -36,6 +36,8 @@ public abstract class UCMEntity extends UCM
 	/* For future caching purposes */
 	private static HashMap<String, UCMEntity> entities = new HashMap<String, UCMEntity>();
 	
+	protected Map<String, String> attributes = new HashMap<String, String>();
+	
 	public enum ClearcaseEntityType
 	{
 		Activity,
@@ -429,6 +431,19 @@ public abstract class UCMEntity extends UCM
 	public Map<String, String> getAttributes() throws UCMException
 	{
 		return context.getAttributes( this );
+	}
+	
+	public String getAttribute( String key ) throws UCMException
+	{
+		Map<String, String> atts = this.getAttributes();
+		if( atts.containsKey( key ) )
+		{
+			return atts.get( key );
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	/**

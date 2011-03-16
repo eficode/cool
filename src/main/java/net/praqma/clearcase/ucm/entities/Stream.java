@@ -205,6 +205,11 @@ public class Stream extends UCMEntity
 		context.cancelDeliver( viewcontext );
 	}
 	
+	public boolean isDelivering() throws UCMException
+	{
+		return context.isDelivering( this );
+	}
+	
 	public boolean isReadOnly() throws UCMException
 	{
 		if( !this.loaded ) Load();
