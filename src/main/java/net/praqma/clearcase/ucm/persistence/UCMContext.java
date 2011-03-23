@@ -297,6 +297,12 @@ public class UCMContext extends Cool
 		return bls;
 	}
 	
+	//private static final Pattern rx_deliver_find_baseline = Pattern.compile( "Baselines to be delivered:\\s*baseline:", Pattern.MULTILINE );
+	//private static final String rx_deliver_find_baseline   = "(?mi).*baselines to be delivered:\\s*baseline:.*";
+	//private static final String rx_deliver_find_nobaseline = "(?mi).*baselines to be delivered:\\s*baseline:.*";
+	private static final Pattern rx_deliver_find_baseline   = Pattern.compile( "Baselines to be delivered:\\s*baseline:", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE );
+	private static final Pattern rx_deliver_find_nobaseline = Pattern.compile( "Baselines to be delivered:\\s*baseline:", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE );
+	
 	public boolean deliver( Baseline baseline, Stream stream, Stream target, File context, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException
 	{
 		logger.debug( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );
@@ -306,7 +312,26 @@ public class UCMContext extends Cool
 		//strategy.deliver( baseline.GetFQName(), stream.GetFQName(), target.GetFQName(), view.GetViewRoot(), view.GetViewtag(), force, complete, abort );
 		String result = strategy.deliver( bl, st, ta, context, viewtag, force, complete, abort );
 		
-		System.out.println( "I GOT=" + result );
+		//System.out.println( "I GOT: \n\"" + result + "\"\n" );
+		
+		/* Test for baseline == true */
+		if( baseline != null )
+		{
+			Matcher m = rx_deliver_find_baseline.matcher( result );
+			if( !m.find() )
+			{
+				return false;
+			}
+		}
+
+		if( baseline == null )
+		{
+			Matcher m = rx_deliver_find_nobaseline.matcher( result );
+			if( !m.find() )
+			{
+				return false;
+			}
+		}
 		
 		return true;
 	}

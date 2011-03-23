@@ -214,6 +214,50 @@ public class BuildNumber extends Cool
 		return sequence;
 	}
 	
+	/* Masks */
+	public static final int ALL_ATTRIBUTES     = 15;
+	public static final int ATTRIBUTE_MAJOR    = 1;
+	public static final int ATTRIBUTE_MINOR    = 2;
+	public static final int ATTRIBUTE_PATCH    = 4;
+	public static final int ATTRIBUTE_SEQUENCE = 8;
+	
+	/**
+	 * Verify that the project has valid UCM build number attributes
+	 * @param project The UCM project to verify
+	 * @return A flag determining the attributes present
+	 * @throws UCMException
+	 */
+	public static int isValidUCMBuildNumber( Project project ) throws UCMException
+	{
+		int valid = 0;
+		
+		Component c = project.getIntegrationStream().GetSingleTopComponent();
+		
+		/* Get the build number sequence */
+		Map<String, String> catts = c.getAttributes();
+		if( !catts.containsKey( __BUILD_NUMBER_SEQUENCE ) )
+		{
+			valid += 1 << 0;
+		}
+		
+		/* Get major, minor and patch */
+		Map<String, String> patts = project.getAttributes();
+		if( !patts.containsKey( __BUILD_NUMBER_MAJOR ) )
+		{
+			valid += 1 << 1;
+		}
+		if( !patts.containsKey( __BUILD_NUMBER_MINOR ) )
+		{
+			valid += 1 << 2;
+		}
+		if( !patts.containsKey( __BUILD_NUMBER_PATCH ) )
+		{
+			valid += 1 << 3;
+		}
+		
+		return valid;
+	}
+	
 	
 	/**
 	 * This method returns the new build number for a Baseline.

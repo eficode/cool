@@ -60,7 +60,15 @@ class TagPool extends UCM
 		Cool.logger.log( "Could not find the Tag with ID " + tagType + tagID + ". Creating new." );
 		
 		/* Create new Tag */
-		Tag tag = context.NewTag( tagType, tagID, entity, "" );
+		//Tag tag = context.NewTag( tagType, tagID, entity, "" );
+		
+		Tag tag = (Tag)UCMEntity.GetEntity( "tag@0@" + entity.GetPvob() );
+		//tag.SetEntry( "tagtype", tagType );
+		//tag.SetEntry( "tagid", tagID );
+		String cgi = "tagtype=" + tagType + "&tagid=" + tagID;
+		tag.SetKeyValue( cgi );
+		tag.SetTagEntity( entity );
+		
 		tag.SetCreated( true );
 		
 		return tag;

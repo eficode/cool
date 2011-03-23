@@ -232,7 +232,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		
 		try
 		{
-			String result = Cleartool.run( cmd, context ).stdoutBuffer.toString();
+			String result = Cleartool.run( cmd, context, true ).stdoutBuffer.toString();
 			return result;
 		}
 		catch( AbnormalProcessTerminationException e )
