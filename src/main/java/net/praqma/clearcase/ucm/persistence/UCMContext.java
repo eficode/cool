@@ -312,7 +312,7 @@ public class UCMContext extends Cool
 		//strategy.deliver( baseline.GetFQName(), stream.GetFQName(), target.GetFQName(), view.GetViewRoot(), view.GetViewtag(), force, complete, abort );
 		String result = strategy.deliver( bl, st, ta, context, viewtag, force, complete, abort );
 		
-		//System.out.println( "I GOT: \n\"" + result + "\"\n" );
+		System.out.println( "I GOT: \n\"" + result + "\"\n" );
 		
 		/* Test for baseline == true */
 		if( baseline != null )
