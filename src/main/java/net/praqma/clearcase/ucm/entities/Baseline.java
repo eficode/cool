@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.utils.BaselineDiff;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 
@@ -102,7 +103,7 @@ public class Baseline extends UCMEntity
 	 * @param cached Whether to use the cached promotion level or not
 	 * @return The promotion level of the Baseline
 	 */
-	public Project.Plevel GetPromotionLevel( boolean cached ) throws UCMException
+	public Project.Plevel getPromotionLevel( boolean cached ) throws UCMException
 	{
 		if( !loaded ) this.Load();
 		
@@ -129,9 +130,14 @@ public class Baseline extends UCMEntity
 	 * If the promotion level is not set, it is set to <code>INITAL</code>.
 	 * @return The new promotion level.
 	 */
-	public Project.Plevel Promote() throws UCMException
+	public Project.Plevel promote() throws UCMException
 	{
 		if( !loaded ) this.Load();
+		
+		if( this.plevel.equals( Plevel.REJECTED ) )
+		{
+			throw new UCMException( "Cannot promote from REJECTED" );
+		}
 		
 		this.plevel = Project.PromoteFrom( this.plevel );
 		
@@ -143,13 +149,20 @@ public class Baseline extends UCMEntity
 	/**
 	 * Demotes the Baseline to <code>REJECTED</code>.
 	 */
-	public void Demote() throws UCMException
+	public Project.Plevel demote() throws UCMException
 	{
 		if( !loaded ) this.Load();
 		
 		this.plevel = Project.Plevel.REJECTED;
 		
 		context.SetPromotionLevel( this );
+		
+		return Project.Plevel.REJECTED;
+	}
+	
+	public void setPromotionLevel( Project.Plevel plevel )
+	{
+		this.plevel = plevel;
 	}
 	
 
@@ -158,18 +171,18 @@ public class Baseline extends UCMEntity
 	 * Currently this method only support the previous Baseline and with -nmerge set.<br>
 	 * @return A BaselineDiff object containing a set of Activities.
 	 */
-	public BaselineDiff GetDiffs( SnapshotView view ) throws UCMException
+	public BaselineDiff getDiffs( SnapshotView view ) throws UCMException
 	{
 		return new BaselineDiff( view, this );
 	}
 	
-	public Component GetComponent() throws UCMException
+	public Component getComponent() throws UCMException
 	{
 		if( !loaded ) Load();
 		return this.component;
 	}
 	
-	public Stream GetStream() throws UCMException
+	public Stream getStream() throws UCMException
 	{
 		if( !loaded ) Load();
 		return this.stream;

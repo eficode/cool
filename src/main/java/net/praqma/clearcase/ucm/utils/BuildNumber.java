@@ -111,7 +111,7 @@ public class BuildNumber extends Cool
 	public static int stampIntoCode( Baseline baseline, File dir ) throws UCMException
 	{
 		String[] numbers = isBuildNumber( baseline );
-		Component component = baseline.GetComponent();
+		Component component = baseline.getComponent();
 		
 		logger.debug( "I got " + component.GetFQName() );
 		
@@ -121,7 +121,7 @@ public class BuildNumber extends Cool
 	public static int stampIntoCode( Baseline baseline, File dir, boolean ignoreErrors ) throws UCMException
 	{
 		String[] numbers = isBuildNumber( baseline );
-		Component component = baseline.GetComponent();
+		Component component = baseline.getComponent();
 		
 		logger.debug( "I got " + component.GetFQName() );
 		

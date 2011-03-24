@@ -157,7 +157,7 @@ public class SnapshotView extends UCMView
 				BaselineList bls = this.stream.GetLatestBaselines();
 				for( Baseline b : bls )
 				{
-					String rule  = b.GetComponent().GetRootDir();
+					String rule  = b.getComponent().GetRootDir();
 					rule         = rule.replaceFirst( "^\\\\", " " );
 					myloadrules += rule;
 				}

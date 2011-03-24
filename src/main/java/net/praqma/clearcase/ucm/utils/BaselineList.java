@@ -85,10 +85,10 @@ public class BaselineList extends ArrayList<Baseline>
 		
 		Baseline recbl = recommended.get( 0 );
 		Cool.logger.debug( "The recommended=" + recbl.toString() );
-		Cool.logger.debug( "REC COMP=" + recbl.GetComponent().GetFQName() );
+		Cool.logger.debug( "REC COMP=" + recbl.getComponent().GetFQName() );
 		Cool.logger.debug( "THIS COM=" + component.GetFQName() );
 		
-		if( !recbl.GetComponent().GetFQName().equals( component.GetFQName() ) )
+		if( !recbl.getComponent().GetFQName().equals( component.GetFQName() ) )
 		{
 			Cool.logger.warning( component.GetFQName() + " is not represented in " + stream.GetFQName() + " Recommended baseline" );
 			throw new UCMException( component.GetFQName() + " is not represented in " + stream.GetFQName() + " Recommended baseline" );

@@ -80,9 +80,9 @@ public class BaselineTest
 	{
 		Baseline bl = UCMEntity.GetBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
 		
-		assertEquals( "TESTED", bl.GetPromotionLevel( true ).toString() );
+		assertEquals( "TESTED", bl.getPromotionLevel( true ).toString() );
 		
-		assertEquals( "TESTED", bl.GetPromotionLevel( false ).toString() );
+		assertEquals( "TESTED", bl.getPromotionLevel( false ).toString() );
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class BaselineTest
 	{
 		Baseline bl = UCMEntity.GetBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
 		
-		bl.Promote();
+		bl.promote();
 	}
 
 	/*

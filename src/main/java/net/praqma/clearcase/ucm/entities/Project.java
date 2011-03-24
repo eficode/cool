@@ -71,8 +71,6 @@ public class Project extends UCMEntity
 		case RELEASED:
 			plevel = Plevel.RELEASED;
 			break;
-		default:
-			plevel = Plevel.REJECTED;
 		}
 		
 		return plevel;

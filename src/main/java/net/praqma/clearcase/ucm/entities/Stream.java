@@ -165,7 +165,7 @@ public class Stream extends UCMEntity
 			throw new UCMException( "The Stream " + this.GetShortname() + " does not have a single composite component." );
 		}
 		
-		return bls.get( 0 ).GetComponent();
+		return bls.get( 0 ).getComponent();
 	}
 	
 	public Project getProject() throws UCMException

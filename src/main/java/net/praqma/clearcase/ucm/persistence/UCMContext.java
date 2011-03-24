@@ -239,7 +239,7 @@ public class UCMContext extends Cool
 	
 	public void SetPromotionLevel( Baseline baseline ) throws UCMException
 	{
-		strategy.SetPromotionLevel( baseline.GetFQName(), baseline.GetPromotionLevel( true ).toString() );
+		strategy.SetPromotionLevel( baseline.GetFQName(), baseline.getPromotionLevel( true ).toString() );
 	}
 	
 	
