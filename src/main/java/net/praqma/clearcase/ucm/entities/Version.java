@@ -25,10 +25,10 @@ public class Version extends UCMEntity
 	private String file        = null;
 	private String sfile       = null;
 	private File version       = null;
-	private int revision       = 0;
+	private String revision    = "0";
 	
 	private static String rx_revision = "(\\d+)$";
-	private static Pattern p_revision = Pattern.compile( "(\\d+)$" );
+	private static Pattern p_revision = Pattern.compile( "@@(.*)$" );
 	
 	Version()
 	{
@@ -56,11 +56,12 @@ public class Version extends UCMEntity
 		Matcher m = p_revision.matcher( this.fqname );
 		if( m.find() )
 		{
-			this.revision = Integer.parseInt( m.group( 1 ) );
+			//this.revision = Integer.parseInt( m.group( 1 ) );
+			this.revision = m.group( 1 );
 		}
 		else
 		{
-			this.revision = 0;
+			this.revision = "0";
 		}
 		
 		String tmp = this.fqname;
@@ -89,33 +90,33 @@ public class Version extends UCMEntity
 	}
 
 
-	public String GetUser()
+	public String getUser()
 	{
 		if( !loaded ) Load();
 		
 		return this.user;
 	}
 	
-	public String Blame()
+	public String blame()
 	{
-		return this.GetUser();
+		return this.getUser();
 	}
 	
-	public String GetFile()
+	public String getFile()
 	{
 		if( !loaded ) Load();
 		
 		return this.file;
 	}
 	
-	public String GetDate()
+	public String getDate()
 	{
 		if( !loaded ) Load();
 		
 		return this.date;
 	}
 	
-	public int GetRevision()
+	public String getRevision()
 	{
 		if( !loaded ) Load();
 		
@@ -139,17 +140,17 @@ public class Version extends UCMEntity
 		this.loaded = true;
 	}
 	
-	public void SetView( SnapshotView view )
+	public void setView( SnapshotView view )
 	{
 		this.view = view;
 	}
 	
-	public void SetSFile( String sfile )
+	public void setSFile( String sfile )
 	{
 		this.sfile = sfile;
 	}
 	
-	public String GetSFile()
+	public String getSFile()
 	{
 		return sfile;
 	}

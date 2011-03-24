@@ -472,7 +472,7 @@ public abstract class UCMEntity extends UCM
 	
 	/* Getters */
 	
-	public String GetUser() throws UCMException
+	public String getUser() throws UCMException
 	{
 		if( !loaded ) Load();
 		return this.user;

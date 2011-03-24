@@ -93,7 +93,7 @@ public class UCMContext extends Cool
 			try
 			{
 				Version v = (Version)UCMEntity.GetEntity( f );
-				v.SetSFile( v.GetFile().substring( length ) );
+				v.setSFile( v.getFile().substring( length ) );
 				current.changeset.versions.add( v );
 			}
 			catch( UCMException e )
