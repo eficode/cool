@@ -817,7 +817,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		/* TODO Check this functions behavior, if the view doesn't exist */
 		String result = Cleartool.run( cmd ).stdoutBuffer.toString();
 		
-		System.out.println(result);
+		//System.out.println(result);
 		
 		Matcher match = pattern_view_uuid.matcher( result );
 		if( !match.find() )
