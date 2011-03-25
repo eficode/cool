@@ -98,7 +98,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( e.getMessage() );
+			throw new UCMException( e.getMessage(), e.getMessage() );
 		}
 	}
 	
@@ -116,7 +116,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( e.getMessage() );
+			throw new UCMException( e.getMessage(), e.getMessage() );
 		}
 	}
 	
@@ -137,7 +137,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Could not load the Baseline " + baseline );
+			throw new UCMException( "Could not load the Baseline " + baseline, e.getMessage() );
 		}
 	}
 
@@ -196,7 +196,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Could not create Baseline " + fqname );
+			throw new UCMException( "Could not create Baseline " + fqname, e.getMessage() );
 		}
 	}
 	
@@ -210,7 +210,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Could not set promotion level to " + plevel + " for " + baseline + ": " + e.getMessage() );
+			throw new UCMException( "Could not set promotion level to " + plevel + " for " + baseline + ": " + e.getMessage(), e.getMessage() );
 		}
 	}
 	
@@ -239,7 +239,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		{
 			logger.warning( "Could not deliver to target " + target );
 			logger.warning( e );
-			throw new UCMException( "Could not deliver: " + e.getMessage() );
+			throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage() );
 		}
 	}
 	
@@ -252,7 +252,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Could not cancel deliver: " + e.getMessage() );
+			throw new UCMException( "Could not cancel deliver: " + e.getMessage(), e.getMessage() );
 		}
 	}
 	
@@ -265,7 +265,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Could not get deliver status: " + e.getMessage() );
+			throw new UCMException( "Could not get deliver status: " + e.getMessage(), e.getMessage() );
 		}
 	}
 	
@@ -306,7 +306,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 			}
 			else
 			{
-				throw new UCMException( e.getMessage(), UCMType.LOAD_FAILED );
+				throw new UCMException( e.getMessage(), e.getMessage(), UCMType.LOAD_FAILED );
 			}
 		}
 		
@@ -330,7 +330,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Could not recommend Baseline: " + e.getMessage() );
+			throw new UCMException( "Could not recommend Baseline: " + e.getMessage(), e.getMessage() );
 		}
 		
 	}
@@ -454,7 +454,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 			}
 			else
 			{
-				throw new UCMException( e.getMessage(), UCMType.LOAD_FAILED );
+				throw new UCMException( e.getMessage(), e.getMessage(), UCMType.LOAD_FAILED );
 			}
 		}
 		
@@ -514,7 +514,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 			if( match.find() )
 			{
 				UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + __TAG_NAME + " -c \"Hyperlink type for tagging entities\"\"" );
-				throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", UCMType.UNKNOWN_HLINK_TYPE );
+				throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e.getMessage(), UCMType.UNKNOWN_HLINK_TYPE );
 			}
 			
 			throw e;
@@ -572,7 +572,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 			if( match.find() )
 			{
 				UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + __TAG_NAME + " -c \"Hyperlink type for tagging entities\"\"" );
-				throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found.", UCMType.UNKNOWN_HLINK_TYPE );
+				throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found.", e.getMessage(), UCMType.UNKNOWN_HLINK_TYPE );
 			}
 			
 			throw e;
@@ -638,7 +638,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException();
+			throw new UCMException( "Could not load hyperlink", e.getMessage() );
 		}
 		
 		return res.stdoutBuffer.toString();
@@ -659,7 +659,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 			if( match.find() )
 			{
 				UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + hlinkType + " -nc\"" );
-				throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", UCMType.UNKNOWN_HLINK_TYPE );
+				throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e.getMessage(), UCMType.UNKNOWN_HLINK_TYPE );
 			}
 			
 			throw e;
@@ -712,7 +712,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		{
 			if( e.getMessage().equalsIgnoreCase( "cleartool: Error: operation requires a view" ) )
 			{
-				throw new UCMException( "operation requires a view" );
+				throw new UCMException( "operation requires a view", e.getMessage() );
 			}
 			
 			throw e;
@@ -781,7 +781,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		catch( AbnormalProcessTerminationException e )
 		{
 			logger.warning( "Could not create snapshot view \"" + viewtag + "\"" );
-			throw new UCMException( "Could not create snapshot view \"" + viewtag + "\"", UCMType.VIEW_ERROR );
+			throw new UCMException( "Could not create snapshot view \"" + viewtag + "\"", e.getMessage(), UCMType.VIEW_ERROR );
 		}
 	}
 	
@@ -836,7 +836,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Unable to read the UUID(" + uuid + ") from view tag " + viewtag );
+			throw new UCMException( "Unable to read the UUID(" + uuid + ") from view tag " + viewtag, e.getMessage() );
 		}
 		
 		if( dir.exists() )
@@ -856,7 +856,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( IOException e )
 		{
-			throw new UCMException( "Could not create view.dat", UCMType.VIEW_ERROR );
+			throw new UCMException( "Could not create view.dat", e.getMessage(), UCMType.VIEW_ERROR );
 		}
 		
 		/* TODO Too much windows.... */
@@ -1063,7 +1063,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		catch ( FileNotFoundException e1 )
 		{
 			logger.warning( "\"" + viewdotdatpname + "\" not found!" );
-			throw new UCMException( e1.getMessage() );
+			throw new UCMException( "The file could not be found. ", e1.getMessage() );
 		}
 		
 		BufferedReader br = new BufferedReader( fr );
@@ -1079,7 +1079,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		catch ( IOException e )
 		{
 			logger.warning( "Couldn't read lines from " + viewdotdatpname );
-			throw new UCMException( e.getMessage() );
+			throw new UCMException( "Could not read lines", e.getMessage() );
 		}
 		
 		logger.debug( "FILE CONTENT=" + result.toString() );
@@ -1128,7 +1128,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Could not find attribute with name: " + attribute + " on " + fqname + ". Recieved: " + e.getMessage() );
+			throw new UCMException( "Could not find attribute with name: " + attribute + " on " + fqname + ". Recieved: " + e.getMessage(), e.getMessage() );
 		}
 		
 		return res.toString();
@@ -1156,7 +1156,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Could not find attributes on " + fqname + ". Recieved: " + e.getMessage() );
+			throw new UCMException( "Could not find attributes on " + fqname + ". Recieved: " + e.getMessage(), e.getMessage() );
 		}
 		
 		Map<String, String> atts = new HashMap<String, String>();
@@ -1186,7 +1186,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Could not create the attribute " + attribute );
+			throw new UCMException( "Could not create the attribute " + attribute, e.getMessage() );
 		}		
 	}
 	
