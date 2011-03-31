@@ -41,7 +41,7 @@ public class GetNextBuildNumber extends Cool
 		o.setDefaultOptions();
 		
 		o.setSyntax( "GetNextBuildNumber [-p {project} | -s {stream}]" );
-		o.setDescription( "Retrieve the next build number given a UCM project or a UCM stream." );
+		o.setHeader( "Retrieve the next build number given a UCM project or a UCM stream." );
 		
 		o.parse( args );
 		

@@ -50,7 +50,8 @@ public class BuildNumberStamper
 		o.setDefaultOptions();
 		
 		o.setSyntax( "BuildNumber <options> -f file" );
-		o.setDescription( "Automatically stamp a build number into a source/header file." + Options.linesep + "For example:" + Options.linesep + "private static final String major = \"0\"; // buildnumber.major" );
+		o.setHeader( "Automatically stamp a build number into a source/header file." );
+		o.setDescription( "Examples:" + Options.linesep + "private static final String major = \"0\"; // buildnumber.major" );
 		
 		o.parse( args );
 		

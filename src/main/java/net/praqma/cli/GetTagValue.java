@@ -38,6 +38,10 @@ public class GetTagValue
 
 		o.setDefaultOptions();
 		
+		o.setHeader( "Get the value of a tag" );
+		o.setSyntax( "GetTagValue -e <entity> -k <key> -y <tag type> -i <tag id>" );
+		o.setDescription( "Examples:" + Options.linesep + "GetTagValue -e baseline:bls@\\somevob -k status -y myjob -i 10101" );
+		
 		o.parse( args );
 		
 		try

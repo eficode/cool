@@ -48,7 +48,7 @@ public class StampBuildNumber extends Cool
 		o.setDefaultOptions();
 		
 		o.setSyntax( "BuildNumber -b baseline -d dir" );
-		o.setDescription( "Automatically stamp a build number into the buildnumber.file given a Baseline" );
+		o.setHeader( "Automatically stamp a build number into the buildnumber.file given a Baseline" );
 		
 		o.parse( args );
 		

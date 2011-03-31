@@ -40,6 +40,10 @@ public class SetTag
 		
 		o.setDefaultOptions();
 		
+		o.setHeader( "Set a tag for an UCM entity" );
+		o.setSyntax( "SetTag -e <entity> -t <tag> -y <tag type> -i <tag id>" );
+		o.setDescription( "Examples:" + Options.linesep + "SetTag -e baseline:bls@\\somevob -T \"key1=val1&key2=val2\" -y myjob -i 10101" + Options.linesep + "SetTag -e baseline:bls@\\somevob -T \"key1=&key2=val2\" -y myjob -i 10101" + Options.linesep + "The last example will remove key1 from the tag" );
+		
 		o.parse( args );
 		
 		try
