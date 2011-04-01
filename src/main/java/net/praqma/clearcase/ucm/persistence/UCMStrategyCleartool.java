@@ -183,7 +183,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 			}
 			
 			/* The exception could not be handled! */
-			throw e;
+			throw new UCMException( "Could not get the baseline differences", e.getMessage() );
 		}
 	}
 	
