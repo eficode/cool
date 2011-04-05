@@ -49,6 +49,14 @@ public class CommandLineMock implements CommandLineInterface
 	{
 		return run( cmd, dir, merge, false );
 	}
+	
+	
+	/**/
+	private static File versionDotH = null;
+	public static void setVersionDotH( File f )
+	{
+		versionDotH = f;
+	}
 
 	@Override
 	public CmdResult run( String cmd, File dir, boolean merge, boolean ignore ) throws CommandLineException, AbnormalProcessTerminationException
@@ -209,15 +217,15 @@ public class CommandLineMock implements CommandLineInterface
 		if( cmd.equals( "cleartool describe -ahlink buildnumber.file -l component:_System@\\Cool_PVOB" ) )
 		{
 			res.stdoutList.add( "bogus" );
-			res.stdoutList.add( " Hyperlinks:" );
-			res.stdoutList.add( "   buildnumber.file@1234@\\Cool_PVOB ->  version.h " );
+			res.stdoutList.add( " Hyperlinks:" ); // 
+			res.stdoutList.add( "   buildnumber.file@1234@\\Cool_PVOB ->  " + ( versionDotH != null ? versionDotH.getAbsolutePath() : "version.h" ) + " " );
 		}
 		
 		if( cmd.equals( "cleartool describe -ahlink buildnumber.file -l component:_System_no@\\Cool_PVOB" ) )
 		{
 			res.stdoutList.add( "bogus" );
 			res.stdoutList.add( " Hyperlinks:" );
-			res.stdoutList.add( "   nobuildnumber.file@1234@\\Cool_PVOB ->  version.h " );
+			res.stdoutList.add( "   nobuildnumber.file@1234@\\Cool_PVOB ->  " + ( versionDotH != null ? versionDotH.getAbsolutePath() : "version.h" ) + " " );
 		}
 		
 		return res;

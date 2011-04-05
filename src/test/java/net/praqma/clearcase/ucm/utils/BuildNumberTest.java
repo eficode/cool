@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 
+import net.praqma.clearcase.cleartool.CommandLineMock;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Baseline;
@@ -27,6 +28,8 @@ public class BuildNumberTest extends Cool
 	public static void startup()
 	{
 		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		File f = new File( BuildNumberTest.class.getClassLoader().getResource( "version.h" ).getFile() );
+		CommandLineMock.setVersionDotH( f );
 	}
 	
 	
