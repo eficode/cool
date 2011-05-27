@@ -69,9 +69,9 @@ public class StampBuildNumber extends Cool
 			ignoreErrors = true;
 		}
 		
-		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		UCM.setContext( UCM.ContextType.CLEARTOOL );
 		
-		Baseline baseline = UCMEntity.GetBaseline( obaseline.getString(), false );
+		Baseline baseline = UCMEntity.getBaseline( obaseline.getString(), false );
 		File dir = odir.used ? new File( odir.getString() ) : null;
 		int number = BuildNumber.stampIntoCode( baseline, dir, ignoreErrors );
 		

@@ -33,26 +33,26 @@ public class UCMContext extends Cool
 	/* COMMON */
 	public String getMastership( UCMEntity entity ) throws UCMException
 	{
-		return strategy.getMastership( entity.GetFQName() );
+		return strategy.getMastership( entity.getFullyQualifiedName() );
 	}
 	
 	/* Baseline specific */
-	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline ) throws UCMException
+	public ArrayList<Activity> getBaselineDiff( SnapshotView view, Baseline baseline ) throws UCMException
 	{
-		return GetBaselineDiff( view, baseline, null, true );
+		return getBaselineDiff( view, baseline, null, true );
 	}
 	
-	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, boolean nmerge ) throws UCMException
+	public ArrayList<Activity> getBaselineDiff( SnapshotView view, Baseline baseline, boolean nmerge ) throws UCMException
 	{
-		return GetBaselineDiff( view, baseline, null, nmerge );
+		return getBaselineDiff( view, baseline, null, nmerge );
 	}
 	
-	public ArrayList<Activity> GetBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge ) throws UCMException
+	public ArrayList<Activity> getBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge ) throws UCMException
 	{
 		logger.log( view.GetViewtag() );
 		
 		/* Change if other than -pre */
-		List<String> result = strategy.GetBaselineDiff( view.GetViewRoot(), baseline.GetFQName(), "", nmerge, baseline.GetPvob() );
+		List<String> result = strategy.getBaselineDiff( view.GetViewRoot(), baseline.getFullyQualifiedName(), "", nmerge, baseline.getPvob() );
 		
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		
@@ -68,13 +68,13 @@ public class UCMContext extends Cool
 			/* This line is a new activity */
 			if( match.find() )
 			{
-				current = UCMEntity.GetActivity( match.group( 1 ), true );
+				current = UCMEntity.getActivity( match.group( 1 ), true );
 				
 				/* A special case? */
-				if( current.GetShortname().equals( "no_activity" ) )
+				if( current.getShortname().equals( "no_activity" ) )
 				{
 					logger.debug( "Recorded a special activity case" );
-					current.SetSpecialCase( true );
+					current.setSpecialCase( true );
 				}
 				activities.add( current );
 				continue;
@@ -92,7 +92,7 @@ public class UCMContext extends Cool
 			/* If the version cannot be instantiated and is a special case, skip it */
 			try
 			{
-				Version v = (Version)UCMEntity.GetEntity( f );
+				Version v = (Version)UCMEntity.getEntity( f );
 				v.setSFile( v.getFile().substring( length ) );
 				current.changeset.versions.add( v );
 			}
@@ -108,16 +108,16 @@ public class UCMContext extends Cool
 		return activities;
 	}
 	
-	public ArrayList<Activity> GetActivities( Baseline baseline )
+	public ArrayList<Activity> getActivities( Baseline baseline )
 	{
 		return null;
 	}
 	
 	/* Version */
 	
-	public HashMap<String, String> GetVersion( Version version )
+	public HashMap<String, String> getVersion( Version version )
 	{
-		String result = strategy.GetVersion( version.GetFQName(), "::" );
+		String result = strategy.getVersion( version.getFullyQualifiedName(), "::" );
 		String[] rs = result.split( "::" );
 		
 		HashMap<String, String> v = new HashMap<String, String>();
@@ -136,24 +136,24 @@ public class UCMContext extends Cool
 	public Version getVersionExtension( String file, File viewroot ) throws UCMException
 	{
 		String f = strategy.getVersionExtension( file, viewroot );
-		return (Version)UCMEntity.GetEntity( file, false );
+		return (Version)UCMEntity.getEntity( file, false );
 	}
 	
 	/* Tags */
 	
-	public ArrayList<Tag> ListTags( UCMEntity entity ) throws UCMException
+	public ArrayList<Tag> getTags( UCMEntity entity ) throws UCMException
 	{
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		
 		/* Load Tags from clearcase */
-		List<String[]> result = strategy.GetTags( entity.GetFQName() );
+		List<String[]> result = strategy.getTags( entity.getFullyQualifiedName() );
 		
 		if( result.size() > 0 )
 		{
 			for( String[] s : result )
 			{
-				Tag tag = (Tag)UCMEntity.GetEntity( s[0].trim() );
-				tag.SetKeyValue( s[1] );
+				Tag tag = (Tag)UCMEntity.getEntity( s[0].trim() );
+				tag.setKeyValue( s[1] );
 				tags.add( tag );
 			}
 		}
@@ -161,29 +161,29 @@ public class UCMContext extends Cool
 		return tags;
 	}
 	
-	public Tuple<String, String> GetTag( Tag tag ) throws UCMException
+	public Tuple<String, String> getTag( Tag tag ) throws UCMException
 	{
-		String result = strategy.GetTag( tag.GetFQName() );
+		String result = strategy.getTag( tag.getFullyQualifiedName() );
 
 		Tuple<String, String> tuple = new Tuple<String, String>( "oid", result );
 		
 		return tuple;
 	}
 	
-	public Tag StoreTag( Tag tag ) throws UCMException
+	public Tag storeTag( Tag tag ) throws UCMException
 	{
 		/* Make the new tag */
-		Tag newtag = NewTag( tag.GetTagType(), tag.GetTagID(), tag.GetTagEntity(), Tag.HashToCGI( tag.GetEntries(), true ) );
+		Tag newtag = newTag( tag.getTagType(), tag.getTagID(), tag.getTagEntity(), Tag.mapToCGI( tag.GetEntries(), true ) );
 
 		/* Delete the old tag */
-		strategy.DeleteTag( tag.GetFQName() );
+		strategy.deleteTag( tag.getFullyQualifiedName() );
 		
 		return newtag;
 	}
 	
-	public void DeleteTag( Tag tag ) throws UCMException
+	public void deleteTag( Tag tag ) throws UCMException
 	{
-		strategy.DeleteTag( tag.GetFQName() );
+		strategy.deleteTag( tag.getFullyQualifiedName() );
 	}
 	
 	/**
@@ -196,34 +196,34 @@ public class UCMContext extends Cool
 	 * @param cgi
 	 * @return
 	 */
-	public Tag NewTag( String tagType, String tagID, UCMEntity entity, String cgi ) throws UCMException
+	public Tag newTag( String tagType, String tagID, UCMEntity entity, String cgi ) throws UCMException
 	{
 		logger.debug( "ENTITY="+entity.toString() );
 		logger.debug( "CGI FOR NEW = " + cgi );
 		//System.out.println( "CGI==="+cgi );
 		
 		/* Delete any existing Tags with the unique ID */
-		logger.log( "Deleting Tags with ID: " + tagType + tagID + " for entity " + entity.GetFQName() );
-		strategy.DeleteTagsWithID( tagType, tagID, entity.GetFQName() );
+		logger.log( "Deleting Tags with ID: " + tagType + tagID + " for entity " + entity.getFullyQualifiedName() );
+		strategy.deleteTagsWithID( tagType, tagID, entity.getFullyQualifiedName() );
 		
 		cgi = "tagtype=" + tagType + "&tagid=" + tagID + ( cgi.length() > 0 ? "&" + cgi : "" );
-		String fqname = strategy.NewTag( entity, cgi );
+		String fqname = strategy.newTag( entity, cgi );
 		
-		Tag tag = (Tag)UCMEntity.GetEntity( fqname );
+		Tag tag = (Tag)UCMEntity.getEntity( fqname );
 		//tag.SetEntry( "tagtype", tagType );
 		//tag.SetEntry( "tagid", tagID );
-		tag.SetKeyValue( cgi );
-		tag.SetTagEntity( entity );
+		tag.setKeyValue( cgi );
+		tag.setTagEntity( entity );
 		
 		return tag;
 	}
 	
-	public String[] LoadBaseline( Baseline baseline ) throws UCMException
+	public String[] loadBaseline( Baseline baseline ) throws UCMException
 	{
-		logger.log( "Loading baseline " + baseline.GetFQName() );
+		logger.log( "Loading baseline " + baseline.getFullyQualifiedName() );
 		
 		//String result = CTF.LoadBaseline( this.fqname );
-		String result = strategy.LoadBaseline( baseline.GetFQName() );
+		String result = strategy.loadBaseline( baseline.getFullyQualifiedName() );
 		logger.debug( "RESULT=" + result );
 		
 		String[] rs = result.split( UCMEntity.delim );
@@ -233,21 +233,21 @@ public class UCMContext extends Cool
 	
 	public void createBaseline( String fqname, Component component, File view, boolean incremental, boolean identical ) throws UCMException
 	{
-		strategy.createBaseline( fqname, component.GetFQName(), view, incremental, identical );
+		strategy.createBaseline( fqname, component.getFullyQualifiedName(), view, incremental, identical );
 	}
 	
 	
-	public void SetPromotionLevel( Baseline baseline ) throws UCMException
+	public void setPromotionLevel( Baseline baseline ) throws UCMException
 	{
-		strategy.SetPromotionLevel( baseline.GetFQName(), baseline.getPromotionLevel( true ).toString() );
+		strategy.setPromotionLevel( baseline.getFullyQualifiedName(), baseline.getPromotionLevel( true ).toString() );
 	}
 	
 	
-	public ArrayList<Baseline> GetRecommendedBaselines( Stream stream ) throws UCMException
+	public ArrayList<Baseline> getRecommendedBaselines( Stream stream ) throws UCMException
 	{
 		ArrayList<Baseline> bls = new ArrayList<Baseline>();
 		
-		String result = strategy.GetRecommendedBaselines( stream.GetFQName() );
+		String result = strategy.getRecommendedBaselines( stream.getFullyQualifiedName() );
 		String[] rs = result.split( " " );
 		
 		for( int i = 0 ; i < rs.length ; i++ )
@@ -256,34 +256,34 @@ public class UCMContext extends Cool
 			if( rs[i].matches( "\\S+" ) )
 			{
 				//bls.add( (Baseline)UCMEntity.GetEntity( rs[i], true ) );
-				bls.add( UCMEntity.GetBaseline( rs[i] + "@" + stream.GetPvob(), true ) );
+				bls.add( UCMEntity.getBaseline( rs[i] + "@" + stream.getPvob(), true ) );
 			}
 		}
 		
 		return bls;
 	}
 	
-	public boolean RecommendBaseline( Stream stream, Baseline baseline )
+	public boolean recommendBaseline( Stream stream, Baseline baseline )
 	{
 		try
 		{
 			//Cleartool.run( cmd );
-			strategy.RecommendBaseline( stream.GetFQName(), baseline.GetFQName() );
+			strategy.recommendBaseline( stream.getFullyQualifiedName(), baseline.getFullyQualifiedName() );
 			return true;
 		}
 		catch( UCMException e )
 		{
-			logger.error( "Stream " + stream.GetShortname() + " could not recommend baseline " + baseline.GetShortname() );
+			logger.error( "Stream " + stream.getShortname() + " could not recommend baseline " + baseline.getShortname() );
 			return false;
 		}
 	}
 	
 	
-	public List<Baseline> GetBaselines( Stream stream, Component component, Project.Plevel plevel, String pvob ) throws UCMException
+	public List<Baseline> getBaselines( Stream stream, Component component, Project.Plevel plevel, String pvob ) throws UCMException
 	{
 		String pl = plevel == null ? "" : plevel.toString();
-		logger.debug( "Getting baselines from " + stream.GetFQName() + " and " + component.GetFQName() + " with level " + plevel + " in VOB=" + pvob );
-		List<String> bls_str = strategy.GetBaselines( component.GetFQName(), stream.GetFQName(), pl );
+		logger.debug( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel + " in VOB=" + pvob );
+		List<String> bls_str = strategy.getBaselines( component.getFullyQualifiedName(), stream.getFullyQualifiedName(), pl );
 		
 		logger.debug( "I got " + bls_str.size() + " baselines." );
 		net.praqma.util.structure.Printer.listPrinter( bls_str );
@@ -291,7 +291,7 @@ public class UCMContext extends Cool
 		
 		for( String bl : bls_str )
 		{
-			bls.add( UCMEntity.GetBaseline( bl + "@" + pvob, true ) );
+			bls.add( UCMEntity.getBaseline( bl + "@" + pvob, true ) );
 		}
 		
 		return bls;
@@ -306,9 +306,9 @@ public class UCMContext extends Cool
 	public boolean deliver( Baseline baseline, Stream stream, Stream target, File context, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException
 	{
 		logger.debug( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );
-		String bl = baseline != null ? baseline.GetFQName() : null;
-		String st = stream   != null ? stream.GetFQName() : null;
-		String ta = target   != null ? target.GetFQName() : null;
+		String bl = baseline != null ? baseline.getFullyQualifiedName() : null;
+		String st = stream   != null ? stream.getFullyQualifiedName() : null;
+		String ta = target   != null ? target.getFullyQualifiedName() : null;
 		//strategy.deliver( baseline.GetFQName(), stream.GetFQName(), target.GetFQName(), view.GetViewRoot(), view.GetViewtag(), force, complete, abort );
 		String result = strategy.deliver( bl, st, ta, context, viewtag, force, complete, abort );
 		
@@ -345,7 +345,7 @@ public class UCMContext extends Cool
 	
 	public boolean isDelivering( Stream stream ) throws UCMException
 	{
-		String r = strategy.deliverStatus( stream.GetFQName() ).trim();
+		String r = strategy.deliverStatus( stream.getFullyQualifiedName() ).trim();
 		
 		if( r.startsWith( "No deliver operation in progress on stream" ) )
 		{
@@ -355,44 +355,44 @@ public class UCMContext extends Cool
 		return true;
 	}
 	
-	public SnapshotView MakeSnapshotView( Stream stream, File viewroot, String viewtag ) throws UCMException
+	public SnapshotView makeSnapshotView( Stream stream, File viewroot, String viewtag ) throws UCMException
 	{
-		strategy.MakeSnapshotView( stream.GetFQName(), viewroot, viewtag );
+		strategy.makeSnapshotView( stream.getFullyQualifiedName(), viewroot, viewtag );
 		return UCMView.GetSnapshotView( viewroot );
 	}
 	
-	public boolean ViewExists( String viewtag )
+	public boolean viewExists( String viewtag )
 	{
-		return strategy.ViewExists( viewtag );
+		return strategy.viewExists( viewtag );
 	}
 	
-	public void RegenerateViewDotDat( File dir, String viewtag ) throws UCMException
+	public void regenerateViewDotDat( File dir, String viewtag ) throws UCMException
 	{
-		strategy.RegenerateViewDotDat( dir, viewtag );
+		strategy.regenerateViewDotDat( dir, viewtag );
 	}
 	
-	public Map SwipeView( File viewroot, boolean excludeRoot )
+	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot )
 	{
-		return strategy.SwipeView( viewroot, excludeRoot );
+		return strategy.swipeView( viewroot, excludeRoot );
 	}
 	
-	public Stream CreateStream( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException
+	public Stream createStream( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException
 	{
-		strategy.CreateStream( pstream.GetFQName(), nstream, readonly, ( baseline != null ? baseline.GetFQName() : "" ) );
+		strategy.createStream( pstream.getFullyQualifiedName(), nstream, readonly, ( baseline != null ? baseline.getFullyQualifiedName() : "" ) );
 		
-		Stream stream = UCMEntity.GetStream( nstream );
+		Stream stream = UCMEntity.getStream( nstream );
 		
 		return stream;
 	}
 	
-	public void Genereate( Stream stream )
+	public void genereate( Stream stream )
 	{
-		strategy.Generate( stream.GetFQName() );
+		strategy.generate( stream.getFullyQualifiedName() );
 	}
 	
-	public void RebaseStream( SnapshotView view, Stream stream, Baseline baseline, boolean complete )
+	public void rebaseStream( SnapshotView view, Stream stream, Baseline baseline, boolean complete )
 	{
-		if( strategy.RebaseStream( view.GetViewtag(), stream.GetFQName(), baseline.GetFQName(), complete ) )
+		if( strategy.rebaseStream( view.GetViewtag(), stream.getFullyQualifiedName(), baseline.getFullyQualifiedName(), complete ) )
 		{
 			logger.debug( "Rebasing complete" );
 		}
@@ -402,31 +402,31 @@ public class UCMContext extends Cool
 		}
 	}
 	
-	public boolean IsRebaseInProgress( Stream stream )
+	public boolean isRebasing( Stream stream )
 	{
-		return strategy.IsRebaseInProgress( stream.GetFQName() );
+		return strategy.isRebasing( stream.getFullyQualifiedName() );
 	}
 	
-	public void CancelRebase( Stream stream )
+	public void cancelRebase( Stream stream )
 	{
-		strategy.CancelRebase( stream.GetFQName() );
+		strategy.cancelRebase( stream.getFullyQualifiedName() );
 	}
 	
-	public boolean StreamExists( String fqname )
+	public boolean streamExists( String fqname )
 	{
-		return strategy.StreamExists( fqname );
+		return strategy.streamExists( fqname );
 	}
 	
-	public List<Baseline> GetLatestBaselines( Stream stream ) throws UCMException
+	public List<Baseline> getLatestBaselines( Stream stream ) throws UCMException
 	{
-		logger.debug( "STREAM: " + stream.GetFQName() );
+		logger.debug( "STREAM: " + stream.getFullyQualifiedName() );
 		
-		List<String> bs = strategy.GetLatestBaselines( stream.GetFQName() );
+		List<String> bs = strategy.getLatestBaselines( stream.getFullyQualifiedName() );
 		List<Baseline> bls = new ArrayList<Baseline>();
 		
 		for( String s : bs )
 		{
-			bls.add( UCMEntity.GetBaseline( s.trim() ) );
+			bls.add( UCMEntity.getBaseline( s.trim() ) );
 		}
 		
 		return bls;
@@ -441,27 +441,27 @@ public class UCMContext extends Cool
 //		return UCMEntity.GetStream( stream );
 //	}
 	
-	public Tuple<Stream, String> GetStreamFromView( File viewroot ) throws UCMException
+	public Tuple<Stream, String> getStreamFromView( File viewroot ) throws UCMException
 	{
-		File wvroot = strategy.GetCurrentViewRoot( viewroot );
+		File wvroot = strategy.getCurrentViewRoot( viewroot );
 		
-		String viewtag = strategy.ViewrootIsValid( wvroot );
+		String viewtag = strategy.viewrootIsValid( wvroot );
 		
-		String streamstr = strategy.GetStreamFromView( viewtag );
-		Stream stream    = UCMEntity.GetStream( streamstr );
+		String streamstr = strategy.getStreamFromView( viewtag );
+		Stream stream    = UCMEntity.getStream( streamstr );
 	
 		return new Tuple<Stream, String>( stream, viewtag );
 	}
 	
 	
-	public void LoadProject( Project project ) throws UCMException
+	public void loadProject( Project project ) throws UCMException
 	{
-		String result = strategy.LoadProject( project.GetFQName() );
+		String result = strategy.loadProject( project.getFullyQualifiedName() );
 		
 		logger.debug( "Result: " + result );
 	
 		/* TODO currently the result only returns the stream name. Add more? */
-		project.SetStream( UCMEntity.GetStream( result ) );
+		project.setStream( UCMEntity.getStream( result ) );
 	}
 	
 	
@@ -474,9 +474,9 @@ public class UCMContext extends Cool
 	 * @param loadrules
 	 * @return
 	 */
-	public String UpdateView( SnapshotView view, boolean overwrite, String loadrules )
+	public String updateView( SnapshotView view, boolean overwrite, String loadrules )
 	{
-		String result = strategy.ViewUpdate( view.GetViewRoot(), overwrite, loadrules );
+		String result = strategy.viewUpdate( view.GetViewRoot(), overwrite, loadrules );
 		Matcher match = pattern_cache.matcher( result );
 		if( match.find() )
 		{
@@ -486,37 +486,37 @@ public class UCMContext extends Cool
 		return "";
 	}
 	
-	public String GetRootDir( Component component )
+	public String getRootDir( Component component )
 	{
-		logger.debug( component.GetFQName() );
+		logger.debug( component.getFullyQualifiedName() );
 		
-		return strategy.GetRootDir( component.GetFQName() );
+		return strategy.getRootDir( component.getFullyQualifiedName() );
 	}
 	
-	public String ViewrootIsValid( File view ) throws UCMException
+	public String viewrootIsValid( File view ) throws UCMException
 	{
-		return strategy.ViewrootIsValid( view );
+		return strategy.viewrootIsValid( view );
 	}
 	
-	public Project GetProjectFromStream( Stream stream ) throws UCMException
+	public Project getProjectFromStream( Stream stream ) throws UCMException
 	{
-		return UCMEntity.GetProject( strategy.GetProjectFromStream( stream.GetFQName() ) + "@" + stream.GetPvob() );
+		return UCMEntity.getProject( strategy.getProjectFromStream( stream.getFullyQualifiedName() ) + "@" + stream.getPvob() );
 	}
 	
-	public List<Component> GetModifiableComponents( Project project ) throws UCMException
+	public List<Component> getModifiableComponents( Project project ) throws UCMException
 	{
-		List<String> cs = strategy.GetModifiableComponents( project.GetFQName() );
+		List<String> cs = strategy.getModifiableComponents( project.getFullyQualifiedName() );
 		List<Component> comps = new ArrayList<Component>();
 		
 		for( String c : cs )
 		{
-			comps.add( UCMEntity.GetComponent( c + "@" + project.GetPvob() ) );
+			comps.add( UCMEntity.getComponent( c + "@" + project.getPvob() ) );
 		}
 		
 		return comps;
 	}
 	
-	public void LoadActivity( Activity activity ) throws UCMException
+	public void loadActivity( Activity activity ) throws UCMException
 	{
 		String result = "";
 		
@@ -527,21 +527,21 @@ public class UCMContext extends Cool
 		}
 		else
 		{
-			result = strategy.LoadActivity( activity.GetFQName() );
+			result = strategy.loadActivity( activity.getFullyQualifiedName() );
 		}
-		activity.SetUser( result );
+		activity.setUser( result );
 	}
 	
-	public String LoadComponent( Component component ) throws UCMException
+	public String loadComponent( Component component ) throws UCMException
 	{
-		return strategy.LoadComponent( component.GetFQName() );
+		return strategy.loadComponent( component.getFullyQualifiedName() );
 	}
 	
-	public String LoadStream( Stream stream ) throws UCMException
+	public String loadStream( Stream stream ) throws UCMException
 	{
-		logger.log( "Loading stream " + stream.GetFQName() );
+		logger.log( "Loading stream " + stream.getFullyQualifiedName() );
 
-		return strategy.LoadStream( stream.GetFQName() );
+		return strategy.loadStream( stream.getFullyQualifiedName() );
 	}
 	
 	
@@ -556,7 +556,7 @@ public class UCMContext extends Cool
 	 */
 	public Map<String, String> getAttributes( UCMEntity entity ) throws UCMException
 	{
-		return strategy.getAttributes( entity.GetFQName() );
+		return strategy.getAttributes( entity.getFullyQualifiedName() );
 	}
 	
 	/**
@@ -568,20 +568,20 @@ public class UCMContext extends Cool
 	 */
 	public Map<String, String> getAttributes( UCMEntity entity, File dir ) throws UCMException
 	{
-		return strategy.getAttributes( entity.GetFQName(), dir );
+		return strategy.getAttributes( entity.getFullyQualifiedName(), dir );
 	}
 	
 	public void setAttribute( UCMEntity entity, String attribute, String value ) throws UCMException
 	{
-		strategy.setAttribute( entity.GetFQName(), attribute, value );
+		strategy.setAttribute( entity.getFullyQualifiedName(), attribute, value );
 	}
 	
 	
 	public List<HyperLink> getHlinks( UCMEntity entity, String hlinkType, File dir ) throws UCMException
 	{
-		logger.debug( "Entity: " + entity.GetFQName() );
+		logger.debug( "Entity: " + entity.getFullyQualifiedName() );
 		
-		List<Tuple<String, String>> result = strategy.getHlinks( entity.GetFQName(), hlinkType, dir );
+		List<Tuple<String, String>> result = strategy.getHlinks( entity.getFullyQualifiedName(), hlinkType, dir );
 		
 		List<HyperLink> hlinks = new ArrayList<HyperLink>();
 		
@@ -598,20 +598,20 @@ public class UCMContext extends Cool
 	
 	public HyperLink loadHyperLink( HyperLink hlink, File dir ) throws UCMException
 	{
-		String result = strategy.LoadHyperLink( hlink.GetFQName(), dir );
+		String result = strategy.loadHyperLink( hlink.getFullyQualifiedName(), dir );
 		
 		return null;
 	}
 	
 	
-	public String GetXML()
+	public String getXML()
 	{
-		return strategy.GetXML();
+		return strategy.getXML();
 	}
 	
-	public void SaveState()
+	public void saveState()
 	{
-		strategy.SaveState();
+		strategy.saveState();
 	}
 }
 

@@ -27,7 +27,7 @@ public class BuildNumberTest extends Cool
 	@BeforeClass
 	public static void startup()
 	{
-		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		UCM.setContext( UCM.ContextType.CLEARTOOL );
 		File f = new File( BuildNumberTest.class.getClassLoader().getResource( "version.h" ).getFile() );
 		CommandLineMock.setVersionDotH( f );
 	}
@@ -37,7 +37,7 @@ public class BuildNumberTest extends Cool
 	@Test
 	public void testCreateBuildNumber() throws UCMException
 	{		
-		Component component = UCMEntity.GetComponent( "System@\\Cool_PVOB" );
+		Component component = UCMEntity.getComponent( "System@\\Cool_PVOB" );
 		File view = new File( "c:\\" );
 		Tuple<Baseline, String[]> result = BuildNumber.createBuildNumber( "bls__1_2_3_123", component, view );
 		
@@ -46,14 +46,14 @@ public class BuildNumberTest extends Cool
 		assertEquals( "Patch", result.t2[2], "3" );
 		assertEquals( "Sequence", result.t2[3], "123" );
 		
-		assertEquals( "Baseline", result.t1.GetFQName(), "baseline:bls__1_2_3_123@\\Cool_PVOB" );
+		assertEquals( "Baseline", result.t1.getFullyQualifiedName(), "baseline:bls__1_2_3_123@\\Cool_PVOB" );
 		
 	}
 	
 	@Test
 	public void testStampIntoCodeBaseline() throws UCMException
 	{
-		Baseline blbn = UCMEntity.GetBaseline( "bn__1_2_3_1234@\\Cool_PVOB" );
+		Baseline blbn = UCMEntity.getBaseline( "bn__1_2_3_1234@\\Cool_PVOB" );
 		
 		BuildNumber.stampIntoCode( blbn );
 	}
@@ -62,7 +62,7 @@ public class BuildNumberTest extends Cool
 	@Test
 	public void testStampFromComponent() throws UCMException
 	{
-		Component component = UCMEntity.GetComponent( "_System@\\Cool_PVOB" );
+		Component component = UCMEntity.getComponent( "_System@\\Cool_PVOB" );
 		File view = new File( "c:\\" );
 		
 		Tuple<Baseline, String[]> result = BuildNumber.createBuildNumber( "bls__1_2_3_123", component, view );
@@ -73,7 +73,7 @@ public class BuildNumberTest extends Cool
 	@Test
 	public void testStampFromComponentNoBuildNumberFile() throws UCMException
 	{
-		Component component = UCMEntity.GetComponent( "_System_no@\\Cool_PVOB" );
+		Component component = UCMEntity.getComponent( "_System_no@\\Cool_PVOB" );
 		File view = new File( "c:\\" );
 		
 		Tuple<Baseline, String[]> result = BuildNumber.createBuildNumber( "bls__1_2_3_123", component, view );
@@ -102,7 +102,7 @@ public class BuildNumberTest extends Cool
 	@Test
 	public void testGetNextBuildSequence() throws UCMException
 	{
-		Project project = UCMEntity.GetProject( "project:bn_project@\\Cool_PVOB", true );
+		Project project = UCMEntity.getProject( "project:bn_project@\\Cool_PVOB", true );
 		
 		int seq = BuildNumber.getNextBuildSequence( project );
 		
@@ -112,7 +112,7 @@ public class BuildNumberTest extends Cool
 	@Test
 	public void testGetNextBuildSequenceNoSequence() throws UCMException
 	{
-		Project project = UCMEntity.GetProject( "project:bn_project_no@\\Cool_PVOB", true );
+		Project project = UCMEntity.getProject( "project:bn_project_no@\\Cool_PVOB", true );
 		
 		try
 		{
@@ -127,7 +127,7 @@ public class BuildNumberTest extends Cool
 	@Test
 	public void testGetBuildNumber() throws UCMException
 	{
-		Project project = UCMEntity.GetProject( "project:bn_project@\\Cool_PVOB", true );
+		Project project = UCMEntity.getProject( "project:bn_project@\\Cool_PVOB", true );
 		
 		String bn = BuildNumber.getBuildNumber( project );
 		

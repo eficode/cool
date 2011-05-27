@@ -20,7 +20,7 @@ public abstract class UCM extends Cool
 		CLEARTOOL
 	}
 	
-	public static void SetContext( ContextType ct )
+	public static void setContext( ContextType ct )
 	{
 		if( context != null )
 		{

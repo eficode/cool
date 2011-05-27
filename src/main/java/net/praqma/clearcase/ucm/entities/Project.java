@@ -19,7 +19,7 @@ public class Project extends UCMEntity
 	 * be allowed to call it.
 	 * @return A new Project Entity
 	 */
-	static Project GetEntity()
+	static Project getEntity()
 	{
 		return new Project();
 	}
@@ -39,7 +39,7 @@ public class Project extends UCMEntity
 	 * @param str, if not a valid Promotion Level INITAL is returned.
 	 * @return A Promotion Level
 	 */
-	public static Plevel GetPlevelFromString( String str )
+	public static Plevel getPlevelFromString( String str )
 	{
 		Plevel plevel = Plevel.INITIAL;
 		
@@ -55,7 +55,7 @@ public class Project extends UCMEntity
 		return plevel;
 	}
 	
-	public static Plevel PromoteFrom( Plevel plevel )
+	public static Plevel promoteFrom( Plevel plevel )
 	{
 		switch( plevel )
 		{
@@ -76,19 +76,19 @@ public class Project extends UCMEntity
 		return plevel;
 	}
 	
-	public void Load() throws UCMException
+	public void load() throws UCMException
 	{
-		context.LoadProject( this );
+		context.loadProject( this );
 	}
 	
-	public void SetStream( Stream stream )
+	public void setStream( Stream stream )
 	{
 		this.stream = stream;
 	}
 	
 	public Stream getIntegrationStream() throws UCMException
 	{
-		if( !this.loaded ) Load();
+		if( !this.loaded ) load();
 		return stream;
 	}
 }
