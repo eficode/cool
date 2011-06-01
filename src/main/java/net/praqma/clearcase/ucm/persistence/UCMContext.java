@@ -10,6 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.Cool;
+import net.praqma.clearcase.Region;
+import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
@@ -605,8 +607,8 @@ public class UCMContext extends Cool
 	}
 	
 	
-	public int getVobCount() {
-	    return strategy.getVobCount();
+	public List<Vob> getVobs( Region region ) {
+	    return strategy.getVobs(region);
 	}
 	
 	

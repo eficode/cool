@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import net.praqma.clearcase.Region;
+import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.util.structure.Tuple;
@@ -89,7 +91,7 @@ interface UCMStrategyInterface
 	public void setAttribute( String fqname, String attribute, String value ) throws UCMException;
 	
 	
-	public int getVobCount();
+	public List<Vob> getVobs( Region region );
 	
 	/* 
 	 * OTHER STUFF

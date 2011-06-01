@@ -15,6 +15,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.Cool;
+import net.praqma.clearcase.Region;
+import net.praqma.clearcase.Site;
+import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
@@ -1185,6 +1188,20 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		{
 			throw new UCMException( "Could not create the attribute " + attribute, e.getMessage() );
 		}		
+	}
+	
+	
+	public List<Vob> getVobs( Region region ) {
+	    String cmd = "lsvob -s" + ( region != null ? " -region " + region.getName() : "" );
+	    CmdResult cr = Cleartool.run( cmd );
+	    
+	    List<Vob> vobs = new ArrayList<Vob>();
+	    for( String s : cr.stdoutList ) {
+		vobs.add(new Vob(s));
+	    }
+	    
+	    return vobs;
+	    
 	}
 	
 	
