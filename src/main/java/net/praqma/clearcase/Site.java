@@ -1,5 +1,7 @@
 package net.praqma.clearcase;
 
+import java.util.List;
+
 public class Site extends Cool {
     
     private String name;
@@ -8,7 +10,7 @@ public class Site extends Cool {
 	this.name = name;
     }
     
-    public void getVobs( Region region ) {
-	context.getVobs(region);
+    public List<Vob> getVobs( Region region ) {
+	return context.getVobs(region);
     }
 }
