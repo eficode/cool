@@ -604,6 +604,11 @@ public class UCMContext extends Cool
 	}
 	
 	
+	public int getVobCount() {
+	    return strategy.getVobCount();
+	}
+	
+	
 	public String getXML()
 	{
 		return strategy.getXML();

@@ -1190,6 +1190,12 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}		
 	}
 	
+	
+	public int getVobCount() {
+	    String cmd = "lsvob -short";
+	    return Cleartool.run( cmd ).stdoutList.size();
+	}
+	
 
 	
 	/*****************************

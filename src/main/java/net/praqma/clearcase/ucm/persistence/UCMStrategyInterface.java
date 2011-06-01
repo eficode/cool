@@ -87,7 +87,9 @@ interface UCMStrategyInterface
 	public Map<String, String> getAttributes( String fqname ) throws UCMException;
 	public Map<String, String> getAttributes( String fqname, File dir ) throws UCMException;
 	public void setAttribute( String fqname, String attribute, String value ) throws UCMException;
-		
+	
+	
+	public int getVobCount();
 	
 	/* 
 	 * OTHER STUFF
