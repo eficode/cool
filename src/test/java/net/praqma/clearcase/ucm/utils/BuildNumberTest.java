@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.cleartool.CommandLineMock;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
@@ -17,7 +18,6 @@ import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.PraqmaLogger.Logger;
 import net.praqma.util.structure.Tuple;
 
-import net.praqma.clearcase.ucm.entities.Cool;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

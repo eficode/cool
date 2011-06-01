@@ -14,10 +14,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
-import net.praqma.clearcase.ucm.entities.Cool;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.debug.PraqmaLogger;
@@ -130,7 +130,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 	{
 		logger.debug( "Loading " + baseline );
 		
-		String cmd = "desc -fmt %n" + delim + "%[component]p" + delim + "%[bl_stream]p" + delim + "%[plevel]p" + delim + "%u " + baseline;
+		String cmd = "desc -fmt %n" + Cool.delim + "%[component]p" + Cool.delim + "%[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u " + baseline;
 		try
 		{
 			return Cleartool.run( cmd ).stdoutBuffer.toString();

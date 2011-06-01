@@ -3,10 +3,10 @@ package net.praqma.clearcase.ucm.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
-import net.praqma.clearcase.ucm.entities.Cool;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Tag;
