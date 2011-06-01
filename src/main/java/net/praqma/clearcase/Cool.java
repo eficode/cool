@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.praqma.clearcase.cleartool.Cleartool;
-import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.persistence.UCMContext;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyCleartool;
 import net.praqma.util.debug.PraqmaLogger;

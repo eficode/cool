@@ -20,11 +20,8 @@ import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.util.debug.PraqmaLogger;
-import net.praqma.util.debug.PraqmaLogger.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
-import net.praqma.util.execute.Command;
 import net.praqma.util.io.IO;
 import net.praqma.util.structure.Tuple;
 
