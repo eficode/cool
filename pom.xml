@@ -4,7 +4,7 @@
 	<groupId>net.praqma</groupId>
 	<artifactId>COOL</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3.24</version>
+	<version>0.3.24-SNAPSHOT</version>
 	<name>ClearCase Oriented Open Library</name>
 	<url>http://maven.apache.org</url>
 
@@ -150,9 +150,15 @@
 		<dependency>
 			<groupId>net.praqma</groupId>
 			<artifactId>praqmajutils</artifactId>
-			<version>0.1.6</version>
+			<version>0.1.7</version>
 		</dependency>
 
 	</dependencies>
+	
+    <scm>
+        <connection>scm:git:ssh://github.com/cool.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/Praqma/cool.git</developerConnection>
+        <url>https://github.com/Praqma/cool.git</url>
+    </scm>
 
 </project>
