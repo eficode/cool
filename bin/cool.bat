@@ -25,7 +25,7 @@ EXIT /B 1
 
 :coolhomeok
 
-set COOL_JAR=%COOL_HOME%\build\COOL-0.2.20-jar-with-dependencies.jar
+set COOL_JAR=%COOL_HOME%\build\COOL-0.3.24-jar-with-dependencies.jar
 
 if exist "%COOL_JAR%" goto start
 
