@@ -137,7 +137,13 @@
 		</plugins>
 	</reporting>
 
-
+	<repositories>
+		<repository>
+			<id>praqma</id>
+			<name>praqma</name>
+			<url>http://code.praqma.net/repo/maven</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>

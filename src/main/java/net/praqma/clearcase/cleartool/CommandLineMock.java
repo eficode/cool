@@ -231,4 +231,10 @@ public class CommandLineMock implements CommandLineInterface
 		return res;
 	}
 
+	@Override
+	public OperatingSystem getOS() {
+	    // TODO Auto-generated method stub
+	    return null;
+	}
+
 }
