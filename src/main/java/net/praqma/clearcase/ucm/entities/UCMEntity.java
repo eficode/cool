@@ -9,8 +9,6 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
-import net.praqma.clearcase.ucm.persistence.*;
-import net.praqma.util.structure.Tuple;
 
 /**
  * 
@@ -547,7 +545,7 @@ public abstract class UCMEntity extends UCM
 	}
 	
 	/**
-	 * @returns A shorthand representation of the object.
+	 * @return A shorthand representation of the object.
 	 */
 	public String toString()
 	{

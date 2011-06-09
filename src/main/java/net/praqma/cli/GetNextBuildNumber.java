@@ -1,9 +1,6 @@
 package net.praqma.cli;
 
-import java.io.File;
-
 import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Cool;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;

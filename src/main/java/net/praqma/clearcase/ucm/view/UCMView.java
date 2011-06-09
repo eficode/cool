@@ -1,7 +1,6 @@
 package net.praqma.clearcase.ucm.view;
 
 import java.io.File;
-import java.io.IOException;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCM;

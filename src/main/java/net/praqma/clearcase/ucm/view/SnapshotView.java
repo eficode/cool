@@ -57,7 +57,7 @@ public class SnapshotView extends UCMView
 	 * @param stream The Stream
 	 * @param viewroot
 	 * @param viewtag
-	 * @return
+	 * @return SnapShotView
 	 */
 	public static SnapshotView Create( Stream stream, File viewroot, String viewtag ) throws UCMException
 	{		
@@ -99,6 +99,10 @@ public class SnapshotView extends UCMView
 	public File GetViewRoot()
 	{
 		return this.viewroot;
+	}
+	
+	public Stream getStream() throws UCMException{
+		return context.GetStreamFromView(GetViewRoot()).getFirst();
 	}
 	
 	/**

@@ -3,8 +3,6 @@ package net.praqma.clearcase.ucm.entities;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.praqma.clearcase.ucm.entities.Cool;
-
 import net.praqma.clearcase.ucm.UCMException;
 
 class TagPool extends UCM

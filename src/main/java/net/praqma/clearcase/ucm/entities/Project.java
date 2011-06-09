@@ -1,7 +1,5 @@
 package net.praqma.clearcase.ucm.entities;
 
-import java.util.ArrayList;
-
 import net.praqma.clearcase.ucm.UCMException;
 
 
@@ -36,7 +34,7 @@ public class Project extends UCMEntity
 	
 	/**
 	 * Given a String, return the corresponding Promotion Level.
-	 * @param str, if not a valid Promotion Level INITAL is returned.
+	 * @param str - if not a valid Promotion Level INITAL is returned.
 	 * @return A Promotion Level
 	 */
 	public static Plevel GetPlevelFromString( String str )

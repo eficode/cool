@@ -2,9 +2,6 @@ package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Project.Plevel;
@@ -71,7 +68,7 @@ public class Baseline extends UCMEntity
 	 * @param view
 	 * @param incremental
 	 * @param identical
-	 * @return
+	 * @return Baseline
 	 * @throws UCMException
 	 */
 	public static Baseline create( String basename, Component component, File view, boolean incremental, boolean identical ) throws UCMException
@@ -215,7 +212,7 @@ public class Baseline extends UCMEntity
 	 * @param force
 	 * @param complete
 	 * @param abort
-	 * @return
+	 * @return boolean 
 	 * @throws UCMException
 	 */
 	public boolean deliver( Stream stream, Stream target, File viewcontext, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException

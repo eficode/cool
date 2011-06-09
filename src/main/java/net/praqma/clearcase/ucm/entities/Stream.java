@@ -93,6 +93,18 @@ public class Stream extends UCMEntity
 		
 		this.loaded = true;
 	}
+
+	public List<Stream> getChildStreams() {
+		
+		List<Stream> res = new ArrayList<Stream>();
+		try {
+			res = context.getChildStreams(this);
+		} catch (UCMException e) {
+			logger.info("The Stream has no child streams");
+			
+		}
+		return res;
+	}
 	
 	/**
 	 * Determines whether a Stream exists, given a fully qualified name
@@ -155,6 +167,7 @@ public class Stream extends UCMEntity
 	{
 		return new BaselineList( context.GetLatestBaselines( this ) );
 	}
+	
 	
 	public Component GetSingleTopComponent() throws UCMException
 	{

@@ -1,7 +1,6 @@
 package net.praqma.clearcase.ucm.persistence;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,14 +8,21 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.praqma.clearcase.ucm.UCMException.UCMType;
-import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.UCMException.UCMType;
+import net.praqma.clearcase.ucm.entities.Activity;
+import net.praqma.clearcase.ucm.entities.Baseline;
+import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Cool;
+import net.praqma.clearcase.ucm.entities.HyperLink;
+import net.praqma.clearcase.ucm.entities.Project;
+import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.ucm.entities.Tag;
+import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.structure.Tuple;
-import net.praqma.util.debug.PraqmaLogger;
-import net.praqma.util.debug.PraqmaLogger.Logger;
 
 public class UCMContext extends Cool
 {
@@ -194,7 +200,7 @@ public class UCMContext extends Cool
 	 * @param tagID
 	 * @param entity The "owner" entity of the tag.
 	 * @param cgi
-	 * @return
+	 * @return Tag
 	 */
 	public Tag NewTag( String tagType, String tagID, UCMEntity entity, String cgi ) throws UCMException
 	{
@@ -472,7 +478,7 @@ public class UCMContext extends Cool
 	 * @param view
 	 * @param overwrite
 	 * @param loadrules
-	 * @return
+	 * @return String
 	 */
 	public String UpdateView( SnapshotView view, boolean overwrite, String loadrules )
 	{
@@ -544,6 +550,11 @@ public class UCMContext extends Cool
 		return strategy.LoadStream( stream.GetFQName() );
 	}
 	
+	public List<Stream> getChildStreams(Stream stream)throws UCMException {
+		logger.log("Finding all child streams on "+stream);
+
+		return strategy.getChildStreams(stream.GetFQName());
+	}
 	
 	
 	/* Attributes */

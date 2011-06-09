@@ -7,7 +7,6 @@ import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.PraqmaLogger.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
-import net.praqma.util.execute.CommandLine;
 import net.praqma.util.execute.CommandLineException;
 import net.praqma.util.execute.CommandLineInterface;
 

@@ -11,8 +11,6 @@ import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCM;
-import net.praqma.util.debug.PraqmaLogger;
-import net.praqma.util.debug.PraqmaLogger.Logger;
 
 public class BaselineList extends ArrayList<Baseline>
 {	
@@ -41,7 +39,7 @@ public class BaselineList extends ArrayList<Baseline>
 	public BaselineList( Component component, Stream stream, Project.Plevel plevel ) throws UCMException
 	{
 		Cool.logger.debug( "Getting Baselines from " + stream.GetFQName() + " and " + component.GetFQName() + " with plevel " + plevel );
-		
+				
 		this.stream    = stream;
 		this.component = component;
 		

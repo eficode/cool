@@ -2,16 +2,11 @@ package net.praqma.clearcase.ucm.entities;
 
 import static org.junit.Assert.*;
 
+import org.junit.*;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.util.debug.PraqmaLogger;
-import net.praqma.util.debug.PraqmaLogger.Logger;
-import net.praqma.clearcase.ucm.entities.Cool;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TagTest extends Cool
 {	

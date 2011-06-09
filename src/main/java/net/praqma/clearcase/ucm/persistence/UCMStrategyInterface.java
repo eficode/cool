@@ -4,8 +4,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.structure.Tuple;
 
 interface UCMStrategyInterface
@@ -59,6 +60,7 @@ interface UCMStrategyInterface
 	public List<String> GetLatestBaselines( String stream );
 	public void Generate( String stream );
 	public String LoadStream( String stream ) throws UCMException;
+	public List<Stream> getChildStreams(String stream) throws UCMException;
 	
 	/* Version */
 	public String GetVersion( String version, String separator );
@@ -81,7 +83,7 @@ interface UCMStrategyInterface
 	public void RegenerateViewDotDat( File dir, String viewtag ) throws UCMException;
 	public Map SwipeView( File viewroot, boolean excludeRoot );
 	public String ViewUpdate( File viewroot, boolean overwrite, String loadrules );
-
+	
 	/* Attributes */
 	public String getAttribute( String fqname, String attribute ) throws UCMException;
 	public Map<String, String> getAttributes( String fqname ) throws UCMException;

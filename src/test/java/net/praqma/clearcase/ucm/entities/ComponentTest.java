@@ -2,14 +2,14 @@ package net.praqma.clearcase.ucm.entities;
 
 import static org.junit.Assert.*;
 
+import org.junit.*;
+
+
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.PraqmaLogger.Logger;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class ComponentTest
 {

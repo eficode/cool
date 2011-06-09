@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
-import net.praqma.clearcase.ucm.view.UCMView;
 
 public class Version extends UCMEntity
 {
