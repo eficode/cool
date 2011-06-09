@@ -32,9 +32,9 @@ public class Baseline extends UCMEntity
 	 * Load the Baseline into memory from ClearCase.<br>
 	 * This function is automatically called when needed by other functions.
 	 */
-	public void Load() throws UCMException
+	public void load() throws UCMException
 	{
-		String[] rs = context.LoadBaseline( this );
+		String[] rs = context.loadBaseline( this );
 		
 		/* Component */
 		String c = ( rs[1].matches( "^component:.*$" ) ? "" : "component:" ) + ( rs[1].matches( ".*@\\\\.*$" ) ? rs[1] : rs[1] + "@" + this.pvob );
@@ -44,7 +44,7 @@ public class Baseline extends UCMEntity
 		{
 			String s = ( rs[2].matches( "^stream:.*$" ) ? "" : "stream:" ) + ( rs[2].matches( ".*@\\\\.*$" ) ? rs[2] : rs[2] + "@" + this.pvob );
 			logger.debug( "Stream = " + s );
-			this.stream = (Stream)UCMEntity.GetEntity( s );
+			this.stream = (Stream)UCMEntity.getEntity( s );
 		}
 		else
 		{
@@ -52,8 +52,8 @@ public class Baseline extends UCMEntity
 		}
 
 		/* Now with factory creation! */
-		this.component = (Component)UCMEntity.GetEntity( c );
-		this.plevel    = Project.GetPlevelFromString( rs[3] );
+		this.component = (Component)UCMEntity.getEntity( c );
+		this.plevel    = Project.getPlevelFromString( rs[3] );
 		this.user      = rs[4];
 		
 		activities = new ArrayList<Activity>();
@@ -81,7 +81,7 @@ public class Baseline extends UCMEntity
 		
 		context.createBaseline( basename, component, view, incremental, identical );
 		
-		return UCMEntity.GetBaseline( basename + "@" + component.GetPvob(), true );
+		return UCMEntity.getBaseline( basename + "@" + component.getPvob(), true );
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public class Baseline extends UCMEntity
 	 * be allowed to call it.
 	 * @return A new Baseline Entity
 	 */
-	static Baseline GetEntity()
+	static Baseline getEntity()
 	{
 		return new Baseline();
 	}
@@ -102,7 +102,7 @@ public class Baseline extends UCMEntity
 	 */
 	public Project.Plevel getPromotionLevel( boolean cached ) throws UCMException
 	{
-		if( !loaded ) this.Load();
+		if( !loaded ) this.load();
 		
 		if( cached )
 		{
@@ -129,16 +129,16 @@ public class Baseline extends UCMEntity
 	 */
 	public Project.Plevel promote() throws UCMException
 	{
-		if( !loaded ) this.Load();
+		if( !loaded ) this.load();
 		
 		if( this.plevel.equals( Plevel.REJECTED ) )
 		{
 			throw new UCMException( "Cannot promote from REJECTED" );
 		}
 		
-		this.plevel = Project.PromoteFrom( this.plevel );
+		this.plevel = Project.promoteFrom( this.plevel );
 		
-		context.SetPromotionLevel( this );
+		context.setPromotionLevel( this );
 		
 		return this.plevel;
 	}
@@ -148,11 +148,11 @@ public class Baseline extends UCMEntity
 	 */
 	public Project.Plevel demote() throws UCMException
 	{
-		if( !loaded ) this.Load();
+		if( !loaded ) this.load();
 		
 		this.plevel = Project.Plevel.REJECTED;
 		
-		context.SetPromotionLevel( this );
+		context.setPromotionLevel( this );
 		
 		return Project.Plevel.REJECTED;
 	}
@@ -168,20 +168,20 @@ public class Baseline extends UCMEntity
 	 * Currently this method only support the previous Baseline and with -nmerge set.<br>
 	 * @return A BaselineDiff object containing a set of Activities.
 	 */
-	public BaselineDiff getDiffs( SnapshotView view ) throws UCMException
+	public BaselineDiff getDifferences( SnapshotView view ) throws UCMException
 	{
 		return new BaselineDiff( view, this );
 	}
 	
 	public Component getComponent() throws UCMException
 	{
-		if( !loaded ) Load();
+		if( !loaded ) load();
 		return this.component;
 	}
 	
 	public Stream getStream() throws UCMException
 	{
-		if( !loaded ) Load();
+		if( !loaded ) load();
 		return this.stream;
 	}
 	
@@ -229,13 +229,13 @@ public class Baseline extends UCMEntity
 		}
 	}
 	
-	public String Stringify() throws UCMException
+	public String stringify() throws UCMException
 	{
-		if( !this.loaded ) Load();
+		if( !this.loaded ) load();
 		
 		StringBuffer sb = new StringBuffer();
 		
-		sb.append( super.Stringify() );
+		sb.append( super.stringify() );
 		
 		sb.append( "PLEVEL   : " + this.plevel + linesep );
 		sb.append( "Component: " + this.component.toString() + linesep );

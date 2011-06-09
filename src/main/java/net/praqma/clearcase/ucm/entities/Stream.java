@@ -31,7 +31,7 @@ public class Stream extends UCMEntity
 	 * be allowed to call it.
 	 * @return A new Stream Entity
 	 */
-	static Stream GetEntity()
+	static Stream getEntity()
 	{
 		return new Stream();
 	}
@@ -43,9 +43,9 @@ public class Stream extends UCMEntity
 	 * @param readonly Whether the new Stream is read only or not
 	 * @return A new Stream given the parameters
 	 */
-	public static Stream Create( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException
+	public static Stream create( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException
 	{
-		UCMEntity.GetNamePart( nstream );
+		UCMEntity.getNamePart( nstream );
 		
 		if( pstream == null || nstream == null )
 		{
@@ -53,21 +53,21 @@ public class Stream extends UCMEntity
 			throw new UCMException( "Incorrect CreateStream() parameters" );
 		}
 		
-		return context.CreateStream( pstream, nstream, readonly, baseline );
+		return context.createStream( pstream, nstream, readonly, baseline );
 	}
 	
-	public void Load() throws UCMException
+	public void load() throws UCMException
 	{
-		String r = context.LoadStream( this );
+		String r = context.loadStream( this );
 		String[] data = r.split( UCM.delim );
 		
 		logger.debug( "RESULT=" + r );
 		
 		/* name::project::target_stream::readonly */
-		this.project       = UCMEntity.GetProject( data[1] );
+		this.project       = UCMEntity.getProject( data[1] );
 		try
 		{
-			this.defaultTarget = UCMEntity.GetStream( data[2] );
+			this.defaultTarget = UCMEntity.getStream( data[2] );
 		}
 		catch( UCMException e )
 		{
@@ -112,70 +112,70 @@ public class Stream extends UCMEntity
 	 * @return True if the Stream exists, false otherwise
 	 * @throws UCMException Is thrown if the fully qualified name is not a valid name
 	 */
-	public static boolean StreamExists( String fqname ) throws UCMException
+	public static boolean streamExists( String fqname ) throws UCMException
 	{
 		/* Determine the name of the entity */
-		UCMEntity.GetNamePart( fqname );
+		UCMEntity.getNamePart( fqname );
 		
-		return context.StreamExists( fqname );
+		return context.streamExists( fqname );
 	}
 	
-	public void Rebase( SnapshotView view, Baseline baseline, boolean complete )
+	public void rebase( SnapshotView view, Baseline baseline, boolean complete )
 	{
-		context.RebaseStream( view, this, baseline, complete );
+		context.rebaseStream( view, this, baseline, complete );
 	}
 	
-	public boolean IsRebaseInProgress()
+	public boolean isRebaseInProgress()
 	{
-		return context.IsRebaseInProgress( this );
+		return context.isRebasing( this );
 	}
 	
-	public void CancelRebase()
+	public void cancelRebase()
 	{
-		context.CancelRebase( this );
+		context.cancelRebase( this );
 	}
 	
-	public List<Baseline> GetRecommendedBaselines() throws UCMException
+	public List<Baseline> getRecommendedBaselines() throws UCMException
 	{
-		return GetRecommendedBaselines( false );
+		return getRecommendedBaselines( false );
 	}
 	
-	public void Generate()
+	public void generate()
 	{
-		context.Genereate( this );
+		context.genereate( this );
 	}
 	
-	public ArrayList<Baseline> GetRecommendedBaselines( boolean force ) throws UCMException
+	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( "Getting recommended baselines" );
 		
 		if( this.recommendedBaselines == null || force )
 		{
-			this.recommendedBaselines = context.GetRecommendedBaselines( this );
+			this.recommendedBaselines = context.getRecommendedBaselines( this );
 		}
 		
 		return this.recommendedBaselines;
 	}
 	
-	public boolean RecommendBaseline( Baseline baseline )
+	public boolean recommendBaseline( Baseline baseline )
 	{
-		return context.RecommendBaseline( this, baseline );
+		return context.recommendBaseline( this, baseline );
 	}
 	
-	public BaselineList GetLatestBaselines() throws UCMException
+	public BaselineList getLatestBaselines() throws UCMException
 	{
-		return new BaselineList( context.GetLatestBaselines( this ) );
+		return new BaselineList( context.getLatestBaselines( this ) );
 	}
 	
-	
-	public Component GetSingleTopComponent() throws UCMException
+
+	public Component getSingleTopComponent() throws UCMException
 	{
-		List<Baseline> bls = this.GetRecommendedBaselines();
+		List<Baseline> bls = this.getRecommendedBaselines();
 		
 		if( bls.size() != 1 )
 		{
-			throw new UCMException( "The Stream " + this.GetShortname() + " does not have a single composite component." );
+			throw new UCMException( "The Stream " + this.getShortname() + " does not have a single composite component." );
 		}
 		
 		return bls.get( 0 ).getComponent();
@@ -183,7 +183,7 @@ public class Stream extends UCMEntity
 	
 	public Project getProject() throws UCMException
 	{
-		if( !this.loaded ) Load();
+		if( !this.loaded ) load();
 		
 		return this.project;
 	}
@@ -195,7 +195,7 @@ public class Stream extends UCMEntity
 	 */
 	public Stream getDefaultTarget() throws UCMException
 	{
-		if( !this.loaded ) Load();
+		if( !this.loaded ) load();
 		return this.defaultTarget;
 	}
 	
@@ -225,17 +225,17 @@ public class Stream extends UCMEntity
 	
 	public boolean isReadOnly() throws UCMException
 	{
-		if( !this.loaded ) Load();
+		if( !this.loaded ) load();
 		return readonly;
 	}
 	
-	public String Stringify() throws UCMException
+	public String stringify() throws UCMException
 	{
-		if( !this.loaded ) Load();
+		if( !this.loaded ) load();
 		
 		StringBuffer sb = new StringBuffer();
 		
-		sb.append( super.Stringify() );
+		sb.append( super.stringify() );
 		
 		if( this.recommendedBaselines != null )
 		{
@@ -251,5 +251,9 @@ public class Stream extends UCMEntity
 		}
 
 		return sb.toString();
+	}
+
+	public String getFQName() {
+		return this.fqname;
 	}
 }

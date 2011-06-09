@@ -2,9 +2,9 @@ package net.praqma.cli;
 
 import java.io.File;
 
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.Cool;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.utils.BuildNumber;
@@ -69,9 +69,9 @@ public class StampBuildNumber extends Cool
 			ignoreErrors = true;
 		}
 		
-		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		UCM.setContext( UCM.ContextType.CLEARTOOL );
 		
-		Baseline baseline = UCMEntity.GetBaseline( obaseline.getString(), false );
+		Baseline baseline = UCMEntity.getBaseline( obaseline.getString(), false );
 		File dir = odir.used ? new File( odir.getString() ) : null;
 		int number = BuildNumber.stampIntoCode( baseline, dir, ignoreErrors );
 		

@@ -11,14 +11,15 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
 
 public class BaselineDiff extends ArrayList<Activity>
 {
-	
+	private static final long serialVersionUID = 1L;
+
 	public BaselineDiff()
 	{
 	}
 	
 	public BaselineDiff( SnapshotView view, Baseline baseline ) throws UCMException
 	{
-		this.addAll( UCM.context.GetBaselineDiff( view, baseline ) );
+		this.addAll( UCM.context.getBaselineDiff( view, baseline ) );
 	}
 	
 	public void Print() throws UCMException
@@ -26,10 +27,9 @@ public class BaselineDiff extends ArrayList<Activity>
 		for( Activity a : this )
 		{
 			System.out.println( "----- Activity:" );
-			System.out.println( a.Stringify() );
+			System.out.println( a.stringify() );
 			for( Version v : a.changeset.versions )
 			{
-				//System.out.println( v.Stringify() );
 				System.out.println( v.toString() );
 			}
 		}

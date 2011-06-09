@@ -38,12 +38,12 @@ public class Version extends UCMEntity
 	 * be allowed to call it.
 	 * @return A new Version Entity
 	 */
-	static Version GetEntity()
+	static Version getEntity()
 	{
 		return new Version();
 	}
 	
-	void PostProcess()
+	void postProcess()
 	{
 		logger.trace_function();
 
@@ -91,7 +91,7 @@ public class Version extends UCMEntity
 
 	public String getUser()
 	{
-		if( !loaded ) Load();
+		if( !loaded ) load();
 		
 		return this.user;
 	}
@@ -103,30 +103,30 @@ public class Version extends UCMEntity
 	
 	public String getFile()
 	{
-		if( !loaded ) Load();
+		if( !loaded ) load();
 		
 		return this.file;
 	}
 	
 	public String getDate()
 	{
-		if( !loaded ) Load();
+		if( !loaded ) load();
 		
 		return this.date;
 	}
 	
 	public String getRevision()
 	{
-		if( !loaded ) Load();
+		if( !loaded ) load();
 		
 		return this.revision;
 	}
 	
-	public void Load()
+	public void load()
 	{
 		logger.trace_function();
 
-		HashMap<String, String> result = context.GetVersion( this );
+		HashMap<String, String> result = context.getVersion( this );
 		
 		this.date       = result.get( "date" );
 		this.user       = result.get( "user" );
@@ -155,10 +155,10 @@ public class Version extends UCMEntity
 	}
 	
 	
-	public String Stringify() throws UCMException
+	public String stringify() throws UCMException
 	{	
 		StringBuffer sb = new StringBuffer();
-		sb.append( super.Stringify() + linesep );
+		sb.append( super.stringify() + linesep );
 		
 		sb.append( "Filename: " + this.file + linesep );
 		sb.append( "Revision: " + this.revision + linesep );

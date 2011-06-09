@@ -56,13 +56,13 @@ public class GetTagValue
 		}
 		
 		/* Do the ClearCase thing... */
-		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		UCM.setContext( UCM.ContextType.CLEARTOOL );
 		
 		UCMEntity e = null;
 		
 		try
 		{
-			e = UCMEntity.GetEntity( oentity.getString(), false );
+			e = UCMEntity.getEntity( oentity.getString(), false );
 		}
 		catch( UCMException ex )
 		{
@@ -70,9 +70,9 @@ public class GetTagValue
 			System.exit( 1 );
 		}
 		
-		Tag tag = e.GetTag( otagtype.getString(), otagid.getString() );
+		Tag tag = e.getTag( otagtype.getString(), otagid.getString() );
 		
-		String value = tag.GetEntry( okey.getString() );
+		String value = tag.getEntry( okey.getString() );
 		
 		if( value == null )
 		{

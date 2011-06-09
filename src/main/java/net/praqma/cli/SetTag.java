@@ -58,7 +58,7 @@ public class SetTag
 		}
 		
 		/* Do the ClearCase thing... */
-		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		UCM.setContext( UCM.ContextType.CLEARTOOL );
 		
 		UCM.setVerbose( o.verbose() );
 		
@@ -66,7 +66,7 @@ public class SetTag
 		
 		try
 		{
-			e = UCMEntity.GetEntity( oentity.getString(), false );
+			e = UCMEntity.getEntity( oentity.getString(), false );
 		}
 		catch( UCMException ex )
 		{
@@ -74,7 +74,7 @@ public class SetTag
 			System.exit( 1 );
 		}
 		
-		Tag tag = e.GetTag( otagtype.getString(), otagid.getString() );
+		Tag tag = e.getTag( otagtype.getString(), otagid.getString() );
 		
 		/* Split key value structure */
 		String[] tags = otag.getString().split( "&" );
@@ -91,7 +91,7 @@ public class SetTag
 					System.out.print( "+(" + entry[0] + ", " + entry[1] + ") " );
 				}
 				
-				tag.SetEntry( entry[0].trim(), entry[1].trim() );
+				tag.setEntry( entry[0].trim(), entry[1].trim() );
 			}
 			catch( ArrayIndexOutOfBoundsException ea )
 			{
@@ -99,7 +99,7 @@ public class SetTag
 				{
 					System.out.print( "-(" + entry[0] + ") " );
 				}
-				tag.RemoveEntry( entry[0] );
+				tag.removeEntry( entry[0] );
 			}
 		}
 		
@@ -110,7 +110,7 @@ public class SetTag
 		
 		try
 		{
-			tag.Persist();
+			tag.persist();
 		}
 		catch( UCMException ex )
 		{
@@ -121,7 +121,7 @@ public class SetTag
 			}
 		}
 		
-		if( tag.IsCreated() )
+		if( tag.isCreated() )
 		{
 			System.out.println( "Tag created." );
 		}

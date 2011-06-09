@@ -1,7 +1,10 @@
 package net.praqma.cli;
 
+import java.io.File;
+
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.entities.Cool;
+import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
@@ -60,17 +63,17 @@ public class GetNextBuildNumber extends Cool
 		}
 		
 		/* ClearCase */
-		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		UCM.setContext( UCM.ContextType.CLEARTOOL );
 		
 		Project project = null;
 		
 		if( oproject.used )
 		{
-			project = UCMEntity.GetProject( oproject.getString(), false );
+			project = UCMEntity.getProject( oproject.getString(), false );
 		}
 		else
 		{
-			Stream stream = UCMEntity.GetStream( ostream.getString(), false );
+			Stream stream = UCMEntity.getStream( ostream.getString(), false );
 			project = stream.getProject();
 		}
 		

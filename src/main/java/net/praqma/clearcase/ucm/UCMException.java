@@ -1,6 +1,6 @@
 package net.praqma.clearcase.ucm;
 
-import net.praqma.clearcase.ucm.entities.Cool;
+import net.praqma.clearcase.Cool;
 
 //public class UCMException extends RuntimeException
 public class UCMException extends Exception

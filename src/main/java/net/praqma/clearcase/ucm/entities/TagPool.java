@@ -3,6 +3,8 @@ package net.praqma.clearcase.ucm.entities;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.praqma.clearcase.Cool;
+
 import net.praqma.clearcase.ucm.UCMException;
 
 class TagPool extends UCM
@@ -23,14 +25,14 @@ class TagPool extends UCM
 	
 
 	
-	public boolean TagExists( String tagType, String tagID, UCMEntity entity ) throws UCMException
+	public boolean tagExists( String tagType, String tagID, UCMEntity entity ) throws UCMException
 	{
-		ArrayList<Tag> tags = context.ListTags( entity );
+		ArrayList<Tag> tags = context.getTags( entity );
 		
 		for( Tag t : tags )
 		{			
 			/* Is it the correct tag? Return it! */
-			if( t.GetTagType().equals( t.GetTagType() ) && t.GetTagID().equals( tagID ) )
+			if( t.getTagType().equals( t.getTagType() ) && t.getTagID().equals( tagID ) )
 			{
 				return true;
 			}
@@ -39,18 +41,18 @@ class TagPool extends UCM
 		return false;
 	}
 	
-	public Tag GetTag( String tagType, String tagID, UCMEntity entity ) throws UCMException
+	public Tag getTag( String tagType, String tagID, UCMEntity entity ) throws UCMException
 	{
 		Cool.logger.debug( entity.toString() );
-		ArrayList<Tag> tags = context.ListTags( entity );
+		ArrayList<Tag> tags = context.getTags( entity );
 		
 		for( Tag t : tags )
 		{
 			
 			/* Is it the correct tag? Return it! */
-			if( t.GetTagType().equals( tagType ) && t.GetTagID().equals( tagID ) )
+			if( t.getTagType().equals( tagType ) && t.getTagID().equals( tagID ) )
 			{
-				t.SetTagEntity( entity );
+				t.setTagEntity( entity );
 				return t;
 			}
 		}
@@ -60,14 +62,14 @@ class TagPool extends UCM
 		/* Create new Tag */
 		//Tag tag = context.NewTag( tagType, tagID, entity, "" );
 		
-		Tag tag = (Tag)UCMEntity.GetEntity( "tag@0@" + entity.GetPvob() );
+		Tag tag = (Tag)UCMEntity.getEntity( "tag@0@" + entity.getPvob() );
 		//tag.SetEntry( "tagtype", tagType );
 		//tag.SetEntry( "tagid", tagID );
 		String cgi = "tagtype=" + tagType + "&tagid=" + tagID;
-		tag.SetKeyValue( cgi );
-		tag.SetTagEntity( entity );
+		tag.setKeyValue( cgi );
+		tag.setTagEntity( entity );
 		
-		tag.SetCreated( true );
+		tag.setCreated( true );
 		
 		return tag;
 	}

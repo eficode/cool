@@ -11,7 +11,7 @@ public class BaselineTest
 	@BeforeClass
 	public static void startup()
 	{
-		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		UCM.setContext( UCM.ContextType.CLEARTOOL );
 	}
 
 	@Test
@@ -21,7 +21,7 @@ public class BaselineTest
 		Baseline bl = null;
 		try
 		{
-			bl = UCMEntity.GetBaseline( baseline, false );
+			bl = UCMEntity.getBaseline( baseline, false );
 		}
 		catch ( UCMException e )
 		{
@@ -36,7 +36,7 @@ public class BaselineTest
 		Baseline bl = null;
 		try
 		{
-			bl = UCMEntity.GetBaseline( baseline, false );
+			bl = UCMEntity.getBaseline( baseline, false );
 			fail( "Could not get baseline" );
 		}
 		catch ( UCMException e )
@@ -48,17 +48,17 @@ public class BaselineTest
 	@Test
 	public void testStringify() throws UCMException
 	{
-		Baseline bl = UCMEntity.GetBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
-		assertNotNull( bl.Stringify() );
+		Baseline bl = UCMEntity.getBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
+		assertNotNull( bl.stringify() );
 	}
 
 	@Test
 	public void testBaseline() throws UCMException
 	{
-		Baseline bl = UCMEntity.GetBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
-		assertNotNull( bl.Stringify() );
+		Baseline bl = UCMEntity.getBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
+		assertNotNull( bl.stringify() );
 		
-		assertEquals( "baseline:CHW_BASELINE_51@\\Cool_PVOB", bl.GetFQName() );
+		assertEquals( "baseline:CHW_BASELINE_51@\\Cool_PVOB", bl.getFullyQualifiedName() );
 		assertEquals( "\\Cool_PVOB", bl.pvob );
 		assertEquals( "CHW_BASELINE_51", bl.shortname );
 		assertEquals( "chw", bl.user );
@@ -75,7 +75,7 @@ public class BaselineTest
 	@Test
 	public void testGetPromotionLevel() throws UCMException
 	{
-		Baseline bl = UCMEntity.GetBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
+		Baseline bl = UCMEntity.getBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
 		
 		assertEquals( "TESTED", bl.getPromotionLevel( true ).toString() );
 		
@@ -85,7 +85,7 @@ public class BaselineTest
 	@Test
 	public void testPromote() throws UCMException
 	{
-		Baseline bl = UCMEntity.GetBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
+		Baseline bl = UCMEntity.getBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
 		
 		bl.promote();
 	}

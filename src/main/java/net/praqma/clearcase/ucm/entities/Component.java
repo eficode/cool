@@ -17,28 +17,28 @@ public class Component extends UCMEntity
 	 * be allowed to call it.
 	 * @return A new Component Entity
 	 */
-	static Component GetEntity()
+	static Component getEntity()
 	{
 		return new Component();
 	}
 	
-	public void Load() throws UCMException
+	public void load() throws UCMException
 	{
-		context.LoadComponent( this );
+		context.loadComponent( this );
 	}
 	
 	
-	public String GetRootDir()
+	public String getRootDir()
 	{
-		return context.GetRootDir( this );
+		return context.getRootDir( this );
 	}
 	
-	public BaselineList GetBaselines( Stream stream ) throws UCMException
+	public BaselineList getBaselines( Stream stream ) throws UCMException
 	{
 		return new BaselineList( this, stream, null );
 	}
 	
-	public BaselineList GetBaselines( Stream stream, Project.Plevel plevel ) throws UCMException
+	public BaselineList getBaselines( Stream stream, Project.Plevel plevel ) throws UCMException
 	{
 		return new BaselineList( this, stream, plevel );
 	}

@@ -99,9 +99,9 @@ public abstract class UCMEntity extends UCM
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UCMEntityException
 	 */
-	public static UCMEntity GetEntity( String fqname ) throws UCMException
+	public static UCMEntity getEntity( String fqname ) throws UCMException
 	{
-		return GetEntity( fqname, true, false );
+		return getEntity( fqname, true, false );
 	}
 	
 	/**
@@ -111,9 +111,9 @@ public abstract class UCMEntity extends UCM
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UCMEntityException
 	 */
-	public static UCMEntity GetEntity( String fqname, boolean trusted ) throws UCMException
+	public static UCMEntity getEntity( String fqname, boolean trusted ) throws UCMException
 	{
-		return GetEntity( fqname, trusted, false );
+		return getEntity( fqname, trusted, false );
 	}
 	
 	/**
@@ -124,7 +124,7 @@ public abstract class UCMEntity extends UCM
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UCMEntityException This exception is thrown if the type of the entity is not recognized, the entity class is not found or the default constructor is not found.
 	 */
-	public static UCMEntity GetEntity( String fqname, boolean trusted, boolean cachable ) throws UCMException
+	public static UCMEntity getEntity( String fqname, boolean trusted, boolean cachable ) throws UCMException
 	{
 		//logger.debug( "GetEntity = " + fqname );
 		
@@ -235,12 +235,12 @@ public abstract class UCMEntity extends UCM
 		
 		//logger.debug( "Created entity of type " + entity.type );
 		
-		entity.PostProcess();
+		entity.postProcess();
 		
 		/* If not trusted, load the entity from the context */
 		if( !trusted )
 		{
-			entity.Load();
+			entity.load();
 		}
 		
 		if( cachable )
@@ -255,7 +255,7 @@ public abstract class UCMEntity extends UCM
 	/**
 	 * Default PostProcess method. If an entity needs post processing of its creation, this method should be overridden.
 	 */
-	void PostProcess()
+	void postProcess()
 	{
 		/* NOP, should be overridden */
 	}
@@ -266,7 +266,7 @@ public abstract class UCMEntity extends UCM
 	 * Every UCM entity should implement this method itself.
 	 * @throws UCMException 
 	 */
-	public void Load() throws UCMException
+	public void load() throws UCMException
 	{
 		logger.warning( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
@@ -276,9 +276,9 @@ public abstract class UCMEntity extends UCM
 	/* Syntactic static helper methods for retrieving entity objects */
 	
 	
-	public static Activity GetActivity( String name ) throws UCMException
+	public static Activity getActivity( String name ) throws UCMException
 	{
-		return GetActivity( name, true );
+		return getActivity( name, true );
 	}
 	
 	/**
@@ -287,20 +287,20 @@ public abstract class UCMEntity extends UCM
 	 * @param trusted If not trusted, the entity's content is loaded from clear case.
 	 * @return An Activity object
 	 */
-	public static Activity GetActivity( String name, boolean trusted ) throws UCMException
+	public static Activity getActivity( String name, boolean trusted ) throws UCMException
 	{
 		if( !name.startsWith( "activity:" ) )
 		{
 			name = "activity:" + name;
 		}
-		Activity entity = (Activity)UCMEntity.GetEntity( name, trusted );
+		Activity entity = (Activity)UCMEntity.getEntity( name, trusted );
 		return entity;
 	}
 
 
-	public static Baseline GetBaseline( String name ) throws UCMException
+	public static Baseline getBaseline( String name ) throws UCMException
 	{
-		return GetBaseline( name, true );
+		return getBaseline( name, true );
 	}
 	
 	/**
@@ -309,20 +309,20 @@ public abstract class UCMEntity extends UCM
 	 * @param trusted If not trusted, the entity's content is loaded from clear case.
 	 * @return An Baseline object
 	 */
-	public static Baseline GetBaseline( String name, boolean trusted ) throws UCMException
+	public static Baseline getBaseline( String name, boolean trusted ) throws UCMException
 	{
 		if( !name.startsWith( "baseline:" ) )
 		{
 			name = "baseline:" + name;
 		}
-		Baseline entity = (Baseline)UCMEntity.GetEntity( name, trusted );
+		Baseline entity = (Baseline)UCMEntity.getEntity( name, trusted );
 		return entity;
 	}
 	
 	
-	public static Component GetComponent( String name ) throws UCMException
+	public static Component getComponent( String name ) throws UCMException
 	{
-		return GetComponent( name, true );
+		return getComponent( name, true );
 	}
 	
 	/**
@@ -331,20 +331,20 @@ public abstract class UCMEntity extends UCM
 	 * @param trusted If not trusted, the entity's content is loaded from clear case.
 	 * @return An Component object
 	 */
-	public static Component GetComponent( String name, boolean trusted ) throws UCMException
+	public static Component getComponent( String name, boolean trusted ) throws UCMException
 	{
 		if( !name.startsWith( "component:" ) )
 		{
 			name = "component:" + name;
 		}
-		Component entity = (Component)UCMEntity.GetEntity( name, trusted );
+		Component entity = (Component)UCMEntity.getEntity( name, trusted );
 		return entity;
 	}
 	
 	
-	public static HyperLink GetHyperLink( String name ) throws UCMException
+	public static HyperLink getHyperLink( String name ) throws UCMException
 	{
-		return GetHyperLink( name, true );
+		return getHyperLink( name, true );
 	}
 	
 	/**
@@ -353,21 +353,21 @@ public abstract class UCMEntity extends UCM
 	 * @param trusted If not trusted, the entity's content is loaded from clear case.
 	 * @return An Stream object
 	 */
-	public static HyperLink GetHyperLink( String name, boolean trusted ) throws UCMException
+	public static HyperLink getHyperLink( String name, boolean trusted ) throws UCMException
 	{
 		if( !name.startsWith( "hlink:" ) )
 		{
 			name = "hlink:" + name;
 		}
 		
-		HyperLink entity = (HyperLink)UCMEntity.GetEntity( name, trusted );	
+		HyperLink entity = (HyperLink)UCMEntity.getEntity( name, trusted );	
 		return entity;
 	}
 	
 	
-	public static Project GetProject( String name ) throws UCMException
+	public static Project getProject( String name ) throws UCMException
 	{
-		return GetProject( name, true );
+		return getProject( name, true );
 	}
 	
 	/**
@@ -376,20 +376,20 @@ public abstract class UCMEntity extends UCM
 	 * @param trusted If not trusted, the entity's content is loaded from clear case.
 	 * @return a Project object
 	 */
-	public static Project GetProject( String name, boolean trusted ) throws UCMException
+	public static Project getProject( String name, boolean trusted ) throws UCMException
 	{
 		if( !name.startsWith( "project:" ) )
 		{
 			name = "project:" + name;
 		}
-		Project entity = (Project)UCMEntity.GetEntity( name, trusted );
+		Project entity = (Project)UCMEntity.getEntity( name, trusted );
 		return entity;
 	}
 	
 	
-	public static Stream GetStream( String name ) throws UCMException
+	public static Stream getStream( String name ) throws UCMException
 	{
-		return GetStream( name, true );
+		return getStream( name, true );
 	}
 	
 	/**
@@ -398,27 +398,27 @@ public abstract class UCMEntity extends UCM
 	 * @param trusted If not trusted, the entity's content is loaded from clear case.
 	 * @return An Stream object
 	 */
-	public static Stream GetStream( String name, boolean trusted ) throws UCMException
+	public static Stream getStream( String name, boolean trusted ) throws UCMException
 	{
 		if( !name.startsWith( "stream:" ) )
 		{
 			name = "stream:" + name;
 		}
-		Stream entity = (Stream)UCMEntity.GetEntity( name, trusted );
+		Stream entity = (Stream)UCMEntity.getEntity( name, trusted );
 		return entity;
 	}
 	
 	
 	/* Tag stuff */
 
-	public Tag GetTag( String tagType, String tagID ) throws UCMException
+	public Tag getTag( String tagType, String tagID ) throws UCMException
 	{
 		if( UCM.isVerbose() )
 		{
 			System.out.println( "Retrieving tags for " + tagType + ", " + tagID );
 		}
 		
-		return tp.GetTag( tagType, tagID, this );
+		return tp.getTag( tagType, tagID, this );
 	}
 
 	/**
@@ -463,7 +463,7 @@ public abstract class UCMEntity extends UCM
 	
 	public List<HyperLink> getHlinks( String hlinkType, File dir ) throws UCMException
 	{
-		logger.debug( "THIS=" + this.GetFQName() );
+		logger.debug( "THIS=" + this.getFullyQualifiedName() );
 		return context.getHlinks( this, hlinkType, dir );
 	}
 
@@ -472,26 +472,26 @@ public abstract class UCMEntity extends UCM
 	
 	public String getUser() throws UCMException
 	{
-		if( !loaded ) Load();
+		if( !loaded ) load();
 		return this.user;
 	}
 	
-	public void SetUser( String user )
+	public void setUser( String user )
 	{
 		this.user = user;
 	}
 	
-	public String GetFQName()
+	public String getFullyQualifiedName()
 	{
 		return this.fqname;
 	}
 	
-	public String GetShortname()
+	public String getShortname()
 	{
 		return this.shortname;
 	}
 	
-	public String GetPvob()
+	public String getPvob()
 	{
 		return this.pvob;
 	}
@@ -511,7 +511,7 @@ public abstract class UCMEntity extends UCM
 	 * @return A String
 	 * @throws UCMException 
 	 */
-	public String Stringify() throws UCMException
+	public String stringify() throws UCMException
 	{
 		StringBuffer sb = new StringBuffer();
 		
@@ -528,7 +528,7 @@ public abstract class UCMEntity extends UCM
 	
 	private static final Pattern pattern_name_part = Pattern.compile( "^\\w+:(.*?)@" );
 	
-	public static String GetNamePart( String fqname ) throws UCMException
+	public static String getNamePart( String fqname ) throws UCMException
 	{
 		Matcher m = pattern_name_part.matcher( fqname );
 		
@@ -549,18 +549,18 @@ public abstract class UCMEntity extends UCM
 	 */
 	public String toString()
 	{
-		return this.GetFQName();
+		return this.getFullyQualifiedName();
 	}
 	
 	
-	public String GetXML()
+	public String getXML()
 	{
-		return context.GetXML();
+		return context.getXML();
 	}
 	
 
-	public static void SaveState()
+	public static void saveState()
 	{
-		context.SaveState();
+		context.saveState();
 	}
 }

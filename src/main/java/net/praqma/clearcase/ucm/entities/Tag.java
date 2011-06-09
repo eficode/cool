@@ -36,12 +36,12 @@ public class Tag extends UCMEntity
 	 * be allowed to call it.
 	 * @return A new Tag Entity
 	 */
-	static Tag GetEntity()
+	static Tag getEntity()
 	{
 		return new Tag();
 	}
 	
-	public void PostProcess()
+	public void postProcess()
 	{
 		this.OID = this.shortname;
 	}
@@ -66,7 +66,7 @@ public class Tag extends UCMEntity
 		return hash;
 	}
 	
-	public boolean QueryTag( TagQuery query )
+	public boolean queryTag( TagQuery query )
 	{
 		for( Tuple<String, String> t : query )
 		{
@@ -98,12 +98,12 @@ public class Tag extends UCMEntity
 		return true;
 	}
 	
-	public static String HashToCGI( Map<String, String> keyval )
+	public static String mapToCGI( Map<String, String> keyval )
 	{
-		return HashToCGI( keyval, false );
+		return mapToCGI( keyval, false );
 	}
 	
-	public static String HashToCGI( Map<String, String> keyval, boolean skiptaginfo )
+	public static String mapToCGI( Map<String, String> keyval, boolean skiptaginfo )
 	{
 		StringBuffer sb = new StringBuffer();
 		Iterator<Entry<String, String>> it = keyval.entrySet().iterator();
@@ -127,9 +127,9 @@ public class Tag extends UCMEntity
 	/**
 	 * Is used by Stringify
 	 */
-	public void Load() throws UCMException
+	public void load() throws UCMException
 	{
-		Tuple<String, String> t = context.GetTag( this );
+		Tuple<String, String> t = context.getTag( this );
 		//this.OID = t.t1;
 		
 		//System.out.println( "CGI=" + t.t2 );
@@ -141,7 +141,7 @@ public class Tag extends UCMEntity
 		this.loaded = true;
 	}
 	
-	public void SetKeyValue( String cgi )
+	public void setKeyValue( String cgi )
 	{
 		keyval = Tag.CGIToHash( cgi );
 		this.tagType = ( keyval.containsKey( "tagtype" ) ? keyval.get( "tagtype" ) : "" );
@@ -151,13 +151,13 @@ public class Tag extends UCMEntity
 	}
 	
 	
-	public void SetEntry( String key, String value )
+	public void setEntry( String key, String value )
 	{
 		logger.log( "Setting " + key + " = " + value );
 		keyval.put( key, value );
 	}
 	
-	public boolean RemoveEntry( String key )
+	public boolean removeEntry( String key )
 	{
 		if( keyval.containsKey( key ) )
 		{
@@ -172,7 +172,7 @@ public class Tag extends UCMEntity
 		}
 	}
 	
-	public String GetEntry( String key )
+	public String getEntry( String key )
 	{
 		if( keyval.containsKey( key ) )
 		{
@@ -188,12 +188,12 @@ public class Tag extends UCMEntity
 	}
 	
 	
-	public void SetTagEntity( UCMEntity entity )
+	public void setTagEntity( UCMEntity entity )
 	{
 		this.entity = entity;
 	}
 	
-	public UCMEntity GetTagEntity( )
+	public UCMEntity getTagEntity( )
 	{
 		return this.entity;
 	}
@@ -203,7 +203,7 @@ public class Tag extends UCMEntity
 	 * Returns the new Tag from ClearCase.
 	 * @return The new Tag.
 	 */
-	public Tag Persist() throws UCMException
+	public Tag persist() throws UCMException
 	{
 		if( UCM.isVerbose() )
 		{
@@ -211,45 +211,45 @@ public class Tag extends UCMEntity
 			//Printer.mapPrinter( this.GetEntries() );
 		}
 		
-		return context.StoreTag( this );
+		return context.storeTag( this );
 	}
 	
 	
-	public void SetCreated( boolean created )
+	public void setCreated( boolean created )
 	{
 		this.created = created;
 	}
 	
-	public boolean IsCreated()
+	public boolean isCreated()
 	{
 		return this.created;
 	}
 	
 
 	
-	public String GetTagType()
+	public String getTagType()
 	{
 		return this.tagType;
 	}
 	
-	public String GetTagID() throws UCMException
+	public String getTagID() throws UCMException
 	{
 		return this.tagID;
 	}
 	
-	public String Stringify() throws UCMException
+	public String stringify() throws UCMException
 	{
-		if( !this.loaded ) Load();
+		if( !this.loaded ) load();
 		
 		StringBuffer sb = new StringBuffer();
 		
-		sb.append( super.Stringify() );
+		sb.append( super.stringify() );
 		
 		sb.append( "Tag ID   : " + this.tagID + linesep );
 		sb.append( "Tag Type : " + this.tagType + linesep );
 		sb.append( "Tag OID  : " + this.OID + linesep );
 		
-		sb.append( "From obj : " + this.GetTagEntity().toString() + linesep );
+		sb.append( "From obj : " + this.getTagEntity().toString() + linesep );
 		
 		sb.append( "Entries  : " + keyval.size() + " " );
 		Iterator<Entry<String, String>> it = keyval.entrySet().iterator();

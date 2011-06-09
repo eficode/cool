@@ -44,12 +44,12 @@ public class SnapshotView extends UCMView
 		
 		this.viewroot = viewroot;		
 		
-		Tuple<Stream, String> t = context.GetStreamFromView( viewroot );
+		Tuple<Stream, String> t = context.getStreamFromView( viewroot );
 				
 		this.viewtag  = t.t2;
 		this.viewroot = viewroot;
 		this.stream   = t.t1;
-		this.pvob     = this.stream.GetPvob();
+		this.pvob     = this.stream.getPvob();
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public class SnapshotView extends UCMView
 	 */
 	public static SnapshotView Create( Stream stream, File viewroot, String viewtag ) throws UCMException
 	{		
-		context.MakeSnapshotView( stream, viewroot, viewtag );
+		context.makeSnapshotView( stream, viewroot, viewtag );
 		
 		return new SnapshotView( viewroot );
 	}
@@ -83,12 +83,12 @@ public class SnapshotView extends UCMView
 	 */
 	public Map Swipe( boolean excludeRoot )
 	{
-		return context.SwipeView( viewroot, excludeRoot );
+		return context.swipeView( viewroot, excludeRoot );
 	}
 	
 	public static void RegenerateViewDotDat( File dir, String viewtag ) throws UCMException
 	{
-		context.RegenerateViewDotDat( dir, viewtag );
+		context.regenerateViewDotDat( dir, viewtag );
 	}
 	
 	public String GetViewtag()
@@ -102,7 +102,7 @@ public class SnapshotView extends UCMView
 	}
 	
 	public Stream getStream() throws UCMException{
-		return context.GetStreamFromView(GetViewRoot()).getFirst();
+		return context.getStreamFromView(GetViewRoot()).getFirst();
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public class SnapshotView extends UCMView
 	 */
 	public static String ViewrootIsValid( File view ) throws UCMException
 	{
-		return context.ViewrootIsValid( view );
+		return context.viewrootIsValid( view );
 	}
 	
 	public class UpdateInfo
@@ -158,10 +158,10 @@ public class SnapshotView extends UCMView
 			{
 				logger.debug( "COMP=ALL" );
 				
-				BaselineList bls = this.stream.GetLatestBaselines();
+				BaselineList bls = this.stream.getLatestBaselines();
 				for( Baseline b : bls )
 				{
-					String rule  = b.getComponent().GetRootDir();
+					String rule  = b.getComponent().getRootDir();
 					rule         = rule.replaceFirst( "^\\\\", " " );
 					myloadrules += rule;
 				}
@@ -170,11 +170,11 @@ public class SnapshotView extends UCMView
 			{
 				logger.debug( "COMP=MOD" );
 				
-				Project project = context.GetProjectFromStream( this.stream );
-				List<Component> comps = context.GetModifiableComponents( project );
+				Project project = context.getProjectFromStream( this.stream );
+				List<Component> comps = context.getModifiableComponents( project );
 				for( Component c : comps )
 				{
-					String rule = c.GetRootDir();
+					String rule = c.getRootDir();
 					rule         = rule.replaceFirst( "^\\\\", " " );
 					myloadrules += rule;
 				}
@@ -194,7 +194,7 @@ public class SnapshotView extends UCMView
 		// TODO generate the streams config spec if required
 		if( generate )
 		{
-			this.stream.Generate();
+			this.stream.generate();
 		}
 		
 		logger.debug( "STREAM GENEREATES" );
@@ -211,7 +211,7 @@ public class SnapshotView extends UCMView
 		logger.debug( "SWIPED" );
 		
 		// Cache current directory and chdir into the viewroot
-		String result = context.UpdateView( this, overwrite, myloadrules );
+		String result = context.updateView( this, overwrite, myloadrules );
 		logger.log( result );
 		
 		return info;

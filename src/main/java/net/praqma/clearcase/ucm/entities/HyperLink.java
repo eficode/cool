@@ -15,7 +15,7 @@ public class HyperLink extends UCMEntity
 	{
 	}
 	
-	public void Load()
+	public void load()
 	{
 		
 		
@@ -27,7 +27,7 @@ public class HyperLink extends UCMEntity
 		
 	}
 	
-	public void PostProcess()
+	public void postProcess()
 	{
 		Matcher match = UCMEntity.pattern_hlink_fqname.matcher( this.fqname );
 		
@@ -44,7 +44,7 @@ public class HyperLink extends UCMEntity
 	
 	public static HyperLink getHyperLink( String fqname, String value ) throws UCMException
 	{
-		HyperLink hlink = UCMEntity.GetHyperLink( fqname );
+		HyperLink hlink = UCMEntity.getHyperLink( fqname );
 		
 		hlink.setValue( value );
 		

@@ -6,14 +6,20 @@ import org.junit.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.util.debug.PraqmaLogger;
+import net.praqma.util.debug.PraqmaLogger.Logger;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class TagTest extends Cool
 {	
 	@BeforeClass
 	public static void startup()
 	{
-		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		UCM.setContext( UCM.ContextType.CLEARTOOL );
 	}
 	
 	/*
@@ -34,7 +40,7 @@ public class TagTest extends Cool
 	@Test
 	public void testTag() throws UCMException
 	{
-		Tag tag = (Tag) UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
+		Tag tag = (Tag) UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
 		
 		assertNotNull( tag );
 	}
@@ -42,14 +48,14 @@ public class TagTest extends Cool
 	@Test
 	public void testTag2() throws UCMException
 	{
-		Baseline bl = UCMEntity.GetBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
-		Tag tag = bl.GetTag( "a", "1" );
+		Baseline bl = UCMEntity.getBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
+		Tag tag = bl.getTag( "a", "1" );
 		
 		assertNotNull( tag );
-		assertEquals( "a", tag.GetTagType() );
-		assertEquals( "1", tag.GetTagID() );
-		assertEquals( "v1", tag.GetEntry( "k1" ) );
-		assertEquals( "v2", tag.GetEntry( "k2" ) );
+		assertEquals( "a", tag.getTagType() );
+		assertEquals( "1", tag.getTagID() );
+		assertEquals( "v1", tag.getEntry( "k1" ) );
+		assertEquals( "v2", tag.getEntry( "k2" ) );
 	}
 
 	@Test
@@ -82,7 +88,7 @@ public class TagTest extends Cool
 		hash.put( "k1", "v1" );
 		hash.put( "k2", "v2" );
 		
-		String cgi = Tag.HashToCGI( hash );
+		String cgi = Tag.mapToCGI( hash );
 		
 		assertEquals( "tagid=001&tagtype=tt&k1=v1&k2=v2", cgi );
 	}
@@ -96,7 +102,7 @@ public class TagTest extends Cool
 		hash.put( "k1", "v1" );
 		hash.put( "k2", "v2" );
 		
-		String cgi = Tag.HashToCGI( hash, true );
+		String cgi = Tag.mapToCGI( hash, true );
 
 		assertEquals( "k1=v1&k2=v2", cgi );
 	}
@@ -104,20 +110,20 @@ public class TagTest extends Cool
 	@Test
 	public void testSetKeyValue() throws UCMException
 	{
-		Tag tag = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
+		Tag tag = (Tag)UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
 		String cgi = "tagid=001&tagtype=tt&k1=v1&k2=v2";
 		
-		tag.SetKeyValue( cgi );
+		tag.setKeyValue( cgi );
 	}
 
 	@Test
 	public void testSetEntry() throws UCMException
 	{
-		Tag tag = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
+		Tag tag = (Tag)UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
 		String cgi = "tagid=001&tagtype=tt&k1=v1&k2=v2";
 		
-		tag.SetKeyValue( cgi );
-		tag.SetEntry( "k3", "v3" );
+		tag.setKeyValue( cgi );
+		tag.setEntry( "k3", "v3" );
 		
 		Map<String, String> hash = tag.GetEntries();
 		
@@ -133,11 +139,11 @@ public class TagTest extends Cool
 	@Test
 	public void testRemoveEntry() throws UCMException
 	{
-		Tag tag = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
+		Tag tag = (Tag)UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
 		String cgi = "tagid=001&tagtype=tt&k1=v1&k2=v2";
 		
-		tag.SetKeyValue( cgi );
-		tag.RemoveEntry( "k2" );
+		tag.setKeyValue( cgi );
+		tag.removeEntry( "k2" );
 		
 		Map<String, String> hash = tag.GetEntries();
 		
@@ -148,11 +154,11 @@ public class TagTest extends Cool
 	@Test
 	public void testRemoveEntryFail() throws UCMException
 	{
-		Tag tag = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
+		Tag tag = (Tag)UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
 		String cgi = "tagid=001&tagtype=tt&k1=v1&k2=v2";
 		
-		tag.SetKeyValue( cgi );
-		tag.RemoveEntry( "k3" );
+		tag.setKeyValue( cgi );
+		tag.removeEntry( "k3" );
 		
 		Map<String, String> hash = tag.GetEntries();
 		
@@ -164,12 +170,12 @@ public class TagTest extends Cool
 	@Test
 	public void testGetEntry() throws UCMException
 	{
-		Tag tag = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
+		Tag tag = (Tag)UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
 		String cgi = "tagid=001&tagtype=tt&k1=v1&k2=v2";
 		
-		tag.SetKeyValue( cgi );
+		tag.setKeyValue( cgi );
 
-		String value = tag.GetEntry( "k1" );
+		String value = tag.getEntry( "k1" );
 		
 		assertEquals( "v1", value );
 	}
@@ -177,12 +183,12 @@ public class TagTest extends Cool
 	@Test
 	public void testGetEntryFail() throws UCMException
 	{
-		Tag tag = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
+		Tag tag = (Tag)UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
 		String cgi = "tagid=001&tagtype=tt&k1=v1&k2=v2";
 		
-		tag.SetKeyValue( cgi );
+		tag.setKeyValue( cgi );
 
-		String value = tag.GetEntry( "k3" );
+		String value = tag.getEntry( "k3" );
 		
 		assertNull( value );
 	}
@@ -191,8 +197,8 @@ public class TagTest extends Cool
 	@Test
 	public void testGetEntries() throws UCMException
 	{
-		Baseline bl = UCMEntity.GetBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
-		Tag tag = bl.GetTag( "a", "1" );
+		Baseline bl = UCMEntity.getBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
+		Tag tag = bl.getTag( "a", "1" );
 		
 		assertNotNull( tag );
 		
@@ -208,68 +214,68 @@ public class TagTest extends Cool
 	@Test
 	public void testSetTagEntity() throws UCMException
 	{
-		Baseline bl = UCMEntity.GetBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
-		Tag tag     = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
-		tag.SetTagEntity( bl );
+		Baseline bl = UCMEntity.getBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
+		Tag tag     = (Tag)UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
+		tag.setTagEntity( bl );
 	}
 
 	@Test
 	public void testGetTagEntity() throws UCMException
 	{
-		Baseline bl = UCMEntity.GetBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
-		Tag tag     = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
-		tag.SetTagEntity( bl );
+		Baseline bl = UCMEntity.getBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
+		Tag tag     = (Tag)UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
+		tag.setTagEntity( bl );
 		
-		UCMEntity e = tag.GetTagEntity();
+		UCMEntity e = tag.getTagEntity();
 		
-		assertTrue( bl.fqname.equals( e.GetFQName() ) );
+		assertTrue( bl.fqname.equals( e.getFullyQualifiedName() ) );
 	}
 
 	@Test
 	public void testPersist() throws UCMException
 	{
-		Baseline bl = UCMEntity.GetBaseline( "baseline:tagtest@\\Cool_PVOB", true );
-		Tag tag = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
-		tag.SetTagEntity( bl );
+		Baseline bl = UCMEntity.getBaseline( "baseline:tagtest@\\Cool_PVOB", true );
+		Tag tag = (Tag)UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
+		tag.setTagEntity( bl );
 		String cgi = "tagid=001&tagtype=tt&k1=v1&k2=v2";
-		tag.SetKeyValue( cgi );
-		tag.Persist();
+		tag.setKeyValue( cgi );
+		tag.persist();
 	}
 
 	@Test
 	public void testSetCreated() throws UCMException
 	{
-		Tag tag = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
-		tag.SetCreated( true );
+		Tag tag = (Tag)UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
+		tag.setCreated( true );
 	}
 
 	@Test
 	public void testIsCreated() throws UCMException
 	{
-		Tag tag = (Tag)UCMEntity.GetEntity( "tag@123@\\Cool_PVOB", true );
-		tag.SetCreated( true );
+		Tag tag = (Tag)UCMEntity.getEntity( "tag@123@\\Cool_PVOB", true );
+		tag.setCreated( true );
 		
-		assertTrue( tag.IsCreated() );
+		assertTrue( tag.isCreated() );
 	}
 
 	@Test
 	public void testGetTagType() throws UCMException
 	{
-		Baseline bl = UCMEntity.GetBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
-		Tag tag = bl.GetTag( "a", "1" );
+		Baseline bl = UCMEntity.getBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
+		Tag tag = bl.getTag( "a", "1" );
 		
 		assertNotNull( tag );
-		assertEquals( "a", tag.GetTagType() );
+		assertEquals( "a", tag.getTagType() );
 	}
 
 	@Test
 	public void testGetTagID() throws UCMException
 	{
-		Baseline bl = UCMEntity.GetBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
-		Tag tag = bl.GetTag( "a", "1" );
+		Baseline bl = UCMEntity.getBaseline( "baseline:bn__1_2_3_1234@\\Cool_PVOB", true );
+		Tag tag = bl.getTag( "a", "1" );
 		
 		assertNotNull( tag );
-		assertEquals( "1", tag.GetTagID() );
+		assertEquals( "1", tag.getTagID() );
 	}
 
 }

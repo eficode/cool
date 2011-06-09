@@ -13,7 +13,7 @@ public class Activity extends UCMEntity
 	{
 	}
 	
-	public void SetSpecialCase( boolean b )
+	public void setSpecialCase( boolean b )
 	{
 		this.specialCase = b;
 	}
@@ -28,7 +28,7 @@ public class Activity extends UCMEntity
 	 * be allowed to call it.
 	 * @return A new Activity Entity
 	 */
-	static Activity GetEntity()
+	static Activity getEntity()
 	{
 		return new Activity();
 	}
@@ -38,9 +38,9 @@ public class Activity extends UCMEntity
 	 * This function is automatically called when needed by other functions.
 	 * @throws UCMException 
 	 */
-	public void Load() throws UCMException
+	public void load() throws UCMException
 	{
-		context.LoadActivity( this );
+		context.loadActivity( this );
 	}
 	
 }

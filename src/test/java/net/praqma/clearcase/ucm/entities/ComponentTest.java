@@ -19,14 +19,14 @@ public class ComponentTest
 	@BeforeClass
 	public static void startup()
 	{
-		UCM.SetContext( UCM.ContextType.CLEARTOOL );
+		UCM.setContext( UCM.ContextType.CLEARTOOL );
 	}
 
 	
 	@Test
 	public void testLoad() throws UCMException
 	{
-		Component component = UCMEntity.GetComponent( "_System@\\Cool_PVOB", false );
+		Component component = UCMEntity.getComponent( "_System@\\Cool_PVOB", false );
 		
 		assertNotNull( component );
 	}
@@ -34,7 +34,7 @@ public class ComponentTest
 	@Test
 	public void testLoadNotExists() throws UCMException
 	{
-		Component component = UCMEntity.GetComponent( "_System_no@\\Cool_PVOB", false );
+		Component component = UCMEntity.getComponent( "_System_no@\\Cool_PVOB", false );
 		
 		assertNotNull( component );
 	}
@@ -42,28 +42,28 @@ public class ComponentTest
 	@Test
 	public void testComponent() throws UCMException
 	{
-		Component component = UCMEntity.GetComponent( "_System@\\Cool_PVOB", false );
+		Component component = UCMEntity.getComponent( "_System@\\Cool_PVOB", false );
 		
 		assertNotNull( component );
-		assertEquals( "component:_System@\\Cool_PVOB", component.GetFQName() );
+		assertEquals( "component:_System@\\Cool_PVOB", component.getFullyQualifiedName() );
 	}
 
 
 	@Test
 	public void testGetRootDir() throws UCMException
 	{
-		Component component = UCMEntity.GetComponent( "_System@\\Cool_PVOB", false );
+		Component component = UCMEntity.getComponent( "_System@\\Cool_PVOB", false );
 		
-		component.GetRootDir();
+		component.getRootDir();
 	}
 
 	@Test
 	public void testGetBaselinesStreamZeroSize() throws UCMException
 	{
-		Component component = UCMEntity.GetComponent( "_System@\\Cool_PVOB", true );
-		Stream    stream    = UCMEntity.GetStream( "Server_int@\\Cool_PVOB", true );
+		Component component = UCMEntity.getComponent( "_System@\\Cool_PVOB", true );
+		Stream    stream    = UCMEntity.getStream( "Server_int@\\Cool_PVOB", true );
 		
-		BaselineList list = component.GetBaselines( stream );
+		BaselineList list = component.getBaselines( stream );
 		
 		assertTrue( list.size() == 0 );
 	}
@@ -71,10 +71,10 @@ public class ComponentTest
 	@Test
 	public void testGetBaselinesStreamPlevelZeroSize() throws UCMException
 	{
-		Component component = UCMEntity.GetComponent( "_System@\\Cool_PVOB", true );
-		Stream    stream    = UCMEntity.GetStream( "Server_int@\\Cool_PVOB", true );
+		Component component = UCMEntity.getComponent( "_System@\\Cool_PVOB", true );
+		Stream    stream    = UCMEntity.getStream( "Server_int@\\Cool_PVOB", true );
 		
-		BaselineList list = component.GetBaselines( stream, Plevel.INITIAL );
+		BaselineList list = component.getBaselines( stream, Plevel.INITIAL );
 		
 		assertTrue( list.size() == 0 );
 	}

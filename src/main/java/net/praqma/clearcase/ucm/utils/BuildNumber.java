@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
-import net.praqma.clearcase.ucm.entities.Cool;
 import net.praqma.clearcase.ucm.entities.HyperLink;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.UCM;
@@ -31,7 +31,7 @@ public class BuildNumber extends Cool
 	
 	public static String[] isBuildNumber( Baseline baseline ) throws UCMException
 	{
-		Matcher match = pattern_buildnumber.matcher( baseline.GetShortname() );
+		Matcher match = pattern_buildnumber.matcher( baseline.getShortname() );
 		
 		if( !match.find() )
 		{
@@ -113,7 +113,7 @@ public class BuildNumber extends Cool
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.getComponent();
 		
-		logger.debug( "I got " + component.GetFQName() );
+		logger.debug( "I got " + component.getFullyQualifiedName() );
 		
 		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], false );
 	}
@@ -123,7 +123,7 @@ public class BuildNumber extends Cool
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.getComponent();
 		
-		logger.debug( "I got " + component.GetFQName() );
+		logger.debug( "I got " + component.getFullyQualifiedName() );
 		
 		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], ignoreErrors );
 	}
@@ -197,7 +197,7 @@ public class BuildNumber extends Cool
 	 */
 	public static Integer getNextBuildSequence( Project project ) throws UCMException
 	{
-		Component c = project.getIntegrationStream().GetSingleTopComponent();
+		Component c = project.getIntegrationStream().getSingleTopComponent();
 		
 		/* Get the build number sequence */
 		Map<String, String> catts = c.getAttributes();
@@ -231,7 +231,7 @@ public class BuildNumber extends Cool
 	{
 		int valid = 0;
 		
-		Component c = project.getIntegrationStream().GetSingleTopComponent();
+		Component c = project.getIntegrationStream().getSingleTopComponent();
 		
 		/* Get the build number sequence */
 		Map<String, String> catts = c.getAttributes();

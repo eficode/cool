@@ -4,23 +4,28 @@
 	<groupId>net.praqma</groupId>
 	<artifactId>COOL</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2.23</version>
+	<version>0.3.24</version>
+
 	<name>ClearCase Oriented Open Library</name>
 	<url>http://maven.apache.org</url>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	
+    <distributionManagement>
+        <repository>
+            <id>praqma</id>
+            <name>praqma</name>
+            <url>scp://10.10.1.25:/var/www/repo/maven</url>
+        </repository>
+    </distributionManagement>
+
 	<profiles>
 		<profile>
 			<id>hudson</id>
 			<activation>
 				<property>
-					<!--
-						Hudson by default defines a property BUILD_NUMBER which is used to
-						enable the profile.
-					-->
 					<name>BUILD_NUMBER</name>
 				</property>
 			</activation>
@@ -58,11 +63,11 @@
 
 		<plugins>
 			<plugin>
-  				<artifactId>maven-install-plugin</artifactId>
-  				<version>2.3.1</version>
-  				<configuration>
-    				<createChecksum>true</createChecksum>
-  				</configuration>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<createChecksum>true</createChecksum>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -73,19 +78,19 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			
-		  <plugin>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-surefire-plugin</artifactId>
-		    <version>2.7.2</version>
-		    <dependencies>
-		      <dependency>
-		        <groupId>org.apache.maven.surefire</groupId>
-		        <artifactId>surefire-junit47</artifactId>
-		        <version>2.7.2</version>
-		      </dependency>
-		    </dependencies>
-		  </plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.7.2</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>2.7.2</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 
 
 			<plugin>
@@ -103,6 +108,7 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+
 				</configuration>
 				<executions>
 					<execution>
@@ -114,6 +120,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 
