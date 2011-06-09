@@ -232,7 +232,7 @@ public class CommandLineMock implements CommandLineInterface
 	}
 
 	@Override
-	public OperatingSystem getOS() {
+	public CommandLineInterface.OperatingSystem getOS() {
 	    // TODO Auto-generated method stub
 	    return null;
 	}
