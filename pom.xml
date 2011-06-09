@@ -125,6 +125,13 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<arguments>-Dcleartool=mock</arguments>
+				</configuration>
+			</plugin>
 
 		</plugins>
 
@@ -143,7 +150,6 @@
 			<url>http://code.praqma.net/repo/maven</url>
 		</repository>
 	</repositories>
-
 
 	<dependencies>
 		<dependency>
@@ -168,3 +174,4 @@
     </scm>
 
 </project>
+
