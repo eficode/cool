@@ -606,6 +606,9 @@ public class UCMContext extends Cool
 		return null;
 	}
 	
+	public List<UCMView> getViews( Region region ) {
+	    return strategy.getViews(region);
+	}	
 	
 	public List<Vob> getVobs( Region region ) {
 	    return strategy.getVobs(region);

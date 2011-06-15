@@ -23,6 +23,8 @@ import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.io.IO;
@@ -1190,6 +1192,26 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface
 		}		
 	}
 	
+	
+	private static final Pattern __FIND_VIEW_ROOT = Pattern.compile("^\\s*\\**\\s*\\w+\\s*(.+)$");
+
+	@Override
+	public List<UCMView> getViews(Region region) {
+	    String cmd = "lsview" + ( region != null ? " -region " + region.getName() : "" );
+	    CmdResult cr = Cleartool.run( cmd );
+	    
+	    List<UCMView> views = new ArrayList<UCMView>();
+	    for( String s : cr.stdoutList ) {
+		
+		/* Pre process views */
+		Matcher m = __FIND_VIEW_ROOT.matcher(s);
+		if( m.find() ) {
+		    views.add( new UCMView( m.group(1).trim() ) );
+		}
+	    }
+	    
+	    return views;
+	}
 	
 	public List<Vob> getVobs( Region region ) {
 	    String cmd = "lsvob -s" + ( region != null ? " -region " + region.getName() : "" );

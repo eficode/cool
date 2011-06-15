@@ -2,6 +2,8 @@ package net.praqma.clearcase;
 
 import java.util.List;
 
+import net.praqma.clearcase.ucm.view.UCMView;
+
 public class Region extends Cool {
 
     private Site site;
@@ -14,6 +16,10 @@ public class Region extends Cool {
     
     public List<Vob> getVobs() {
 	return site.getVobs(this);
+    }
+    
+    public List<UCMView> getViews() {
+	return context.getViews(this);
     }
     
     public String getName() {

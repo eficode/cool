@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import net.praqma.clearcase.Region;
+import net.praqma.clearcase.View;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.ucm.entities.*;
+import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.util.structure.Tuple;
 
@@ -90,6 +92,7 @@ interface UCMStrategyInterface
 	public Map<String, String> getAttributes( String fqname, File dir ) throws UCMException;
 	public void setAttribute( String fqname, String attribute, String value ) throws UCMException;
 	
+	public List<UCMView> getViews( Region region );
 	
 	public List<Vob> getVobs( Region region );
 	
