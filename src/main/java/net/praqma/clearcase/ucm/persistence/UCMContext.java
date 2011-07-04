@@ -556,7 +556,7 @@ public class UCMContext extends Cool
 	public List<Stream> getChildStreams(Stream stream)throws UCMException {
 		logger.log("Finding all child streams on "+stream);
 
-		return strategy.getChildStreams(stream.getFQName());
+		return strategy.getChildStreams(stream.getFullyQualifiedName());
 	}
 	
 	

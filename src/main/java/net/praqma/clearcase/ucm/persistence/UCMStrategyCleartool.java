@@ -29,6 +29,7 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.io.IO;
 import net.praqma.util.structure.Tuple;
+import sun.misc.Regexp;
 
 public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final String rx_ccdef_allowed = "[\\w\\.-_\\\\]";
@@ -67,7 +68,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	/************************************************************************
 	 * PROJECT FUNCTIONALITY
 	 ************************************************************************/
-	
+
 	public String getProjectFromStream( String stream )
 	{
 		String cmd = "desc -fmt %[project]p " + stream;
@@ -81,11 +82,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 				"\\s+"));
 	}
 
-	
+
 	public String loadProject( String project ) throws UCMException
 	{
 		logger.debug( project );
-		
+
 		String cmd = "lsproj -fmt %[istream]Xp " + project;
 
 		try {
@@ -97,11 +98,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	/************************************************************************
 	 * ACTIVITY FUNCTIONALITY
-	 * 
+	 *
 	 * @throws UCMException
 	 ************************************************************************/
 
-	
+
 	public String loadActivity( String activity ) throws UCMException
 	{
 		String cmd = "describe -fmt %u " + activity;
@@ -114,14 +115,14 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	/************************************************************************
 	 * BASELINE FUNCTIONALITY
-	 * 
+	 *
 	 * @throws UCMException
 	 ************************************************************************/
 
 	public String loadBaseline( String baseline ) throws UCMException
 	{
 		logger.debug( "Loading " + baseline );
-		
+
 		String cmd = "desc -fmt %n" + Cool.delim + "%[component]p" + Cool.delim + "%[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u " + baseline;
 		try
 		{
@@ -129,7 +130,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 		catch( AbnormalProcessTerminationException e )
 		{
-			throw new UCMException( "Could not load the Baseline " + baseline, e.getMessage() );
+			throw new UCMException( "Could not load the baseline " + baseline, e.getMessage() );
 		}
 	}
 
@@ -272,7 +273,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	public String getRootDir( String component )
 	{
 		logger.debug( component );
-		
+
 		String cmd = "desc -fmt %[root_dir]p " + component;
 		return Cleartool.run(cmd).stdoutBuffer.toString();
 	}
@@ -298,9 +299,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 * STREAM FUNCTIONALITY
 	 ************************************************************************/
 
-	private final String rx_rebase_in_progress = "^Rebase operation in progress on stream";
+        private final String rx_rebase_in_progress = "^Rebase operation in progress on stream";
 	private static final String rx_stream_load = "\\s*Error: stream not found\\s*";
-	
+
 	public void recommendBaseline( String stream, String baseline ) throws UCMException
 	{
 		String cmd = "chstream -recommend " + baseline + " " + stream;
@@ -312,26 +313,26 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 
 	}
-	
+
 	public String getRecommendedBaselines( String stream )
 	{
 		String cmd = "desc -fmt %[rec_bls]p " + stream;
 		return Cleartool.run(cmd).stdoutBuffer.toString();
 	}
-	
-	
+
+
 	public String getStreamFromView( String viewtag )
 	{
 		String fqstreamstr =  Cleartool.run( "lsstream -fmt %Xn -view " + viewtag ).stdoutBuffer.toString();
 
 		return fqstreamstr;
 	}
-	
-	
+
+
 	public void createStream( String pstream, String nstream, boolean readonly, String baseline )
 	{
 		logger.debug( "Creating stream " + nstream + " as child of " + pstream );
-		
+
 		String cmd = "mkstream -in " + pstream + " " + ( baseline != null ? "-baseline " + baseline + " " : "" ) + ( readonly ? "-readonly " : "" ) + nstream;
 		Cleartool.run( cmd );
 	}
@@ -352,12 +353,12 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			return false;
 		}
 	}
-	
-	
+
+
 	public boolean rebaseStream( String viewtag, String stream, String baseline, boolean complete )
 	{
 		logger.debug( "Rebasing " + viewtag );
-		
+
 		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
 		CmdResult res = Cleartool.run( cmd );
 
@@ -368,7 +369,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		return true;
 	}
-	
+
 	public boolean isRebasing( String stream )
 	{
 		String cmd = "rebase -status -stream " + stream;
@@ -379,13 +380,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		return false;
 	}
-	
+
 	public void cancelRebase( String stream )
 	{
 		String cmd = "rebase -cancel -force -stream " + stream;
 		Cleartool.run(cmd);
 	}
-	
+
 	public List<String> getLatestBaselines( String stream )
 	{
 		String cmd = "desc -fmt %[latest_bls]Xp " + stream;
@@ -399,11 +400,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		return bls;
 	}
-	
+
 	public String loadStream( String stream ) throws UCMException
 	{
 		logger.debug( "Loading " + stream );
-		
+
 		CmdResult res = null;
 
 		String cmd = "describe -fmt %[name]p" + UCMStrategyInterface.delim
@@ -440,12 +441,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			res = Cleartool.run(cmd);
 		} catch (AbnormalProcessTerminationException e) {
 			throw new UCMException(e.getMessage());
-
 		}
 
 		List<Stream> streams = new ArrayList<Stream>();
-		for (String s : res.stdoutList) {
-			streams.add(UCMEntity.getStream(s));
+		String[] strms = res.stdoutBuffer.toString().split(", ");
+                for (String stream : strms) {
+                    System.out.println(stream);
+			streams.add(UCMEntity.getStream(stream));
 		}
 
 		return streams;
@@ -454,7 +456,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	/************************************************************************
 	 * VERSION FUNCTIONALITY
 	 ************************************************************************/
-	
+
 	public String getVersion( String version, String separator )
 	{
 		String cmd = "desc -fmt %d" + separator + "%u" + separator + "%h" + separator + "%c" + separator + "%Rf" + separator + "%m" + separator + "%Vn" + separator + "%Xn \"" + version + "\"";
@@ -475,13 +477,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	/************************************************************************
 	 * TAG FUNCTIONALITY
 	 ************************************************************************/
-		
+
 	private static final Pattern pattern_tags = Pattern.compile( "^\\s*(tag@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"(.*?)\"\\s*$" );
 	private static final Pattern pattern_hlink = Pattern.compile( "^\\s*(" + rx_ccdef_allowed + "+@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"*(.*?)\"*\\s*$" );
 	private static final Pattern pattern_remove_verbose_tag = Pattern.compile( "^.*?\"(.*)\".*?$" );
 	private static final Pattern pattern_hlink_type_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB.*" );
-		
-	
+
+
 	//public List<Tuple<String, String>> GetTags( String fqname ) throws UCMException
 	public List<String[]> getTags( String fqname ) throws UCMException
 	{
@@ -531,7 +533,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		return tags;
 	}
-	
+
 	public String getTag( String fqname )
 	{
 		// TODO Auto-generated method stub
@@ -542,9 +544,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	{
 		logger.trace_function();
 		logger.debug( entity.getFullyQualifiedName() );
-		
+
 		String cmd = "mkhlink -ttext \"" + cgi + "\" " + __TAG_NAME + " " + entity.getFullyQualifiedName();
-		
+
 		CmdResult res = null;
 		try {
 			res = Cleartool.run(cmd);
@@ -574,23 +576,23 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		return match.group(1);
 	}
-	
-	
+
+
 	public void deleteTag( String fqname )
 	{
 		// TODO Auto-generated method stub
 
 	}
 
-	
+
 	public void deleteTagsWithID( String tagType, String tagID, String entity ) throws UCMException
 	{
 		logger.trace_function();
 		logger.debug( tagType + tagID );
-		
+
 		List<String[]> list = getTags( entity );
 		logger.debug( list.size() + " Tags!" );
-		
+
 		for( String[] t : list )
 		{
 			if( UCM.isVerbose() )
@@ -611,7 +613,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public String loadHyperLink( String fqname, File dir ) throws UCMException
 	{
 		String cmd = "describe " + fqname;
@@ -680,7 +682,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private final String rx_co_file = ".*CHECKEDOUT$";
 	private final String rx_ctr_file = ".*\\.contrib";
 	private final String rx_keep_file = ".*\\.keep$";
-	
+
 	public void checkViewContext( File dir ) throws UCMException
 	{
 		logger.trace_function();
@@ -730,12 +732,12 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		return vobs;
 	}
-	
+
 
 	public void makeSnapshotView( String stream, File viewroot, String viewtag ) throws UCMException
 	{
 		logger.debug( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
-		
+
 		if( viewroot.exists() )
 		{
 			IO.deleteDirectory( viewroot );
@@ -754,11 +756,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 					+ viewtag + "\"", e.getMessage(), UCMType.VIEW_ERROR);
 		}
 	}
-	
+
 	public String viewUpdate( File viewroot, boolean overwrite, String loadrules )
 	{
 		logger.debug( viewroot.getAbsolutePath() );
-		
+
 		String cmd = "setcs -stream";
 		Cleartool.run(cmd, viewroot);
 
@@ -768,7 +770,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		return Cleartool.run(cmd, viewroot, true).stdoutBuffer.toString();
 
 	}
-		
+
 	public void regenerateViewDotDat( File dir, String viewtag ) throws UCMException
 	{
 		logger.trace_function();
@@ -832,7 +834,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		// viewdat.set
 		// Command.run( cmd );
 	}
-	
+
 	public boolean viewExists( String viewtag )
 	{
 		logger.trace_function();
@@ -853,7 +855,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot )
 	{
 		logger.debug( viewroot.toString() );
-		
+
 		File[] files = viewroot.listFiles();
 		String fls = "";
 		List<File> other = new ArrayList<File>();
@@ -980,15 +982,15 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		return new File(wvroot);
 	}
-		
+
 	public String viewrootIsValid( File viewroot ) throws UCMException
 	{
 		logger.debug( viewroot.getAbsolutePath() );
-		
+
 		File viewdotdatpname = new File( viewroot + File.separator + "view.dat" );
-		
+
 		logger.debug( "The view file = " + viewdotdatpname );
-		
+
 		FileReader fr = null;
 		try {
 			fr = new FileReader(viewdotdatpname);
@@ -1035,7 +1037,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 *****************************/
 
 	/**
-	 * 
+	 *
 	 * @param fqname
 	 * @param attribute
 	 * @return String
@@ -1104,26 +1106,26 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 					+ attribute, e.getMessage());
 		}
 	}
-	
+
 	public List<Vob> getVobs( Region region ) {
 	    String cmd = "lsvob -s" + ( region != null ? " -region " + region.getName() : "" );
 	    CmdResult cr = Cleartool.run( cmd );
-	    
+
 	    List<Vob> vobs = new ArrayList<Vob>();
 	    for( String s : cr.stdoutList ) {
 		vobs.add(new Vob(s));
 	    }
-	    
+
 	    return vobs;
-	    
+
 	}
-	
-	
+
+
 	public int getVobCount() {
 	    String cmd = "lsvob -short";
 	    return Cleartool.run( cmd ).stdoutList.size();
 	}
-	
+
 
 	/*****************************
 	 * OTHER STUFF

@@ -1,5 +1,8 @@
 package net.praqma.clearcase.ucm.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.praqma.clearcase.ucm.UCMException;
 
 public class Project extends UCMEntity {
@@ -75,4 +78,12 @@ public class Project extends UCMEntity {
 	    load();
 	return stream;
     }
+
+	public static List<String> getPromotionLevels() {
+		List<String> retval = new ArrayList<String>();
+		for (Object o : Plevel.values()) {
+			retval.add(o.toString());
+		}
+		return retval;
+	}
 }

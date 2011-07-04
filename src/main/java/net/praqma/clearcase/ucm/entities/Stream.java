@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 
@@ -94,14 +95,18 @@ public class Stream extends UCMEntity
 		this.loaded = true;
 	}
 
-	public List<Stream> getChildStreams() {
+	public List<Baseline> getBaselines(Plevel plevel) throws UCMException{
+		return context.getBaselines(this, getSingleTopComponent(), plevel, pvob);
+	}
+	
+	public List<Stream> getChildStreams() throws UCMException {
 		
 		List<Stream> res = new ArrayList<Stream>();
 		try {
 			res = context.getChildStreams(this);
 		} catch (UCMException e) {
 			logger.info("The Stream has no child streams");
-			
+			throw new UCMException("The stream: ["+this.fqname+"] has no child streams");
 		}
 		return res;
 	}
@@ -253,7 +258,4 @@ public class Stream extends UCMEntity
 		return sb.toString();
 	}
 
-	public String getFQName() {
-		return this.fqname;
-	}
 }

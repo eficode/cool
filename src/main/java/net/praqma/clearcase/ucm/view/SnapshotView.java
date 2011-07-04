@@ -123,7 +123,15 @@ public class SnapshotView extends UCMView
 		public Integer dirsDeleted = 0;		
 	}
 	
-
+	/**
+	 * 
+	 * @throws UCMException
+	 */
+	
+    public void cancel() throws UCMException{
+    	context.cancelDeliver(viewroot);
+    }
+    
 	/**
 	 * 
 	 * @param swipe

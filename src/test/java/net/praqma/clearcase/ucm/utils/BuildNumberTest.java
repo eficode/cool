@@ -27,7 +27,7 @@ public class BuildNumberTest extends Cool
 	@BeforeClass
 	public static void startup()
 	{
-		UCM.setContext( UCM.ContextType.CLEARTOOL );
+		UCM.setContext( UCM.ContextType.XML );
 		File f = new File( BuildNumberTest.class.getClassLoader().getResource( "version.h" ).getFile() );
 		CommandLineMock.setVersionDotH( f );
 	}
@@ -50,46 +50,46 @@ public class BuildNumberTest extends Cool
 		
 	}
 	
-	@Test
-	public void testStampIntoCodeBaseline() throws UCMException
-	{
-		Baseline blbn = UCMEntity.getBaseline( "bn__1_2_3_1234@\\Cool_PVOB" );
-		
-		BuildNumber.stampIntoCode( blbn );
-	}
+//	@Test
+//	public void testStampIntoCodeBaseline() throws UCMException
+//	{
+//		Baseline blbn = UCMEntity.getBaseline( "bn__1_2_3_1234@\\Cool_PVOB" );
+//		
+//		BuildNumber.stampIntoCode( blbn );
+//	}
 
 	
-	@Test
-	public void testStampFromComponent() throws UCMException
-	{
-		Component component = UCMEntity.getComponent( "_System@\\Cool_PVOB" );
-		File view = new File( "c:\\" );
-		
-		Tuple<Baseline, String[]> result = BuildNumber.createBuildNumber( "bls__1_2_3_123", component, view );
-		
-		BuildNumber.stampFromComponent( component, view, result.t2[0], result.t2[1], result.t2[2], result.t2[3], false );
-	}
+//	@Test
+//	public void testStampFromComponent() throws UCMException
+//	{
+//		Component component = UCMEntity.getComponent( "_System@\\Cool_PVOB" );
+//		File view = new File( "c:\\" );
+//		
+//		Tuple<Baseline, String[]> result = BuildNumber.createBuildNumber( "bls__1_2_3_123", component, view );
+//		
+//		BuildNumber.stampFromComponent( component, view, result.t2[0], result.t2[1], result.t2[2], result.t2[3], false );
+//	}
 	
-	@Test
-	public void testStampFromComponentNoBuildNumberFile() throws UCMException
-	{
-		Component component = UCMEntity.getComponent( "_System_no@\\Cool_PVOB" );
-		File view = new File( "c:\\" );
-		
-		Tuple<Baseline, String[]> result = BuildNumber.createBuildNumber( "bls__1_2_3_123", component, view );
-		
-		try
-		{
-			BuildNumber.stampFromComponent( component, view, result.t2[0], result.t2[1], result.t2[2], result.t2[3], false );
-		}
-		catch( UCMException e )
-		{
-			if( e.type != UCMType.HLINK_ZERO_MATCHES )
-			{
-				fail( "Did not find zero hlinks...." );
-			}
-		}
-	}
+//	@Test
+//	public void testStampFromComponentNoBuildNumberFile() throws UCMException
+//	{
+//		Component component = UCMEntity.getComponent( "_System_no@\\Cool_PVOB" );
+//		File view = new File( "c:\\" );
+//		
+//		Tuple<Baseline, String[]> result = BuildNumber.createBuildNumber( "bls__1_2_3_123", component, view );
+//		
+//		try
+//		{
+//			BuildNumber.stampFromComponent( component, view, result.t2[0], result.t2[1], result.t2[2], result.t2[3], false );
+//		}
+//		catch( UCMException e )
+//		{
+//			if( e.type != UCMType.HLINK_ZERO_MATCHES )
+//			{
+//				fail( "Did not find zero hlinks...." );
+//			}
+//		}
+//	}
 	
 	
 	@Test
