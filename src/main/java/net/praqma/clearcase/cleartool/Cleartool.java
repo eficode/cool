@@ -3,7 +3,7 @@ package net.praqma.clearcase.cleartool;
 
 import java.io.File;
 
-import net.praqma.clearcase.Cool;
+import net.praqma.clearcase.*;
 import net.praqma.util.debug.PraqmaLogger.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;

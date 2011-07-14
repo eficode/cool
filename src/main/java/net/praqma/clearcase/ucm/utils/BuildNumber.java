@@ -192,7 +192,7 @@ public class BuildNumber extends Cool
 	/**
 	 * Given a Project, its top level Components sequence number is retrieved, incremented, stored and returned.
 	 * @param project A UCM Project
-	 * @return
+	 * @return Integer
 	 * @throws UCMException
 	 */
 	public static Integer getNextBuildSequence( Project project ) throws UCMException
@@ -261,7 +261,7 @@ public class BuildNumber extends Cool
 	
 	/**
 	 * This method returns the new build number for a Baseline.
-	 * @return
+	 * @return String
 	 * @throws UCMException
 	 */
 	public static String getBuildNumber( Project project ) throws UCMException
