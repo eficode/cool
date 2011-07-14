@@ -38,7 +38,7 @@ public class BuildNumberTest extends Cool
 	public void testCreateBuildNumber() throws UCMException
 	{		
 		Component component = UCMEntity.getComponent( "System@\\Cool_PVOB" );
-		File view = new File( "c:\\" );
+		File view = new File( "" );
 		Tuple<Baseline, String[]> result = BuildNumber.createBuildNumber( "bls__1_2_3_123", component, view );
 		
 		assertEquals( "Major", result.t2[0], "1" );
@@ -102,7 +102,7 @@ public class BuildNumberTest extends Cool
 	@Test
 	public void testGetNextBuildSequence() throws UCMException
 	{
-		Project project = UCMEntity.getProject( "project:bn_project@\\Cool_PVOB", true );
+		Project project = UCMEntity.getProject( "bn_project@\\Cool_PVOB", true );
 		
 		int seq = BuildNumber.getNextBuildSequence( project );
 		
@@ -112,7 +112,7 @@ public class BuildNumberTest extends Cool
 	@Test
 	public void testGetNextBuildSequenceNoSequence() throws UCMException
 	{
-		Project project = UCMEntity.getProject( "project:bn_project_no@\\Cool_PVOB", true );
+		Project project = UCMEntity.getProject( "bn_project_no@\\Cool_PVOB", true );
 		
 		try
 		{
@@ -127,7 +127,7 @@ public class BuildNumberTest extends Cool
 	@Test
 	public void testGetBuildNumber() throws UCMException
 	{
-		Project project = UCMEntity.getProject( "project:bn_project@\\Cool_PVOB", true );
+		Project project = UCMEntity.getProject( "bn_project@\\Cool_PVOB", true );
 		
 		String bn = BuildNumber.getBuildNumber( project );
 		
