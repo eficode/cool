@@ -57,7 +57,7 @@ public class SnapshotView extends UCMView
 	 * @param stream The Stream
 	 * @param viewroot
 	 * @param viewtag
-	 * @return
+	 * @return SnapShotView
 	 */
 	public static SnapshotView Create( Stream stream, File viewroot, String viewtag ) throws UCMException
 	{		
@@ -101,6 +101,10 @@ public class SnapshotView extends UCMView
 		return this.viewroot;
 	}
 	
+	public Stream getStream() throws UCMException{
+		return context.getStreamFromView(GetViewRoot()).getFirst();
+	}
+	
 	/**
 	 * Determine if the views view root is valid, returning its view tag
 	 * @return The UUID as a string
@@ -119,7 +123,15 @@ public class SnapshotView extends UCMView
 		public Integer dirsDeleted = 0;		
 	}
 	
-
+	/**
+	 * 
+	 * @throws UCMException
+	 */
+	
+    public void cancel() throws UCMException{
+    	context.cancelDeliver(viewroot);
+    }
+    
 	/**
 	 * 
 	 * @param swipe

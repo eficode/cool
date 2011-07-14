@@ -7,9 +7,9 @@ import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.PraqmaLogger.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
-import net.praqma.util.execute.CommandLine;
 import net.praqma.util.execute.CommandLineException;
 import net.praqma.util.execute.CommandLineInterface;
+import net.praqma.util.execute.CommandLineInterface.*;
 
 public class CommandLineMock implements CommandLineInterface
 {
@@ -232,7 +232,7 @@ public class CommandLineMock implements CommandLineInterface
 	}
 
 	@Override
-	public CommandLineInterface.OperatingSystem getOS() {
+	public OperatingSystem getOS() {
 	    // TODO Auto-generated method stub
 	    return null;
 	}

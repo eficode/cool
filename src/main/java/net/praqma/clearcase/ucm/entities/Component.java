@@ -1,10 +1,7 @@
 package net.praqma.clearcase.ucm.entities;
 
-import java.util.ArrayList;
-
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.utils.BaselineList;
-import net.praqma.clearcase.ucm.utils.TagQuery;
 
 public class Component extends UCMEntity
 {

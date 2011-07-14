@@ -2,6 +2,7 @@ package net.praqma.clearcase.ucm.entities;
 
 import static org.junit.Assert.*;
 
+import org.junit.*;
 import java.util.HashMap;
 import java.util.Map;
 

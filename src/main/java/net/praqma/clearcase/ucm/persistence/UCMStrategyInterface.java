@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import net.praqma.clearcase.Region;
-import net.praqma.clearcase.View;
 import net.praqma.clearcase.Vob;
-import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.structure.Tuple;
 
 interface UCMStrategyInterface
@@ -52,6 +52,7 @@ interface UCMStrategyInterface
 	public List<Tuple<String, String>> getHlinks( String fqname, String hlinkType, File dir ) throws UCMException;
 	
 	/* Stream */
+
 	public void recommendBaseline( String stream, String baseline ) throws UCMException;
 	public String getRecommendedBaselines( String stream ) throws UCMException;
 	public String getStreamFromView( String viewtag ) throws UCMException;
@@ -63,6 +64,7 @@ interface UCMStrategyInterface
 	public List<String> getLatestBaselines( String stream );
 	public void generate( String stream );
 	public String loadStream( String stream ) throws UCMException;
+	public List<Stream> getChildStreams(String fqstream) throws UCMException;
 	
 	/* Version */
 	public String getVersion( String version, String separator );

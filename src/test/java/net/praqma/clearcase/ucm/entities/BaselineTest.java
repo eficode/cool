@@ -2,12 +2,9 @@ package net.praqma.clearcase.ucm.entities;
 
 import static org.junit.Assert.*;
 
-import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.entities.UCM;
+import org.junit.*;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import net.praqma.clearcase.ucm.UCMException;
 
 public class BaselineTest
 {
