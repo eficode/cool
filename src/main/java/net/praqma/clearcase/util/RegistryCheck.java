@@ -14,14 +14,20 @@ import net.praqma.util.structure.Printer;
 public abstract class RegistryCheck {
 
     /* Matches stranded vobs */
-    private static final Pattern rx_stranded = Pattern.compile( "rgy_check: Error: This VOB object is stranded(.*?)$$^", Pattern.MULTILINE | Pattern.DOTALL );
+    private static final Pattern rx_stranded_vobs = Pattern.compile( "rgy_check: Error: This VOB object is stranded(.*?)$$^", Pattern.MULTILINE | Pattern.DOTALL );
+    /* Matches stranded views */
+    private static final Pattern rx_stranded_views = Pattern.compile( "rgy_check: Error: This view object is stranded(.*?)$$^", Pattern.MULTILINE | Pattern.DOTALL );
     /* Matches modifiers */
     private static final Pattern rx_modifiers = Pattern.compile( "^\\s*-(\\w+)\\s*=\\s*\"(.*?)\"\\s*$", Pattern.MULTILINE );
     
     public static void main( String[] args ) {
 
+        List<Map<String, String>> viewInfo = checkViews();
         List<Map<String, String>> vobInfo = checkVobs();
         
+        System.out.println( "Listing stranded views:" );
+        Printer.listMapPrinter( viewInfo );
+        System.out.println( "Listing stranded vobs:" );
         Printer.listMapPrinter( vobInfo );
     }
     
@@ -31,7 +37,7 @@ public abstract class RegistryCheck {
         List<Map<String, String>> vobInfo = new ArrayList<Map<String, String>>();
 
         CmdResult result = CommandLine.getInstance().run( cmd, null, true, true );
-        Matcher m = rx_stranded.matcher( result.stdoutBuffer.toString() );
+        Matcher m = rx_stranded_vobs.matcher( result.stdoutBuffer.toString() );
         
         while( m.find() ) {
             Matcher mi = rx_modifiers.matcher( m.group(1) );
@@ -46,6 +52,29 @@ public abstract class RegistryCheck {
         }
         
         return vobInfo;
+    }
+    
+    public static List<Map<String, String>> checkViews() {
+        String cmd = "rgy_check -views";
+        
+        List<Map<String, String>> viewInfo = new ArrayList<Map<String, String>>();
+
+        CmdResult result = CommandLine.getInstance().run( cmd, null, true, true );
+        Matcher m = rx_stranded_views.matcher( result.stdoutBuffer.toString() );
+        
+        while( m.find() ) {
+            Matcher mi = rx_modifiers.matcher( m.group(1) );
+            
+            Map<String, String> r = new HashMap<String, String>();
+            
+            while( mi.find() ) {
+                r.put( mi.group(1), mi.group(2) );
+            }
+            
+            viewInfo.add( r );
+        }
+        
+        return viewInfo;
     }
 }
 
