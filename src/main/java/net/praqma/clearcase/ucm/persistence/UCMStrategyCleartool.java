@@ -323,11 +323,14 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 
-	public String getStreamFromView( String viewtag )
+	public String getStreamFromView( String viewtag ) throws UCMException
 	{
-		String fqstreamstr =  Cleartool.run( "lsstream -fmt %Xn -view " + viewtag ).stdoutBuffer.toString();
-
-		return fqstreamstr;
+	    try {
+	        String fqstreamstr = Cleartool.run( "lsstream -fmt %Xn -view " + viewtag ).stdoutBuffer.toString();
+	        return fqstreamstr;
+	    } catch( AbnormalProcessTerminationException e ) {
+	        throw new UCMException( "Could not get Stream from view " + viewtag + ": " + e );
+	    }
 	}
 
 
