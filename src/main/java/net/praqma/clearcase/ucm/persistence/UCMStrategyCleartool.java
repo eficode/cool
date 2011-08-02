@@ -22,6 +22,7 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 
+import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
@@ -96,6 +97,27 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		} catch (AbnormalProcessTerminationException e) {
 			throw new UCMException(e.getMessage(), e.getMessage());
 		}
+	}
+	
+	/* or /f %i in ('cleartool lsproject -s -invob \Cool_PVOB') do @cleartool desc -fmt "project:%i@\Cool_PVOB %[istream]Xp\n" project:%i@\Cool_PVOB */
+	
+	public List<Project> getProjects( Vob vob ) throws UCMException {
+		String cmd = "lsproject -s -invob \\" + vob.toString();
+		
+		List<String> projs = null;
+		
+		try {
+			projs = Cleartool.run(cmd).stdoutList;
+		} catch (AbnormalProcessTerminationException e) {
+			throw new UCMException(e.getMessage(), e.getMessage());
+		}
+		
+		List<Project> projects = new ArrayList<Project>();
+		for( String p : projs ) {
+			projects.add(UCMEntity.getProject(p));
+		}
+		
+		return projects;
 	}
 
 	/************************************************************************
