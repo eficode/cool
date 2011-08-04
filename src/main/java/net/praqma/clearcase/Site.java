@@ -10,7 +10,7 @@ public class Site extends Cool {
 	this.name = name;
     }
     
-    public List<Vob> getVobs( Region region ) {
+    public List<PVob> getVobs( Region region ) {
 	return context.getVobs(region);
     }
 }

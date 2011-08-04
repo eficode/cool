@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import net.praqma.clearcase.Region;
-import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.structure.Tuple;
@@ -26,6 +27,7 @@ interface UCMStrategyInterface
 	String getProjectFromStream( String stream );
 	List<String> getModifiableComponents( String project );
 	public String loadProject( String project ) throws UCMException;
+	public List<Project> getProjects( PVob vob ) throws UCMException;
 	
 	/* Activity */
 	public String loadActivity( String activity ) throws UCMException;
@@ -96,7 +98,7 @@ interface UCMStrategyInterface
 	
 	public List<UCMView> getViews( Region region );
 	
-	public List<Vob> getVobs( Region region );
+	public List<PVob> getVobs( Region region );
 	
 	/* 
 	 * OTHER STUFF

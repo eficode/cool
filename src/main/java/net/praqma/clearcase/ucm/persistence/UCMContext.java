@@ -473,6 +473,10 @@ public class UCMContext extends Cool
 		project.setStream( UCMEntity.getStream( result ) );
 	}
 	
+	public List<Project> getProjects( PVob vob ) throws UCMException {
+		return strategy.getProjects( vob );
+	}
+	
 	
 	private static final Pattern pattern_cache = Pattern.compile( "^\\s*log has been written to\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE );
 	
@@ -621,7 +625,7 @@ public class UCMContext extends Cool
 	    return strategy.getViews(region);
 	}	
 	
-	public List<Vob> getVobs( Region region ) {
+	public List<PVob> getVobs( Region region ) {
 	    return strategy.getVobs(region);
 	}
 	

@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.Site;
-import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
@@ -101,8 +101,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	
 	/* or /f %i in ('cleartool lsproject -s -invob \Cool_PVOB') do @cleartool desc -fmt "project:%i@\Cool_PVOB %[istream]Xp\n" project:%i@\Cool_PVOB */
 	
-	public List<Project> getProjects( Vob vob ) throws UCMException {
-		String cmd = "lsproject -s -invob \\" + vob.toString();
+	public List<Project> getProjects( PVob vob ) throws UCMException {
+		String cmd = "lsproject -s -invob " + vob.toString();
 		
 		List<String> projs = null;
 		
@@ -114,7 +114,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		
 		List<Project> projects = new ArrayList<Project>();
 		for( String p : projs ) {
-			projects.add(UCMEntity.getProject(p));
+			projects.add(UCMEntity.getProject(p + "@" + vob));
 		}
 		
 		return projects;
@@ -436,7 +436,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		String cmd = "describe -fmt %[name]p" + UCMStrategyInterface.delim
 				+ "%[project]Xp" + UCMStrategyInterface.delim
-				+ "%[def_deliver_tgt]Xn" + UCMStrategyInterface.delim
+				+ "%X[def_deliver_tgt]p" + UCMStrategyInterface.delim
 				+ "%[read_only]p " + stream;
 		try {
 			res = Cleartool.run(cmd);
@@ -1154,13 +1154,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	    return views;
 	}
 	
-	public List<Vob> getVobs( Region region ) {
+	public List<PVob> getVobs( Region region ) {
 	    String cmd = "lsvob -s" + ( region != null ? " -region " + region.getName() : "" );
 	    CmdResult cr = Cleartool.run( cmd );
 
-	    List<Vob> vobs = new ArrayList<Vob>();
+	    List<PVob> vobs = new ArrayList<PVob>();
 	    for( String s : cr.stdoutList ) {
-		vobs.add(new Vob(s));
+		vobs.add(new PVob(s));
 	    }
 
 	    return vobs;

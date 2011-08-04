@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.ucm.UCMException;
 
 public class Project extends UCMEntity {
@@ -23,7 +24,7 @@ public class Project extends UCMEntity {
 
     /* For now, the project implements the Plevel functionality */
     public enum Plevel {
-        REJECTED, INITIAL, BUILT, TESTED, RELEASED;
+        INITIAL, BUILT, TESTED, RELEASED, REJECTED;
     }
 
     /**
@@ -84,5 +85,9 @@ public class Project extends UCMEntity {
             retval.add( o.toString() );
         }
         return retval;
+    }
+    
+    public static List<Project> getProjects( PVob vob ) throws UCMException {
+    	return context.getProjects( vob );
     }
 }

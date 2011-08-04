@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 
@@ -81,6 +82,8 @@ public abstract class UCMEntity extends UCM
 	protected ClearcaseEntityType type = ClearcaseEntityType.Undefined;
 	protected String pvob              = "";
 	
+	protected PVob vob = null;
+	
 	protected String mastership        = null;
 	
 	/* Loadable standard fields */
@@ -124,20 +127,17 @@ public abstract class UCMEntity extends UCM
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UCMEntityException This exception is thrown if the type of the entity is not recognized, the entity class is not found or the default constructor is not found.
 	 */
-	public static UCMEntity getEntity( String fqname, boolean trusted, boolean cachable ) throws UCMException
-	{
-		//logger.debug( "GetEntity = " + fqname );
-		
+	public static UCMEntity getEntity( String fqname, boolean trusted, boolean cachable ) throws UCMException {
+		// logger.debug( "GetEntity = " + fqname );
+
 		/* Is this needed? */
 		fqname = fqname.trim();
-		
+
 		/* If exists, get the entity from cache cache? */
-		if( cachable )
-		{
-			if( entities.containsKey( fqname ) )
-			{
-				logger.log( "Fetched " + fqname + " from cache." );
-				return entities.get( fqname );
+		if (cachable) {
+			if (entities.containsKey(fqname)) {
+				logger.log("Fetched " + fqname + " from cache.");
+				return entities.get(fqname);
 			}
 		}
 		
@@ -149,82 +149,65 @@ public abstract class UCMEntity extends UCM
 				
 		/* Test standard fully qualified names */
 		Matcher match = pattern_std_fqname.matcher( fqname );
-		if( match.find() )
-		{
-			ClearcaseEntityType etype = ClearcaseEntityType.GetFromString( match.group( 1 ) );
-			
+		if (match.find()) {
+			ClearcaseEntityType etype = ClearcaseEntityType.GetFromString(match.group(1));
+
 			/* Set the Entity variables */
-			shortname = match.group( 2 );
-			pvob      = match.group( 3 );
-			type      = etype;
-		}
-		else
-		{
-			
+			shortname = match.group(2);
+			pvob = match.group(3);
+			type = etype;
+		} else {
+
 			/* Not a standard entity, lets try Version */
-			match = pattern_version_fqname.matcher( fqname );
-			if( match.find() )
-			{
+			match = pattern_version_fqname.matcher(fqname);
+			if (match.find()) {
 				/* Set the Entity variables */
-				shortname = match.group( 1 );
-				pvob      = match.group( 2 );
-				type      = ClearcaseEntityType.Version;
-			}
-			else
-			{
-				
+				shortname = match.group(1);
+				pvob = match.group(2);
+				type = ClearcaseEntityType.Version;
+			} else {
+
 				/* Not a Version entity, lets try Tag */
-				match = pattern_tag_fqname.matcher( fqname );
-				if( match.find() )
-				{
+				match = pattern_tag_fqname.matcher(fqname);
+				if (match.find()) {
 					/* Set the Entity variables */
-					shortname = match.group( 1 ); // This is also the eid
-					pvob      = match.group( 2 );
-					type      = ClearcaseEntityType.Tag;
-				}
-				else
-				{
+					shortname = match.group(1); // This is also the eid
+					pvob = match.group(2);
+					type = ClearcaseEntityType.Tag;
+				} else {
 					/* Not a Tag entity, lets try HLink(which really is a Tag) */
-					match = pattern_hlink_fqname.matcher( fqname );
-					if( match.find() )
-					{
+					match = pattern_hlink_fqname.matcher(fqname);
+					if (match.find()) {
 						/* Set the Entity variables */
-						shortname = match.group( 1 );
-						pvob      = match.group( 3 );
-						type      = ClearcaseEntityType.HyperLink;
+						shortname = match.group(1);
+						pvob = match.group(3);
+						type = ClearcaseEntityType.HyperLink;
 					}
 				}
 			}
 		}
 		
 		/* If the entity is undefined, throw an exception  */
-		if( type == ClearcaseEntityType.Undefined )
-		{
-			logger.error( "The entity type of " + fqname + " was not recognized" );
-			throw new UCMException( "The entity type of " + fqname + " was not recognized", UCMType.ENTITY_ERROR );
+		if (type == ClearcaseEntityType.Undefined) {
+			logger.error("The entity type of " + fqname + " was not recognized");
+			throw new UCMException("The entity type of " + fqname + " was not recognized", UCMType.ENTITY_ERROR);
 		}
-		
+
 		/* Load the Entity class */
 		Class<UCMEntity> eclass = null;
-		try
-		{	
-			eclass = (Class<UCMEntity>) classloader.loadClass( "net.praqma.clearcase.ucm.entities." + type  );
+		try {
+			eclass = (Class<UCMEntity>) classloader.loadClass("net.praqma.clearcase.ucm.entities." + type);
+		} catch (ClassNotFoundException e) {
+			logger.error("The class " + type + " is not available.");
+			throw new UCMException("The class " + type + " is not available.", UCMType.ENTITY_ERROR);
 		}
-		catch ( ClassNotFoundException e )
-		{
-			logger.error( "The class " + type + " is not available." );
-			throw new UCMException( "The class " + type + " is not available.", UCMType.ENTITY_ERROR );
-		}
-		
+
 		/* Try to instantiate the Entity object */
-		try
-		{
-			entity = (UCMEntity)eclass.newInstance();
-		}
-		catch ( Exception e )
-		{
-			logger.error( "Could not instantiate the class " + type );
-			throw new UCMException( "Could not instantiate the class " + type, UCMType.ENTITY_ERROR );
+		try {
+			entity = (UCMEntity) eclass.newInstance();
+		} catch (Exception e) {
+			logger.error("Could not instantiate the class " + type);
+			throw new UCMException("Could not instantiate the class " + type, UCMType.ENTITY_ERROR);
 		}
 		
 		/* Storing the variables in the object */
@@ -238,16 +221,17 @@ public abstract class UCMEntity extends UCM
 		entity.postProcess();
 		
 		/* If not trusted, load the entity from the context */
-		if( !trusted )
-		{
+		if (!trusted) {
 			entity.load();
 		}
-		
-		if( cachable )
-		{
-			logger.log( "Storing " + fqname + " in cache." );
-			entities.put( fqname, entity );
+
+		if (cachable) {
+			logger.log("Storing " + fqname + " in cache.");
+			entities.put(fqname, entity);
 		}
+		
+		/* Create the vob object */
+		entity.vob = new PVob(pvob);
 		
 		return entity;
 	}
@@ -470,39 +454,38 @@ public abstract class UCMEntity extends UCM
 	
 	/* Getters */
 	
-	public String getUser() throws UCMException
-	{
-		if( !loaded ) load();
+	public String getUser() throws UCMException {
+		if (!loaded) {
+			load();
+		}
 		return this.user;
 	}
-	
-	public void setUser( String user )
-	{
+
+	public void setUser(String user) {
 		this.user = user;
 	}
-	
-	public String getFullyQualifiedName()
-	{
+
+	public String getFullyQualifiedName() {
 		return this.fqname;
 	}
-	
-	public String getShortname()
-	{
+
+	public String getShortname() {
 		return this.shortname;
 	}
-	
-	public String getPvob()
-	{
+
+	public String getPvob() {
 		return this.pvob;
 	}
 	
-	public String getMastership() throws UCMException
-	{
-		if( this.mastership == null )
-		{
-			this.mastership = context.getMastership( this );
+	public PVob getVob() {
+		return vob;
+	}
+
+	public String getMastership() throws UCMException {
+		if (this.mastership == null) {
+			this.mastership = context.getMastership(this);
 		}
-		
+
 		return this.mastership;
 	}
 	

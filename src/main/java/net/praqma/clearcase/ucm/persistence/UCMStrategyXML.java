@@ -30,7 +30,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import net.praqma.clearcase.Region;
-import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
@@ -1067,7 +1068,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
     }
 
     @Override
-    public List<Vob> getVobs(Region region) {
+    public List<PVob> getVobs(Region region) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -1089,4 +1090,10 @@ public class UCMStrategyXML implements UCMStrategyInterface
         // TODO Auto-generated method stub
         return null;
     }
+
+	@Override
+	public List<Project> getProjects(PVob vob) throws UCMException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

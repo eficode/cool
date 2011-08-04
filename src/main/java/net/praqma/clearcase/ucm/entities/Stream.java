@@ -23,8 +23,7 @@ public class Stream extends UCMEntity
 	private boolean readonly                         = true;
 	
 	
-	Stream()
-	{
+	Stream() {
 	}
 	
 	/**
@@ -32,8 +31,7 @@ public class Stream extends UCMEntity
 	 * be allowed to call it.
 	 * @return A new Stream Entity
 	 */
-	static Stream getEntity()
-	{
+	static Stream getEntity() {
 		return new Stream();
 	}
 	
@@ -57,41 +55,31 @@ public class Stream extends UCMEntity
 		return context.createStream( pstream, nstream, readonly, baseline );
 	}
 	
-	public void load() throws UCMException
-	{
-		String r = context.loadStream( this );
-		String[] data = r.split( UCM.delim );
-		
-		logger.debug( "RESULT=" + r );
-		
+	public void load() throws UCMException {
+		String r = context.loadStream(this);
+		String[] data = r.split(UCM.delim);
+
+		logger.debug("RESULT=" + r);
+
 		/* name::project::target_stream::readonly */
-		this.project       = UCMEntity.getProject( data[1] );
-		try
-		{
-			this.defaultTarget = UCMEntity.getStream( data[2] );
-		}
-		catch( UCMException e )
-		{
-			logger.info( "The Stream did not have a default target." );
+		this.project = UCMEntity.getProject(data[1]);
+		try {
+			this.defaultTarget = UCMEntity.getStream(data[2]);
+		} catch (Exception e) {
+			logger.info("The Stream did not have a default target.");
 			this.defaultTarget = null;
 		}
-		
-		if( data.length > 3 )
-		{
-			if( data[3].length() > 0 )
-			{
+
+		if (data.length > 3) {
+			if (data[3].length() > 0) {
 				this.readonly = true;
-			}
-			else
-			{
+			} else {
 				this.readonly = false;
 			}
-		}
-		else
-		{
+		} else {
 			this.readonly = false;
 		}
-		
+
 		this.loaded = true;
 	}
 
@@ -106,9 +94,34 @@ public class Stream extends UCMEntity
 			res = context.getChildStreams(this);
 		} catch (UCMException e) {
 			logger.info("The Stream has no child streams");
-			throw new UCMException("The stream: ["+this.fqname+"] has no child streams");
 		}
 		return res;
+	}
+	
+	/**
+	 * For each project return their integration streams
+	 * @return
+	 * @throws UCMException
+	 */
+	public List<Stream> getSiblingStreams() throws UCMException {
+		List<Project> projects = Project.getProjects(this.getVob());
+		List<Stream> streams = new ArrayList<Stream>();
+		
+		for( Project p : projects ) {
+			if( p.getIntegrationStream().getDefaultTarget() != null && this.equals(p.getIntegrationStream().getDefaultTarget()) ) {
+				streams.add(p.getIntegrationStream());
+			}
+		}
+		
+		return streams;
+	}
+	
+	public boolean equals( Stream other ) {
+		if( this.fqname.equals(other.getFullyQualifiedName()) ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/**
@@ -117,37 +130,31 @@ public class Stream extends UCMEntity
 	 * @return True if the Stream exists, false otherwise
 	 * @throws UCMException Is thrown if the fully qualified name is not a valid name
 	 */
-	public static boolean streamExists( String fqname ) throws UCMException
-	{
+	public static boolean streamExists(String fqname) throws UCMException {
 		/* Determine the name of the entity */
-		UCMEntity.getNamePart( fqname );
-		
-		return context.streamExists( fqname );
+		UCMEntity.getNamePart(fqname);
+
+		return context.streamExists(fqname);
 	}
-	
-	public void rebase( SnapshotView view, Baseline baseline, boolean complete )
-	{
-		context.rebaseStream( view, this, baseline, complete );
+
+	public void rebase(SnapshotView view, Baseline baseline, boolean complete) {
+		context.rebaseStream(view, this, baseline, complete);
 	}
-	
-	public boolean isRebaseInProgress()
-	{
-		return context.isRebasing( this );
+
+	public boolean isRebaseInProgress() {
+		return context.isRebasing(this);
 	}
-	
-	public void cancelRebase()
-	{
-		context.cancelRebase( this );
+
+	public void cancelRebase() {
+		context.cancelRebase(this);
 	}
-	
-	public List<Baseline> getRecommendedBaselines() throws UCMException
-	{
-		return getRecommendedBaselines( false );
+
+	public List<Baseline> getRecommendedBaselines() throws UCMException {
+		return getRecommendedBaselines(false);
 	}
-	
-	public void generate()
-	{
-		context.genereate( this );
+
+	public void generate() {
+		context.genereate(this);
 	}
 	
 	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UCMException
@@ -198,9 +205,10 @@ public class Stream extends UCMEntity
 	 * @return A Stream
 	 * @throws UCMException 
 	 */
-	public Stream getDefaultTarget() throws UCMException
-	{
-		if( !this.loaded ) load();
+	public Stream getDefaultTarget() throws UCMException {
+		if (!this.loaded) {
+			load();
+		}
 		return this.defaultTarget;
 	}
 	
