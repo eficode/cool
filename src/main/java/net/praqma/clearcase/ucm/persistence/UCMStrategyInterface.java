@@ -48,6 +48,7 @@ interface UCMStrategyInterface
 	public List<String> getBaselines( String component, String stream, String plevel );
 	public String getRootDir( String component );
 	public String loadComponent( String component ) throws UCMException;
+	public void createComponent( String name, PVob pvob, String root, String comment ) throws UCMException;
 	
 	/* Hyper Links */
 	public String loadHyperLink( String fqname, File dir ) throws UCMException;
@@ -89,6 +90,9 @@ interface UCMStrategyInterface
 	public void regenerateViewDotDat( File dir, String viewtag ) throws UCMException;
 	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot );
 	public String viewUpdate( File viewroot, boolean overwrite, String loadrules );
+	
+	/* Vobs */
+	public void createVob( String vobname, boolean UCMProject, File path, String comment ) throws UCMException;
 
 	/* Attributes */
 	public String getAttribute( String fqname, String attribute ) throws UCMException;

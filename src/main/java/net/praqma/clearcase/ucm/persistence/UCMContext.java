@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.*;
 
 import net.praqma.clearcase.ucm.UCMException.UCMType;
@@ -61,7 +60,7 @@ public class UCMContext extends Cool
 		logger.log( view.GetViewtag() );
 		
 		/* Change if other than -pre */
-		List<String> result = strategy.getBaselineDiff( view.GetViewRoot(), baseline.getFullyQualifiedName(), "", nmerge, baseline.getPvob() );
+		List<String> result = strategy.getBaselineDiff( view.GetViewRoot(), baseline.getFullyQualifiedName(), "", nmerge, baseline.getPvobString() );
 		
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		
@@ -265,7 +264,7 @@ public class UCMContext extends Cool
 			if( rs[i].matches( "\\S+" ) )
 			{
 				//bls.add( (Baseline)UCMEntity.GetEntity( rs[i], true ) );
-				bls.add( UCMEntity.getBaseline( rs[i] + "@" + stream.getPvob(), true ) );
+				bls.add( UCMEntity.getBaseline( rs[i] + "@" + stream.getPvobString(), true ) );
 			}
 		}
 		
@@ -513,7 +512,7 @@ public class UCMContext extends Cool
 	
 	public Project getProjectFromStream( Stream stream ) throws UCMException
 	{
-		return UCMEntity.getProject( strategy.getProjectFromStream( stream.getFullyQualifiedName() ) + "@" + stream.getPvob() );
+		return UCMEntity.getProject( strategy.getProjectFromStream( stream.getFullyQualifiedName() ) + "@" + stream.getPvobString() );
 	}
 	
 	public List<Component> getModifiableComponents( Project project ) throws UCMException
@@ -523,7 +522,7 @@ public class UCMContext extends Cool
 		
 		for( String c : cs )
 		{
-			comps.add( UCMEntity.getComponent( c + "@" + project.getPvob() ) );
+			comps.add( UCMEntity.getComponent( c + "@" + project.getPvobString() ) );
 		}
 		
 		return comps;
@@ -548,6 +547,10 @@ public class UCMContext extends Cool
 	public String loadComponent( Component component ) throws UCMException
 	{
 		return strategy.loadComponent( component.getFullyQualifiedName() );
+	}
+	
+	public void createComponent( String name, PVob pvob, String root, String comment ) throws UCMException {
+		strategy.createComponent(name, pvob, root, comment);
 	}
 	
 	public String loadStream( Stream stream ) throws UCMException
@@ -627,6 +630,12 @@ public class UCMContext extends Cool
 	
 	public List<PVob> getVobs( Region region ) {
 	    return strategy.getVobs(region);
+	}
+	
+	
+	
+	public void createVob( String vobname, boolean UCMProject, File path, String comment ) throws UCMException {
+		strategy.createVob(vobname, UCMProject, path, comment);
 	}
 	
 	

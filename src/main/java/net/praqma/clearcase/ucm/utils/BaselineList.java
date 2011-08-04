@@ -43,7 +43,7 @@ public class BaselineList extends ArrayList<Baseline>
 		this.stream    = stream;
 		this.component = component;
 		
-		this.addAll( UCM.context.getBaselines( stream, component, plevel, component.getPvob() ) );
+		this.addAll( UCM.context.getBaselines( stream, component, plevel, component.getPvobString() ) );
 	}
 	
 	public BaselineList( List<Baseline> bls )

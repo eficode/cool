@@ -1,17 +1,25 @@
 package net.praqma.clearcase;
 
-public class PVob extends Cool {
+import java.io.File;
 
-	private String name;
+import net.praqma.clearcase.ucm.UCMException;
+
+public class PVob extends Vob {
+
 	private String localPath;
 	private String globalPath;
 
 	public PVob(String name) {
-		this.name = name;
+		super(name);
 	}
-	
-	public String toString() {
-		return name;
+
+	public static PVob create( String name, File path, String comment ) throws UCMException {
+		context.createVob(name, true, path, comment);
+		
+		PVob pvob = new PVob(name);
+		pvob.storageLocation = path;
+		
+		return pvob;
 	}
 
 }

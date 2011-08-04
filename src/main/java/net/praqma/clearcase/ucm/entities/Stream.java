@@ -104,7 +104,7 @@ public class Stream extends UCMEntity
 	 * @throws UCMException
 	 */
 	public List<Stream> getSiblingStreams() throws UCMException {
-		List<Project> projects = Project.getProjects(this.getVob());
+		List<Project> projects = Project.getProjects(this.getPVob());
 		List<Stream> streams = new ArrayList<Stream>();
 		
 		for( Project p : projects ) {

@@ -454,7 +454,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		/* Replace the old with new */
 		/* TODO Get the next oid for the new tag. The old oid SHOULD NOT be reused */
 		tag.setTextContent( keyval );
-		tag.setAttribute( "fqname", "tag@" + IDCounter + "@" + entity.getPvob() );
+		tag.setAttribute( "fqname", "tag@" + IDCounter + "@" + entity.getPvobString() );
 		tag.setAttribute( "entity", entity.getFullyQualifiedName() );
 		
 		IDCounter++;
@@ -468,7 +468,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	    //logger.debug( "CGI=" + cgi );
 		
 		Element tag = xml.createElement( "tag" );
-		tag.setAttribute( "fqname", "tag@" + IDCounter + "@" + entity.getPvob() );
+		tag.setAttribute( "fqname", "tag@" + IDCounter + "@" + entity.getPvobString() );
 		tag.setAttribute( "entity", entity.getFullyQualifiedName() );
 		tag.setTextContent( cgi );
 		
@@ -1095,5 +1095,19 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	public List<Project> getProjects(PVob vob) throws UCMException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void createVob(String vobname, boolean UCMProject, File path, String comment)
+			throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void createComponent(String name, PVob pvob, String root,
+			String comment) throws UCMException {
+		// TODO Auto-generated method stub
+		
 	}
 }

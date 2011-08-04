@@ -318,6 +318,16 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		return "";
 	}
+	
+	public void createComponent( String name, PVob pvob, String root, String comment ) throws UCMException {
+		String cmd = "mkcomp" + ( comment != null ? " -c " + comment : "" ) + ( root != null ? " -root " + root : " -nroot") + " " + name + "@" + pvob;
+		
+		try {
+			Cleartool.run(cmd);
+		} catch( Exception e ) {
+			throw new UCMException( e.getMessage(), UCMType.CREATION_FAILED );
+		}
+	}
 
 	/************************************************************************
 	 * STREAM FUNCTIONALITY
@@ -1058,6 +1068,39 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		return viewtag;
 	}
+	
+	/*****************************
+	 * Vobs
+	 *****************************/
+	
+	public void createVob( String vobname, boolean UCMProject, File path, String comment ) throws UCMException {
+		String cmd = "mkvob -tag" + vobname + ( UCMProject ? " -ucmproject" : "" ) + ( comment != null ? " -c " + comment : "" ) + " -stgloc " + ( path != null ? path.getAbsolutePath() : "-auto" );
+		
+		try {
+			Cleartool.run(cmd);
+		} catch( Exception e ) {
+			throw new UCMException(e.getMessage(), UCMType.CREATION_FAILED);
+		}
+	}
+	
+	public List<PVob> getVobs( Region region ) {
+	    String cmd = "lsvob -s" + ( region != null ? " -region " + region.getName() : "" );
+	    CmdResult cr = Cleartool.run( cmd );
+
+	    List<PVob> vobs = new ArrayList<PVob>();
+	    for( String s : cr.stdoutList ) {
+		vobs.add(new PVob(s));
+	    }
+
+	    return vobs;
+
+	}
+
+
+	public int getVobCount() {
+	    String cmd = "lsvob -short";
+	    return Cleartool.run( cmd ).stdoutList.size();
+	}
 
 	/*****************************
 	 * Attributes
@@ -1154,24 +1197,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	    return views;
 	}
 	
-	public List<PVob> getVobs( Region region ) {
-	    String cmd = "lsvob -s" + ( region != null ? " -region " + region.getName() : "" );
-	    CmdResult cr = Cleartool.run( cmd );
 
-	    List<PVob> vobs = new ArrayList<PVob>();
-	    for( String s : cr.stdoutList ) {
-		vobs.add(new PVob(s));
-	    }
-
-	    return vobs;
-
-	}
-
-
-	public int getVobCount() {
-	    String cmd = "lsvob -short";
-	    return Cleartool.run( cmd ).stdoutList.size();
-	}
 
 
 	/*****************************

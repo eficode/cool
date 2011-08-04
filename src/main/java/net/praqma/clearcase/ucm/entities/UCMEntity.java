@@ -473,11 +473,11 @@ public abstract class UCMEntity extends UCM
 		return this.shortname;
 	}
 
-	public String getPvob() {
+	public String getPvobString() {
 		return this.pvob;
 	}
 	
-	public PVob getVob() {
+	public PVob getPVob() {
 		return vob;
 	}
 

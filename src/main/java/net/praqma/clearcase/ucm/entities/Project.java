@@ -90,4 +90,8 @@ public class Project extends UCMEntity {
     public static List<Project> getProjects( PVob vob ) throws UCMException {
     	return context.getProjects( vob );
     }
+    
+    public static void create() {
+    	
+    }
 }

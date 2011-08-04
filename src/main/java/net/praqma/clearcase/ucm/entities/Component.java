@@ -1,5 +1,6 @@
 package net.praqma.clearcase.ucm.entities;
 
+import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.utils.BaselineList;
 
@@ -8,8 +9,7 @@ public class Component extends UCMEntity
 	/* Component specific fields */
 	
 	
-	Component()
-	{
+	Component() {
 	}
 	
 	/**
@@ -17,30 +17,32 @@ public class Component extends UCMEntity
 	 * be allowed to call it.
 	 * @return A new Component Entity
 	 */
-	static Component getEntity()
-	{
+	static Component getEntity() {
 		return new Component();
 	}
 	
-	public void load() throws UCMException
-	{
-		context.loadComponent( this );
+	public void load() throws UCMException {
+		context.loadComponent(this);
+	}
+	
+	public static Component create( String name, PVob pvob, String root, String comment ) throws UCMException {
+		context.createComponent(name, pvob, root, comment);
+		
+		return UCMEntity.getComponent(name, true);
 	}
 	
 	
-	public String getRootDir()
-	{
-		return context.getRootDir( this );
+	public String getRootDir() {
+		return context.getRootDir(this);
 	}
-	
-	public BaselineList getBaselines( Stream stream ) throws UCMException
-	{
-		return new BaselineList( this, stream, null );
+
+	public BaselineList getBaselines(Stream stream) throws UCMException {
+		return new BaselineList(this, stream, null);
 	}
-	
-	public BaselineList getBaselines( Stream stream, Project.Plevel plevel ) throws UCMException
-	{
-		return new BaselineList( this, stream, plevel );
+
+	public BaselineList getBaselines(Stream stream, Project.Plevel plevel)
+			throws UCMException {
+		return new BaselineList(this, stream, plevel);
 	}
 
 }

@@ -62,7 +62,7 @@ class TagPool extends UCM
 		/* Create new Tag */
 		//Tag tag = context.NewTag( tagType, tagID, entity, "" );
 		
-		Tag tag = (Tag)UCMEntity.getEntity( "tag@0@" + entity.getPvob() );
+		Tag tag = (Tag)UCMEntity.getEntity( "tag@0@" + entity.getPvobString() );
 		//tag.SetEntry( "tagtype", tagType );
 		//tag.SetEntry( "tagid", tagID );
 		String cgi = "tagtype=" + tagType + "&tagid=" + tagID;

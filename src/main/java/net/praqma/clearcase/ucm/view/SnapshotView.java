@@ -49,7 +49,7 @@ public class SnapshotView extends UCMView
 		this.viewtag  = t.t2;
 		this.viewroot = viewroot;
 		this.stream   = t.t1;
-		this.pvob     = this.stream.getPvob();
+		this.pvob     = this.stream.getPvobString();
 	}
 	
 	/**

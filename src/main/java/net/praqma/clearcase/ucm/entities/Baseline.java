@@ -72,7 +72,7 @@ public class Baseline extends UCMEntity {
 
         context.createBaseline(basename, component, view, incremental, identical);
 
-        return UCMEntity.getBaseline(basename + "@" + component.getPvob(), true);
+        return UCMEntity.getBaseline(basename + "@" + component.getPvobString(), true);
     }
 
     /**
