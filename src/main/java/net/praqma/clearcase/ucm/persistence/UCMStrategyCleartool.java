@@ -18,6 +18,7 @@ import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.Site;
 import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
@@ -1073,6 +1074,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 * Vobs
 	 *****************************/
 	
+	public static final Pattern rx_vob_get_path = Pattern.compile("^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$");
+	
 	public void createVob( String vobname, boolean UCMProject, File path, String comment ) throws UCMException {
 		String cmd = "mkvob -tag" + vobname + ( UCMProject ? " -ucmproject" : "" ) + ( comment != null ? " -c " + comment : "" ) + " -stgloc " + ( path != null ? path.getAbsolutePath() : "-auto" );
 		
@@ -1083,17 +1086,49 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
 	
-	public List<PVob> getVobs( Region region ) {
-	    String cmd = "lsvob -s" + ( region != null ? " -region " + region.getName() : "" );
-	    CmdResult cr = Cleartool.run( cmd );
+	public List<PVob> getVobs(Region region) {
+		String cmd = "lsvob -s" + (region != null ? " -region " + region.getName() : "");
+		CmdResult cr = Cleartool.run(cmd);
 
-	    List<PVob> vobs = new ArrayList<PVob>();
-	    for( String s : cr.stdoutList ) {
-		vobs.add(new PVob(s));
-	    }
+		List<PVob> vobs = new ArrayList<PVob>();
+		for (String s : cr.stdoutList) {
+			vobs.add(new PVob(s));
+		}
 
-	    return vobs;
-
+		return vobs;
+	}
+	
+	public Map<String, String> loadVob( Vob vob ) throws UCMException {
+		String cmd = "describe vob:" + vob;
+		
+		Map<String, String> a = new HashMap<String, String>();
+		
+		try {
+			CmdResult r = Cleartool.run(cmd);
+			
+			for( String s : r.stdoutList ) {
+				if( s.contains("VOB storage global pathname") ) {
+					Matcher m = rx_vob_get_path.matcher(s);
+					if(m.find()) {
+						a.put("pathname", m.group(1));
+					}
+				}
+			}
+			
+		} catch( Exception e ) {
+			throw new UCMException( "Could not load Vob: " + e.getMessage() );
+		}
+		
+		return a;
+	}
+	
+	public void mountVob( Vob vob ) throws UCMException {
+		String cmd = "mount " + vob;
+		try {
+			Cleartool.run(cmd);
+		} catch( Exception e ) {
+			throw new UCMException( "Could not mount Vob " + vob + ": " + e.getMessage());
+		}
 	}
 
 

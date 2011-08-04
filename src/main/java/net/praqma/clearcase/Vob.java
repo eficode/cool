@@ -14,6 +14,14 @@ public class Vob extends Cool {
 		this.name = name;
 	}
 	
+	public void load() {
+		
+	}
+	
+	public void mount() {
+		
+	}
+	
 	public String toString() {
 		return name;
 	}

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Project;
@@ -93,6 +94,9 @@ interface UCMStrategyInterface
 	
 	/* Vobs */
 	public void createVob( String vobname, boolean UCMProject, File path, String comment ) throws UCMException;
+	public Map<String, String> loadVob( Vob vob ) throws UCMException;
+	public void mountVob( Vob vob ) throws UCMException;
+	public List<PVob> getVobs( Region region );
 
 	/* Attributes */
 	public String getAttribute( String fqname, String attribute ) throws UCMException;
@@ -102,7 +106,7 @@ interface UCMStrategyInterface
 	
 	public List<UCMView> getViews( Region region );
 	
-	public List<PVob> getVobs( Region region );
+	
 	
 	/* 
 	 * OTHER STUFF
