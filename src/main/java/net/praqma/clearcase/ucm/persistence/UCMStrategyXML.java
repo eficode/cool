@@ -822,11 +822,6 @@ public class UCMStrategyXML implements UCMStrategyInterface
         
     }
 
-    @Override
-    public void createBaseline(String baseline, String component, File view, boolean incremental, boolean identical) throws UCMException {
-        // TODO Auto-generated method stub
-        
-    }
 
     @Override
     public String getBaselineActivities(String baseline) {
@@ -1126,7 +1121,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void createView(String tag, String path, boolean snapshotView)
+	public void createView(String tag, String path, boolean snapshotView, Stream stream)
 			throws UCMException {
 		// TODO Auto-generated method stub
 		
@@ -1166,5 +1161,12 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	public Map<String, String> loadView( UCMView view ) throws UCMException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public void createBaseline( String baseline, Component component, File view, boolean incremental, boolean identical, Component... depends ) throws UCMException {
+		// TODO Auto-generated method stub
+		
 	}
 }

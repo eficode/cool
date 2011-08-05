@@ -39,7 +39,7 @@ interface UCMStrategyInterface
 	public String loadBaseline( String baseline ) throws UCMException;
 	public List<String> getBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob ) throws UCMException;
 	public void setPromotionLevel( String baseline, String plevel ) throws UCMException;
-	public void createBaseline( String baseline, String component, File view, boolean incremental, boolean identical ) throws UCMException;
+	public void createBaseline( String baseline, Component component, File view, boolean incremental, boolean identical, Component ... depends ) throws UCMException;
 	
 	public String getBaselineActivities( String baseline );
 	
@@ -96,7 +96,7 @@ interface UCMStrategyInterface
 	public String viewUpdate( File viewroot, boolean overwrite, String loadrules );
 	
 	/* Views */
-	public void createView( String tag, String path, boolean snapshotView ) throws UCMException;
+	public void createView( String tag, String path, boolean snapshotView, Stream stream ) throws UCMException;
 	public void removeView( UCMView view ) throws UCMException;
 	public Map<String, String> loadView( UCMView view ) throws UCMException;
 	

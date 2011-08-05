@@ -6,6 +6,7 @@ import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
@@ -16,9 +17,10 @@ import net.praqma.util.debug.PraqmaLogger.Logger;
 
 public class BootstrapProject {
 	
-	private static final String vobtag = "\\TEST4";
-	private static final String pvobtag = "\\TEST4_PVOB";
+	private static final String vobtag = "\\TEST6";
+	private static final String pvobtag = "\\TEST6_PVOB";
 	private static final String dynView = "test_view";
+	private static final String bootstrapView = "testbootstrap_int";
 	
 	public static void main( String[] args ) throws UCMException {
 		
@@ -51,6 +53,13 @@ public class BootstrapProject {
         } catch( Exception e ) {
         	System.out.println("Error while removing: " + e.getMessage());
         }
+        
+        try {
+        	DynamicView dv = new DynamicView(null,bootstrapView);
+        	dv.removeView();
+        } catch( Exception e ) {
+        	System.out.println("Error while removing: " + e.getMessage());
+        }
 
         System.out.println("Creating PVob " + pvobtag);	
 		PVob pvob = PVob.create(pvobtag, null, "PVOB for testing");
@@ -65,7 +74,7 @@ public class BootstrapProject {
 		Component c = Component.create("test", pvob, null, "Test component");
 		System.out.println("Component=" + c);
 		
-		DynamicView view = DynamicView.create(null,dynView);
+		DynamicView view = DynamicView.create(null, dynView, null);
 		System.out.println("View=" + view.getStorageLocation());
 		
 		System.out.println("Creating project");
@@ -73,7 +82,12 @@ public class BootstrapProject {
 		System.out.println("Creating integration stream");
 		Stream intStream = Stream.createIntegration( "test_int", project, c );
 		
+		/* Baselines */
 		
+		System.out.println("Creating integration view");
+		DynamicView bootstrap_int = DynamicView.create(null, bootstrapView, intStream);
+		System.out.println("Creating baseline");
+		Baseline.create( "Structure_initial", c, null, false, false, c );
 		
 		System.out.println("Done...");
 	}

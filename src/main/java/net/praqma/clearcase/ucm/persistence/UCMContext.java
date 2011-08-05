@@ -221,8 +221,8 @@ public class UCMContext extends Cool {
 		return rs;
 	}
 
-	public void createBaseline( String fqname, Component component, File view, boolean incremental, boolean identical ) throws UCMException {
-		strategy.createBaseline( fqname, component.getFullyQualifiedName(), view, incremental, identical );
+	public void createBaseline( String fqname, Component component, File view, boolean incremental, boolean identical, Component ... depends ) throws UCMException {
+		strategy.createBaseline( fqname, component, view, incremental, identical, depends );
 	}
 
 	public void setPromotionLevel( Baseline baseline ) throws UCMException {
@@ -595,8 +595,8 @@ public class UCMContext extends Cool {
 
 	/* Views */
 
-	public void createView( String tag, String path, boolean snapshotView ) throws UCMException {
-		strategy.createView( tag, path, snapshotView );
+	public void createView( String tag, String path, boolean snapshotView, Stream stream ) throws UCMException {
+		strategy.createView( tag, path, snapshotView, stream );
 	}
 	
 	public Map<String, String> loadView( UCMView view ) throws UCMException {

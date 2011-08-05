@@ -221,14 +221,27 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
 
-	public void createBaseline(String fqname, String component, File view,
-			boolean incremental, boolean identical) throws UCMException {
-		String cmd = "mkbl -component " + component
-				+ (identical ? " -identical " : " ")
-				+ (incremental ? "-incremental" : "-full") + " \"" + fqname
-				+ "\"";
+	public void createBaseline(String fqname, Component component, File view, boolean incremental, boolean identical, Component ... depends) throws UCMException {
+		String cmd = "mkbl -component " + component.getFullyQualifiedName() 
+				                        + (identical ? " -identical" : "")
+                                        + (incremental ? " -incremental" : " -full");
+		
+		if( depends != null ) {
+			cmd += " -adepends_on";
+			for( Component c : depends ) {
+				cmd += " " + c.getFullyQualifiedName() + ", ";
+			}
+			cmd = cmd.substring( 0, ( cmd.length() - 2 ) );
+		}
+		
+		cmd += " " + fqname;
+		
 		try {
-			Cleartool.run(cmd, view);
+			if(view != null) {
+				Cleartool.run(cmd, view);
+			} else {
+				Cleartool.run(cmd);
+			}
 		} catch (AbnormalProcessTerminationException e) {
 			throw new UCMException("Could not create Baseline " + fqname,
 					e.getMessage());
@@ -398,7 +411,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		for( Component c : components ) {
 			cmd += c.getShortname() + "_INITIAL@" + project.getPVob() + ", ";
 		}
-		cmd = cmd.substring( 0, ( cmd.length() - 1 ) ) + " " + name + "@" + project.getPVob();
+		cmd = cmd.substring( 0, ( cmd.length() - 2 ) ) + " " + name + "@" + project.getPVob();
 		
 		try {
 			Cleartool.run(cmd);
@@ -1102,9 +1115,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		return viewtag;
 	}
 	
-	public void createView( String tag, String path, boolean snapshotView ) throws UCMException {
+	public void createView( String tag, String path, boolean snapshotView, Stream stream ) throws UCMException {
 		logger.info("Creating " + tag);
-		String cmd = "mkview -tag " + tag + (snapshotView?" -snapshot":"") + " -stgloc " + ( path != null ? path : "-auto" );
+		String cmd = "mkview -tag " + tag + ( snapshotView ? " -snapshot" : "" ) + ( stream != null ? " -stream " + stream.getFullyQualifiedName() : "" ) + " -stgloc " + ( path != null ? path : "-auto" );
 		
 		try {
 			Cleartool.run(cmd);
@@ -1123,7 +1136,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
 	
-	public static final Pattern rx_view_get_path = Pattern.compile("^\\s*Global path:\\s*\"(.*?)\"\\s*$");
+	public static final Pattern rx_view_get_path = Pattern.compile("^\\s*Global path:\\s*(.*?)\\s*$");
 	
 	public Map<String, String> loadView( UCMView view ) throws UCMException {
 		logger.info("Loading view " + view);
@@ -1370,5 +1383,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		// TODO Auto-generated method stub
 
 	}
+
 
 }

@@ -5,12 +5,14 @@ import java.util.Map;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
+import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 
 public class UCMView extends UCM {
 
 	protected String path;
 	protected String viewtag = "";
+	protected Stream stream = null;
 	
 	protected String storageLocation = null;
 	
@@ -26,6 +28,12 @@ public class UCMView extends UCM {
 	public UCMView(String path, String viewtag) {
 		this.path = path;
 		this.viewtag = viewtag;
+	}
+	
+	public UCMView(String path, String viewtag, Stream stream) {
+		this.path = path;
+		this.viewtag = viewtag;
+		this.stream = stream;
 	}
 
 	public static SnapshotView GetSnapshotView(File viewroot) throws UCMException {
@@ -74,6 +82,14 @@ public class UCMView extends UCM {
 		}
 		
 		return this.storageLocation;
+	}
+	
+	public Stream getStream() throws UCMException {
+		return stream;
+	}
+	
+	public String toString() {
+		return viewtag;
 	}
 
 }

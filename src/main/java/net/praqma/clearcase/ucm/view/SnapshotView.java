@@ -24,7 +24,7 @@ public class SnapshotView extends UCMView {
 
 	private File viewroot = null;
 	
-	private Stream stream = null;
+	
 	private String pvob = "";
 	private String uuid = "";
 	private String globalPath = "";
