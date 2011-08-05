@@ -23,6 +23,7 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 
+import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
@@ -97,6 +98,23 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			return Cleartool.run(cmd).stdoutBuffer.toString();
 		} catch (AbnormalProcessTerminationException e) {
 			throw new UCMException(e.getMessage(), e.getMessage());
+		}
+	}
+	
+	public void createProject( String name, String root, PVob pvob, int policy, String comment, Component ... mcomps ) throws UCMException {
+		String cmd = "mkproject" +  ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root==null ? "RootFolder" : root ) + " -modcomp ";
+		for( Component c : mcomps) {
+			cmd += c.getFullyQualifiedName() + " ";
+		}
+		if( policy > 0 ) {
+			cmd += " -policy " + Project.getPolicy( policy );
+		}
+		cmd += " " + name + "@" + pvob;
+		
+		try {
+			Cleartool.run(cmd);
+		} catch (AbnormalProcessTerminationException e) {
+			throw new UCMException( "Could not create Project " + root + ": " + e.getMessage(), UCMType.CREATION_FAILED);
 		}
 	}
 	
@@ -321,7 +339,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 	
 	public void createComponent( String name, PVob pvob, String root, String comment ) throws UCMException {
-		String cmd = "mkcomp" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( root != null ? " -root " + root : " -nroot") + " component:" + name + "@" + pvob;
+		String cmd = "mkcomp" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( root != null ? " -root " + root : " -nroot") + " " + name + "@" + pvob;
 		
 		try {
 			Cleartool.run(cmd);
@@ -373,6 +391,20 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		String cmd = "mkstream -in " + pstream + " " + ( baseline != null ? "-baseline " + baseline + " " : "" ) + ( readonly ? "-readonly " : "" ) + nstream;
 		Cleartool.run( cmd );
+	}
+	
+	public void createIntegrationStream( String name, Project project, Component ... components ) throws UCMException {
+		String cmd = "mkstream -integration -in " + project.getFullyQualifiedName() + " -baseline ";
+		for( Component c : components ) {
+			cmd += c.getShortname() + "_INITIAL@" + project.getPVob() + ", ";
+		}
+		cmd = cmd.substring( 0, ( cmd.length() - 1 ) ) + " " + name + "@" + project.getPVob();
+		
+		try {
+			Cleartool.run(cmd);
+		} catch (AbnormalProcessTerminationException e) {
+			throw new UCMException( "Could not create integration stream: " + e.getMessage(), UCMType.CREATION_FAILED );
+		}
 	}
 
 	public void generate( String stream )
@@ -1081,6 +1113,44 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
 	
+	public void removeView( UCMView view ) throws UCMException {
+		String cmd = "rmview -force " + ( view.isDynamicView() ? "-tag " + view.GetViewtag() : view.getStorageLocation() );
+		
+		try {
+			Cleartool.run(cmd);
+		} catch( Exception e ) {
+			throw new UCMException("Could not remove view: " + e.getMessage());
+		}
+	}
+	
+	public static final Pattern rx_view_get_path = Pattern.compile("^\\s*Global path:\\s*\"(.*?)\"\\s*$");
+	
+	public Map<String, String> loadView( UCMView view ) throws UCMException {
+		logger.info("Loading view " + view);
+		
+		String cmd = "lsview -l " + view.GetViewtag();
+		
+		Map<String, String> a = new HashMap<String, String>();
+		
+		try {
+			CmdResult r = Cleartool.run(cmd);
+			
+			for( String s : r.stdoutList ) {
+				if( s.contains("Global path") ) {
+					Matcher m = rx_view_get_path.matcher(s);
+					if(m.find()) {
+						a.put("pathname", m.group(1));
+					}
+				}
+			}
+			
+		} catch( Exception e ) {
+			throw new UCMException( "Could not load Vob: " + e.getMessage() );
+		}
+		
+		return a;
+	}
+	
 	/*****************************
 	 * Vobs
 	 *****************************/
@@ -1144,7 +1214,23 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		try {
 			Cleartool.run(cmd);
 		} catch( Exception e ) {
+			if(e.getMessage().contains( "is already mounted" )) {
+				/* No op */
+				return;
+			}
+			
 			throw new UCMException( "Could not mount Vob " + vob + ": " + e.getMessage());
+		}
+	}
+	
+	public void unmountVob( Vob vob ) throws UCMException {
+		logger.info("UnMounting vob " + vob);
+		
+		String cmd = "umount " + vob;
+		try {
+			Cleartool.run(cmd);
+		} catch( Exception e ) {
+			throw new UCMException( "Could not unmount Vob " + vob + ": " + e.getMessage());
 		}
 	}
 

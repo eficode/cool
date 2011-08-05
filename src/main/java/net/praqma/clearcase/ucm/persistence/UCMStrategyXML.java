@@ -32,6 +32,7 @@ import org.w3c.dom.NodeList;
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.UCMException;
@@ -1129,5 +1130,41 @@ public class UCMStrategyXML implements UCMStrategyInterface
 			throws UCMException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void removeVob( Vob vob ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void unmountVob( Vob vob ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void createProject( String name, String root, PVob pvob, int policy, String comment, Component... mcomps ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void createIntegrationStream( String name, Project project, Component... components ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeView( UCMView view ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<String, String> loadView( UCMView view ) throws UCMException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

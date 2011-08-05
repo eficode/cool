@@ -9,6 +9,7 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
@@ -29,6 +30,7 @@ interface UCMStrategyInterface
 	List<String> getModifiableComponents( String project );
 	public String loadProject( String project ) throws UCMException;
 	public List<Project> getProjects( PVob vob ) throws UCMException;
+	public void createProject( String name, String root, PVob pvob, int policy, String comment, Component ... mcomps ) throws UCMException;
 	
 	/* Activity */
 	public String loadActivity( String activity ) throws UCMException;
@@ -61,6 +63,7 @@ interface UCMStrategyInterface
 	public String getRecommendedBaselines( String stream ) throws UCMException;
 	public String getStreamFromView( String viewtag ) throws UCMException;
 	public void createStream( String pstream, String nstream, boolean readonly, String baseline );
+	public void createIntegrationStream( String name, Project project, Component ... components ) throws UCMException;
 	public boolean streamExists( String fqname );
 	public boolean rebaseStream( String viewtag, String stream, String baseline, boolean complete );
 	public boolean isRebasing( String stream );
@@ -94,6 +97,8 @@ interface UCMStrategyInterface
 	
 	/* Views */
 	public void createView( String tag, String path, boolean snapshotView ) throws UCMException;
+	public void removeView( UCMView view ) throws UCMException;
+	public Map<String, String> loadView( UCMView view ) throws UCMException;
 	
 	/* Vobs */
 	public void createVob( String vobname, boolean UCMProject, String path, String comment ) throws UCMException;
@@ -101,6 +106,7 @@ interface UCMStrategyInterface
 	public void mountVob( Vob vob ) throws UCMException;
 	public List<PVob> getVobs( Region region );
 	public void removeVob( Vob vob ) throws UCMException;
+	public void unmountVob( Vob vob ) throws UCMException;
 
 	/* Attributes */
 	public String getAttribute( String fqname, String attribute ) throws UCMException;
