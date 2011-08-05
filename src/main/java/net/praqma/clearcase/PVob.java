@@ -13,11 +13,20 @@ public class PVob extends Vob {
 
 	public static PVob create( String name, String path, String comment ) throws UCMException {
 		context.createVob(name, true, path, comment);
-		System.out.println("Creating PVob " + name);
 		PVob pvob = new PVob(name);
 		pvob.storageLocation = path;
 		
 		return pvob;
+	}
+	
+	public static PVob get( String pvobname ) {
+		try {
+			PVob pvob = new PVob(pvobname);
+			pvob.load();
+			return pvob;
+		} catch( Exception e ) {
+			return null;
+		}
 	}
 
 }

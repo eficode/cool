@@ -29,6 +29,10 @@ public class Vob extends Cool {
 		context.mountVob(this);
 	}
 	
+	public void unmount() throws UCMException {
+		context.unmountVob(this);
+	}
+	
 	public String toString() {
 		return name;
 	}
@@ -42,7 +46,7 @@ public class Vob extends Cool {
 	}
 	
 	public static Vob create( String name, String path, String comment ) throws UCMException {
-		context.createVob(name, true, path, comment);
+		context.createVob(name, false, path, comment);
 		
 		Vob vob = new Vob(name);
 		vob.storageLocation = path;
@@ -54,13 +58,13 @@ public class Vob extends Cool {
 		context.removeVob( this );
 	}
 	
-	public static boolean exists( String vobname ) {
+	public static Vob get( String vobname ) {
 		try {
 			Vob vob = new Vob(vobname);
 			vob.load();
-			return true;
+			return vob;
 		} catch( Exception e ) {
-			return false;
+			return null;
 		}
 	}
 
