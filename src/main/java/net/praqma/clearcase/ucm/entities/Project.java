@@ -9,6 +9,8 @@ import net.praqma.clearcase.ucm.UCMException;
 public class Project extends UCMEntity {
     /* Project specific fields */
     private Stream stream = null;
+    
+    public static final int POLICY_INTERPROJECT_DELIVER = 0x1;
 
     Project() {}
 
@@ -63,6 +65,23 @@ public class Project extends UCMEntity {
         }
 
         return plevel;
+    }
+    
+    public static String getPolicy( int policy ) {
+    	String p = "";
+    	if( ( policy & POLICY_INTERPROJECT_DELIVER ) > 0 ) {
+    		p += "POLICY_INTERPROJECT_DELIVER ";
+    	}
+    	
+    	return p;
+    }
+    
+    public static Project create( String name, String root, PVob pvob, int policy, String comment, Component ... mcomps ) throws UCMException {
+    	context.createProject( name, root, pvob, policy, comment, mcomps );
+    	
+    	Project p = UCMEntity.getProject( name, pvob, true );
+    	
+    	return p;
     }
 
     public void load() throws UCMException {
