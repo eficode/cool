@@ -55,6 +55,12 @@ public class Stream extends UCMEntity
 		return context.createStream( pstream, nstream, readonly, baseline );
 	}
 	
+	public static Stream createIntegration( String name, Project project, Component ... components ) throws UCMException {
+		context.createIntegrationStream( name, project, components );
+		
+		return UCMEntity.getStream( name, project.getPVob(), true );		
+	}
+	
 	public void load() throws UCMException {
 		String r = context.loadStream(this);
 		String[] data = r.split(UCM.delim);
