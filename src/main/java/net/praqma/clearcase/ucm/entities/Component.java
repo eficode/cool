@@ -28,7 +28,7 @@ public class Component extends UCMEntity
 	public static Component create( String name, PVob pvob, String root, String comment ) throws UCMException {
 		context.createComponent(name, pvob, root, comment);
 		
-		return UCMEntity.getComponent(name, true);
+		return UCMEntity.getComponent(name, pvob, true);
 	}
 	
 	
