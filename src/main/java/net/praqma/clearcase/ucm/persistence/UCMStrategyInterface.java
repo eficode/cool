@@ -100,6 +100,7 @@ interface UCMStrategyInterface
 	public Map<String, String> loadVob( Vob vob ) throws UCMException;
 	public void mountVob( Vob vob ) throws UCMException;
 	public List<PVob> getVobs( Region region );
+	public void removeVob( Vob vob ) throws UCMException;
 
 	/* Attributes */
 	public String getAttribute( String fqname, String attribute ) throws UCMException;

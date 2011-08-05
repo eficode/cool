@@ -1,7 +1,5 @@
 package net.praqma.clearcase;
 
-import java.io.File;
-
 import net.praqma.clearcase.ucm.UCMException;
 
 public class PVob extends Vob {
@@ -15,7 +13,7 @@ public class PVob extends Vob {
 
 	public static PVob create( String name, String path, String comment ) throws UCMException {
 		context.createVob(name, true, path, comment);
-		
+		System.out.println("Creating PVob " + name);
 		PVob pvob = new PVob(name);
 		pvob.storageLocation = path;
 		

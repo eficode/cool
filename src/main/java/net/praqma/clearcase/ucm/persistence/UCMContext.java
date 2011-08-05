@@ -644,6 +644,10 @@ public class UCMContext extends Cool
 		strategy.mountVob(vob);
 	}
 	
+	public void removeVob( Vob vob ) throws UCMException {
+		strategy.removeVob( vob );
+	}
+	
 	/* Views */
 	
 	

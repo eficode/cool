@@ -321,7 +321,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 	
 	public void createComponent( String name, PVob pvob, String root, String comment ) throws UCMException {
-		String cmd = "mkcomp" + ( comment != null ? " -c " + comment : "" ) + ( root != null ? " -root " + root : " -nroot") + " " + name + "@" + pvob;
+		String cmd = "mkcomp" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( root != null ? " -root " + root : " -nroot") + " component:" + name + "@" + pvob;
 		
 		try {
 			Cleartool.run(cmd);
@@ -1071,6 +1071,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 	
 	public void createView( String tag, String path, boolean snapshotView ) throws UCMException {
+		logger.info("Creating " + tag);
 		String cmd = "mkview -tag " + tag + (snapshotView?" -snapshot":"") + " -stgloc " + ( path != null ? path : "-auto" );
 		
 		try {
@@ -1087,7 +1088,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	public static final Pattern rx_vob_get_path = Pattern.compile("^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$");
 	
 	public void createVob( String vobname, boolean UCMProject, String path, String comment ) throws UCMException {
-		String cmd = "mkvob -tag" + vobname + ( UCMProject ? " -ucmproject" : "" ) + ( comment != null ? " -c " + comment : "" ) + " -stgloc " + ( path != null ? path : "-auto" );
+		logger.info("Creating vob " + vobname);
+		
+		String cmd = "mkvob -tag " + vobname + ( UCMProject ? " -ucmproject" : "" ) + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -stgloc " + ( path != null ? path : "-auto" );
 		
 		try {
 			Cleartool.run(cmd);
@@ -1109,6 +1112,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 	
 	public Map<String, String> loadVob( Vob vob ) throws UCMException {
+		logger.info("Loading vob " + vob);
+		
 		String cmd = "describe vob:" + vob;
 		
 		Map<String, String> a = new HashMap<String, String>();
@@ -1133,6 +1138,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 	
 	public void mountVob( Vob vob ) throws UCMException {
+		logger.info("Mounting vob " + vob);
+		
 		String cmd = "mount " + vob;
 		try {
 			Cleartool.run(cmd);
@@ -1145,6 +1152,16 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	public int getVobCount() {
 	    String cmd = "lsvob -short";
 	    return Cleartool.run( cmd ).stdoutList.size();
+	}
+	
+	public void removeVob( Vob vob ) throws UCMException {
+		String cmd = "rmvob -force " + vob.getStorageLocation();
+		
+		try {
+			Cleartool.run(cmd);
+		} catch( Exception e ) {
+			throw new UCMException( "Could remove Vob " + vob + ": " + e.getMessage());
+		}
 	}
 
 	/*****************************
