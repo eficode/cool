@@ -1099,7 +1099,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void createVob(String vobname, boolean UCMProject, File path, String comment)
+	public void createVob(String vobname, boolean UCMProject, String path, String comment)
 			throws UCMException {
 		// TODO Auto-generated method stub
 		
@@ -1120,6 +1120,13 @@ public class UCMStrategyXML implements UCMStrategyInterface
 
 	@Override
 	public void mountVob(Vob vob) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void createView(String tag, String path, boolean snapshotView)
+			throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}

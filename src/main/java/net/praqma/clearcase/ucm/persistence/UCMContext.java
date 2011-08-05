@@ -624,9 +624,7 @@ public class UCMContext extends Cool
 		return null;
 	}
 	
-	public List<UCMView> getViews( Region region ) {
-	    return strategy.getViews(region);
-	}	
+	/* VOBS */
 	
 	public List<PVob> getVobs( Region region ) {
 	    return strategy.getVobs(region);
@@ -634,9 +632,28 @@ public class UCMContext extends Cool
 	
 	
 	
-	public void createVob( String vobname, boolean UCMProject, File path, String comment ) throws UCMException {
+	public void createVob( String vobname, boolean UCMProject, String path, String comment ) throws UCMException {
 		strategy.createVob(vobname, UCMProject, path, comment);
 	}
+	
+	public Map<String, String>loadVob( Vob vob ) throws UCMException {
+		return strategy.loadVob(vob);
+	}
+	
+	public void mountVob( Vob vob ) throws UCMException {
+		strategy.mountVob(vob);
+	}
+	
+	/* Views */
+	
+	
+	public void createView( String tag, String path, boolean snapshotView ) throws UCMException {
+		strategy.createView(tag, path, snapshotView);
+	}
+	
+	public List<UCMView> getViews( Region region ) {
+	    return strategy.getViews(region);
+	}	
 	
 	
 	public String getXML()

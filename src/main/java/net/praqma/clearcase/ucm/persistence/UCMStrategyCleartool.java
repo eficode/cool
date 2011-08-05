@@ -1070,14 +1070,24 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		return viewtag;
 	}
 	
+	public void createView( String tag, String path, boolean snapshotView ) throws UCMException {
+		String cmd = "mkview -tag " + tag + (snapshotView?" -snapshot":"") + " -stgloc " + ( path != null ? path : "-auto" );
+		
+		try {
+			Cleartool.run(cmd);
+		} catch( Exception e ) {
+			throw new UCMException(e.getMessage(), UCMType.CREATION_FAILED);
+		}
+	}
+	
 	/*****************************
 	 * Vobs
 	 *****************************/
 	
 	public static final Pattern rx_vob_get_path = Pattern.compile("^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$");
 	
-	public void createVob( String vobname, boolean UCMProject, File path, String comment ) throws UCMException {
-		String cmd = "mkvob -tag" + vobname + ( UCMProject ? " -ucmproject" : "" ) + ( comment != null ? " -c " + comment : "" ) + " -stgloc " + ( path != null ? path.getAbsolutePath() : "-auto" );
+	public void createVob( String vobname, boolean UCMProject, String path, String comment ) throws UCMException {
+		String cmd = "mkvob -tag" + vobname + ( UCMProject ? " -ucmproject" : "" ) + ( comment != null ? " -c " + comment : "" ) + " -stgloc " + ( path != null ? path : "-auto" );
 		
 		try {
 			Cleartool.run(cmd);

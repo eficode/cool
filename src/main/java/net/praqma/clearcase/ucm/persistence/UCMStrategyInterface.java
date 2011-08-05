@@ -92,8 +92,11 @@ interface UCMStrategyInterface
 	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot );
 	public String viewUpdate( File viewroot, boolean overwrite, String loadrules );
 	
+	/* Views */
+	public void createView( String tag, String path, boolean snapshotView ) throws UCMException;
+	
 	/* Vobs */
-	public void createVob( String vobname, boolean UCMProject, File path, String comment ) throws UCMException;
+	public void createVob( String vobname, boolean UCMProject, String path, String comment ) throws UCMException;
 	public Map<String, String> loadVob( Vob vob ) throws UCMException;
 	public void mountVob( Vob vob ) throws UCMException;
 	public List<PVob> getVobs( Region region );

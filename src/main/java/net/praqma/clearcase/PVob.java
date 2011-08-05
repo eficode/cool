@@ -13,7 +13,7 @@ public class PVob extends Vob {
 		super(name);
 	}
 
-	public static PVob create( String name, File path, String comment ) throws UCMException {
+	public static PVob create( String name, String path, String comment ) throws UCMException {
 		context.createVob(name, true, path, comment);
 		
 		PVob pvob = new PVob(name);
