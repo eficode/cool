@@ -10,6 +10,12 @@ public class DynamicView extends UCMView {
 	
 	public DynamicView( String path ) {
 		super(path);
+		this.dynamic = true;
+	}
+	
+	public DynamicView( String path, String viewtag ) {
+		super(path, viewtag);
+		this.dynamic = true;
 	}
 	
 	/**
@@ -19,8 +25,8 @@ public class DynamicView extends UCMView {
 	 * @return An instance of DynamicView
 	 * @throws UCMException
 	 */
-	public static DynamicView create( String tag, String path ) throws UCMException {
+	public static DynamicView create( String path, String tag ) throws UCMException {
 		context.createView(tag, path, false);
-		return new DynamicView(path);
+		return new DynamicView(path, tag);
 	}
 }
