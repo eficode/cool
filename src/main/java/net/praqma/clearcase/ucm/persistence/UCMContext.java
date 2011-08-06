@@ -221,7 +221,7 @@ public class UCMContext extends Cool {
 		return rs;
 	}
 
-	public void createBaseline( String fqname, Component component, File view, boolean incremental, boolean identical, Component ... depends ) throws UCMException {
+	public void createBaseline( String fqname, Component component, File view, boolean incremental, boolean identical, Component[] depends ) throws UCMException {
 		strategy.createBaseline( fqname, component, view, incremental, identical, depends );
 	}
 

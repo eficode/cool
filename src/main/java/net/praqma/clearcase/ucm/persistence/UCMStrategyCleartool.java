@@ -221,7 +221,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
 
-	public void createBaseline(String fqname, Component component, File view, boolean incremental, boolean identical, Component ... depends) throws UCMException {
+	public void createBaseline(String fqname, Component component, File view, boolean incremental, boolean identical, Component[] depends) throws UCMException {
 		String cmd = "mkbl -component " + component.getFullyQualifiedName() 
 				                        + (identical ? " -identical" : "")
                                         + (incremental ? " -incremental" : " -full");

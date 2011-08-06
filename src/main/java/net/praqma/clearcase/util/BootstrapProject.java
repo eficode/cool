@@ -17,8 +17,8 @@ import net.praqma.util.debug.PraqmaLogger.Logger;
 
 public class BootstrapProject {
 	
-	private static final String vobtag = "\\TEST7";
-	private static final String pvobtag = "\\TEST7_PVOB";
+	private static final String vobtag = "\\TEST9";
+	private static final String pvobtag = "\\TEST9_PVOB";
 	private static final String dynView = "test_view";
 	private static final String bootstrapView = "testbootstrap_int";
 	
@@ -89,8 +89,11 @@ public class BootstrapProject {
 		
 		System.out.println("Creating integration view");
 		DynamicView bootstrap_int = DynamicView.create(null, bootstrapView, intStream);
-		System.out.println("Creating baseline");
-		Baseline.create( "Structure_initial", c, new File(viewPath, bootstrapView), false, false, c );
+		System.out.println("Creating baseline 1");
+		Baseline.create( "Structure_initial", c, new File(viewPath, bootstrapView), false, false );
+		
+		System.out.println("Creating baseline 2");
+		Baseline.create( "Structure_1_0", c, new File(viewPath, bootstrapView), false, true );
 		
 		System.out.println("Done...");
 	}
