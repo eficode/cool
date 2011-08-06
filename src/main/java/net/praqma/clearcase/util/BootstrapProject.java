@@ -95,6 +95,21 @@ public class BootstrapProject {
 		System.out.println("Creating baseline 2");
 		Baseline.create( "Structure_1_0", c, new File(viewPath, bootstrapView), false, true );
 		
+		System.out.println("Creating Mainline project");
+		Project mainlineproject = Project.create( "test_mainline", null, pvob, Project.POLICY_INTERPROJECT_DELIVER  | 
+				                                                               Project.POLICY_CHSTREAM_UNRESTRICTED | 
+				                                                               Project.POLICY_DELIVER_NCO_DEVSTR    |
+				                                                               Project.POLICY_DELIVER_REQUIRE_REBASE, "Mainline project", c );
+		
+		System.out.println("Creating mainline integration stream");
+		Stream mainlineIntStream = Stream.createIntegration( "mainline_int", mainlineproject, c );
+		
+		System.out.println("Creating development project");
+		Project developmentProject = Project.create( "test_development", null, pvob, Project.POLICY_INTERPROJECT_DELIVER  | 
+				                                                                     Project.POLICY_CHSTREAM_UNRESTRICTED | 
+				                                                                     Project.POLICY_DELIVER_NCO_DEVSTR    |
+				                                                                     Project.POLICY_DELIVER_REQUIRE_REBASE, "Mainline project", c );
+		
 		System.out.println("Done...");
 	}
 }

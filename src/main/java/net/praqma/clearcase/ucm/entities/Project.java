@@ -10,7 +10,10 @@ public class Project extends UCMEntity {
     /* Project specific fields */
     private Stream stream = null;
     
-    public static final int POLICY_INTERPROJECT_DELIVER = 0x1;
+    public static final int POLICY_INTERPROJECT_DELIVER   = 1;
+    public static final int POLICY_CHSTREAM_UNRESTRICTED  = 2;
+    public static final int POLICY_DELIVER_REQUIRE_REBASE = 4;
+    public static final int POLICY_DELIVER_NCO_DEVSTR     = 8;
 
     Project() {}
 
@@ -70,7 +73,23 @@ public class Project extends UCMEntity {
     public static String getPolicy( int policy ) {
     	String p = "";
     	if( ( policy & POLICY_INTERPROJECT_DELIVER ) > 0 ) {
-    		p += "POLICY_INTERPROJECT_DELIVER ";
+    		p += "POLICY_INTERPROJECT_DELIVER, ";
+    	}
+    	
+    	if( ( policy & POLICY_CHSTREAM_UNRESTRICTED ) > 0 ) {
+    		p += "POLICY_CHSTREAM_UNRESTRICTED, ";
+    	}
+    	
+    	if( ( policy & POLICY_DELIVER_REQUIRE_REBASE ) > 0 ) {
+    		p += "POLICY_DELIVER_REQUIRE_REBASE, ";
+    	}
+    	
+    	if( ( policy & POLICY_DELIVER_NCO_DEVSTR ) > 0 ) {
+    		p += "POLICY_DELIVER_NCO_DEVSTR, ";
+    	}
+    	
+    	if( p.length() > 0 ) {
+    		p = p.substring( 0, ( p.length() - 2 ) );
     	}
     	
     	return p;
