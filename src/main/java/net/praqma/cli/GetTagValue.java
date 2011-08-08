@@ -7,81 +7,66 @@ import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
-public class GetTagValue
-{
-	public static void main( String[] args ) throws UCMException
-	{
-		try
-		{
+public class GetTagValue {
+	public static void main( String[] args ) throws UCMException {
+		try {
 			run( args );
-		}
-		catch( UCMException e )
-		{
+		} catch (UCMException e) {
 			System.err.println( UCM.getMessagesAsString() );
 			throw e;
 		}
 	}
-	
-	public static void run( String[] args ) throws UCMException
-	{
+
+	public static void run( String[] args ) throws UCMException {
 		Options o = new Options();
-		
-		Option oentity  = new Option( "entity", "e", true, 1, "The UCM entity" );
-		Option okey     = new Option( "key", "k", true, 1, "The tag key" );
+
+		Option oentity = new Option( "entity", "e", true, 1, "The UCM entity" );
+		Option okey = new Option( "key", "k", true, 1, "The tag key" );
 		Option otagtype = new Option( "tagtype", "y", true, 1, "The tag type" );
-		Option otagid   = new Option( "tagid", "i", true, 1, "The tag id" );
-		
+		Option otagid = new Option( "tagid", "i", true, 1, "The tag id" );
+
 		o.setOption( oentity );
 		o.setOption( okey );
 		o.setOption( otagtype );
 		o.setOption( otagid );
 
 		o.setDefaultOptions();
-		
+
 		o.setHeader( "Get the value of a tag" );
 		o.setSyntax( "GetTagValue -e <entity> -k <key> -y <tag type> -i <tag id>" );
 		o.setDescription( "Examples:" + Options.linesep + "GetTagValue -e baseline:bls@\\somevob -k status -y myjob -i 10101" );
-		
+
 		o.parse( args );
-		
-		try
-		{
+
+		try {
 			o.checkOptions();
-		}
-		catch ( Exception e )
-		{
+		} catch (Exception e) {
 			System.err.println( "Incorrect option: " + e.getMessage() );
 			o.display();
 			System.exit( 1 );
 		}
-		
+
 		/* Do the ClearCase thing... */
 		UCM.setContext( UCM.ContextType.CLEARTOOL );
-		
+
 		UCMEntity e = null;
-		
-		try
-		{
+
+		try {
 			e = UCMEntity.getEntity( oentity.getString(), false );
-		}
-		catch( UCMException ex )
-		{
+		} catch (UCMException ex) {
 			System.err.println( ex.getMessage() );
 			System.exit( 1 );
 		}
-		
+
 		Tag tag = e.getTag( otagtype.getString(), otagid.getString() );
-		
+
 		String value = tag.getEntry( okey.getString() );
-		
-		if( value == null )
-		{
+
+		if( value == null ) {
 			System.out.println( "Unknown key, " + okey.getString() );
-		}
-		else
-		{
+		} else {
 			System.out.println( value );
 		}
 	}
-		
+
 }

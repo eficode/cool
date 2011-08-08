@@ -123,17 +123,21 @@ public class Version extends UCMEntity {
 		this.loaded = true;
 	}
 	
-	public void create( File file, SnapshotView view ) throws UCMException {
+	public static Version create( File file, SnapshotView view ) throws UCMException {
+
+		Version.addToSourceControl( file, view.GetViewRoot() );
 		
 		Version version = Version.getUnextendedVersion( file, view.GetViewRoot() );
-		version.addToSourceControl( view );
+		version.setView( view );
+		
+		return version;
 	}
 	
-	public void addToSourceControl( SnapshotView view ) throws UCMException {
-		context.addToSourceControl( this, view );
+	public static void addToSourceControl( File file, File view ) throws UCMException {
+		context.addToSourceControl( file, view );
 	}
 	
-	public void checkIn( SnapshotView view ) throws UCMException {
+	public void checkIn() throws UCMException {
 		context.checkIn( this, view.GetViewRoot() );
 	}
 	
@@ -143,6 +147,10 @@ public class Version extends UCMEntity {
 
 	public void setView( SnapshotView view ) {
 		this.view = view;
+	}
+	
+	public SnapshotView getView() {
+		return view;
 	}
 
 	public void setSFile( String sfile ) {

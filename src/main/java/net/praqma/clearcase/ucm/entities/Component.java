@@ -1,5 +1,7 @@
 package net.praqma.clearcase.ucm.entities;
 
+import java.io.File;
+
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.utils.BaselineList;
@@ -25,8 +27,8 @@ public class Component extends UCMEntity
 		context.loadComponent(this);
 	}
 	
-	public static Component create( String name, PVob pvob, String root, String comment ) throws UCMException {
-		context.createComponent(name, pvob, root, comment);
+	public static Component create( String name, PVob pvob, String root, String comment, File view ) throws UCMException {
+		context.createComponent(name, pvob, root, comment, view);
 		
 		return UCMEntity.getComponent(name, pvob, true);
 	}

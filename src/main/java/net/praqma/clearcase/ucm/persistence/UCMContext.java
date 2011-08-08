@@ -134,7 +134,7 @@ public class UCMContext extends Cool {
 		return (Version) UCMEntity.getEntity( f, false );
 	}
 	
-	public void addToSourceControl( Version file, SnapshotView view ) throws UCMException {
+	public void addToSourceControl( File file, File view ) throws UCMException {
 		strategy.addToSourceControl( file, view );
 	}
 	
@@ -503,8 +503,8 @@ public class UCMContext extends Cool {
 		activity.setUser( result );
 	}
 	
-	public void createActivity( String name, PVob pvob, boolean force, String comment ) throws UCMException {
-		strategy.createActivity( name, pvob, force, comment );
+	public void createActivity( String name, PVob pvob, boolean force, String comment, File view ) throws UCMException {
+		strategy.createActivity( name, pvob, force, comment, view );
 	}
 
 	public String loadComponent( Component component ) throws UCMException {

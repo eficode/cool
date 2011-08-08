@@ -157,11 +157,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
 	
-	public void createActivity( String name, PVob pvob, boolean force, String comment ) throws UCMException {
+	public void createActivity( String name, PVob pvob, boolean force, String comment, File view ) throws UCMException {
 		String cmd = "mkactivity" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( force ? " -force" : "") + " " + name + "@" + pvob;
 		
 		try {
-			Cleartool.run(cmd);
+			Cleartool.run(cmd, view);
 		} catch( Exception e ) {
 			throw new UCMException( e.getMessage(), UCMType.CREATION_FAILED );
 		}
@@ -566,11 +566,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		return r.stdoutBuffer.toString();
 	}
 	
-	public void addToSourceControl( Version file, SnapshotView view ) throws UCMException {
+	public void addToSourceControl( File file, File view ) throws UCMException {
 		/* Check existence */
 		List<File> files = new ArrayList<File>();
-		File parent = file.getVersion().getParentFile();
-		while( !parent.exists() ) {
+		File parent = file.getParentFile();
+		logger.debug( "FILE  : " + file );
+		logger.debug( "PARENT: " + parent );
+		while( !parent.equals( view ) ) {
 			files.add( parent );
 			parent = parent.getParentFile();
 		}
@@ -578,7 +580,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		for(int i = files.size() - 1 ; i >= 0 ; i-- ) {
 			String cmd = "mkdir " + files.get( i ).getPath();
 			try {
-				Cleartool.run( cmd, view.GetViewRoot() );
+				Cleartool.run( cmd, view );
 			} catch( Exception e ) {
 				/* Already added to source control */
 			}
@@ -586,6 +588,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		
 		try {
 			String cmd = "mkelem " + file;
+			Cleartool.run( cmd, view );
 		} catch( Exception e ) {
 			throw new UCMException( "Could not add " + file + " to source control", UCMType.DEFAULT );
 		}

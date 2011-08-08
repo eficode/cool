@@ -17,8 +17,8 @@ import net.praqma.util.debug.PraqmaLogger.Logger;
 
 public class BootstrapProject {
 	
-	private static final String vobtag = "\\TEST9";
-	private static final String pvobtag = "\\TEST9_PVOB";
+	private static final String vobtag = "\\TEST12";
+	private static final String pvobtag = "\\TEST12_PVOB";
 	private static final String dynView = "test_view";
 	private static final String bootstrapView = "testbootstrap_int";
 	
@@ -73,12 +73,13 @@ public class BootstrapProject {
 		System.out.println("Path=" + vob.getStorageLocation());
 		vob.mount();
 		System.out.println("Mounted Vob " + vob);
-		
-		Component c = Component.create("test", pvob, null, "Test component");
-		System.out.println("Component=" + c);
-		
+
 		DynamicView view = DynamicView.create(null, dynView, null);
 		System.out.println("View=" + view.getStorageLocation());
+		
+		Component c = Component.create("test", pvob, "Test", "Test component");
+		System.out.println("Component=" + c);
+		
 		
 		System.out.println("Creating project");
 		Project project = Project.create( "TestBootStrap", null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Bootstrap project", c );

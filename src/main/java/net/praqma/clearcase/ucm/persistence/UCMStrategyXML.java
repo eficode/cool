@@ -1173,13 +1173,13 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void createActivity( String name, PVob pvob, boolean force, String comment ) throws UCMException {
+	public void createActivity( String name, PVob pvob, boolean force, String comment, File view ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void addToSourceControl( Version file, SnapshotView view ) throws UCMException {
+	public void addToSourceControl( File file, File view ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}

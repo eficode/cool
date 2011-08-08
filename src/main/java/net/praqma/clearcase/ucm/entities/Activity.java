@@ -41,8 +41,8 @@ public class Activity extends UCMEntity {
 		context.loadActivity( this );
 	}
 	
-	public Activity create( String name, PVob pvob, boolean force, String comment ) throws UCMException {
-		context.createActivity( name, pvob, force, comment );
+	public static Activity create( String name, PVob pvob, boolean force, String comment, File view ) throws UCMException {
+		context.createActivity( name, pvob, force, comment, view );
 		
 		Activity activity = UCMEntity.getActivity( name, pvob, true );
 		return activity;

@@ -36,7 +36,7 @@ interface UCMStrategyInterface
 	
 	/* Activity */
 	public String loadActivity( String activity ) throws UCMException;
-	public void createActivity( String name, PVob pvob, boolean force, String comment ) throws UCMException;
+	public void createActivity( String name, PVob pvob, boolean force, String comment, File view ) throws UCMException;
 	
 	/* Baseline */
 	public String loadBaseline( String baseline ) throws UCMException;
@@ -79,7 +79,7 @@ interface UCMStrategyInterface
 	/* Version */
 	public String getVersion( String version, String separator );
 	public String getVersionExtension( File file, File viewroot ) throws UCMException;
-	public void addToSourceControl( Version file, SnapshotView view ) throws UCMException;
+	public void addToSourceControl( File file, File view ) throws UCMException;
 	public void checkOut( Version version, File viewContext ) throws UCMException;
 	public void checkIn( Version version, File viewContext ) throws UCMException;
 	
