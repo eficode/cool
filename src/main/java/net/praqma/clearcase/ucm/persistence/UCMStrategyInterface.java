@@ -10,6 +10,7 @@ import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
@@ -66,7 +67,7 @@ interface UCMStrategyInterface
 	public String getRecommendedBaselines( String stream ) throws UCMException;
 	public String getStreamFromView( String viewtag ) throws UCMException;
 	public void createStream( String pstream, String nstream, boolean readonly, String baseline );
-	public void createIntegrationStream( String name, Project project, Component ... components ) throws UCMException;
+	public void createIntegrationStream( String name, Project project, Baseline baseline ) throws UCMException;
 	public boolean streamExists( String fqname );
 	public boolean rebaseStream( String viewtag, String stream, String baseline, boolean complete );
 	public boolean isRebasing( String stream );
@@ -80,8 +81,8 @@ interface UCMStrategyInterface
 	public String getVersion( String version, String separator );
 	public String getVersionExtension( File file, File viewroot ) throws UCMException;
 	public void addToSourceControl( File file, File view ) throws UCMException;
-	public void checkOut( Version version, File viewContext ) throws UCMException;
-	public void checkIn( Version version, File viewContext ) throws UCMException;
+	public void checkOut( File file, File viewContext ) throws UCMException;
+	public void checkIn( File file, File viewContext ) throws UCMException;
 	
 	/* Tag */
 	public List<String[]> getTags( String fqname ) throws UCMException;

@@ -32,6 +32,7 @@ import org.w3c.dom.NodeList;
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
@@ -1147,7 +1148,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void createIntegrationStream( String name, Project project, Component... components ) throws UCMException {
+	public void createIntegrationStream( String name, Project project, Baseline baseline ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1184,13 +1185,13 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void checkOut( Version version, File viewContext ) throws UCMException {
+	public void checkOut( File file, File viewContext ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void checkIn( Version version, File viewContext ) throws UCMException {
+	public void checkIn( File file, File viewContext ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}

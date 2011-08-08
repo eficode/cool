@@ -139,11 +139,19 @@ public class UCMContext extends Cool {
 	}
 	
 	public void checkOut( Version version, File viewContext ) throws UCMException {
-		strategy.checkOut( version, viewContext );
+		strategy.checkOut( version.getVersion(), viewContext );
 	}
 	
 	public void checkIn( Version version, File viewContext ) throws UCMException {
-		strategy.checkIn( version, viewContext );
+		strategy.checkIn( version.getVersion(), viewContext );
+	}
+	
+	public void checkOut( File file, File viewContext ) throws UCMException {
+		strategy.checkOut( file, viewContext );
+	}
+	
+	public void checkIn( File file, File viewContext ) throws UCMException {
+		strategy.checkIn( file, viewContext );
 	}
 
 	/* Tags */
@@ -362,15 +370,16 @@ public class UCMContext extends Cool {
 	}
 
 	public Stream createStream( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException {
-		strategy.createStream( pstream.getFullyQualifiedName(), nstream, readonly, ( baseline != null ? baseline.getFullyQualifiedName() : "" ) );
+		//strategy.createStream( pstream.getFullyQualifiedName(), nstream, readonly, ( baseline != null ? baseline.getFullyQualifiedName() : "" ) );
+		strategy.createStream( pstream.getFullyQualifiedName(), nstream, readonly, ( baseline != null ? baseline.getFullyQualifiedName() : null ) );
 
 		Stream stream = UCMEntity.getStream( nstream );
 
 		return stream;
 	}
 	
-	public void createIntegrationStream( String name, Project project, Component ... components ) throws UCMException {
-		strategy.createIntegrationStream( name, project, components );
+	public void createIntegrationStream( String name, Project project, Baseline baseline ) throws UCMException {
+		strategy.createIntegrationStream( name, project, baseline );
 	}
 
 	public void genereate( Stream stream ) {

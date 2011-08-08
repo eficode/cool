@@ -144,6 +144,15 @@ public class Version extends UCMEntity {
 	public void checkOut() throws UCMException {
 		context.checkOut( this, view.GetViewRoot() );
 	}
+	
+	
+	public static void checkIn( File file, File view ) throws UCMException {
+		context.checkIn( file, view );
+	}
+	
+	public static void checkOut( File file, File view ) throws UCMException {
+		context.checkOut( file, view );
+	}
 
 	public void setView( SnapshotView view ) {
 		this.view = view;

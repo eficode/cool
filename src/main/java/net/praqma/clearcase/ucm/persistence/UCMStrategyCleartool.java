@@ -24,6 +24,7 @@ import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 
 import net.praqma.clearcase.ucm.entities.Activity;
+import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
@@ -417,12 +418,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		Cleartool.run( cmd );
 	}
 	
-	public void createIntegrationStream( String name, Project project, Component ... components ) throws UCMException {
-		String cmd = "mkstream -integration -in " + project.getFullyQualifiedName() + " -baseline ";
-		for( Component c : components ) {
-			cmd += c.getShortname() + "_INITIAL@" + project.getPVob() + ", ";
-		}
-		cmd = cmd.substring( 0, ( cmd.length() - 2 ) ) + " " + name + "@" + project.getPVob();
+	public void createIntegrationStream( String name, Project project, Baseline baseline ) throws UCMException {
+		String cmd = "mkstream -integration -in " + project.getFullyQualifiedName() + " -baseline " + baseline.getFullyQualifiedName() + " " + name + "@" + project.getPVob();
 		
 		try {
 			Cleartool.run(cmd);
@@ -595,18 +592,20 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	}
 	
-	public void checkIn( Version version, File viewContext ) throws UCMException {
+	public void checkIn( File file, File viewContext ) throws UCMException {
 		try {
-			String cmd = "ci -nc " + version.getVersion();
+			String cmd = "ci -nc " + file;
 			Cleartool.run( cmd, viewContext );
 		} catch( Exception e ) {
 			throw new UCMException( "Could not check in" );
 		}
 	}
 	
-	public void checkOut( Version version, File viewContext ) throws UCMException {
+	private static final Pattern rx_AlreadyCheckedOut = Pattern.compile( "" );
+	
+	public void checkOut( File file, File viewContext ) throws UCMException {
 		try {
-			String cmd = "ci -nc " + version.getVersion();
+			String cmd = "co -nc " + file;
 			Cleartool.run( cmd, viewContext );
 		} catch( Exception e ) {
 			throw new UCMException( "Could not check out" );

@@ -28,6 +28,8 @@ public class SnapshotView extends UCMView {
 	private String pvob = "";
 	private String uuid = "";
 	private String globalPath = "";
+	
+	private Stream stream;
 
 	public enum COMP {
 		ALL, MODIFIABLE
@@ -59,8 +61,9 @@ public class SnapshotView extends UCMView {
 	 */
 	public static SnapshotView Create( Stream stream, File viewroot, String viewtag ) throws UCMException {
 		context.makeSnapshotView( stream, viewroot, viewtag );
-
-		return new SnapshotView( viewroot );
+		SnapshotView view = new SnapshotView( viewroot );
+		view.setStream(stream);
+		return view;
 	}
 
 	public static void CreateEnvironment( File viewroot ) {
@@ -69,7 +72,6 @@ public class SnapshotView extends UCMView {
 
 	public static void CreateEnvironment( File viewroot, String viewtagsuffix ) {
 		String viewtag = "cool_" + System.getenv( "COMPUTERNAME" ) + "_env" + viewtagsuffix;
-		// System.out.println( viewtag );
 	}
 
 	/**
@@ -92,7 +94,15 @@ public class SnapshotView extends UCMView {
 	}
 
 	public Stream getStream() throws UCMException {
-		return context.getStreamFromView( GetViewRoot() ).getFirst();
+		if( this.stream == null ) {
+			Stream stream = context.getStreamFromView( GetViewRoot() ).getFirst();
+			this.stream = stream;
+		}
+		return stream;
+	}
+	
+	private void setStream( Stream stream ) {
+		this.stream = stream;
 	}
 
 	/**

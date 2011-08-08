@@ -290,6 +290,14 @@ public abstract class UCMEntity extends UCM {
 		Baseline entity = (Baseline) UCMEntity.getEntity( name, trusted );
 		return entity;
 	}
+	
+	public static Baseline getBaseline( String name, PVob pvob, boolean trusted ) throws UCMException {
+		if( !name.startsWith( "baseline:" ) ) {
+			name = "baseline:" + name;
+		}
+		Baseline entity = (Baseline) UCMEntity.getEntity( name + "@" + pvob, trusted );
+		return entity;
+	}
 
 	public static Component getComponent( String name ) throws UCMException {
 		return getComponent( name, true );
