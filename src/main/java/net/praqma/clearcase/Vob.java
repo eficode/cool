@@ -37,6 +37,10 @@ public class Vob extends Cool {
 		return name;
 	}
 	
+	public String getName() {
+		return name.substring( 1 );
+	}
+	
 	public String getStorageLocation() throws UCMException {
 		if( storageLocation == null ) {
 			load();
