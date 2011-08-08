@@ -7,12 +7,14 @@ import java.util.Map;
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.util.structure.Tuple;
 
 interface UCMStrategyInterface
@@ -34,6 +36,7 @@ interface UCMStrategyInterface
 	
 	/* Activity */
 	public String loadActivity( String activity ) throws UCMException;
+	public void createActivity( String name, PVob pvob, boolean force, String comment ) throws UCMException;
 	
 	/* Baseline */
 	public String loadBaseline( String baseline ) throws UCMException;
@@ -75,7 +78,10 @@ interface UCMStrategyInterface
 	
 	/* Version */
 	public String getVersion( String version, String separator );
-	public String getVersionExtension( String file, File viewroot ) throws UCMException;
+	public String getVersionExtension( File file, File viewroot ) throws UCMException;
+	public void addToSourceControl( Version file, SnapshotView view ) throws UCMException;
+	public void checkOut( Version version, File viewContext ) throws UCMException;
+	public void checkIn( Version version, File viewContext ) throws UCMException;
 	
 	/* Tag */
 	public List<String[]> getTags( String fqname ) throws UCMException;

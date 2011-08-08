@@ -23,11 +23,13 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 
+import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -146,13 +148,22 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 ************************************************************************/
 
 
-	public String loadActivity( String activity ) throws UCMException
-	{
+	public String loadActivity( String activity ) throws UCMException {
 		String cmd = "describe -fmt %u " + activity;
 		try {
-			return Cleartool.run(cmd).stdoutBuffer.toString();
+			return Cleartool.run( cmd ).stdoutBuffer.toString();
 		} catch (AbnormalProcessTerminationException e) {
-			throw new UCMException(e.getMessage(), e.getMessage());
+			throw new UCMException( e.getMessage(), e.getMessage() );
+		}
+	}
+	
+	public void createActivity( String name, PVob pvob, boolean force, String comment ) throws UCMException {
+		String cmd = "mkactivity" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( force ? " -force" : "") + " " + name + "@" + pvob;
+		
+		try {
+			Cleartool.run(cmd);
+		} catch( Exception e ) {
+			throw new UCMException( e.getMessage(), UCMType.CREATION_FAILED );
 		}
 	}
 
@@ -540,21 +551,63 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 * VERSION FUNCTIONALITY
 	 ************************************************************************/
 
-	public String getVersion( String version, String separator )
-	{
+	public String getVersion( String version, String separator ) {
 		String cmd = "desc -fmt %d" + separator + "%u" + separator + "%h" + separator + "%c" + separator + "%Rf" + separator + "%m" + separator + "%Vn" + separator + "%Xn \"" + version + "\"";
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 
-	public String getVersionExtension(String file, File viewroot)
-			throws UCMException {
-		if (!(new File(file).exists())) {
-			throw new UCMException("The file " + file + " does not exist.");
+	public String getVersionExtension( File file, File viewroot ) throws UCMException {
+		if( !file.exists() ) {
+			throw new UCMException( "The file " + file + " does not exist." );
 		}
 
-		String cmd = "desc -fmt %Xp " + file;
-		CmdResult r = Cleartool.run(cmd, viewroot);
+		String cmd = "desc -fmt %Xn " + file;
+		CmdResult r = Cleartool.run( cmd, viewroot );
 		return r.stdoutBuffer.toString();
+	}
+	
+	public void addToSourceControl( Version file, SnapshotView view ) throws UCMException {
+		/* Check existence */
+		List<File> files = new ArrayList<File>();
+		File parent = file.getVersion().getParentFile();
+		while( !parent.exists() ) {
+			files.add( parent );
+			parent = parent.getParentFile();
+		}
+		
+		for(int i = files.size() - 1 ; i >= 0 ; i-- ) {
+			String cmd = "mkdir " + files.get( i ).getPath();
+			try {
+				Cleartool.run( cmd, view.GetViewRoot() );
+			} catch( Exception e ) {
+				/* Already added to source control */
+			}
+		}
+		
+		try {
+			String cmd = "mkelem " + file;
+		} catch( Exception e ) {
+			throw new UCMException( "Could not add " + file + " to source control", UCMType.DEFAULT );
+		}
+
+	}
+	
+	public void checkIn( Version version, File viewContext ) throws UCMException {
+		try {
+			String cmd = "ci -nc " + version.getVersion();
+			Cleartool.run( cmd, viewContext );
+		} catch( Exception e ) {
+			throw new UCMException( "Could not check in" );
+		}
+	}
+	
+	public void checkOut( Version version, File viewContext ) throws UCMException {
+		try {
+			String cmd = "ci -nc " + version.getVersion();
+			Cleartool.run( cmd, viewContext );
+		} catch( Exception e ) {
+			throw new UCMException( "Could not check out" );
+		}
 	}
 
 	/************************************************************************

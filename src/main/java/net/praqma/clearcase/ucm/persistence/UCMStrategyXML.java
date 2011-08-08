@@ -35,8 +35,10 @@ import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.structure.Tuple;
 
@@ -957,7 +959,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
     }
 
     @Override
-    public String getVersionExtension(String file, File viewroot) throws UCMException {
+    public String getVersionExtension(File file, File viewroot) throws UCMException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -1166,6 +1168,30 @@ public class UCMStrategyXML implements UCMStrategyInterface
 
 	@Override
 	public void createBaseline( String baseline, Component component, File view, boolean incremental, boolean identical, Component... depends ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void createActivity( String name, PVob pvob, boolean force, String comment ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addToSourceControl( Version file, SnapshotView view ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void checkOut( Version version, File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void checkIn( Version version, File viewContext ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}

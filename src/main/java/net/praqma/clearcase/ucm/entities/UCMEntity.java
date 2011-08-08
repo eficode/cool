@@ -253,21 +253,19 @@ public abstract class UCMEntity extends UCM {
 		return getActivity( name, true );
 	}
 
-	/**
-	 * Retrieve an Activity object.
-	 * 
-	 * @param name
-	 *            Fully qualified name
-	 * @param trusted
-	 *            If not trusted, the entity's content is loaded from clear
-	 *            case.
-	 * @return An Activity object
-	 */
 	public static Activity getActivity( String name, boolean trusted ) throws UCMException {
 		if( !name.startsWith( "activity:" ) ) {
 			name = "activity:" + name;
 		}
 		Activity entity = (Activity) UCMEntity.getEntity( name, trusted );
+		return entity;
+	}
+	
+	public static Activity getActivity( String name, PVob pvob, boolean trusted ) throws UCMException {
+		if( !name.startsWith( "activity:" ) ) {
+			name = "activity:" + name;
+		}
+		Activity entity = (Activity) UCMEntity.getEntity( name + "@" + pvob, trusted );
 		return entity;
 	}
 

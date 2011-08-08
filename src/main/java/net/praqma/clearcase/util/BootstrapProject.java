@@ -108,7 +108,7 @@ public class BootstrapProject {
 		Project developmentProject = Project.create( "test_development", null, pvob, Project.POLICY_INTERPROJECT_DELIVER  | 
 				                                                                     Project.POLICY_CHSTREAM_UNRESTRICTED | 
 				                                                                     Project.POLICY_DELIVER_NCO_DEVSTR    |
-				                                                                     Project.POLICY_DELIVER_REQUIRE_REBASE, "Mainline project", c );
+				                                                                     Project.POLICY_DELIVER_REQUIRE_REBASE, "Development project", c );
 		
 		System.out.println("Done...");
 	}

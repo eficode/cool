@@ -129,9 +129,21 @@ public class UCMContext extends Cool {
 		return v;
 	}
 
-	public Version getVersionExtension( String file, File viewroot ) throws UCMException {
+	public Version getVersionExtension( File file, File viewroot ) throws UCMException {
 		String f = strategy.getVersionExtension( file, viewroot );
-		return (Version) UCMEntity.getEntity( file, false );
+		return (Version) UCMEntity.getEntity( f, false );
+	}
+	
+	public void addToSourceControl( Version file, SnapshotView view ) throws UCMException {
+		strategy.addToSourceControl( file, view );
+	}
+	
+	public void checkOut( Version version, File viewContext ) throws UCMException {
+		strategy.checkOut( version, viewContext );
+	}
+	
+	public void checkIn( Version version, File viewContext ) throws UCMException {
+		strategy.checkIn( version, viewContext );
 	}
 
 	/* Tags */
@@ -489,6 +501,10 @@ public class UCMContext extends Cool {
 			result = strategy.loadActivity( activity.getFullyQualifiedName() );
 		}
 		activity.setUser( result );
+	}
+	
+	public void createActivity( String name, PVob pvob, boolean force, String comment ) throws UCMException {
+		strategy.createActivity( name, pvob, force, comment );
 	}
 
 	public String loadComponent( Component component ) throws UCMException {
