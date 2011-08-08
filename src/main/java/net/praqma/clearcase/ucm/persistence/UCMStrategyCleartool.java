@@ -362,11 +362,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		return "";
 	}
 	
-	public void createComponent( String name, PVob pvob, String root, String comment ) throws UCMException {
+	public void createComponent( String name, PVob pvob, String root, String comment, File view ) throws UCMException {
 		String cmd = "mkcomp" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( root != null ? " -root " + root : " -nroot") + " " + name + "@" + pvob;
 		
 		try {
-			Cleartool.run(cmd);
+			Cleartool.run(cmd, view);
 		} catch( Exception e ) {
 			throw new UCMException( e.getMessage(), UCMType.CREATION_FAILED );
 		}

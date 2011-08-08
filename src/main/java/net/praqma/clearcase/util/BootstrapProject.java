@@ -77,7 +77,7 @@ public class BootstrapProject {
 		DynamicView view = DynamicView.create(null, dynView, null);
 		System.out.println("View=" + view.getStorageLocation());
 		
-		Component c = Component.create("test", pvob, "Test", "Test component");
+		Component c = Component.create("test", pvob, "Test", "Test component", new File( view.getStorageLocation() ) );
 		System.out.println("Component=" + c);
 		
 		

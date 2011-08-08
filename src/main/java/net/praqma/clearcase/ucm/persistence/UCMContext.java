@@ -511,8 +511,8 @@ public class UCMContext extends Cool {
 		return strategy.loadComponent( component.getFullyQualifiedName() );
 	}
 
-	public void createComponent( String name, PVob pvob, String root, String comment ) throws UCMException {
-		strategy.createComponent( name, pvob, root, comment );
+	public void createComponent( String name, PVob pvob, String root, String comment, File view ) throws UCMException {
+		strategy.createComponent( name, pvob, root, comment, view );
 	}
 
 	public String loadStream( Stream stream ) throws UCMException {

@@ -54,7 +54,7 @@ interface UCMStrategyInterface
 	public List<String> getBaselines( String component, String stream, String plevel );
 	public String getRootDir( String component );
 	public String loadComponent( String component ) throws UCMException;
-	public void createComponent( String name, PVob pvob, String root, String comment ) throws UCMException;
+	public void createComponent( String name, PVob pvob, String root, String comment, File view ) throws UCMException;
 	
 	/* Hyper Links */
 	public String loadHyperLink( String fqname, File dir ) throws UCMException;

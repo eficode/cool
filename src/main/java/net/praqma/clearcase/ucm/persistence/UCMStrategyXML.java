@@ -1104,8 +1104,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void createComponent(String name, PVob pvob, String root,
-			String comment) throws UCMException {
+	public void createComponent(String name, PVob pvob, String root, String comment, File view) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}
