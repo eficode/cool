@@ -531,6 +531,11 @@ public abstract class UCMEntity extends UCM {
 	}
 	
 	public Date getDate() {
+		if(!loaded) try {
+			this.load();
+		} catch (UCMException e) {
+			logger.error( "UNable to load entity" );
+		}
 		return date;
 	}
 }

@@ -55,8 +55,6 @@ public class Baseline extends UCMEntity {
 		} catch (ParseException e) {
 			this.date = null;
 		}
-        
-        logger.debug( "WOLLE DATE: " + this.date );
 
         activities = new ArrayList<Activity>();
 
