@@ -529,4 +529,8 @@ public abstract class UCMEntity extends UCM {
 	public static void saveState() {
 		context.saveState();
 	}
+	
+	public Date getDate() {
+		return date;
+	}
 }
