@@ -95,11 +95,13 @@ public class Version extends UCMEntity {
 		return this.file;
 	}
 
+	/*
 	public String getDate() {
 		if( !loaded ) load();
 
 		return this.date;
 	}
+	*/
 
 	public String getRevision() {
 		if( !loaded ) load();
