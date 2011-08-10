@@ -4,11 +4,13 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Stream;
@@ -16,13 +18,14 @@ import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.view.SnapshotView.COMP;
 import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.PraqmaLogger.Logger;
 
 public class Utilities {
 	
-	public static void main( String[] args ) throws UCMException {
+	public static void main( String[] args ) throws UCMException, IOException {
 		
 		/* Do the ClearCase thing... */
 		UCM.setContext( UCM.ContextType.CLEARTOOL );
@@ -32,11 +35,40 @@ public class Utilities {
         logger.subscribeAll();
         logger.setLocalLog( new File( "versiontest.log") );
         Cool.setLogger(logger);
-		
-		PVob pvob = new PVob( "\\" + args[1] + "_PVOB" );
+        
+        File view = new File( args[0] );
+        String name = args[1];
+		String viewtag = "supercooltag";
+		PVob pvob = new PVob( "\\" + name + "_PVOB" );
+
 		Stream intStream = UCMEntity.getStream( "Development_int", pvob, true );
 		Baseline baseline = UCMEntity.getBaseline( "Structure_1_0", pvob, true );
-		CreateView("wolles_new_view", intStream, baseline, new File( args[0] ), "supercooltag" );
+		Component component = UCMEntity.getComponent( "Model", pvob, true );
+		
+		SnapshotView sview = null;
+		
+		if( !UCMView.ViewExists( viewtag ) ) {
+			sview = CreateView("stream:wolles_dev" + "@" + pvob, intStream, baseline, view, viewtag );
+		} else {
+			sview = UCMView.GetSnapshotView(view);
+		}		
+		
+		File devpath = new File( view, name + "/" + component.getShortname() );
+		
+		Activity activity = Activity.create( null, pvob, true, null, devpath );
+		Version.checkOut( devpath, devpath );
+		
+		File f1 = new File( devpath, "myfile1.txt" );
+		f1.createNewFile();
+		Version version1 = Version.create( f1, sview );
+		
+		File f2 = new File( devpath, "myfile2.txt" );
+		f1.createNewFile();
+		Version version2 = Version.create( f2, sview );
+		
+		addToFiles(new Version[]{version1, version2}, "my_super_cool_baseline", component, new String[]{"my1", "my2"}, devpath );
+		
+		Version.checkIn( devpath, devpath );
 	}
 	
 	/**
@@ -58,20 +90,25 @@ public class Utilities {
 		return sv;
 	}
 	
-	public static void addToFile( Version version, String baselineName, Component component, String text ) throws UCMException {
-		version.checkOut();
-
-		PrintStream ps;
-		try {
-			ps = new PrintStream( new BufferedOutputStream(new FileOutputStream(version.getVersion(), true) ) );
-			ps.println( text );
-			ps.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+	public static void addToFiles( Version[] version, String baselineName, Component component, String[] text, File view ) throws UCMException {
+		
+		for( int i = 0 ; i < version.length ; i++ ) {
+			//version[i].checkOut();
+	
+			PrintStream ps;
+			try {
+				ps = new PrintStream( new BufferedOutputStream(new FileOutputStream(version[i].getVersion(), true) ) );
+				ps.println( text[i] );
+				ps.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			//version[i].checkIn();
 		}
 		
-		version.checkIn();
 		
-		Baseline.create( baselineName, component, version.getVersion().getParentFile(), true, true );
+		
+		Baseline.create( baselineName, component, view, true, true );
 	}
 }

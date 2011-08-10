@@ -10,6 +10,7 @@ import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
@@ -43,7 +44,7 @@ interface UCMStrategyInterface
 	public String loadBaseline( String baseline ) throws UCMException;
 	public List<String> getBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob ) throws UCMException;
 	public void setPromotionLevel( String baseline, String plevel ) throws UCMException;
-	public void createBaseline( String baseline, Component component, File view, boolean incremental, boolean identical, Component[] depends ) throws UCMException;
+	public void createBaseline( String baseline, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws UCMException;
 	
 	public String getBaselineActivities( String baseline );
 	

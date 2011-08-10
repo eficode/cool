@@ -48,7 +48,7 @@ public class Stream extends UCMEntity {
 	 * @return A new Stream given the parameters
 	 */
 	public static Stream create( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException {
-		//UCMEntity.getNamePart( nstream );
+		UCMEntity.getNamePart( nstream );
 
 		if( pstream == null || nstream == null ) {
 			logger.error( "Incorrect CreateStream() parameters" );

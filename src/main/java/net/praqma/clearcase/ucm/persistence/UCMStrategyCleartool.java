@@ -159,7 +159,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 	
 	public void createActivity( String name, PVob pvob, boolean force, String comment, File view ) throws UCMException {
-		String cmd = "mkactivity" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( force ? " -force" : "") + " " + name + "@" + pvob;
+		String cmd = "mkactivity" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( force ? " -force" : "") + ( name != null ? " " + name + "@" + pvob : "" );
 		
 		try {
 			Cleartool.run(cmd, view);
@@ -233,7 +233,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
 
-	public void createBaseline(String fqname, Component component, File view, boolean incremental, boolean identical, Component[] depends) throws UCMException {
+	public void createBaseline(String fqname, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends) throws UCMException {
 		String cmd = "mkbl -component " + component.getFullyQualifiedName() 
 				                        + (identical ? " -identical" : "")
                                         + (incremental ? " -incremental" : " -full");
@@ -241,9 +241,17 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		if( depends != null ) {
 			cmd += " -adepends_on";
 			for( Component c : depends ) {
-				cmd += " " + c.getFullyQualifiedName() + ", ";
+				cmd += " " + c.getFullyQualifiedName() + ",";
 			}
-			cmd = cmd.substring( 0, ( cmd.length() - 2 ) );
+			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
+		}
+		
+		if( activities != null ) {
+			cmd += " -activities";
+			for( Activity a : activities ) {
+				cmd += " " + a.getFullyQualifiedName() + ",";
+			}
+			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
 		}
 		
 		cmd += " " + fqname;
@@ -563,6 +571,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		return r.stdoutBuffer.toString();
 	}
 	
+	private static final Pattern rx_checkExistence = Pattern.compile( ".*?Entry named \".*\" already exists.*?" );
+	
+	/*
+cleartool: Error: Entry named "myfile1.txt" already exists.
+cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Model\myfile1.txt".
+	 */
+	
 	public void addToSourceControl( File file, File view ) throws UCMException {
 		/* Check existence */
 		List<File> files = new ArrayList<File>();
@@ -579,7 +594,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			try {
 				Cleartool.run( cmd, view );
 			} catch( Exception e ) {
-				/* Already added to source control */
 			}
 		}
 		
@@ -587,6 +601,14 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			String cmd = "mkelem " + file;
 			Cleartool.run( cmd, view );
 		} catch( Exception e ) {
+			/* Already added to source control */
+			logger.debug( "---->" + e.getMessage() );
+			Matcher m = rx_checkExistence.matcher( e.getMessage() );
+			if( m.find() ) {
+				logger.debug( file + " already added to source control" );
+				return;
+			}
+
 			throw new UCMException( "Could not add " + file + " to source control", UCMType.DEFAULT );
 		}
 

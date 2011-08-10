@@ -41,10 +41,24 @@ public class Activity extends UCMEntity {
 		context.loadActivity( this );
 	}
 	
+	/**
+	 * Create an activity. If name is null an anonymous activity is created and the return value is null.
+	 * @param name
+	 * @param pvob
+	 * @param force
+	 * @param comment
+	 * @param view
+	 * @return
+	 * @throws UCMException
+	 */
 	public static Activity create( String name, PVob pvob, boolean force, String comment, File view ) throws UCMException {
 		context.createActivity( name, pvob, force, comment, view );
 		
-		Activity activity = UCMEntity.getActivity( name, pvob, true );
+		Activity activity = null;
+		
+		if( name != null ) {
+			activity = UCMEntity.getActivity( name, pvob, true );
+		}
 		return activity;
 	}
 	

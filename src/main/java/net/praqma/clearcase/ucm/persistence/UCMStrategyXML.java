@@ -32,6 +32,7 @@ import org.w3c.dom.NodeList;
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
@@ -1167,7 +1168,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 
 
 	@Override
-	public void createBaseline( String baseline, Component component, File view, boolean incremental, boolean identical, Component... depends ) throws UCMException {
+	public void createBaseline( String baseline, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}

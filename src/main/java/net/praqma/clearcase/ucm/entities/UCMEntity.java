@@ -494,7 +494,7 @@ public abstract class UCMEntity extends UCM {
 		return sb.toString();
 	}
 
-	private static final Pattern pattern_name_part = Pattern.compile( "^\\w+:(.*?)@" );
+	private static final Pattern pattern_name_part = Pattern.compile( "^(?:\\w+:)*(.*?)@" );
 
 	public static String getNamePart( String fqname ) throws UCMException {
 		Matcher m = pattern_name_part.matcher( fqname );

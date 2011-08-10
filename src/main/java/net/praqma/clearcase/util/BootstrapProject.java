@@ -23,13 +23,13 @@ public class BootstrapProject {
 	private static String vobtag = "\\TEST16";
 	private static String pvobtag = "\\TEST16_PVOB";
 	*/
-	private static final String dynView = "baseview";
-	private static final String bootstrapView = "bootstrapview";
+	private static final String dynView = "COOLbaseview";
+	private static final String bootstrapView = "COOLbootstrapview";
 	
 	
 
 	public static void main( String[] args ) throws UCMException {
-		System.out.println("Starting");
+		
 		if( args.length < 2 ) {
 			System.err.println( "No path given" );
 			System.exit( 1 );
@@ -44,7 +44,7 @@ public class BootstrapProject {
                                                      Project.POLICY_DELIVER_REQUIRE_REBASE );
 	}
 	
-	public static void bootstrap(String vobname, String componentName, File viewPath, int policies ) throws UCMException {
+	public static void bootstrap( String vobname, String componentName, File viewPath, int policies ) throws UCMException {
 		
 		System.out.println("Bootstrapping");
 		String vobtag = "\\" + vobname;
@@ -77,6 +77,7 @@ public class BootstrapProject {
         }
         
         try {
+        	System.out.println("Removing baseview");
         	DynamicView dv = new DynamicView(null,dynView);
         	dv.removeView();
         } catch( Exception e ) {

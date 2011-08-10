@@ -65,16 +65,16 @@ public class Baseline extends UCMEntity {
      * @throws UCMException
      */
     public static Baseline create(String basename, Component component, File view, boolean incremental, boolean identical) throws UCMException {
-        return create( basename, component, view, incremental, identical, null );
+        return create( basename, component, view, incremental, identical, null, null );
     }
     
-    public static Baseline create(String basename, Component component, File view, boolean incremental, boolean identical, Component[] depends) throws UCMException {
+    public static Baseline create(String basename, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends) throws UCMException {
         if (basename.toLowerCase().startsWith("baseline:")) {
             logger.warning("The baseline name should not be prefixed with \"baseline:\", removing it");
             basename = basename.replaceFirst("baseline:", "");
         }
 
-        context.createBaseline(basename, component, view, incremental, identical, depends);
+        context.createBaseline(basename, component, view, incremental, identical, activities, depends);
 
         return UCMEntity.getBaseline(basename + "@" + component.getPvobString(), true);
     }
