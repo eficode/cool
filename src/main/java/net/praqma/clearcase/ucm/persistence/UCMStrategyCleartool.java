@@ -557,7 +557,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 ************************************************************************/
 
 	public String getVersion( String version, String separator ) {
-		String cmd = "desc -fmt %d" + separator + "%u" + separator + "%h" + separator + "%c" + separator + "%Rf" + separator + "%m" + separator + "%Vn" + separator + "%Xn \"" + version + "\"";
+		String cmd = "desc -fmt %Nd" + separator + "%u" + separator + "%h" + separator + "%c" + separator + "%Rf" + separator + "%m" + separator + "%Vn" + separator + "%Xn \"" + version + "\"";
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
 	}
 

@@ -1,6 +1,7 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,7 +12,7 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
 public class Version extends UCMEntity {
 	/* Version specific fields */
 	private String kind = null;
-	private String date = null;
+	//private String date = null;
 	private String user = null;
 	private String machine = null;
 	private boolean checkedout = false;
@@ -114,7 +115,12 @@ public class Version extends UCMEntity {
 
 		HashMap<String, String> result = context.getVersion( this );
 
-		this.date = result.get( "date" );
+		//this.date = result.get( "date" );
+        try {
+			this.date = dateFormatter.parse( result.get( "date" ) );
+		} catch (ParseException e) {
+			this.date = null;
+		}
 		this.user = result.get( "user" );
 		this.machine = result.get( "machine" );
 		this.comment = result.get( "comment" );
