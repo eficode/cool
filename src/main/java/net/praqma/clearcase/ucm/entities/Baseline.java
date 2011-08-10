@@ -1,7 +1,9 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Project.Plevel;
@@ -48,6 +50,13 @@ public class Baseline extends UCMEntity {
         this.component = (Component) UCMEntity.getEntity(c);
         this.plevel = Project.getPlevelFromString(rs[3]);
         this.user = rs[4];
+        try {
+			this.date = dateFormatter.parse( rs[5] );
+		} catch (ParseException e) {
+			this.date = null;
+		}
+        
+        logger.debug( "WOLLE DATE: " + this.date );
 
         activities = new ArrayList<Activity>();
 

@@ -1,6 +1,9 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +38,9 @@ public abstract class UCMEntity extends UCM {
 	private static HashMap<String, UCMEntity> entities = new HashMap<String, UCMEntity>();
 
 	protected Map<String, String> attributes = new HashMap<String, String>();
+	
+	protected Date date;
+	DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd.HHmmss"); // 20060810.225810
 
 	public enum ClearcaseEntityType {
 		Activity, Baseline, Component, HyperLink, Stream, Project, Tag, Version, Undefined;

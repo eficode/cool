@@ -178,7 +178,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	{
 		logger.debug( "Loading " + baseline );
 
-		String cmd = "desc -fmt %n" + Cool.delim + "%[component]p" + Cool.delim + "%[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u " + baseline;
+		String cmd = "desc -fmt %n" + Cool.delim + "%[component]p" + Cool.delim + "%[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u" + Cool.delim + "%Nd " + baseline;
 		try
 		{
 			return Cleartool.run( cmd ).stdoutBuffer.toString();
