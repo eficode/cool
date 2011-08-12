@@ -128,6 +128,10 @@ public class UCMContext extends Cool {
 
 		return v;
 	}
+	
+	public void removeVersion( Version version, File viewContext ) throws UCMException {
+		strategy.removeVersion( version, viewContext );
+	}
 
 	public Version getVersionExtension( File file, File viewroot ) throws UCMException {
 		String f = strategy.getVersionExtension( file, viewroot );

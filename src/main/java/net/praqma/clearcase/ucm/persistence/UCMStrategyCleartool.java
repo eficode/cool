@@ -633,6 +633,15 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 			throw new UCMException( "Could not check out" );
 		}
 	}
+	
+	public void removeVersion( Version version, File viewContext ) throws UCMException {
+		try {
+			String cmd = "rmver -force " + version.getFile();
+			Cleartool.run( cmd, viewContext );
+		} catch( Exception e ) {
+			throw new UCMException( "Could not remove " + version.getFile() );
+		}
+	}
 
 	/************************************************************************
 	 * TAG FUNCTIONALITY

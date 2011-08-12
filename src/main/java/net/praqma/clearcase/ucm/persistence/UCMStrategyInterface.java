@@ -84,6 +84,7 @@ interface UCMStrategyInterface
 	public void addToSourceControl( File file, File view ) throws UCMException;
 	public void checkOut( File file, File viewContext ) throws UCMException;
 	public void checkIn( File file, File viewContext ) throws UCMException;
+	public void removeVersion( Version version, File viewContext ) throws UCMException;
 	
 	/* Tag */
 	public List<String[]> getTags( String fqname ) throws UCMException;

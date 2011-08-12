@@ -1196,4 +1196,10 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void removeVersion( Version version, File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
 }

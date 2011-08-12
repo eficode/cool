@@ -153,6 +153,10 @@ public class Version extends UCMEntity {
 		context.checkOut( this, view.GetViewRoot() );
 	}
 	
+	public void remove() throws UCMException {
+		context.removeVersion( this, view.GetViewRoot() );
+	}
+	
 	
 	public static void checkIn( File file, File view ) throws UCMException {
 		context.checkIn( file, view );
