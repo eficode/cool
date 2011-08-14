@@ -10,6 +10,9 @@ public class Project extends UCMEntity {
     /* Project specific fields */
     private Stream stream = null;
     
+    /**
+     * Enables inter-project deliveries
+     */
     public static final int POLICY_INTERPROJECT_DELIVER   = 1;
     public static final int POLICY_CHSTREAM_UNRESTRICTED  = 2;
     public static final int POLICY_DELIVER_REQUIRE_REBASE = 4;

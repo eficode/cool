@@ -103,6 +103,7 @@ interface UCMStrategyInterface
 	public void regenerateViewDotDat( File dir, String viewtag ) throws UCMException;
 	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot );
 	public String viewUpdate( File viewroot, boolean overwrite, String loadrules );
+	public void startView( UCMView view ) throws UCMException;
 	
 	/* Views */
 	public void createView( String tag, String path, boolean snapshotView, Stream stream ) throws UCMException;

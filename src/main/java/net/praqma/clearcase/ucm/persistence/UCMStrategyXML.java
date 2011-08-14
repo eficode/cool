@@ -1202,4 +1202,10 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void startView( UCMView view ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
 }

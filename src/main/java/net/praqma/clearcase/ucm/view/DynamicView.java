@@ -35,4 +35,9 @@ public class DynamicView extends UCMView {
 		context.createView(tag, path, false, stream);
 		return new DynamicView(path, tag, stream);
 	}
+	
+	
+	public void startView() throws UCMException {
+		context.startView( this );
+	}
 }

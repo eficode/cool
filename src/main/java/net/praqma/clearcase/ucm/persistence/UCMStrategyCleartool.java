@@ -1250,6 +1250,14 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 		return a;
 	}
 	
+	public void startView( UCMView view ) throws UCMException {
+		try {
+			Cleartool.run( "startview " + view.GetViewtag() );
+		} catch( Exception e ) {
+			throw new UCMException( "Could not start view " + view.GetViewtag() + ": " + e.getMessage() );
+		}
+	}
+	
 	/*****************************
 	 * Vobs
 	 *****************************/

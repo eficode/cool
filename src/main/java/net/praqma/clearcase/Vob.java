@@ -38,7 +38,11 @@ public class Vob extends Cool {
 	}
 	
 	public String getName() {
-		return name.substring( 1 );
+		if( name.startsWith( "\\" )) {
+			return name.substring( 1 );
+		} else {
+			return name;
+		}
 	}
 	
 	public String getStorageLocation() throws UCMException {
