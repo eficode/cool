@@ -418,12 +418,16 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 
-	public void createStream( String pstream, String nstream, boolean readonly, String baseline )
+	public void createStream( String pstream, String nstream, boolean readonly, String baseline ) throws UCMException
 	{
 		logger.debug( "Creating stream " + nstream + " as child of " + pstream );
 
 		String cmd = "mkstream -in " + pstream + " " + ( baseline != null ? "-baseline " + baseline + " " : "" ) + ( readonly ? "-readonly " : "" ) + nstream;
-		Cleartool.run( cmd );
+		try {
+			Cleartool.run( cmd );
+		} catch( Exception e ) {
+			throw new UCMException( "Could not create stream: " + e.getMessage() );
+		}
 	}
 	
 	public void createIntegrationStream( String name, Project project, Baseline baseline ) throws UCMException {
@@ -1141,15 +1145,13 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 	}
 
 	@Override
-	public File getCurrentViewRoot( File viewroot )
-	{
+	public File getCurrentViewRoot( File viewroot ) {
 		logger.trace_function();
-		logger.debug(viewroot.getAbsolutePath());
+		logger.debug( viewroot.getAbsolutePath() );
 
-		String wvroot = Cleartool.run("pwv -root", viewroot).stdoutBuffer
-				.toString();
+		String wvroot = Cleartool.run( "pwv -root", viewroot ).stdoutBuffer.toString();
 
-		return new File(wvroot);
+		return new File( wvroot );
 	}
 
 	public String viewrootIsValid( File viewroot ) throws UCMException

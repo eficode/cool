@@ -67,7 +67,7 @@ interface UCMStrategyInterface
 	public void recommendBaseline( String stream, String baseline ) throws UCMException;
 	public String getRecommendedBaselines( String stream ) throws UCMException;
 	public String getStreamFromView( String viewtag ) throws UCMException;
-	public void createStream( String pstream, String nstream, boolean readonly, String baseline );
+	public void createStream( String pstream, String nstream, boolean readonly, String baseline ) throws UCMException;
 	public void createIntegrationStream( String name, Project project, Baseline baseline ) throws UCMException;
 	public boolean streamExists( String fqname );
 	public boolean rebaseStream( String viewtag, String stream, String baseline, boolean complete );
