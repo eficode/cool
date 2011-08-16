@@ -27,6 +27,7 @@ import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
+import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
@@ -339,9 +340,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final String rx_component_load = "\\s*Error: component not found\\s*";
 
 	@Override
-	public List<String> getBaselines( String component, String stream, String plevel )
+	public List<String> getBaselines( String component, String stream, Plevel plevel )
 	{
-		String cmd = "lsbl -s -component " + component + " -stream " + stream + " -level " + plevel;
+		String cmd = "lsbl -s -component " + component + " -stream " + stream + ( plevel != null ? " -level " + plevel.toString() : "" );
 		return Cleartool.run( cmd ).stdoutList;
 	}
 

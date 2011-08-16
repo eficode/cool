@@ -14,6 +14,7 @@ import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
+import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
@@ -53,7 +54,7 @@ interface UCMStrategyInterface
 	public String deliverStatus( String stream ) throws UCMException;
 	
 	/* Component */
-	public List<String> getBaselines( String component, String stream, String plevel );
+	public List<String> getBaselines( String component, String stream, Plevel plevel );
 	public String getRootDir( String component );
 	public String loadComponent( String component ) throws UCMException;
 	public void createComponent( String name, PVob pvob, String root, String comment, File view ) throws UCMException;

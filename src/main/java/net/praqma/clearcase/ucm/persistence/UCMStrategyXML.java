@@ -36,6 +36,7 @@ import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
+import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.UCMException;
@@ -853,7 +854,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
     }
 
     @Override
-    public List<String> getBaselines(String component, String stream, String plevel) {
+    public List<String> getBaselines(String component, String stream, Plevel plevel) {
         // TODO Auto-generated method stub
         return null;
     }

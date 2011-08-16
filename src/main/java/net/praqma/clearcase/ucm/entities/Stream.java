@@ -95,6 +95,10 @@ public class Stream extends UCMEntity {
 	public List<Baseline> getBaselines( Plevel plevel ) throws UCMException {
 		return context.getBaselines( this, getSingleTopComponent(), plevel, pvob );
 	}
+	
+	public List<Baseline> getBaselines( Component component, Plevel plevel ) throws UCMException {
+		return context.getBaselines( this, component, plevel, pvob );
+	}
 
 	public List<Stream> getChildStreams() throws UCMException {
 

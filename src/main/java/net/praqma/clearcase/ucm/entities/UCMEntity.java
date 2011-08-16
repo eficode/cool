@@ -41,6 +41,8 @@ public abstract class UCMEntity extends UCM {
 	
 	protected Date date;
 	DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd.HHmmss"); // 20060810.225810
+	
+	private String comment;
 
 	public enum ClearcaseEntityType {
 		Activity, Baseline, Component, HyperLink, Stream, Project, Tag, Version, Undefined;
@@ -537,5 +539,13 @@ public abstract class UCMEntity extends UCM {
 			logger.error( "UNable to load entity" );
 		}
 		return date;
+	}
+	
+	public void setComment( String comment ) {
+		this.comment = comment;
+	}
+	
+	public String getComment() {
+		return comment;
 	}
 }

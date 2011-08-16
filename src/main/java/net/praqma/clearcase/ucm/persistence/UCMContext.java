@@ -282,9 +282,8 @@ public class UCMContext extends Cool {
 	}
 
 	public List<Baseline> getBaselines( Stream stream, Component component, Project.Plevel plevel, String pvob ) throws UCMException {
-		String pl = plevel == null ? "" : plevel.toString();
 		logger.debug( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel + " in VOB=" + pvob );
-		List<String> bls_str = strategy.getBaselines( component.getFullyQualifiedName(), stream.getFullyQualifiedName(), pl );
+		List<String> bls_str = strategy.getBaselines( component.getFullyQualifiedName(), stream.getFullyQualifiedName(), plevel );
 
 		logger.debug( "I got " + bls_str.size() + " baselines." );
 		net.praqma.util.structure.Printer.listPrinter( bls_str );
