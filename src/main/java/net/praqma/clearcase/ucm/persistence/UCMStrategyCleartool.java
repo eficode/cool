@@ -32,6 +32,7 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
+import net.praqma.clearcase.ucm.entities.Version.Status;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -232,6 +233,44 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			throw new UCMException("Could not get the baseline differences",
 					e.getMessage());
 		}
+	}
+	
+	private final Pattern rx_baselineDiff = Pattern.compile( "^(.*?)\\s*(.*)\\s*$" );
+	
+	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, SnapshotView view ) throws UCMException {
+		String cmd = "diffbl -version -nmerge " + bl1.getFullyQualifiedName() + " " + bl2.getFullyQualifiedName();
+		
+		List<String> lines = null;
+		
+		try {
+			lines = Cleartool.run( cmd, view.GetViewRoot() ).stdoutList;
+		} catch( Exception e ) {
+			throw new UCMException( "Could not retreive the differences of " + bl1 + " and " + bl2 );
+		}
+		
+		int length = view.GetViewRoot().getAbsoluteFile().toString().length();
+		List<Version> versions = new ArrayList<Version>();
+		
+		for( int i = 4 ; i < lines.size() ; i++ ) {
+			Matcher m = rx_baselineDiff.matcher( lines.get( i ) );
+			if( m.find() ) {
+				String f = m.group(2).trim();
+				Version v = (Version) UCMEntity.getEntity( f );
+				v.setSFile( v.getFile().substring( length ) );
+				
+				if( m.group(1).equals( ">>" )) {
+					v.setStatus( Status.ADDED );
+				} else if( m.group(1).equals( "<<" ) ) {
+					v.setStatus( Status.DELETED );	
+				} else {
+					v.setStatus( Status.CHANGED );
+				}
+				
+				versions.add( v );
+			}
+		}
+		
+		return versions;
 	}
 
 	public void createBaseline(String fqname, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends) throws UCMException {
@@ -597,12 +636,24 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 		for(int i = files.size() - 1 ; i >= 0 ; i-- ) {
 			String cmd = "mkdir " + files.get( i ).getPath();
 			try {
+				/* The parent must be checked out before adding elements */
+				try {
+					checkOut( files.get( i ).getParentFile(), view );
+				} catch( UCMException e ) {
+					/* This probably indicates the directory is checked out */
+				}
 				Cleartool.run( cmd, view );
 			} catch( Exception e ) {
 			}
 		}
 		
 		try {
+			try {
+				checkOut( file.getParentFile(), view );
+			} catch( UCMException e ) {
+				/* Maybe it is checked out? */
+			}
+
 			String cmd = "mkelem " + file;
 			Cleartool.run( cmd, view );
 		} catch( Exception e ) {
@@ -621,7 +672,7 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 	
 	public void checkIn( File file, File viewContext ) throws UCMException {
 		try {
-			String cmd = "ci -nc " + file;
+			String cmd = "checkin -nc " + file;
 			Cleartool.run( cmd, viewContext );
 		} catch( Exception e ) {
 			throw new UCMException( "Could not check in" );
@@ -632,19 +683,62 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 	
 	public void checkOut( File file, File viewContext ) throws UCMException {
 		try {
-			String cmd = "co -nc " + file;
+			String cmd = "checkout -nc " + file;
 			Cleartool.run( cmd, viewContext );
 		} catch( Exception e ) {
 			throw new UCMException( "Could not check out" );
 		}
 	}
 	
-	public void removeVersion( Version version, File viewContext ) throws UCMException {
+	public void uncheckout( File file, File viewContext ) throws UCMException {
 		try {
-			String cmd = "rmver -force " + version.getFile();
+			String cmd = "uncheckout -rm " + file;
 			Cleartool.run( cmd, viewContext );
 		} catch( Exception e ) {
-			throw new UCMException( "Could not remove " + version.getFile() );
+			throw new UCMException( "Could not uncheck out" );
+		}
+	}
+	
+	public void removeVersion( Version version, File viewContext ) throws UCMException {
+		String cmd = "rmver -force -xlabel -xattr -xhlink " + version.getFile();
+		try {
+			Cleartool.run( cmd, viewContext );
+		} catch( Exception e ) {
+			/* Try to uncheckout the file first */
+			try{
+				uncheckout( version.getVersion(), viewContext );
+				Cleartool.run( cmd, viewContext );
+			} catch( UCMException e1 ) {
+				throw new UCMException( "Could not remove " + version.getFile() + ": " + e.getMessage() + "\n\n" + e1.getMessage());
+			}			
+		}
+	}
+	
+	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException {
+		try {
+			checkOut( file.getParentFile(), viewContext );
+			String cmd = "rmname -force " + ( checkedOut ? "" : "-nco " ) + file;
+			Cleartool.run( cmd, viewContext );
+		} catch( Exception e ) {
+			throw new UCMException( e.getMessage() );
+		}
+	}
+	
+	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException {
+		try {
+			String cmd = "lsco -s -r";
+			List<String> list = Cleartool.run( cmd, viewContext ).stdoutList;
+			
+			List<File> files = new ArrayList<File>();
+			
+			for( String s : list ) {
+				files.add( new File( s ) );
+			}
+			
+			return files;
+			
+		} catch( Exception e ) {
+			throw new UCMException( "Could not retreive files" );
 		}
 	}
 

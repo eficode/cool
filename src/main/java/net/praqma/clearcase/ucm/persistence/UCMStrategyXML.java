@@ -1209,4 +1209,28 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, SnapshotView view ) throws UCMException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void uncheckout( File file, File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
 }

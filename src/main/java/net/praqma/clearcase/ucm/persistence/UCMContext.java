@@ -105,6 +105,10 @@ public class UCMContext extends Cool {
 
 		return activities;
 	}
+	
+	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, SnapshotView view ) throws UCMException {
+		return strategy.baselineDifferences( bl1, bl2, view );
+	}
 
 	public ArrayList<Activity> getActivities( Baseline baseline ) {
 		return null;
@@ -156,6 +160,18 @@ public class UCMContext extends Cool {
 	
 	public void checkIn( File file, File viewContext ) throws UCMException {
 		strategy.checkIn( file, viewContext );
+	}
+	
+	public void uncheckout( File file, File viewContext ) throws UCMException {
+		strategy.uncheckout( file, viewContext );
+	}
+	
+	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException {
+		strategy.removeName( file, checkedOut, viewContext );
+	}
+	
+	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException {
+		return strategy.getUnchecedInFiles( viewContext );
 	}
 
 	/* Tags */

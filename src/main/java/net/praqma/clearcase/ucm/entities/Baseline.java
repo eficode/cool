@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Project.Plevel;
@@ -226,6 +227,40 @@ public class Baseline extends UCMEntity {
             logger.error(ex.getMessage());
             throw ex;
         }
+    }
+    
+    /**
+     * Compare two {@link Baseline}s. I.e. bl1 -> bl2.
+     * @param bl1 {@link Baseline} dated before bl2
+     * @param bl2 {@link Baseline} dated after bl1
+     * @param view A {@link SnapshotView}
+     * @return A list of {@link Version}s
+     * @throws UCMException
+     */
+    public static List<Version> baselineDifferences( Baseline bl1, Baseline bl2, SnapshotView view ) throws UCMException {
+    	return context.baselineDifferences( bl1, bl2, view );
+    }
+    
+    /**
+     * Compare this {@link Baseline} to another previous {@link Baseline}. I.e. baseline -> this.
+     * @param before {@link Baseline} dated before this
+     * @param view A {@link SnapshotView}
+     * @return A list of {@link Version}s
+     * @throws UCMException
+     */
+    public List<Version> beforeBaselineDifferences( Baseline before, SnapshotView view ) throws UCMException {
+    	return context.baselineDifferences( before, this, view );
+    }
+    
+    /**
+     * Compare this {@link Baseline} to another subsequent {@link Baseline}. I.e. this -> baseline.
+     * @param after {@link Baseline} dated after this
+     * @param view A {@link SnapshotView}
+     * @return A list of {@link Version}s
+     * @throws UCMException
+     */
+    public List<Version> afterBaselineDifferences( Baseline after, SnapshotView view ) throws UCMException {
+    	return context.baselineDifferences( this, after, view );
     }
 
     public String stringify() throws UCMException {

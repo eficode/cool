@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.entities;
 import java.io.File;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,15 @@ public class Version extends UCMEntity {
 
 	private static String rx_revision = "(\\d+)$";
 	private static Pattern p_revision = Pattern.compile( "@@(.*)$" );
+	
+	public enum Status {
+		UNCHANGED,
+		CHANGED,
+		ADDED,
+		DELETED
+	}
+	
+	private Status status = Status.UNCHANGED;
 
 	Version() {
 	}
@@ -157,6 +167,13 @@ public class Version extends UCMEntity {
 		context.removeVersion( this, view.GetViewRoot() );
 	}
 	
+	public void removeName( boolean checkedOut ) throws UCMException {
+		context.removeName( this.version, checkedOut, view.GetViewRoot() );
+	}
+	
+	public static void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException {
+		context.removeName( file, checkedOut, viewContext );
+	}
 	
 	public static void checkIn( File file, File view ) throws UCMException {
 		context.checkIn( file, view );
@@ -164,6 +181,14 @@ public class Version extends UCMEntity {
 	
 	public static void checkOut( File file, File view ) throws UCMException {
 		context.checkOut( file, view );
+	}
+	
+	public static void uncheckout( File file, File viewContext ) throws UCMException {
+		context.uncheckout( file, viewContext );
+	}
+	
+	public void uncheckout() throws UCMException {
+		context.uncheckout( this.getVersion(), view.GetViewRoot() );
 	}
 
 	public void setView( SnapshotView view ) {
@@ -184,6 +209,18 @@ public class Version extends UCMEntity {
 	
 	public File getVersion() {
 		return version;
+	}
+	
+	public void setStatus( Status status ) {
+		this.status = status;
+	}
+	
+	public Status getStatus() {
+		return status;
+	}
+	
+	public static List<File> getUncheckedIn( File viewContext ) throws UCMException {
+		return context.getUnchecedInFiles( viewContext );
 	}
 
 	public String stringify() throws UCMException {
