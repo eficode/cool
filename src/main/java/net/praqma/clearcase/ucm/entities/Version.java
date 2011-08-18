@@ -175,6 +175,14 @@ public class Version extends UCMEntity {
 		context.removeName( file, checkedOut, viewContext );
 	}
 	
+	public static void moveFile( File file, File destination, SnapshotView view ) throws UCMException {
+		context.moveFile( file, destination, view.GetViewRoot() );
+	}
+	
+	public void moveFile( File destination ) throws UCMException {
+		context.moveFile( version, destination, view.GetViewRoot() );
+	}
+	
 	public static void checkIn( File file, File view ) throws UCMException {
 		context.checkIn( file, view );
 	}

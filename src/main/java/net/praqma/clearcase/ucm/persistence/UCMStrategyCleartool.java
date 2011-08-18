@@ -724,6 +724,31 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 		}
 	}
 	
+	public void moveFile( File file, File destination, File viewContext ) throws UCMException {
+		try {
+			try {
+				checkOut( file.getParentFile(), viewContext );
+			} catch( UCMException e ) {
+				/* Directory could be checked out already, let's proceed */
+			}
+
+			/* If destination is a directory and NOT the same as the source,
+			 * let's try to check it out */
+			if( destination.isDirectory() && !file.getParentFile().equals( destination ) ) {
+				try {
+					checkOut( destination, viewContext );
+				} catch( UCMException e ) {
+					/* Directory could be checked out already, let's proceed */
+				}
+			}
+			
+			String cmd = "mv " + file + " " + destination;
+			Cleartool.run( cmd, viewContext );
+		} catch( Exception e ) {
+			throw new UCMException( e.getMessage() );
+		}
+	}
+	
 	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException {
 		try {
 			String cmd = "lsco -s -r";

@@ -90,6 +90,7 @@ interface UCMStrategyInterface
 	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException;
 	public void uncheckout( File file, File viewContext ) throws UCMException;
 	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException;
+	public void moveFile( File file, File destination, File viewContext ) throws UCMException;
 	
 	/* Tag */
 	public List<String[]> getTags( String fqname ) throws UCMException;

@@ -170,6 +170,10 @@ public class UCMContext extends Cool {
 		strategy.removeName( file, checkedOut, viewContext );
 	}
 	
+	public void moveFile( File file, File destination, File viewContext ) throws UCMException {
+		strategy.moveFile( file, destination, viewContext );
+	}
+	
 	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException {
 		return strategy.getUnchecedInFiles( viewContext );
 	}
