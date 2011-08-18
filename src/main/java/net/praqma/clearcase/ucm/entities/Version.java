@@ -156,7 +156,15 @@ public class Version extends UCMEntity {
 	}
 	
 	public void checkIn() throws UCMException {
-		context.checkIn( this, view.GetViewRoot() );
+		context.checkIn( this, false, view.GetViewRoot() );
+	}
+	
+	public void checkIn( boolean identical ) throws UCMException {
+		context.checkIn( this, identical, view.GetViewRoot() );
+	}
+	
+	public void checkInIdentical() throws UCMException {
+		context.checkIn( this, true, view.GetViewRoot() );
 	}
 	
 	public void checkOut() throws UCMException {
@@ -183,8 +191,8 @@ public class Version extends UCMEntity {
 		context.moveFile( version, destination, view.GetViewRoot() );
 	}
 	
-	public static void checkIn( File file, File view ) throws UCMException {
-		context.checkIn( file, view );
+	public static void checkIn( File file, boolean identical, File view ) throws UCMException {
+		context.checkIn( file, identical, view );
 	}
 	
 	public static void checkOut( File file, File view ) throws UCMException {

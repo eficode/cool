@@ -648,6 +648,7 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 		}
 		
 		try {
+			/* Check out the folder */
 			try {
 				checkOut( file.getParentFile(), view );
 			} catch( UCMException e ) {
@@ -670,9 +671,9 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 
 	}
 	
-	public void checkIn( File file, File viewContext ) throws UCMException {
+	public void checkIn( File file, boolean identical, File viewContext ) throws UCMException {
 		try {
-			String cmd = "checkin -nc " + file;
+			String cmd = "checkin -nc " + ( identical ? "-identical " : "" ) + file;
 			Cleartool.run( cmd, viewContext );
 		} catch( Exception e ) {
 			throw new UCMException( "Could not check in" );

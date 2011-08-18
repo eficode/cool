@@ -68,7 +68,7 @@ public class Utilities {
 		
 		addToFiles(new Version[]{version1, version2}, "my_super_cool_baseline", component, new String[]{"my1", "my2"}, devpath );
 		
-		Version.checkIn( devpath, devpath );
+		Version.checkIn( devpath, false, devpath );
 	}
 	
 	/**

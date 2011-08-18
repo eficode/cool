@@ -1193,7 +1193,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void checkIn( File file, File viewContext ) throws UCMException {
+	public void checkIn( File file, boolean identical, File viewContext ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}

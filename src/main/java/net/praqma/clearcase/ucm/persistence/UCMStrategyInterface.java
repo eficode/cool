@@ -85,7 +85,7 @@ interface UCMStrategyInterface
 	public String getVersionExtension( File file, File viewroot ) throws UCMException;
 	public void addToSourceControl( File file, File view ) throws UCMException;
 	public void checkOut( File file, File viewContext ) throws UCMException;
-	public void checkIn( File file, File viewContext ) throws UCMException;
+	public void checkIn( File file, boolean identical, File viewContext ) throws UCMException;
 	public void removeVersion( Version version, File viewContext ) throws UCMException;
 	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException;
 	public void uncheckout( File file, File viewContext ) throws UCMException;

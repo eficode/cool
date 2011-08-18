@@ -98,7 +98,7 @@ public class VersionTest {
 		
 		//version.checkIn();
 		
-		Version.checkIn( path2, path2 );
+		Version.checkIn( path2, false, path2 );
 		
 		Baseline.create( "wolles_baseline_" + append, component, devpath, true, true );
 		

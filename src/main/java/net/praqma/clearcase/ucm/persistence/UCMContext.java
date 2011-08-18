@@ -150,18 +150,18 @@ public class UCMContext extends Cool {
 		strategy.checkOut( version.getVersion(), viewContext );
 	}
 	
-	public void checkIn( Version version, File viewContext ) throws UCMException {
-		strategy.checkIn( version.getVersion(), viewContext );
+	public void checkIn( Version version, boolean identical, File viewContext ) throws UCMException {
+		strategy.checkIn( version.getVersion(), identical, viewContext );
 	}
 	
+	public void checkIn( File file, boolean identical, File viewContext ) throws UCMException {
+		strategy.checkIn( file, identical, viewContext );
+	}
+
 	public void checkOut( File file, File viewContext ) throws UCMException {
 		strategy.checkOut( file, viewContext );
 	}
-	
-	public void checkIn( File file, File viewContext ) throws UCMException {
-		strategy.checkIn( file, viewContext );
-	}
-	
+		
 	public void uncheckout( File file, File viewContext ) throws UCMException {
 		strategy.uncheckout( file, viewContext );
 	}
