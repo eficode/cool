@@ -687,13 +687,13 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 			String cmd = "checkout -nc " + file;
 			Cleartool.run( cmd, viewContext );
 		} catch( Exception e ) {
-			throw new UCMException( "Could not check out" );
+			throw new UCMException( "Could not check out " + file );
 		}
 	}
 	
-	public void uncheckout( File file, File viewContext ) throws UCMException {
+	public void uncheckout( File file, boolean keep, File viewContext ) throws UCMException {
 		try {
-			String cmd = "uncheckout -rm " + file;
+			String cmd = "uncheckout -rm " + ( keep ? "-rm " : "" ) + file;
 			Cleartool.run( cmd, viewContext );
 		} catch( Exception e ) {
 			throw new UCMException( "Could not uncheck out" );
@@ -707,7 +707,7 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 		} catch( Exception e ) {
 			/* Try to uncheckout the file first */
 			try{
-				uncheckout( version.getVersion(), viewContext );
+				uncheckout( version.getVersion(), false, viewContext );
 				Cleartool.run( cmd, viewContext );
 			} catch( UCMException e1 ) {
 				throw new UCMException( "Could not remove " + version.getFile() + ": " + e.getMessage() + "\n\n" + e1.getMessage());
@@ -716,8 +716,16 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 	}
 	
 	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException {
+		
+		/* Firstly, checkout directory */
 		try {
 			checkOut( file.getParentFile(), viewContext );
+		} catch( UCMException e ) {
+			/* The file is probably already checked out,
+			 * let's try to continue */
+		}
+		
+		try {
 			String cmd = "rmname -force " + ( checkedOut ? "" : "-nco " ) + file;
 			Cleartool.run( cmd, viewContext );
 		} catch( Exception e ) {

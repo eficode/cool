@@ -162,8 +162,8 @@ public class UCMContext extends Cool {
 		strategy.checkOut( file, viewContext );
 	}
 		
-	public void uncheckout( File file, File viewContext ) throws UCMException {
-		strategy.uncheckout( file, viewContext );
+	public void uncheckout( File file, boolean keep, File viewContext ) throws UCMException {
+		strategy.uncheckout( file, keep, viewContext );
 	}
 	
 	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException {

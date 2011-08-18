@@ -88,7 +88,7 @@ interface UCMStrategyInterface
 	public void checkIn( File file, boolean identical, File viewContext ) throws UCMException;
 	public void removeVersion( Version version, File viewContext ) throws UCMException;
 	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException;
-	public void uncheckout( File file, File viewContext ) throws UCMException;
+	public void uncheckout( File file, boolean keep, File viewContext ) throws UCMException;
 	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException;
 	public void moveFile( File file, File destination, File viewContext ) throws UCMException;
 	

@@ -1223,7 +1223,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void uncheckout( File file, File viewContext ) throws UCMException {
+	public void uncheckout( File file, boolean keep, File viewContext ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}

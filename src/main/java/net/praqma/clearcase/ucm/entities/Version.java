@@ -199,12 +199,16 @@ public class Version extends UCMEntity {
 		context.checkOut( file, view );
 	}
 	
-	public static void uncheckout( File file, File viewContext ) throws UCMException {
-		context.uncheckout( file, viewContext );
+	public static void uncheckout( File file, boolean keep, File viewContext ) throws UCMException {
+		context.uncheckout( file, keep, viewContext );
 	}
 	
 	public void uncheckout() throws UCMException {
-		context.uncheckout( this.getVersion(), view.GetViewRoot() );
+		context.uncheckout( this.getVersion(), true, view.GetViewRoot() );
+	}
+	
+	public void uncheckout( boolean keep ) throws UCMException {
+		context.uncheckout( this.getVersion(), keep, view.GetViewRoot() );
 	}
 
 	public void setView( SnapshotView view ) {
