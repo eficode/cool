@@ -749,6 +749,14 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 				} catch( UCMException e ) {
 					/* Directory could be checked out already, let's proceed */
 				}
+			/* If destination is a file and its directory is NOT the same as the source,
+			 * then try to checkout the directory */
+			} else if( destination.isFile() && !destination.getParentFile().equals( file.getParentFile() )) {
+				try {
+					checkOut( destination.getParentFile(), viewContext );
+				} catch( UCMException e ) {
+					/* Directory could be checked out already, let's proceed */
+				}				
 			}
 			
 			String cmd = "mv " + file + " " + destination;
