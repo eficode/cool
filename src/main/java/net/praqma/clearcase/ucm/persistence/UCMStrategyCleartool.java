@@ -235,7 +235,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
 	
-	private final Pattern rx_baselineDiff = Pattern.compile( "^(.*?)\\s*(.*)\\s*$" );
+	private final Pattern rx_baselineDiff = Pattern.compile( "^(\\S+)\\s*(.*?)\\s*(.*)\\s*$" );
 	
 	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, boolean merge, SnapshotView view ) throws UCMException {
 		String cmd = "diffbl -version " + ( !merge ? "-nmerge " :  "" ) + ( bl1 != null ? bl1.getFullyQualifiedName() : "-pre " ) + " " + bl2.getFullyQualifiedName();
@@ -254,7 +254,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		for( int i = 4 ; i < lines.size() ; i++ ) {
 			Matcher m = rx_baselineDiff.matcher( lines.get( i ) );
 			if( m.find() ) {
-				String f = m.group(2).trim();
+
+				String f = m.group(3).trim();
+				logger.debug( "F: " + f );
 				Version v = (Version) UCMEntity.getEntity( f );
 				v.setSFile( v.getFile().substring( length ) );
 				
@@ -266,6 +268,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 					v.setStatus( Status.CHANGED );
 				}
 				
+				v.load();
 				versions.add( v );
 			}
 		}
@@ -607,7 +610,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	
 	private static final String rx_ccdef_voblikename = "[\\\\\\w\\.-/]";
 	private static final String rx_ccdef_filename = "[.[^@]+]";
-	private static final Pattern rx_extendedName = Pattern.compile( "^(.*?)\\s+(?:(" + rx_ccdef_filename + "+)@@)(?:(" + rx_ccdef_filename + "+)@@)?(.+)$" );
+	private static final Pattern rx_extendedName = Pattern.compile( "^(?:(" + rx_ccdef_filename + "+)@@)(?:(" + rx_ccdef_filename + "+)@@)?(.+)$" );
 	
 	public void loadVersion( Version version ) throws UCMException {
 		try {
@@ -621,13 +624,25 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			String vn = list.get( 1 );
 			
 			/* Third line, version extended name */
-			String ven = list.get( 1 );
+			String ven = list.get( 2 );
 			Matcher m = rx_extendedName.matcher( ven );
 			
-			if( m.find() && m.group(3) != null ) {
+			logger.debug( "VEN: " + ven );
+			
+			if( m.find() && m.group(2) != null ) {
+				try{
+					logger.debug( "0: " + m.group( 0 ) );
+					logger.debug( "1: " + m.group( 1 ) );
+					logger.debug( "2: " + m.group( 2 ) );
+					logger.debug( "3: " + m.group( 3 ) );
+					logger.debug( "4: " + m.group( 4 ) );
+				} catch( Exception e ) {
+					
+				}
 				version.setOldVersion( true );
-				String filename = m.group(3).substring( 0, m.group(4).length() );
+				String filename = m.group(1) + m.group(2).substring( m.group(3).length(), m.group(2).length() );
 				version.setVersion( new File( filename ) );
+				logger.debug( "FILENAME: " + filename );
 			}
 			
 		} catch( Exception e ) {
