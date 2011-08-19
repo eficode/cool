@@ -46,7 +46,7 @@ interface UCMStrategyInterface
 	public List<String> getBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob ) throws UCMException;
 	public void setPromotionLevel( String baseline, String plevel ) throws UCMException;
 	public void createBaseline( String baseline, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws UCMException;
-	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, SnapshotView view ) throws UCMException;
+	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, boolean merge, SnapshotView view ) throws UCMException;
 	
 	public String getBaselineActivities( String baseline );
 	
@@ -81,6 +81,7 @@ interface UCMStrategyInterface
 	public List<Stream> getChildStreams(String fqstream) throws UCMException;
 	
 	/* Version */
+	public void loadVersion( Version version ) throws UCMException;
 	public String getVersion( String version, String separator );
 	public String getVersionExtension( File file, File viewroot ) throws UCMException;
 	public void addToSourceControl( File file, File view ) throws UCMException;

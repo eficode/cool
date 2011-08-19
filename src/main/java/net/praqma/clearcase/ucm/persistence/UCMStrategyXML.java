@@ -1211,7 +1211,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, SnapshotView view ) throws UCMException {
+	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, boolean nomerge, SnapshotView view ) throws UCMException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1236,6 +1236,12 @@ public class UCMStrategyXML implements UCMStrategyInterface
 
 	@Override
 	public void moveFile( File file, File destination, File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void loadVersion( Version version ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}

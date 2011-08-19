@@ -106,8 +106,8 @@ public class UCMContext extends Cool {
 		return activities;
 	}
 	
-	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, SnapshotView view ) throws UCMException {
-		return strategy.baselineDifferences( bl1, bl2, view );
+	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, boolean nomerge, SnapshotView view ) throws UCMException {
+		return strategy.baselineDifferences( bl1, bl2, nomerge, view );
 	}
 
 	public ArrayList<Activity> getActivities( Baseline baseline ) {
@@ -115,6 +115,10 @@ public class UCMContext extends Cool {
 	}
 
 	/* Version */
+	
+	public void loadVersion( Version version ) throws UCMException {
+		strategy.loadVersion( version );
+	}
 
 	public HashMap<String, String> getVersion( Version version ) {
 		String result = strategy.getVersion( version.getFullyQualifiedName(), "::" );

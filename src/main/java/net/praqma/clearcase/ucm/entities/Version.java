@@ -19,6 +19,8 @@ public class Version extends UCMEntity {
 	private boolean checkedout = false;
 	private String comment = null;
 	private String branch = null;
+	
+	private boolean oldVersion = false;
 
 	private SnapshotView view = null;
 
@@ -69,7 +71,7 @@ public class Version extends UCMEntity {
 		}
 
 		String tmp = this.fqname;
-		tmp = tmp.replaceFirst( "(?m)\\@\\@.*$", "" );
+		tmp = tmp.replaceFirst( "(?m)@@.*$", "" );
 		tmp = tmp.replaceFirst( "(?m)^\\s+", "" );
 		this.file = tmp;
 
@@ -90,17 +92,17 @@ public class Version extends UCMEntity {
 		return context.getVersionExtension( file, viewroot );
 	}
 
-	public String getUser() {
+	public String getUser() throws UCMException {
 		if( !loaded ) load();
 
 		return this.user;
 	}
 
-	public String blame() {
+	public String blame() throws UCMException {
 		return this.getUser();
 	}
 
-	public String getFile() {
+	public String getFile() throws UCMException {
 		if( !loaded ) load();
 
 		return this.file;
@@ -114,13 +116,13 @@ public class Version extends UCMEntity {
 	}
 	*/
 
-	public String getRevision() {
+	public String getRevision() throws UCMException {
 		if( !loaded ) load();
 
 		return this.revision;
 	}
 
-	public void load() {
+	public void load2() {
 		logger.trace_function();
 
 		HashMap<String, String> result = context.getVersion( this );
@@ -139,6 +141,10 @@ public class Version extends UCMEntity {
 		this.branch = result.get( "branch" );
 
 		this.loaded = true;
+	}
+	
+	public void load() throws UCMException {
+		context.loadVersion( this );
 	}
 	
 	public static Version create( File file, SnapshotView view ) throws UCMException {
@@ -227,6 +233,10 @@ public class Version extends UCMEntity {
 		return sfile;
 	}
 	
+	public void setVersion( File file ) {
+		this.version = file;
+	}
+	
 	public File getVersion() {
 		return version;
 	}
@@ -241,6 +251,14 @@ public class Version extends UCMEntity {
 	
 	public static List<File> getUncheckedIn( File viewContext ) throws UCMException {
 		return context.getUnchecedInFiles( viewContext );
+	}
+	
+	public void setOldVersion( boolean old ) {
+		this.oldVersion = old;
+	}
+	
+	public boolean isOldVersion() {
+		return oldVersion;
 	}
 
 	public String stringify() throws UCMException {

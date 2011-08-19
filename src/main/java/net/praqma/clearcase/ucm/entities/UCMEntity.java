@@ -21,10 +21,12 @@ import net.praqma.clearcase.ucm.UCMException.UCMType;
  */
 public abstract class UCMEntity extends UCM {
 	private static final String rx_ccdef_allowed = "[\\w\\.-]";
-	private static final String rx_ccdef_vob = "[\\\\\\w\\.-]";
+	private static final String rx_ccdef_vob = "[\\\\\\w\\.-/]";
 	private static final Pattern pattern_std_fqname = Pattern.compile( "^(\\w+):(" + rx_ccdef_allowed + "+)@(" + rx_ccdef_vob + "+)$" );
 	/* TODO Make a better character class definition for files(Version) */
-	private static final Pattern pattern_version_fqname = Pattern.compile( "^(\\w:[\\S\\s\\\\\\.]+)@@(" + rx_ccdef_vob + "+)$" );
+	private static final Pattern pattern_version_fqname = Pattern.compile( "^([\\S\\s\\\\\\/.^@]+)@@(" + rx_ccdef_vob + "+)$" );
+	private static final String rx_ccdef_filename = "[\\S\\s\\\\\\/.^@]";
+	//private static final Pattern pattern_version_fqname = Pattern.compile( "^(" + rx_ccdef_filename + "+)@@(?:(" + rx_ccdef_filename + ")@@)?(" + rx_ccdef_vob + "+)$" );
 	public static final Pattern pattern_hlink_fqname = Pattern.compile( "^hlink:(" + rx_ccdef_allowed + "+)@(\\d+)@(" + rx_ccdef_vob + "+)$" );
 	protected static final Pattern pattern_tag_fqname = Pattern.compile( "^tag@(\\w+)@(" + rx_ccdef_vob + "+)$" );
 

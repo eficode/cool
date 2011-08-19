@@ -233,23 +233,24 @@ public class Baseline extends UCMEntity {
      * Compare two {@link Baseline}s. I.e. bl1 -> bl2.
      * @param bl1 {@link Baseline} dated before bl2
      * @param bl2 {@link Baseline} dated after bl1
+     * @param merge true  => , false => -nmerge
      * @param view A {@link SnapshotView}
      * @return A list of {@link Version}s
      * @throws UCMException
      */
-    public static List<Version> baselineDifferences( Baseline bl1, Baseline bl2, SnapshotView view ) throws UCMException {
-    	return context.baselineDifferences( bl1, bl2, view );
+    public static List<Version> baselineDifferences( Baseline bl1, Baseline bl2, boolean merge, SnapshotView view ) throws UCMException {
+    	return context.baselineDifferences( bl1, bl2, merge, view );
     }
     
     /**
      * Compare this {@link Baseline} to another previous {@link Baseline}. I.e. baseline -> this.
-     * @param before {@link Baseline} dated before this
+     * @param before {@link Baseline} dated before this. Can be null = -pre
      * @param view A {@link SnapshotView}
      * @return A list of {@link Version}s
      * @throws UCMException
      */
     public List<Version> beforeBaselineDifferences( Baseline before, SnapshotView view ) throws UCMException {
-    	return context.baselineDifferences( before, this, view );
+    	return context.baselineDifferences( before, this, true, view );
     }
     
     /**
@@ -260,7 +261,7 @@ public class Baseline extends UCMEntity {
      * @throws UCMException
      */
     public List<Version> afterBaselineDifferences( Baseline after, SnapshotView view ) throws UCMException {
-    	return context.baselineDifferences( this, after, view );
+    	return context.baselineDifferences( this, after, true, view );
     }
 
     public String stringify() throws UCMException {

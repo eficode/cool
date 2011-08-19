@@ -237,8 +237,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	
 	private final Pattern rx_baselineDiff = Pattern.compile( "^(.*?)\\s*(.*)\\s*$" );
 	
-	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, SnapshotView view ) throws UCMException {
-		String cmd = "diffbl -version -nmerge " + bl1.getFullyQualifiedName() + " " + bl2.getFullyQualifiedName();
+	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, boolean merge, SnapshotView view ) throws UCMException {
+		String cmd = "diffbl -version " + ( !merge ? "-nmerge " :  "" ) + ( bl1 != null ? bl1.getFullyQualifiedName() : "-pre " ) + " " + bl2.getFullyQualifiedName();
 		
 		List<String> lines = null;
 		
@@ -603,6 +603,36 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	public String getVersion( String version, String separator ) {
 		String cmd = "desc -fmt %Nd" + separator + "%u" + separator + "%h" + separator + "%c" + separator + "%Rf" + separator + "%m" + separator + "%Vn" + separator + "%Xn \"" + version + "\"";
 		return Cleartool.run( cmd ).stdoutBuffer.toString();
+	}
+	
+	private static final String rx_ccdef_voblikename = "[\\\\\\w\\.-/]";
+	private static final String rx_ccdef_filename = "[.[^@]+]";
+	private static final Pattern rx_extendedName = Pattern.compile( "^(.*?)\\s+(?:(" + rx_ccdef_filename + "+)@@)(?:(" + rx_ccdef_filename + "+)@@)?(.+)$" );
+	
+	public void loadVersion( Version version ) throws UCMException {
+		try {
+			String cmd = "describe -fmt %u\\n%Vn\\n%Xn \"" + version.getFullyQualifiedName() + "\"";
+			List<String> list = Cleartool.run( cmd ).stdoutList;
+			
+			/* First line, user */
+			version.setUser( list.get( 0 ) );
+			
+			/* Second line, version name */
+			String vn = list.get( 1 );
+			
+			/* Third line, version extended name */
+			String ven = list.get( 1 );
+			Matcher m = rx_extendedName.matcher( ven );
+			
+			if( m.find() && m.group(3) != null ) {
+				version.setOldVersion( true );
+				String filename = m.group(3).substring( 0, m.group(4).length() );
+				version.setVersion( new File( filename ) );
+			}
+			
+		} catch( Exception e ) {
+			throw new UCMException( "Could not load Version: " + e.getMessage() );
+		}
 	}
 
 	public String getVersionExtension( File file, File viewroot ) throws UCMException {
