@@ -9,6 +9,8 @@ public class PVob extends Vob {
 
 	public PVob(String name) {
 		super(name);
+		
+		this.projectVob = true;
 	}
 
 	public static PVob create( String name, String path, String comment ) throws UCMException {

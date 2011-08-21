@@ -9,6 +9,8 @@ public class Vob extends Cool {
 
 	protected String name;
 	
+	protected boolean projectVob = false;
+	
 	protected String storageLocation = null;
 
 	public Vob(String name) {
@@ -31,6 +33,14 @@ public class Vob extends Cool {
 	
 	public void unmount() throws UCMException {
 		context.unmountVob(this);
+	}
+	
+	public void setIsProjectVob( boolean pvob ) {
+		this.projectVob = pvob;
+	}
+	
+	public boolean isProjectVob() {
+		return this.projectVob;
 	}
 	
 	public String toString() {

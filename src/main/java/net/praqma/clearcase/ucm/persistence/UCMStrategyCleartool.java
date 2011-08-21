@@ -461,14 +461,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 
-	public void createStream( String pstream, String nstream, boolean readonly, String baseline ) throws UCMException
-	{
+	public void createStream( String pstream, String nstream, boolean readonly, String baseline ) throws UCMException {
 		logger.debug( "Creating stream " + nstream + " as child of " + pstream );
 
 		String cmd = "mkstream -in " + pstream + " " + ( baseline != null ? "-baseline " + baseline + " " : "" ) + ( readonly ? "-readonly " : "" ) + nstream;
 		try {
 			Cleartool.run( cmd );
-		} catch( Exception e ) {
+		} catch (Exception e) {
 			throw new UCMException( "Could not create stream: " + e.getMessage() );
 		}
 	}
@@ -597,6 +596,10 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 
 		return streams;
+	}
+	
+	public void rebase( Stream stream, Baseline baseline ) {
+		
 	}
 
 	/************************************************************************
@@ -1488,6 +1491,8 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 					if(m.find()) {
 						a.put("pathname", m.group(1));
 					}
+				} else if( s.contains( "project VOB" ) ) {
+					vob.setIsProjectVob( true );
 				}
 			}
 			
@@ -1496,6 +1501,10 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 		}
 		
 		return a;
+	}
+	
+	public List<Vob> getVobs() {
+		return null;
 	}
 	
 	public void mountVob( Vob vob ) throws UCMException {
