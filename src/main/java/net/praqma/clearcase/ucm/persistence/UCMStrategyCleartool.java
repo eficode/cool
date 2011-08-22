@@ -703,7 +703,13 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 				/* Maybe it is checked out? */
 			}
 
-			String cmd = "mkelem " + file;
+			/* Determine whether the File is a file or a directory */
+			String cmd = "";
+			if( file.isFile() ) {
+				cmd = "mkelem " + file;
+			} else {
+				cmd = "mkdir " + file;
+			}
 			Cleartool.run( cmd, view );
 		} catch( Exception e ) {
 			/* Already added to source control */
