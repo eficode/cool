@@ -84,7 +84,7 @@ public class VersionTest {
 		
 		Version.checkOut( path2, path2 );
 		
-		Version version = Version.create( file, devview );
+		Version version = Version.create( file, false, devview );
 		//version.checkOut();
 
 		PrintStream ps;

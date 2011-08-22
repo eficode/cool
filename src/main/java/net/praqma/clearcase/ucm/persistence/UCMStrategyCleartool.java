@@ -670,7 +670,7 @@ cleartool: Error: Entry named "myfile1.txt" already exists.
 cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Model\myfile1.txt".
 	 */
 	
-	public void addToSourceControl( File file, File view ) throws UCMException {
+	public void addToSourceControl( File file, boolean mkdir, File view ) throws UCMException {
 		/* Check existence */
 		List<File> files = new ArrayList<File>();
 		File parent = file.getParentFile();
@@ -705,10 +705,10 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 
 			/* Determine whether the File is a file or a directory */
 			String cmd = "";
-			if( file.isFile() ) {
-				cmd = "mkelem " + file;
-			} else {
+			if( mkdir ) {
 				cmd = "mkdir " + file;
+			} else {
+				cmd = "mkelem " + file;
 			}
 			Cleartool.run( cmd, view );
 		} catch( Exception e ) {
@@ -777,6 +777,13 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 		} catch( UCMException e ) {
 			/* The file is probably already checked out,
 			 * let's try to continue */
+		}
+		
+		try {
+			uncheckout( file, false, viewContext );
+		} catch( UCMException e ) {
+			/* Could not uncheckout */
+			logger.warning( "Could not uncheckout " + file );
 		}
 		
 		try {

@@ -60,11 +60,11 @@ public class Utilities {
 		
 		File f1 = new File( devpath, "myfile1.txt" );
 		f1.createNewFile();
-		Version version1 = Version.create( f1, sview );
+		Version version1 = Version.create( f1, false, sview );
 		
 		File f2 = new File( devpath, "myfile2.txt" );
 		f1.createNewFile();
-		Version version2 = Version.create( f2, sview );
+		Version version2 = Version.create( f2, false, sview );
 		
 		addToFiles(new Version[]{version1, version2}, "my_super_cool_baseline", component, new String[]{"my1", "my2"}, devpath );
 		

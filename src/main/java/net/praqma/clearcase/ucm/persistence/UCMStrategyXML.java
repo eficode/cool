@@ -1179,7 +1179,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void addToSourceControl( File file, File view ) throws UCMException {
+	public void addToSourceControl( File file, boolean mkdir, File view ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}

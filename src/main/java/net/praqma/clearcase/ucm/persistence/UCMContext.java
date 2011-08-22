@@ -146,8 +146,8 @@ public class UCMContext extends Cool {
 		return (Version) UCMEntity.getEntity( f, false );
 	}
 	
-	public void addToSourceControl( File file, File view ) throws UCMException {
-		strategy.addToSourceControl( file, view );
+	public void addToSourceControl( File file, boolean mkdir, File view ) throws UCMException {
+		strategy.addToSourceControl( file, mkdir, view );
 	}
 	
 	public void checkOut( Version version, File viewContext ) throws UCMException {

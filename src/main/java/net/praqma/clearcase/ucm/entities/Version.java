@@ -147,9 +147,9 @@ public class Version extends UCMEntity {
 		context.loadVersion( this );
 	}
 	
-	public static Version create( File file, SnapshotView view ) throws UCMException {
+	public static Version create( File file, boolean mkdir, SnapshotView view ) throws UCMException {
 
-		Version.addToSourceControl( file, view.GetViewRoot() );
+		Version.addToSourceControl( file, mkdir, view.GetViewRoot() );
 		
 		Version version = Version.getUnextendedVersion( file, view.GetViewRoot() );
 		version.setView( view );
@@ -157,8 +157,8 @@ public class Version extends UCMEntity {
 		return version;
 	}
 	
-	public static void addToSourceControl( File file, File view ) throws UCMException {
-		context.addToSourceControl( file, view );
+	public static void addToSourceControl( File file, boolean mkdir, File view ) throws UCMException {
+		context.addToSourceControl( file, mkdir, view );
 	}
 	
 	public void checkIn() throws UCMException {
