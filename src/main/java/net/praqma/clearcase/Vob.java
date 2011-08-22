@@ -1,9 +1,6 @@
 package net.praqma.clearcase;
 
-import java.util.Map;
-
 import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.UCMException.UCMType;
 
 public class Vob extends Cool {
 
@@ -18,13 +15,7 @@ public class Vob extends Cool {
 	}
 	
 	public void load() throws UCMException {
-		Map<String, String> options = context.loadVob(this);
-		
-		try {
-			this.storageLocation = options.get("pathname");
-		} catch( NullPointerException e ) {
-			throw new UCMException( "Could not load " + this.toString() + " correctly: " + e.getMessage(), UCMType.LOAD_FAILED );
-		}
+		context.loadVob(this);
 	}
 	
 	public void mount() throws UCMException {
@@ -35,11 +26,27 @@ public class Vob extends Cool {
 		context.unmountVob(this);
 	}
 	
+	public void setStorageLocation( String storageLocation ) {
+		this.storageLocation = storageLocation;
+	}
+	
+	public String getStorageLocation() throws UCMException {
+		if( storageLocation == null ) {
+			load();
+		}
+		
+		return this.storageLocation;
+	}
+	
 	public void setIsProjectVob( boolean pvob ) {
 		this.projectVob = pvob;
 	}
 	
-	public boolean isProjectVob() {
+	public boolean isProjectVob() throws UCMException {
+		if( storageLocation == null ) {
+			load();
+		}
+		
 		return this.projectVob;
 	}
 	
@@ -53,14 +60,6 @@ public class Vob extends Cool {
 		} else {
 			return name;
 		}
-	}
-	
-	public String getStorageLocation() throws UCMException {
-		if( storageLocation == null ) {
-			load();
-		}
-		
-		return this.storageLocation;
 	}
 	
 	public static Vob create( String name, String path, String comment ) throws UCMException {

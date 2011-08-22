@@ -92,6 +92,8 @@ interface UCMStrategyInterface
 	public void uncheckout( File file, boolean keep, File viewContext ) throws UCMException;
 	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException;
 	public void moveFile( File file, File destination, File viewContext ) throws UCMException;
+	public boolean isUnderSourceControl( File element, File viewContext ) throws UCMException;
+	public boolean isCheckedout( File element, File viewContext ) throws UCMException;
 	
 	/* Tag */
 	public List<String[]> getTags( String fqname ) throws UCMException;
@@ -119,11 +121,12 @@ interface UCMStrategyInterface
 	
 	/* Vobs */
 	public void createVob( String vobname, boolean UCMProject, String path, String comment ) throws UCMException;
-	public Map<String, String> loadVob( Vob vob ) throws UCMException;
+	public void loadVob( Vob vob ) throws UCMException;
 	public void mountVob( Vob vob ) throws UCMException;
-	public List<PVob> getVobs( Region region );
+	public List<Vob> getVobs( Region region );
 	public void removeVob( Vob vob ) throws UCMException;
 	public void unmountVob( Vob vob ) throws UCMException;
+	public List<Vob> getVobs( boolean pvobs ) throws UCMException;
 
 	/* Attributes */
 	public String getAttribute( String fqname, String attribute ) throws UCMException;

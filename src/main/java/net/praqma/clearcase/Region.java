@@ -14,7 +14,7 @@ public class Region extends Cool {
         this.site = site;
     }
 
-    public List<PVob> getVobs() {
+    public List<Vob> getVobs() {
         return site.getVobs( this );
     }
 

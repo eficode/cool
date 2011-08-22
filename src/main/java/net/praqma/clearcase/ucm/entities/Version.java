@@ -260,6 +260,35 @@ public class Version extends UCMEntity {
 	public boolean isOldVersion() {
 		return oldVersion;
 	}
+	
+	/**
+	 * An exception safe way to determine whether the file is under
+	 * source control
+	 * @param element The File to be checked
+	 * @param viewContext The view context as a File path
+	 * @return True if the File element is under source control
+	 */
+	public static boolean isUnderSourceControl( File element, File viewContext ) {
+		try {
+			return context.isUnderSourceControl( element, viewContext );
+		} catch (UCMException e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * An exception safe way to determine whether the file is checked out
+	 * @param element The File to be checked
+	 * @param viewContext The view context as a File path
+	 * @return True if the File element is checked out
+	 */
+	public static boolean isCheckedout( File element, File viewContext ) {
+		try {
+			return context.isCheckedout( element, viewContext );
+		} catch (UCMException e) {
+			return false;
+		}
+	}
 
 	public String stringify() throws UCMException {
 		StringBuffer sb = new StringBuffer();

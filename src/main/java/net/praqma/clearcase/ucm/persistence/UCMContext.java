@@ -624,7 +624,7 @@ public class UCMContext extends Cool {
 
 	/* VOBS */
 
-	public List<PVob> getVobs( Region region ) {
+	public List<Vob> getVobs( Region region ) {
 		return strategy.getVobs( region );
 	}
 
@@ -632,8 +632,8 @@ public class UCMContext extends Cool {
 		strategy.createVob( vobname, UCMProject, path, comment );
 	}
 
-	public Map<String, String> loadVob( Vob vob ) throws UCMException {
-		return strategy.loadVob( vob );
+	public void loadVob( Vob vob ) throws UCMException {
+		strategy.loadVob( vob );
 	}
 
 	public void mountVob( Vob vob ) throws UCMException {
@@ -646,6 +646,18 @@ public class UCMContext extends Cool {
 
 	public void removeVob( Vob vob ) throws UCMException {
 		strategy.removeVob( vob );
+	}
+	
+	public List<Vob> getVobs( boolean pvobs ) throws UCMException {
+		return strategy.getVobs( pvobs );
+	}
+	
+	public boolean isUnderSourceControl( File element, File viewContext ) throws UCMException {
+		return strategy.isUnderSourceControl( element, viewContext );
+	}
+	
+	public boolean isCheckedout( File element, File viewContext ) throws UCMException {
+		return strategy.isCheckedout( element, viewContext );
 	}
 
 	/* Views */

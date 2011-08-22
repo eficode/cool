@@ -1463,33 +1463,26 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 		}
 	}
 	
-	public List<PVob> getVobs(Region region) {
-		String cmd = "lsvob -s" + (region != null ? " -region " + region.getName() : "");
-		CmdResult cr = Cleartool.run(cmd);
-
-		List<PVob> vobs = new ArrayList<PVob>();
-		for (String s : cr.stdoutList) {
-			vobs.add(new PVob(s));
-		}
-
-		return vobs;
-	}
-	
-	public Map<String, String> loadVob( Vob vob ) throws UCMException {
+	public void loadVob( Vob vob ) throws UCMException {
 		logger.info("Loading vob " + vob);
 		
 		String cmd = "describe vob:" + vob;
 		
-		Map<String, String> a = new HashMap<String, String>();
-		
 		try {
-			CmdResult r = Cleartool.run(cmd);
+			/* We have to ignore any abnormal terminations,
+			 * because describe can return != 0 even when 
+			 * the result is valid */
+			CmdResult r = Cleartool.run( cmd, null, true, true );
+			
+			if( r.stdoutBuffer.toString().contains( "Unable to determine VOB for pathname" ) ) {
+				throw new UCMException( "The Vob " + vob.getName() + " does not exist" );
+			}
 			
 			for( String s : r.stdoutList ) {
 				if( s.contains("VOB storage global pathname") ) {
 					Matcher m = rx_vob_get_path.matcher(s);
 					if(m.find()) {
-						a.put("pathname", m.group(1));
+						vob.setStorageLocation( m.group(1) );
 					}
 				} else if( s.contains( "project VOB" ) ) {
 					vob.setIsProjectVob( true );
@@ -1499,12 +1492,72 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 		} catch( Exception e ) {
 			throw new UCMException( "Could not load Vob: " + e.getMessage() );
 		}
-		
-		return a;
 	}
 	
-	public List<Vob> getVobs() {
-		return null;
+	public boolean isCheckedout( File element, File viewContext ) throws UCMException {
+		String cmd = "describe -s " + element;
+		try {
+			String line = Cleartool.run( cmd, viewContext ).stdoutBuffer.toString();
+			
+			if( line.endsWith( "\\CHECKEDOUT" ) ) {
+				return true;			
+			} else {
+				return false;
+			}
+		} catch( Exception e ) {
+			throw new UCMException( e.getMessage() );
+		}
+	}
+	
+	public boolean isUnderSourceControl( File element, File viewContext ) throws UCMException {
+		String cmd = "describe " + element;
+		try {
+			String line = Cleartool.run( cmd, viewContext ).stdoutBuffer.toString();
+			
+			if( line.contains( "View private file" ) ) {
+				return false;			
+			} else {
+				return true;
+			}
+		} catch( Exception e ) {
+			throw new UCMException( e.getMessage() );
+		}
+	}
+	
+	public List<Vob> getVobs(Region region) {
+		String cmd = "lsvob -s" + (region != null ? " -region " + region.getName() : "");
+		CmdResult cr = Cleartool.run(cmd);
+
+		List<Vob> vobs = new ArrayList<Vob>();
+		for (String s : cr.stdoutList) {
+			vobs.add(new Vob(s));
+		}
+
+		return vobs;
+	}
+	
+	public List<Vob> getVobs( boolean pvobs ) throws UCMException {
+		String cmd = "lsvob -s";
+		
+		List<Vob> vobs = new ArrayList<Vob>();
+		
+		try {
+			List<String> vs = Cleartool.run( cmd ).stdoutList;
+			
+			for( String v : vs ) {
+				Vob vob = new Vob(v);
+				vob.load();
+				if( vob.isProjectVob() && pvobs ) {
+					vobs.add( (PVob)vob );
+				} else {
+					vobs.add( vob );
+				}
+			}
+		} catch( Exception e ) {
+			throw new UCMException( "Could not list Vobs: " + e.getMessage() );
+		}
+		
+		return vobs;
 	}
 	
 	public void mountVob( Vob vob ) throws UCMException {

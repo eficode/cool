@@ -1070,7 +1070,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
     }
 
     @Override
-    public List<PVob> getVobs(Region region) {
+    public List<Vob> getVobs(Region region) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -1113,9 +1113,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public Map<String, String> loadVob(Vob vob) throws UCMException {
-		// TODO Auto-generated method stub
-		return null;
+	public void loadVob(Vob vob) throws UCMException {
 	}
 
 	@Override
@@ -1244,5 +1242,23 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	public void loadVersion( Version version ) throws UCMException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<Vob> getVobs( boolean pvobs ) throws UCMException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isUnderSourceControl( File element, File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCheckedout( File element, File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
