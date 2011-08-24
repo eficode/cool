@@ -56,6 +56,8 @@ public class Baseline extends UCMEntity {
 		} catch (ParseException e) {
 			this.date = null;
 		}
+        
+        this.labelStatus = getLabelStatus( rs[6] );
 
         activities = new ArrayList<Activity>();
 

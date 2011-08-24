@@ -177,16 +177,20 @@ public class Version extends UCMEntity {
 		context.checkOut( this, view.GetViewRoot() );
 	}
 	
-	public void remove() throws UCMException {
-		context.removeVersion( this, view.GetViewRoot() );
+	public void removeVersion() throws UCMException {
+		context.removeVersion( this.version, view.GetViewRoot() );
 	}
 	
-	public void removeName( boolean checkedOut ) throws UCMException {
-		context.removeName( this.version, checkedOut, view.GetViewRoot() );
+	public static void removeVersion( File file, File viewContext ) throws UCMException {
+		context.removeVersion( file, viewContext );
 	}
 	
-	public static void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException {
-		context.removeName( file, checkedOut, viewContext );
+	public void removeName( ) throws UCMException {
+		context.removeName( this.version, view.GetViewRoot() );
+	}
+	
+	public static void removeName( File file, File viewContext ) throws UCMException {
+		context.removeName( file, viewContext );
 	}
 	
 	public static void moveFile( File file, File destination, SnapshotView view ) throws UCMException {

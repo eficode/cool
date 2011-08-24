@@ -35,6 +35,15 @@ public abstract class UCMEntity extends UCM {
 	private static ClassLoader classloader = UCMEntity.class.getClassLoader();
 
 	protected static TagPool tp = TagPool.GetInstance();
+	
+	public enum LabelStatus {
+		UNKNOWN,
+		FULL,
+		INCREMENTAL,
+		UNLABLED
+	}
+	
+	protected LabelStatus labelStatus = LabelStatus.UNKNOWN;
 
 	/* For future caching purposes */
 	private static HashMap<String, UCMEntity> entities = new HashMap<String, UCMEntity>();
@@ -255,6 +264,18 @@ public abstract class UCMEntity extends UCM {
 	public void load() throws UCMException {
 		logger.warning( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
+	}
+	
+	public LabelStatus getLabelStatus( String ls ) {
+		if( ls.equalsIgnoreCase( "not labeled" ) ) {
+			return LabelStatus.UNLABLED;
+		} else if( ls.equalsIgnoreCase( "full" ) ) {
+			return LabelStatus.FULL;
+		} else if( ls.equalsIgnoreCase( "incremental" ) ) {
+			return LabelStatus.INCREMENTAL;
+		} else {
+			return LabelStatus.UNKNOWN;
+		}
 	}
 
 	/* Syntactic static helper methods for retrieving entity objects */

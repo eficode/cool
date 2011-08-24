@@ -180,7 +180,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	{
 		logger.debug( "Loading " + baseline );
 
-		String cmd = "desc -fmt %n" + Cool.delim + "%[component]p" + Cool.delim + "%[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u" + Cool.delim + "%Nd " + baseline;
+		String cmd = "desc -fmt %n" + Cool.delim + "%[component]p" + Cool.delim + "%[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u" + Cool.delim + "%Nd" + Cool.delim + "%[label_status]p " + baseline;
 		try
 		{
 			return Cleartool.run( cmd ).stdoutBuffer.toString();
@@ -754,22 +754,33 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 		}
 	}
 	
-	public void removeVersion( Version version, File viewContext ) throws UCMException {
-		String cmd = "rmver -force -xlabel -xattr -xhlink " + version.getFile();
+	public void removeVersion( File file, File viewContext ) throws UCMException {
+		
+		/* Firstly, checkout directory */
+		try {
+			checkOut( file.getParentFile(), viewContext );
+		} catch( UCMException e ) {
+			/* The file is probably already checked out,
+			 * let's try to continue */
+		}
+		
+		String cmd = "rmver -force -xlabel -xattr -xhlink " + file;
+		
+		try {
+			uncheckout( file, false, viewContext );
+		} catch( UCMException e ) {
+			/* Could not uncheckout */
+			logger.warning( "Could not uncheckout " + file );
+		}
+		
 		try {
 			Cleartool.run( cmd, viewContext );
 		} catch( Exception e ) {
-			/* Try to uncheckout the file first */
-			try{
-				uncheckout( version.getVersion(), false, viewContext );
-				Cleartool.run( cmd, viewContext );
-			} catch( UCMException e1 ) {
-				throw new UCMException( "Could not remove " + version.getFile() + ": " + e.getMessage() + "\n\n" + e1.getMessage());
-			}			
+			throw new UCMException( "Could not remove " + file + ": " + e.getMessage() );
 		}
 	}
 	
-	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException {
+	public void removeName( File file, File viewContext ) throws UCMException {
 		
 		/* Firstly, checkout directory */
 		try {
@@ -787,7 +798,8 @@ cleartool: Error: Unable to create element "c:\Temp\views\snade\001\Snade001\Mod
 		}
 		
 		try {
-			String cmd = "rmname -force " + ( checkedOut ? "" : "-nco " ) + file;
+			//String cmd = "rmname -force " + ( checkedOut ? "" : "-nco " ) + file;
+			String cmd = "rmname -force -nco " + file;
 			Cleartool.run( cmd, viewContext );
 		} catch( Exception e ) {
 			throw new UCMException( e.getMessage() );

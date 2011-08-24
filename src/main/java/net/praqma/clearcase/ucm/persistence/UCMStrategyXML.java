@@ -1197,7 +1197,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void removeVersion( Version version, File viewContext ) throws UCMException {
+	public void removeVersion( File file, File viewContext ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1227,7 +1227,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException {
+	public void removeName( File file, File viewContext ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}

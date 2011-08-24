@@ -87,10 +87,10 @@ interface UCMStrategyInterface
 	public void addToSourceControl( File file, boolean mkdir, File view ) throws UCMException;
 	public void checkOut( File file, File viewContext ) throws UCMException;
 	public void checkIn( File file, boolean identical, File viewContext ) throws UCMException;
-	public void removeVersion( Version version, File viewContext ) throws UCMException;
+	public void removeVersion( File file, File viewContext ) throws UCMException;
 	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException;
 	public void uncheckout( File file, boolean keep, File viewContext ) throws UCMException;
-	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException;
+	public void removeName( File file, File viewContext ) throws UCMException;
 	public void moveFile( File file, File destination, File viewContext ) throws UCMException;
 	public boolean isUnderSourceControl( File element, File viewContext ) throws UCMException;
 	public boolean isCheckedout( File element, File viewContext ) throws UCMException;

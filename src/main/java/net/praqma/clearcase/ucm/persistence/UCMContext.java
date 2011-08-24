@@ -137,8 +137,8 @@ public class UCMContext extends Cool {
 		return v;
 	}
 	
-	public void removeVersion( Version version, File viewContext ) throws UCMException {
-		strategy.removeVersion( version, viewContext );
+	public void removeVersion( File file, File viewContext ) throws UCMException {
+		strategy.removeVersion( file, viewContext );
 	}
 
 	public Version getVersionExtension( File file, File viewroot ) throws UCMException {
@@ -170,8 +170,8 @@ public class UCMContext extends Cool {
 		strategy.uncheckout( file, keep, viewContext );
 	}
 	
-	public void removeName( File file, boolean checkedOut, File viewContext ) throws UCMException {
-		strategy.removeName( file, checkedOut, viewContext );
+	public void removeName( File file, File viewContext ) throws UCMException {
+		strategy.removeName( file, viewContext );
 	}
 	
 	public void moveFile( File file, File destination, File viewContext ) throws UCMException {
