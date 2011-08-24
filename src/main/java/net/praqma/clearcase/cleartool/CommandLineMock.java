@@ -69,11 +69,11 @@ public class CommandLineMock implements CommandLineInterface {
 		 * baseline:CHW_BASELINE_51@\Cool_PVOB
 		 * CHW_BASELINE_51::_System::Server_int::TESTED::chw
 		 */
-		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd baseline:CHW_BASELINE_51@\\Cool_PVOB" ) ) {
-			res.stdoutBuffer.append( "CHW_BASELINE_51::_System::Server_int::TESTED::chw::20110810.232400" );
+		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:CHW_BASELINE_51@\\Cool_PVOB" ) ) {
+			res.stdoutBuffer.append( "CHW_BASELINE_51::_System::Server_int::TESTED::chw::20110810.232400::full" );
 		}
 
-		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd baseline:CHW_BASELINE_51_no@\\Cool_PVOB" ) ) {
+		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:CHW_BASELINE_51_no@\\Cool_PVOB" ) ) {
 			throw new AbnormalProcessTerminationException( "cleartool: Error: Baseline not found: \"CHW_BASELINE_51_no\"." );
 		}
 
@@ -157,16 +157,16 @@ public class CommandLineMock implements CommandLineInterface {
 		 * cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u
 		 * baseline:rec_baseline000001@\Cool_PVOB
 		 */
-		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd baseline:rec_baseline000001@\\Cool_PVOB" ) ) {
-			res.stdoutBuffer.append( "rec_baseline000001::_System::Server_int::INITIAL::chw::20110810.232400" );
+		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:rec_baseline000001@\\Cool_PVOB" ) ) {
+			res.stdoutBuffer.append( "rec_baseline000001::_System::Server_int::INITIAL::chw::20110810.232400::full" );
 		}
 
-		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd baseline:rec_baseline000002@\\Cool_PVOB" ) ) {
-			res.stdoutBuffer.append( "rec_baseline000002::_System_2::Server_int::INITIAL::chw::20110810.232400" );
+		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:rec_baseline000002@\\Cool_PVOB" ) ) {
+			res.stdoutBuffer.append( "rec_baseline000002::_System_2::Server_int::INITIAL::chw::20110810.232400::full" );
 		}
 
-		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd baseline:bn__1_2_3_1234@\\Cool_PVOB" ) ) {
-			res.stdoutBuffer.append( "rec_baseline000002::_System::Server_int::INITIAL::chw::20110810.232400" );
+		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:bn__1_2_3_1234@\\Cool_PVOB" ) ) {
+			res.stdoutBuffer.append( "rec_baseline000002::_System::Server_int::INITIAL::chw::20110810.232400::full" );
 		}
 
 		/* ATTRIBUTES */

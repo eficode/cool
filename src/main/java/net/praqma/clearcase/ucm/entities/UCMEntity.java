@@ -269,9 +269,9 @@ public abstract class UCMEntity extends UCM {
 	public LabelStatus getLabelStatus( String ls ) {
 		if( ls.equalsIgnoreCase( "not labeled" ) ) {
 			return LabelStatus.UNLABLED;
-		} else if( ls.equalsIgnoreCase( "full" ) ) {
+		} else if( ls.equalsIgnoreCase( "fully labeled" ) ) {
 			return LabelStatus.FULL;
-		} else if( ls.equalsIgnoreCase( "incremental" ) ) {
+		} else if( ls.equalsIgnoreCase( "incrementally labeled" ) ) {
 			return LabelStatus.INCREMENTAL;
 		} else {
 			return LabelStatus.UNKNOWN;
