@@ -266,7 +266,7 @@ public abstract class UCMEntity extends UCM {
 		this.loaded = true;
 	}
 	
-	public LabelStatus getLabelStatus( String ls ) {
+	public LabelStatus getLabelStatusFromString( String ls ) {
 		if( ls.equalsIgnoreCase( "not labeled" ) ) {
 			return LabelStatus.UNLABLED;
 		} else if( ls.equalsIgnoreCase( "fully labeled" ) ) {
@@ -276,6 +276,10 @@ public abstract class UCMEntity extends UCM {
 		} else {
 			return LabelStatus.UNKNOWN;
 		}
+	}
+	
+	public LabelStatus getLabelStatus() {
+		return labelStatus;
 	}
 
 	/* Syntactic static helper methods for retrieving entity objects */

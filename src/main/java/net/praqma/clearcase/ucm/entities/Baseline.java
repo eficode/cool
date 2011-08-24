@@ -57,7 +57,7 @@ public class Baseline extends UCMEntity {
 			this.date = null;
 		}
         
-        this.labelStatus = getLabelStatus( rs[6] );
+        this.labelStatus = getLabelStatusFromString( rs[6] );
 
         activities = new ArrayList<Activity>();
 
