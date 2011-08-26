@@ -185,8 +185,8 @@ public class Stream extends UCMEntity {
 		return this.recommendedBaselines;
 	}
 
-	public boolean recommendBaseline( Baseline baseline ) {
-		return context.recommendBaseline( this, baseline );
+	public void recommendBaseline( Baseline baseline ) throws UCMException {
+		context.recommendBaseline( this, baseline );
 	}
 
 	public BaselineList getLatestBaselines() throws UCMException {

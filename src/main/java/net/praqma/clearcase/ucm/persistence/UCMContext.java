@@ -294,15 +294,8 @@ public class UCMContext extends Cool {
 		return bls;
 	}
 
-	public boolean recommendBaseline( Stream stream, Baseline baseline ) {
-		try {
-			// Cleartool.run( cmd );
-			strategy.recommendBaseline( stream.getFullyQualifiedName(), baseline.getFullyQualifiedName() );
-			return true;
-		} catch (UCMException e) {
-			logger.error( "Stream " + stream.getShortname() + " could not recommend baseline " + baseline.getShortname() );
-			return false;
-		}
+	public void recommendBaseline( Stream stream, Baseline baseline ) throws UCMException {
+		strategy.recommendBaseline( stream.getFullyQualifiedName(), baseline.getFullyQualifiedName() );
 	}
 
 	public List<Baseline> getBaselines( Stream stream, Component component, Project.Plevel plevel, String pvob ) throws UCMException {
