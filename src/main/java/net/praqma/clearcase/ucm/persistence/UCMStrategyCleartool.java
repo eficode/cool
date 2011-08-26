@@ -536,7 +536,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		List<Stream> streams = new ArrayList<Stream>();
 		String[] strms = res.stdoutBuffer.toString().split( ", " );
 		for( String stream : strms ) {
-			System.out.println( stream );
 			streams.add( UCMEntity.getStream( stream ) );
 		}
 
