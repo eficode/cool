@@ -324,9 +324,10 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			logger.warning( e );
 			
 			/* Determine cause */
-			if( e.getMessage().replace( "\\n", " " ).contains( "requires child development streams to rebase to recommended baselines before performing deliver operation" ) ) {
+			if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "requires child development streams to rebase to recommended baselines before performing deliver operation" ) ) {
+			//if( e.getMessage().matches( "streams to rebase to recommended baselines before performing deliver" ) ) {
 				logger.warning( "Deliver requires rebase" );
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_REQUIRES_REBASE );
+				throw new UCMException( "ould not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_REQUIRES_REBASE );
 			} else {
 				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage() );
 			}
