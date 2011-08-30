@@ -322,7 +322,14 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		} catch (AbnormalProcessTerminationException e) {
 			logger.warning( "Could not deliver to target " + target );
 			logger.warning( e );
-			throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage() );
+			
+			/* Determine cause */
+			if( e.getMessage().replace( "\\n", " " ).contains( "requires child development streams to rebase to recommended baselines before performing deliver operation" ) ) {
+				logger.warning( "Deliver requires rebase" );
+				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_REQUIRES_REBASE );
+			} else {
+				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage() );
+			}
 		}
 	}
 
