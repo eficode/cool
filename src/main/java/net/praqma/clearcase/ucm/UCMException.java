@@ -24,6 +24,7 @@ public class UCMException extends Exception {
 		VIEW_ERROR, 
 		CREATION_FAILED,
 		DELIVER_REQUIRES_REBASE,
+		INTERPROJECT_DELIVER_DENIED,
 		MERGE_ERROR
 	}
 
