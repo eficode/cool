@@ -23,7 +23,8 @@ public class UCMException extends Exception {
 		UNKNOWN_HLINK_TYPE, 
 		VIEW_ERROR, 
 		CREATION_FAILED,
-		DELIVER_REQUIRES_REBASE
+		DELIVER_REQUIRES_REBASE,
+		MERGE_ERROR
 	}
 
 	public UCMException() {

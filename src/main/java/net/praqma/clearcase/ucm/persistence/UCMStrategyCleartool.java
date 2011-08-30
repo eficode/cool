@@ -328,6 +328,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			//if( e.getMessage().matches( "streams to rebase to recommended baselines before performing deliver" ) ) {
 				logger.warning( "Deliver requires rebase" );
 				throw new UCMException( "ould not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_REQUIRES_REBASE );
+			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "*** No Automatic Decision Possible merge: Warning: *** Aborting..." ) ) {
+				logger.warning( "Merge error" );
+				throw new UCMException( "ould not deliver: " + e.getMessage(), e.getMessage(), UCMType.MERGE_ERROR );
 			} else {
 				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage() );
 			}
