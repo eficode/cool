@@ -595,8 +595,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			String cmd = "describe -fmt %u\\n%Vn\\n%Xn \"" + version.getFullyQualifiedName() + "\"";
 			List<String> list = Cleartool.run( cmd ).stdoutList;
 
+			logger.debug( "DA LIST: " + list );
+			
 			/* First line, user */
 			version.setUser( list.get( 0 ) );
+			logger.debug( "I AM SETTING THE USER: " + list.get( 0 ) );
 
 			/* Second line, version name */
 			String vn = list.get( 1 );

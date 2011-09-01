@@ -92,12 +92,6 @@ public class Version extends UCMEntity {
 		return context.getVersionExtension( file, viewroot );
 	}
 
-	public String getUser() throws UCMException {
-		if( !loaded ) load();
-
-		return this.user;
-	}
-
 	public String blame() throws UCMException {
 		return this.getUser();
 	}
