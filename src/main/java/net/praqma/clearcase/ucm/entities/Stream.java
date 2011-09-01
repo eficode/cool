@@ -122,8 +122,12 @@ public class Stream extends UCMEntity {
 		List<Stream> streams = new ArrayList<Stream>();
 
 		for( Project p : projects ) {
-			if( p.getIntegrationStream().getDefaultTarget() != null && this.equals( p.getIntegrationStream().getDefaultTarget() ) ) {
-				streams.add( p.getIntegrationStream() );
+			try {
+				if( p.getIntegrationStream().getDefaultTarget() != null && this.equals( p.getIntegrationStream().getDefaultTarget() ) ) {
+					streams.add( p.getIntegrationStream() );
+				}
+			} catch( Exception e ) {
+				/* Just move on! */
 			}
 		}
 
