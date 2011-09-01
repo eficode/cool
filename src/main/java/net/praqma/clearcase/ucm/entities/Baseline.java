@@ -224,7 +224,7 @@ public class Baseline extends UCMEntity {
 
     public void cancel(File viewcontext) throws UCMException {
         try {
-            context.cancelDeliver(viewcontext);
+            context.cancelDeliver(viewcontext, stream);
         } catch (UCMException ex) {
             logger.error(ex.getMessage());
             throw ex;

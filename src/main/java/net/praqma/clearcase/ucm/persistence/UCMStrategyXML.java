@@ -842,7 +842,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
     }
 
     @Override
-    public void cancelDeliver(File viewcontext) throws UCMException {
+    public void cancelDeliver(File viewcontext, Stream stream) throws UCMException {
         // TODO Auto-generated method stub
         
     }

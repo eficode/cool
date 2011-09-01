@@ -237,7 +237,7 @@ public class Stream extends UCMEntity {
 	}
 
 	public void cancelDeliver( File viewcontext ) throws UCMException {
-		context.cancelDeliver( viewcontext );
+		context.cancelDeliver( viewcontext, this );
 	}
 
 	public boolean isDelivering() throws UCMException {

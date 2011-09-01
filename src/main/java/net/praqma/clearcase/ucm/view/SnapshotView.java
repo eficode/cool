@@ -128,7 +128,7 @@ public class SnapshotView extends UCMView {
 	 */
 
 	public void cancel() throws UCMException {
-		context.cancelDeliver( viewroot );
+		context.cancelDeliver( viewroot, null );
 	}
 
 	/**

@@ -352,8 +352,8 @@ public class UCMContext extends Cool {
 		return true;
 	}
 
-	public void cancelDeliver( File viewcontext ) throws UCMException {
-		strategy.cancelDeliver( viewcontext );
+	public void cancelDeliver( File viewcontext, Stream stream ) throws UCMException {
+		strategy.cancelDeliver( viewcontext, stream );
 	}
 
 	private static final Pattern rx_deliver_status = Pattern.compile( "" );

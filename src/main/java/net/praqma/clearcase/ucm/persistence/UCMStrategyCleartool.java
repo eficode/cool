@@ -357,9 +357,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
 
-	public void cancelDeliver( File viewcontext ) throws UCMException {
+	public void cancelDeliver( File viewcontext, Stream stream ) throws UCMException {
 		try {
-			String cmd = "deliver -cancel";
+			String cmd = "deliver -cancel" + ( stream != null ? " -stream " + stream.getFullyQualifiedName() : "" );
 			Cleartool.run( cmd, viewcontext );
 		} catch (AbnormalProcessTerminationException e) {
 			throw new UCMException( "Could not cancel deliver: " + e.getMessage(), e.getMessage() );

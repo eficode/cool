@@ -51,7 +51,7 @@ interface UCMStrategyInterface
 	public String getBaselineActivities( String baseline );
 	
 	public String deliver( String baseline, String stream, String target, File viewroot, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException;
-	public void cancelDeliver( File viewcontext ) throws UCMException;
+	public void cancelDeliver( File viewcontext, Stream stream ) throws UCMException;
 	public String deliverStatus( String stream ) throws UCMException;
 	
 	/* Component */
