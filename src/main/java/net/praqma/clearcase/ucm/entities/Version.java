@@ -149,9 +149,9 @@ public class Version extends UCMEntity {
 	
 	public static Version create( File file, boolean mkdir, SnapshotView view ) throws UCMException {
 
-		Version.addToSourceControl( file, mkdir, view.GetViewRoot() );
+		Version.addToSourceControl( file, mkdir, view.getViewRoot() );
 		
-		Version version = Version.getUnextendedVersion( file, view.GetViewRoot() );
+		Version version = Version.getUnextendedVersion( file, view.getViewRoot() );
 		version.setView( view );
 		
 		return version;
@@ -162,23 +162,23 @@ public class Version extends UCMEntity {
 	}
 	
 	public void checkIn() throws UCMException {
-		context.checkIn( this, false, view.GetViewRoot() );
+		context.checkIn( this, false, view.getViewRoot() );
 	}
 	
 	public void checkIn( boolean identical ) throws UCMException {
-		context.checkIn( this, identical, view.GetViewRoot() );
+		context.checkIn( this, identical, view.getViewRoot() );
 	}
 	
 	public void checkInIdentical() throws UCMException {
-		context.checkIn( this, true, view.GetViewRoot() );
+		context.checkIn( this, true, view.getViewRoot() );
 	}
 	
 	public void checkOut() throws UCMException {
-		context.checkOut( this, view.GetViewRoot() );
+		context.checkOut( this, view.getViewRoot() );
 	}
 	
 	public void removeVersion() throws UCMException {
-		context.removeVersion( this.version, view.GetViewRoot() );
+		context.removeVersion( this.version, view.getViewRoot() );
 	}
 	
 	public static void removeVersion( File file, File viewContext ) throws UCMException {
@@ -186,7 +186,7 @@ public class Version extends UCMEntity {
 	}
 	
 	public void removeName( ) throws UCMException {
-		context.removeName( this.version, view.GetViewRoot() );
+		context.removeName( this.version, view.getViewRoot() );
 	}
 	
 	public static void removeName( File file, File viewContext ) throws UCMException {
@@ -194,11 +194,11 @@ public class Version extends UCMEntity {
 	}
 	
 	public static void moveFile( File file, File destination, SnapshotView view ) throws UCMException {
-		context.moveFile( file, destination, view.GetViewRoot() );
+		context.moveFile( file, destination, view.getViewRoot() );
 	}
 	
 	public void moveFile( File destination ) throws UCMException {
-		context.moveFile( version, destination, view.GetViewRoot() );
+		context.moveFile( version, destination, view.getViewRoot() );
 	}
 	
 	public static void checkIn( File file, boolean identical, File view ) throws UCMException {
@@ -214,11 +214,11 @@ public class Version extends UCMEntity {
 	}
 	
 	public void uncheckout() throws UCMException {
-		context.uncheckout( this.getVersion(), true, view.GetViewRoot() );
+		context.uncheckout( this.getVersion(), true, view.getViewRoot() );
 	}
 	
 	public void uncheckout( boolean keep ) throws UCMException {
-		context.uncheckout( this.getVersion(), keep, view.GetViewRoot() );
+		context.uncheckout( this.getVersion(), keep, view.getViewRoot() );
 	}
 
 	public void setView( SnapshotView view ) {

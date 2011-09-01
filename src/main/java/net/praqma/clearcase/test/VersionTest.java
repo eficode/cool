@@ -63,7 +63,7 @@ public class VersionTest {
 		/* Integration stream */
 		Stream intStream = UCMEntity.getStream( "test_developement_int", pvob, true );
 		System.out.println("Integration stream created");
-		SnapshotView intView = SnapshotView.Create( intStream, intpath, "wolles_" + append + "_int" );
+		SnapshotView intView = SnapshotView.create( intStream, intpath, "wolles_" + append + "_int" );
 		
 		/**/
 		Baseline baseline = UCMEntity.getBaseline( "Structure_1_0", pvob, true );

@@ -36,11 +36,11 @@ public class UCMView extends UCM {
 		this.stream = stream;
 	}
 
-	public static SnapshotView GetSnapshotView(File viewroot) throws UCMException {
+	public static SnapshotView getSnapshotView(File viewroot) throws UCMException {
 		return new SnapshotView(viewroot);
 	}
 
-	public static boolean ViewExists(String viewtag) {
+	public static boolean viewExists(String viewtag) {
 		boolean b = context.viewExists(viewtag);
 		logger.debug("The view " + viewtag + " exists: " + b);
 		return b;
@@ -54,7 +54,7 @@ public class UCMView extends UCM {
 		return path;
 	}
 	
-	public String GetViewtag() {
+	public String getViewtag() {
 		return this.viewtag;
 	}
 	

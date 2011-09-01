@@ -47,10 +47,10 @@ public class Utilities {
 		
 		SnapshotView sview = null;
 		
-		if( !UCMView.ViewExists( viewtag ) ) {
+		if( !UCMView.viewExists( viewtag ) ) {
 			sview = CreateView("stream:wolles_dev" + "@" + pvob, intStream, baseline, view, viewtag );
 		} else {
-			sview = UCMView.GetSnapshotView(view);
+			sview = UCMView.getSnapshotView(view);
 		}		
 		
 		File devpath = new File( view, name + "/" + component.getShortname() );
@@ -84,7 +84,7 @@ public class Utilities {
 	public static SnapshotView CreateView( String name, Stream parent, Baseline baseline, File viewroot, String viewtag ) throws UCMException {
 		
 		Stream devStream = Stream.create( parent, name, false, baseline );
-		SnapshotView sv = SnapshotView.Create( devStream, viewroot, viewtag );
+		SnapshotView sv = SnapshotView.create( devStream, viewroot, viewtag );
 		sv.Update( true, true, true, false, COMP.MODIFIABLE, null );
 		
 		return sv;

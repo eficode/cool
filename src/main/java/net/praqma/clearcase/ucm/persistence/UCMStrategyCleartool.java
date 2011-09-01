@@ -228,12 +228,12 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		List<String> lines = null;
 
 		try {
-			lines = Cleartool.run( cmd, view.GetViewRoot() ).stdoutList;
+			lines = Cleartool.run( cmd, view.getViewRoot() ).stdoutList;
 		} catch (Exception e) {
 			throw new UCMException( "Could not retreive the differences of " + bl1 + " and " + bl2 );
 		}
 
-		int length = view.GetViewRoot().getAbsoluteFile().toString().length();
+		int length = view.getViewRoot().getAbsoluteFile().toString().length();
 		List<Version> versions = new ArrayList<Version>();
 
 		for( int i = 4; i < lines.size(); i++ ) {
@@ -308,6 +308,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	private static final Pattern rx_checkMergeError = Pattern.compile( "An error occurred while merging file elements in the target view.*?Unable to perform merge", Pattern.DOTALL );
+	private static final Pattern rx_checkDeliverDenied = Pattern.compile( "does not allow deliver operations from streams in other", Pattern.DOTALL );
 
 	public String deliver( String baseline, String stream, String target, File context, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException {
 		String cmd = "deliver" + ( force ? " -force" : "" ) + ( complete ? " -complete" : "" ) + ( abort ? " -abort" : "" );
@@ -325,7 +328,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			
 			/* Determine cause */
 			if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "requires child development streams to rebase to recommended baselines before performing deliver operation" ) ) {
-			//if( e.getMessage().matches( "streams to rebase to recommended baselines before performing deliver" ) ) {
 				logger.warning( "Deliver requires rebase" );
 				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_REQUIRES_REBASE );
 			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "*** No Automatic Decision Possible merge: Warning: *** Aborting..." ) ) {
@@ -334,9 +336,24 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "does not allow deliver operations from streams in other" ) ) {
 				logger.warning( "Interproject deliver denied" );
 				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.INTERPROJECT_DELIVER_DENIED );
-			} else {
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage() );
 			}
+			
+			/* Match for merge errors */
+			Matcher m = rx_checkMergeError.matcher( e.getMessage() );
+			if( m.find() ) {
+				logger.warning( "Merge error" );
+				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.MERGE_ERROR );
+			}
+			
+			/* Match for denied deliveries */
+			m = rx_checkDeliverDenied.matcher( e.getMessage() );
+			if( m.find() ) {
+				logger.warning( "Interproject deliver denied" );
+				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.INTERPROJECT_DELIVER_DENIED );
+			}
+			
+			/* If nothing applies.... */
+			throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage() );
 		}
 	}
 
@@ -1330,7 +1347,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public void removeView( UCMView view ) throws UCMException {
-		String cmd = "rmview -force " + ( view.isDynamicView() ? "-tag " + view.GetViewtag() : view.getStorageLocation() );
+		String cmd = "rmview -force " + ( view.isDynamicView() ? "-tag " + view.getViewtag() : view.getStorageLocation() );
 
 		try {
 			Cleartool.run( cmd );
@@ -1344,7 +1361,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	public Map<String, String> loadView( UCMView view ) throws UCMException {
 		logger.info( "Loading view " + view );
 
-		String cmd = "lsview -l " + view.GetViewtag();
+		String cmd = "lsview -l " + view.getViewtag();
 
 		Map<String, String> a = new HashMap<String, String>();
 
@@ -1369,9 +1386,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	public void startView( UCMView view ) throws UCMException {
 		try {
-			Cleartool.run( "startview " + view.GetViewtag() );
+			Cleartool.run( "startview " + view.getViewtag() );
 		} catch (Exception e) {
-			throw new UCMException( "Could not start view " + view.GetViewtag() + ": " + e.getMessage() );
+			throw new UCMException( "Could not start view " + view.getViewtag() + ": " + e.getMessage() );
 		}
 	}
 

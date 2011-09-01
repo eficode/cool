@@ -51,14 +51,14 @@ public class UCMContext extends Cool {
 	}
 
 	public ArrayList<Activity> getBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge ) throws UCMException {
-		logger.log( view.GetViewtag() );
+		logger.log( view.getViewtag() );
 
 		/* Change if other than -pre */
-		List<String> result = strategy.getBaselineDiff( view.GetViewRoot(), baseline.getFullyQualifiedName(), "", nmerge, baseline.getPvobString() );
+		List<String> result = strategy.getBaselineDiff( view.getViewRoot(), baseline.getFullyQualifiedName(), "", nmerge, baseline.getPvobString() );
 
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 
-		int length = view.GetViewRoot().getAbsoluteFile().toString().length();
+		int length = view.getViewRoot().getAbsoluteFile().toString().length();
 		// System.out.println( view.GetViewRoot().getAbsoluteFile().toString()
 		// );
 
@@ -370,7 +370,7 @@ public class UCMContext extends Cool {
 
 	public SnapshotView makeSnapshotView( Stream stream, File viewroot, String viewtag ) throws UCMException {
 		strategy.makeSnapshotView( stream.getFullyQualifiedName(), viewroot, viewtag );
-		return UCMView.GetSnapshotView( viewroot );
+		return UCMView.getSnapshotView( viewroot );
 	}
 	
 	public void removeView( UCMView view ) throws UCMException {
@@ -407,7 +407,7 @@ public class UCMContext extends Cool {
 	}
 
 	public void rebaseStream( SnapshotView view, Stream stream, Baseline baseline, boolean complete ) {
-		if( strategy.rebaseStream( view.GetViewtag(), stream.getFullyQualifiedName(), baseline.getFullyQualifiedName(), complete ) ) {
+		if( strategy.rebaseStream( view.getViewtag(), stream.getFullyQualifiedName(), baseline.getFullyQualifiedName(), complete ) ) {
 			logger.debug( "Rebasing complete" );
 		} else {
 			logger.debug( "No rebasing needed" );
@@ -489,7 +489,7 @@ public class UCMContext extends Cool {
 	 * @return String
 	 */
 	public String updateView( SnapshotView view, boolean overwrite, String loadrules ) {
-		String result = strategy.viewUpdate( view.GetViewRoot(), overwrite, loadrules );
+		String result = strategy.viewUpdate( view.getViewRoot(), overwrite, loadrules );
 		Matcher match = pattern_cache.matcher( result );
 		if( match.find() ) {
 			return match.group( 1 );

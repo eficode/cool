@@ -59,18 +59,18 @@ public class SnapshotView extends UCMView {
 	 * @param viewtag
 	 * @return SnapShotView
 	 */
-	public static SnapshotView Create( Stream stream, File viewroot, String viewtag ) throws UCMException {
+	public static SnapshotView create( Stream stream, File viewroot, String viewtag ) throws UCMException {
 		context.makeSnapshotView( stream, viewroot, viewtag );
 		SnapshotView view = new SnapshotView( viewroot );
 		view.setStream(stream);
 		return view;
 	}
 
-	public static void CreateEnvironment( File viewroot ) {
-		CreateEnvironment( viewroot, "" );
+	public static void createEnvironment( File viewroot ) {
+		createEnvironment( viewroot, "" );
 	}
 
-	public static void CreateEnvironment( File viewroot, String viewtagsuffix ) {
+	public static void createEnvironment( File viewroot, String viewtagsuffix ) {
 		String viewtag = "cool_" + System.getenv( "COMPUTERNAME" ) + "_env" + viewtagsuffix;
 	}
 
@@ -81,21 +81,21 @@ public class SnapshotView extends UCMView {
 	 * @param excludeRoot
 	 *            Whether to swipe the view root or not
 	 */
-	public Map Swipe( boolean excludeRoot ) {
+	public Map<String, Integer> swipe( boolean excludeRoot ) {
 		return context.swipeView( viewroot, excludeRoot );
 	}
 
-	public static void RegenerateViewDotDat( File dir, String viewtag ) throws UCMException {
+	public static void regenerateViewDotDat( File dir, String viewtag ) throws UCMException {
 		context.regenerateViewDotDat( dir, viewtag );
 	}
 
-	public File GetViewRoot() {
+	public File getViewRoot() {
 		return this.viewroot;
 	}
 
 	public Stream getStream() throws UCMException {
 		if( this.stream == null ) {
-			Stream stream = context.getStreamFromView( GetViewRoot() ).getFirst();
+			Stream stream = context.getStreamFromView( getViewRoot() ).getFirst();
 			this.stream = stream;
 		}
 		return stream;
@@ -108,10 +108,10 @@ public class SnapshotView extends UCMView {
 	/**
 	 * Determine if the views view root is valid, returning its view tag
 	 * 
-	 * @return The UUID as a string
+	 * @return The view tag
 	 * @throws UCMException
 	 */
-	public static String ViewrootIsValid( File view ) throws UCMException {
+	public static String viewrootIsValid( File view ) throws UCMException {
 		return context.viewrootIsValid( view );
 	}
 
@@ -197,7 +197,7 @@ public class SnapshotView extends UCMView {
 		logger.debug( "STREAM GENEREATES" );
 
 		if( swipe ) {
-			Map<String, Integer> sinfo = this.Swipe( excludeRoot );
+			Map<String, Integer> sinfo = this.swipe( excludeRoot );
 			info.success = sinfo.get( "success" ) == 1 ? true : false;
 			info.totalFilesToBeDeleted = sinfo.get( "total" );
 			info.dirsDeleted = sinfo.get( "dirs_deleted" );
