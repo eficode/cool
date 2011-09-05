@@ -25,7 +25,8 @@ public class UCMException extends Exception {
 		CREATION_FAILED,
 		DELIVER_REQUIRES_REBASE,
 		INTERPROJECT_DELIVER_DENIED,
-		MERGE_ERROR
+		MERGE_ERROR,
+		DELIVER_IN_PROGRESS
 	}
 
 	public UCMException() {
