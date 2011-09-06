@@ -11,6 +11,7 @@ public class Activity extends UCMEntity {
 	private boolean specialCase = false;
 
 	Activity() {
+		super( "activity" );
 	}
 
 	public void setSpecialCase( boolean b ) {

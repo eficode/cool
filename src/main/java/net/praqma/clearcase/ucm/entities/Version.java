@@ -42,6 +42,7 @@ public class Version extends UCMEntity {
 	private Status status = Status.UNCHANGED;
 
 	Version() {
+		super( "version" );
 	}
 
 	/**

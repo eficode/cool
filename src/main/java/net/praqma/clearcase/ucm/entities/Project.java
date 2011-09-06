@@ -18,7 +18,9 @@ public class Project extends UCMEntity {
     public static final int POLICY_DELIVER_REQUIRE_REBASE = 4;
     public static final int POLICY_DELIVER_NCO_DEVSTR     = 8;
 
-    Project() {}
+    Project() {
+    	super( "project" );
+    }
 
     /**
      * This method is only available to the package, because only UCMEntity

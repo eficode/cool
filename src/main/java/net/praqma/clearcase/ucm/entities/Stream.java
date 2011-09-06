@@ -23,6 +23,7 @@ public class Stream extends UCMEntity {
 	private boolean readonly = true;
 
 	Stream() {
+		super( "stream" );
 	}
 
 	/**

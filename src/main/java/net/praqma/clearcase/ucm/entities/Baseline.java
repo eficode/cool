@@ -26,6 +26,7 @@ public class Baseline extends UCMEntity {
      *
      */
     Baseline() {
+    	super( "baseline" );
     }
 
     /**

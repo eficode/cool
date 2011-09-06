@@ -12,6 +12,7 @@ public class Component extends UCMEntity
 	
 	
 	Component() {
+		super( "component" );
 	}
 	
 	/**

@@ -89,9 +89,10 @@ public abstract class UCMEntity extends UCM {
 	protected String user = "";
 
 	protected boolean loaded = false;
+	private String entitySelector;
 
-	public UCMEntity() {
-
+	protected UCMEntity( String entitySelector ) {
+		this.entitySelector = entitySelector;
 	}
 
 	/**
@@ -574,5 +575,9 @@ public abstract class UCMEntity extends UCM {
 	
 	public String getComment() {
 		return comment;
+	}
+	
+	public String getEntitySelector() {
+		return this.entitySelector;
 	}
 }
