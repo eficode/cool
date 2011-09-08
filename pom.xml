@@ -110,8 +110,9 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-					<!-- <finalName>${project.artifactId}-${project.version}-complete</finalName> 
-						<appendAssemblyId>false</appendAssemblyId> -->
+
+                    <finalName>${project.artifactId}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
 
 				</configuration>
 				<executions>
@@ -162,7 +163,7 @@
 		<dependency>
 			<groupId>net.praqma</groupId>
 			<artifactId>praqmajutils</artifactId>
-			<version>0.1.10</version>
+			<version>0.1.11-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>

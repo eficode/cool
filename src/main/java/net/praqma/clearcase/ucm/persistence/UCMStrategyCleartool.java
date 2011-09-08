@@ -19,7 +19,10 @@ import net.praqma.clearcase.Region;
 import net.praqma.clearcase.Site;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.changeset.ChangeSet;
+import net.praqma.clearcase.changeset.ChangeSetElement;
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 
@@ -72,6 +75,170 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 
 		return ms.stdoutBuffer.toString();
+	}
+	
+	private static final Pattern rx_versionName = Pattern.compile( "^(\\S+)\\s+([\\S\\s.^@]+)@@(.*)$" );
+	
+	public ChangeSet difference( UCMEntity e1, UCMEntity e2, boolean merge, File viewContext ) throws UCMException {
+		String cmd = "diffbl -version " + ( !merge ? "-nmerge " : "" ) + ( e2 == null ? "-pre " : "" ) + " " + e1.getFullyQualifiedName() + ( e2 != null ? e2.getFullyQualifiedName() : "" );
+
+		List<String> lines = null;
+
+		System.out.println( "$ " + cmd );
+		
+		try {
+			lines = Cleartool.run( cmd, viewContext ).stdoutList;
+		} catch (Exception e) {
+			throw new UCMException( "Could not retreive the differences of " + e1 + " and " + e2 + ": " + e.getMessage() );
+		}
+
+		int length = viewContext.getAbsoluteFile().toString().length();
+
+		System.out.println(viewContext.getAbsolutePath() + " - " + length);
+
+		net.praqma.clearcase.changeset.ChangeSet changeset = new ChangeSet( viewContext );
+
+		for( int i = 0; i < lines.size(); i++ ) {
+			Matcher m = rx_versionName.matcher( lines.get( i ) );
+			if( m.find() ) {
+				
+				//System.out.println(lines.get( i ));
+
+				String f = m.group( 2 ).trim();
+				
+				System.out.println("F: " + f);
+				logger.debug( "F: " + f );
+				String filename = f.substring( length );
+				File file = new File(f);
+				
+				Tuple<String, Integer> info = getVersionVersion( m.group(3) );
+				
+				ChangeSetElement element = new ChangeSetElement( file, m.group(3) );
+
+				if( m.group( 1 ).equals( ">>" ) ) {
+					if( info.t2 > 1 ) {
+						element.setStatus( ChangeSetElement.Status.CHANGED );
+					} else {
+						element.setStatus( ChangeSetElement.Status.ADDED );
+					}
+				} else if( m.group( 1 ).equals( "<<" ) ) {
+					element.setStatus( ChangeSetElement.Status.DELETED );
+				} else {
+					element.setStatus( ChangeSetElement.Status.CHANGED );
+				}
+				
+				changeset.addElement( element );
+				
+				
+				if( file.isDirectory() ) {
+					getDirectoryStatus( file, element.getFullversion(), changeset );
+				}
+			}
+		}
+
+		return changeset;
+	}
+	
+	private static Pattern rx_versionVersion = Pattern.compile( "^(.*?)\\\\(\\d+)\\\\.*?$" );
+	private static Pattern rx_versionVersionSimple = Pattern.compile( "^(.*?)\\\\(\\d+)$" );
+	
+	public Tuple<String, Integer> getVersionVersion( String version ) throws UCMException {
+		Matcher simple = rx_versionVersionSimple.matcher( version );
+		
+		if( simple.find() ) {
+			return new Tuple<String, Integer>( simple.group(1), Integer.parseInt( simple.group(2) ) );
+		} else {
+			Matcher advanced = rx_versionVersion.matcher( version );
+			
+			if( advanced.find() ) {
+				return new Tuple<String, Integer>( advanced.group(1), Integer.parseInt( advanced.group(2) ) );
+			} else {
+				throw new UCMException( "Could not find any version information on " + version );
+			}
+		}
+	}
+	
+	private static final Pattern rx_diffAction = Pattern.compile( "^-{5}\\[\\s*(.+)\\s*\\]-{5}$" );
+	private static final Pattern rx_diffFileName = Pattern.compile( "^..(.*)\\s+--\\d+.*$" );
+	
+	public void getDirectoryStatus( File version, String fullVersion, ChangeSet changeset ) throws UCMException {
+
+		if( !version.isDirectory() ) {
+			throw new UCMException( "No support for files!" );
+		}
+		
+		String cmd = "diff -diff -pre " + version.getAbsolutePath() + ( fullVersion != null ? "@@" + fullVersion : "" );
+		
+		System.out.println( "$ " + cmd );
+				
+		try {
+			List<String> lines = Cleartool.run( cmd, null, true, true ).stdoutList;
+			
+			System.out.println( "HERE" );
+			
+			for( int i = 0 ; i < lines.size() ; ++i ) {
+				//System.out.println( "[" + i + "] " + lines.get( i ) );
+				Matcher m = rx_diffAction.matcher( lines.get( i ) );
+				
+				/* A diff action */
+				if( m.find() ) {
+					String action = m.group(1).trim();
+					
+					System.out.println( action );
+					
+					/* ADDED action */
+					if( action.equals( "added" ) ) {
+						/* This is an add, the next line is the file added */
+						Matcher mname = rx_diffFileName.matcher( lines.get( i + 1 ) );
+						if( mname.find() ) {
+							changeset.addElement( new ChangeSetElement( new File( version, mname.group(1) ), fullVersion, ChangeSetElement.Status.ADDED ) );
+						} else {
+							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
+						}
+						
+						/* Fast forward one line */
+						i++;
+						
+					} else if( action.equals( "renamed to" ) ) {
+						/* This is a rename, the next line is the file added */
+						Matcher oldname = rx_diffFileName.matcher( lines.get( i + 1 ) );
+						Matcher newname = rx_diffFileName.matcher( lines.get( i + 3 ) );
+						
+						File newFile = null;
+						File oldFile = null;
+						
+						if( newname.find() ) {
+							newFile = new File( version, newname.group(1) );
+						} else {
+							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
+						}
+						
+						if( oldname.find() ) {
+							oldFile = new File( version, oldname.group(1) );
+						} else {
+							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
+						}
+						
+						ChangeSetElement element = new ChangeSetElement( newFile, fullVersion, ChangeSetElement.Status.CHANGED );
+						element.setOldFile( oldFile );
+						changeset.addElement( element );
+						
+						/* Fast forward four line */
+						i += 4;
+						
+					} else {
+						/* I don't know this action, let's move on */
+						logger.warning( "Unhandled diff action: " + action );
+					}
+				}
+			}
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new UCMException( "Could not execute the command: " + e.getMessage() );
+		} catch( IndexOutOfBoundsException e1 ) {
+			throw new UCMException( "Out of bounds: " + e1.getMessage() );
+		} catch( Exception e2 ) {
+			throw new UCMException( "Something new, something unhandled: " + e2.getMessage() );
+		}
 	}
 
 	/************************************************************************
@@ -180,6 +347,16 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			return Cleartool.run( cmd ).stdoutBuffer.toString();
 		} catch (AbnormalProcessTerminationException e) {
 			throw new UCMException( "Could not load the baseline " + baseline, e.getMessage() );
+		}
+	}
+	
+	public List<String> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException {
+		String cmd = "diffbl -version -act " + ( !merge ? "-nmerge " : "" ) + ( d2 == null ? "-pre " : "" ) + d1.getFullyQualifiedName() + ( d2 != null ? " " + d2.getFullyQualifiedName() : "" );
+		
+		try {
+			return Cleartool.run( cmd, viewContext ).stdoutList;
+		} catch (AbnormalProcessTerminationException e) {
+			throw new UCMException( "Could not get difference between " + d1.getFullyQualifiedName() + " and " + d2.getFullyQualifiedName() + ": " + e.getMessage() );
 		}
 	}
 
@@ -608,6 +785,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final String rx_ccdef_voblikename = "[\\\\\\w\\.-/]";
 	private static final String rx_ccdef_filename = "[.[^@]+]";
 	private static final Pattern rx_extendedName = Pattern.compile( "^(?:(" + rx_ccdef_filename + "+)@@)(?:(" + rx_ccdef_filename + "+)@@)?(.+)$" );
+	
+	private static final Pattern rx_getFilename = Pattern.compile( File.pathSeparator + "(.*?)$" );
 
 	public void loadVersion( Version version ) throws UCMException {
 		try {
@@ -640,7 +819,14 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 				}
 				version.setOldVersion( true );
-				String filename = m.group( 1 ) + m.group( 2 ).substring( m.group( 3 ).length(), m.group( 2 ).length() );
+				//String filename = m.group( 1 ) + m.group( 2 ).substring( m.group( 3 ).length(), m.group( 2 ).length() );
+				Matcher m2 = rx_getFilename.matcher( m.group(2) );
+				String filename = "";
+				if( m2.find() ) {
+					filename = m.group( 1 ) + m2.group( 1 );
+				} else {
+					throw new UCMException( "Unable to get filename" );
+				}
 				version.setVersion( new File( filename ) );
 				logger.debug( "FILENAME: " + filename );
 			}

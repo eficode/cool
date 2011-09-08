@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.utils.BaselineList;
@@ -15,7 +16,7 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
  * @author wolfgang
  * 
  */
-public class Stream extends UCMEntity {
+public class Stream extends UCMEntity implements Diffable {
 	/* Stream specific fields */
 	private ArrayList<Baseline> recommendedBaselines = null;
 	private Project project = null;

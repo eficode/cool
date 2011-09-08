@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.changeset.ChangeSet;
+import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 
@@ -297,5 +299,13 @@ public class Version extends UCMEntity {
 		sb.append( "Revision: " + this.revision + linesep );
 
 		return sb.toString();
+	}
+	
+	public static ChangeSet getDifferences( UCMEntity e1, UCMEntity e2, boolean merge, File viewContext ) throws UCMException {
+		return context.difference( e1, e2, merge, viewContext );
+	}
+	
+	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException {
+		return context.getBaselineDiff( d1, d2, merge, viewContext );
 	}
 }

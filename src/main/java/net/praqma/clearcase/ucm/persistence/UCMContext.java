@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.*;
 
+import net.praqma.clearcase.changeset.ChangeSet;
+import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
@@ -42,26 +44,31 @@ public class UCMContext extends Cool {
 	}
 
 	/* Baseline specific */
-	public ArrayList<Activity> getBaselineDiff( SnapshotView view, Baseline baseline ) throws UCMException {
+	public List<Activity> getBaselineDiff( SnapshotView view, Baseline baseline ) throws UCMException {
 		return getBaselineDiff( view, baseline, null, true );
 	}
 
-	public ArrayList<Activity> getBaselineDiff( SnapshotView view, Baseline baseline, boolean nmerge ) throws UCMException {
+	public List<Activity> getBaselineDiff( SnapshotView view, Baseline baseline, boolean nmerge ) throws UCMException {
 		return getBaselineDiff( view, baseline, null, nmerge );
 	}
 
-	public ArrayList<Activity> getBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge ) throws UCMException {
+	public List<Activity> getBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge ) throws UCMException {
 		logger.log( view.getViewtag() );
 
 		/* Change if other than -pre */
 		List<String> result = strategy.getBaselineDiff( view.getViewRoot(), baseline.getFullyQualifiedName(), "", nmerge, baseline.getPvobString() );
 
-		ArrayList<Activity> activities = new ArrayList<Activity>();
-
 		int length = view.getViewRoot().getAbsoluteFile().toString().length();
-		// System.out.println( view.GetViewRoot().getAbsoluteFile().toString()
-		// );
-
+		
+		return parseActivityStrings( result, length );
+	}
+	
+	public List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException {
+		return parseActivityStrings( strategy.getBaselineDiff( d1, d2, merge, viewContext ), viewContext.getAbsoluteFile().toString().length() );
+	}
+	
+	public List<Activity> parseActivityStrings( List<String> result, int length ) throws UCMException {
+		ArrayList<Activity> activities = new ArrayList<Activity>();
 		Activity current = null;
 		for( String s : result ) {
 			/* Get activity */
@@ -98,7 +105,8 @@ public class UCMContext extends Cool {
 				current.changeset.versions.add( v );
 			} catch (UCMException e) {
 				if( e.type == UCMType.ENTITY_ERROR && !current.isSpecialCase() ) {
-					throw e;
+					/* Let's try to move on */
+					continue;
 				}
 			}
 		}
@@ -666,6 +674,14 @@ public class UCMContext extends Cool {
 	public List<UCMView> getViews( Region region ) {
 		return strategy.getViews( region );
 	}
+	
+	
+	
+	
+	public ChangeSet difference( UCMEntity e1, UCMEntity e2, boolean merge, File viewContext ) throws UCMException {
+		return strategy.difference( e1, e2, merge, viewContext );
+	}
+	
 
 	public String getXML() {
 		return strategy.getXML();

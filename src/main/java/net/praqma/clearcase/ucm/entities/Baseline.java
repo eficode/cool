@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.utils.BaselineDiff;
 
 import net.praqma.clearcase.ucm.view.SnapshotView;
 
-public class Baseline extends UCMEntity {
+public class Baseline extends UCMEntity implements Diffable {
     /* Baseline specific fields */
 
     private Component component = null;

@@ -7,6 +7,8 @@ import java.util.Map;
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.changeset.ChangeSet;
+import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.UCMException;
@@ -19,6 +21,7 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.util.structure.Tuple;
+import net.praqma.util.structure.changeset.ChangeSetElement;
 
 interface UCMStrategyInterface
 {
@@ -29,6 +32,9 @@ interface UCMStrategyInterface
 	
 	/* Common entity */
 	public String getMastership( String fqname ) throws UCMException;
+	public ChangeSet difference( UCMEntity e1, UCMEntity e2, boolean merge, File viewContext ) throws UCMException;
+	public void getDirectoryStatus( File version, String fullVersion, ChangeSet changeset ) throws UCMException;
+	public List<String> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException;
 	
 	/* Project */
 	String getProjectFromStream( String stream );
