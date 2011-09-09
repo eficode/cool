@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,6 +57,8 @@ public class Version extends UCMEntity {
 	static Version getEntity() {
 		return new Version();
 	}
+	
+	private static final Pattern rx_findAddedElements = Pattern.compile( qfs + ".*?" + qfs + "(\\d+)" + qfs + "(.*?)" + qfs );
 
 	void postProcess() {
 		logger.trace_function();
@@ -72,11 +75,20 @@ public class Version extends UCMEntity {
 		} else {
 			this.revision = "0";
 		}
-
+		
 		String tmp = this.fqname;
 		tmp = tmp.replaceFirst( "(?m)@@.*$", "" );
 		tmp = tmp.replaceFirst( "(?m)^\\s+", "" );
 		this.file = tmp;
+		
+		/* Check if this is a newly added element
+		 * Ie this is only shown as a parent folder change 
+		 *  view\MonKit006\MonKit006\src@@\main\monkit006_1_dev\2\test\main\monkit006_1_dev\1\java\main\monkit006_1_dev\1
+		 * */
+		Matcher ma = rx_findAddedElements.matcher( revision );
+		while( ma.find() ) {
+			this.file += filesep + ma.group(2);
+		}
 
 		this.version = new File( tmp );
 	}
@@ -254,10 +266,12 @@ public class Version extends UCMEntity {
 		return context.getUnchecedInFiles( viewContext );
 	}
 	
+	@Deprecated
 	public void setOldVersion( boolean old ) {
 		this.oldVersion = old;
 	}
 	
+	@Deprecated
 	public boolean isOldVersion() {
 		return oldVersion;
 	}

@@ -17,41 +17,40 @@ public abstract class Cool {
 		XML, CLEARTOOL
 	}
 
-	public static void setContext(ContextType ct) {
-		if (context != null) {
-			logger.warning("Context is already set");
+	public static void setContext( ContextType ct ) {
+		if( context != null ) {
+			logger.warning( "Context is already set" );
 			return;
 		}
 
-		logger.log("Setting context type to " + ct.toString());
+		logger.log( "Setting context type to " + ct.toString() );
 
-		switch (ct) {
+		switch ( ct ) {
 		case XML:
 			// context = new UCMContext( new UCMStrategyXML() );
 			break;
 
 		default:
-			context = new UCMContext(new UCMStrategyCleartool());
+			context = new UCMContext( new UCMStrategyCleartool() );
 		}
 	}
 
-	protected static final String filesep = System
-			.getProperty("file.separator");
-	protected static final String linesep = System
-			.getProperty("line.separator");
+	protected static final String filesep = System.getProperty( "file.separator" );
+	protected static final String qfs = filesep.equals( "\\" ) ? "\\\\" : filesep;
+	protected static final String linesep = System.getProperty( "line.separator" );
 	public static final String delim = "::";
 
 	private static final int HashMap = 0;
 
 	private static boolean verbose = false;
 
-	public static void setVerbose(boolean verbose) {
+	public static void setVerbose( boolean verbose ) {
 		Cool.verbose = verbose;
 	}
 
 	static {
-		String v = System.getenv("verbose");
-		if (v != null) {
+		String v = System.getenv( "verbose" );
+		if( v != null ) {
 			Cool.verbose = true;
 		}
 	}
@@ -64,8 +63,8 @@ public abstract class Cool {
 	// java.util.HashMap<Integer, List<String>>();
 	private static List<String> messages = new ArrayList<String>();
 
-	public static void addMessage(String msg) {
-		messages.add(msg);
+	public static void addMessage( String msg ) {
+		messages.add( msg );
 	}
 
 	public static List<String> getMessages() {
@@ -75,17 +74,17 @@ public abstract class Cool {
 	public static String getMessagesAsString() {
 		StringBuffer sb = new StringBuffer();
 
-		for (String s : messages) {
-			sb.append(s);
+		for( String s : messages ) {
+			sb.append( s );
 		}
 
 		return sb.toString();
 	}
 
-	public static Logger logger = PraqmaLogger.getLogger(false);
+	public static Logger logger = PraqmaLogger.getLogger( false );
 
-	public static void setLogger(Logger logger) {
-		Cool.logger = PraqmaLogger.getLogger(logger);
-		Cleartool.setCLILogger(Cool.logger);
+	public static void setLogger( Logger logger ) {
+		Cool.logger = PraqmaLogger.getLogger( logger );
+		Cleartool.setCLILogger( Cool.logger );
 	}
 }

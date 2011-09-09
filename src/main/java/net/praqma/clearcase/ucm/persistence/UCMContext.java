@@ -64,12 +64,18 @@ public class UCMContext extends Cool {
 	}
 	
 	public List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException {
-		return parseActivityStrings( strategy.getBaselineDiff( d1, d2, merge, viewContext ), viewContext.getAbsoluteFile().toString().length() );
+		List<String> lines = strategy.getBaselineDiff( d1, d2, merge, viewContext );
+		//System.out.println("LINES:");
+		//for( String l : lines ) {
+		//	System.out.println(l);
+		//}
+		return parseActivityStrings( lines, viewContext.getAbsoluteFile().toString().length() );
 	}
 	
 	public List<Activity> parseActivityStrings( List<String> result, int length ) throws UCMException {
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		Activity current = null;
+		//System.out.println("PARSING:");
 		for( String s : result ) {
 			/* Get activity */
 			Matcher match = pattern_activity.matcher( s );
@@ -102,8 +108,12 @@ public class UCMContext extends Cool {
 			try {
 				Version v = (Version) UCMEntity.getEntity( f );
 				v.setSFile( v.getFile().substring( length ) );
+				//System.out.println(f);
 				current.changeset.versions.add( v );
 			} catch (UCMException e) {
+
+				//System.out.println("Whoops: " + f + ": " + e.getMessage());
+				
 				if( e.type == UCMType.ENTITY_ERROR && !current.isSpecialCase() ) {
 					/* Let's try to move on */
 					continue;

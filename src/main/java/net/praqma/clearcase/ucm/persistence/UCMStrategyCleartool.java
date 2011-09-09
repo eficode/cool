@@ -42,7 +42,6 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.io.IO;
 import net.praqma.util.structure.Tuple;
-import sun.misc.Regexp;
 
 public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final String rx_ccdef_allowed = "[\\w\\.-_\\\\]";
@@ -83,8 +82,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		String cmd = "diffbl -version " + ( !merge ? "-nmerge " : "" ) + ( e2 == null ? "-pre " : "" ) + " " + e1.getFullyQualifiedName() + ( e2 != null ? e2.getFullyQualifiedName() : "" );
 
 		List<String> lines = null;
-
-		System.out.println( "$ " + cmd );
 		
 		try {
 			lines = Cleartool.run( cmd, viewContext ).stdoutList;
@@ -352,7 +349,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	
 	public List<String> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException {
 		String cmd = "diffbl -version -act " + ( !merge ? "-nmerge " : "" ) + ( d2 == null ? "-pre " : "" ) + d1.getFullyQualifiedName() + ( d2 != null ? " " + d2.getFullyQualifiedName() : "" );
-		
+		System.out.println( "$ cleartool " + cmd );
 		try {
 			return Cleartool.run( cmd, viewContext ).stdoutList;
 		} catch (AbnormalProcessTerminationException e) {
@@ -808,6 +805,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 			logger.debug( "VEN: " + ven );
 
+			/*
 			if( m.find() && m.group( 2 ) != null ) {
 				try {
 					logger.debug( "0: " + m.group( 0 ) );
@@ -830,6 +828,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 				version.setVersion( new File( filename ) );
 				logger.debug( "FILENAME: " + filename );
 			}
+			*/
 
 		} catch (Exception e) {
 			throw new UCMException( "Could not load Version: " + e.getMessage() );
