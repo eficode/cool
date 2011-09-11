@@ -20,7 +20,9 @@ import net.praqma.clearcase.Site;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.changeset.ChangeSet;
+import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.changeset.ChangeSetElement;
+import net.praqma.clearcase.changeset.ChangeSetElement2;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
@@ -34,6 +36,7 @@ import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.clearcase.ucm.entities.UCMEntity.Kind;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.entities.Version.Status;
 import net.praqma.clearcase.ucm.view.SnapshotView;
@@ -76,9 +79,10 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		return ms.stdoutBuffer.toString();
 	}
 	
-	private static final Pattern rx_versionName = Pattern.compile( "^(\\S+)\\s+([\\S\\s.^@]+)@@(.*)$" );
+	//private static final Pattern rx_versionName = Pattern.compile( "^(\\S+)\\s+([\\S\\s.^@]+)@@(.*)$" );
+	private static final Pattern rx_versionName = Pattern.compile( "^(\\S+)\\s+([\\S\\s.^@]+@@.*)$" );
 	
-	public ChangeSet difference( UCMEntity e1, UCMEntity e2, boolean merge, File viewContext ) throws UCMException {
+	public ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws UCMException {
 		String cmd = "diffbl -version " + ( !merge ? "-nmerge " : "" ) + ( e2 == null ? "-pre " : "" ) + " " + e1.getFullyQualifiedName() + ( e2 != null ? e2.getFullyQualifiedName() : "" );
 
 		List<String> lines = null;
@@ -93,7 +97,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		System.out.println(viewContext.getAbsolutePath() + " - " + length);
 
-		net.praqma.clearcase.changeset.ChangeSet changeset = new ChangeSet( viewContext );
+		net.praqma.clearcase.changeset.ChangeSet2 changeset = new ChangeSet2( viewContext );
 
 		for( int i = 0; i < lines.size(); i++ ) {
 			Matcher m = rx_versionName.matcher( lines.get( i ) );
@@ -108,27 +112,16 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 				String filename = f.substring( length );
 				File file = new File(f);
 				
-				Tuple<String, Integer> info = getVersionVersion( m.group(3) );
+				//Tuple<String, Integer> info = getVersionVersion( m.group(3) );
 				
-				ChangeSetElement element = new ChangeSetElement( file, m.group(3) );
-
-				if( m.group( 1 ).equals( ">>" ) ) {
-					if( info.t2 > 1 ) {
-						element.setStatus( ChangeSetElement.Status.CHANGED );
-					} else {
-						element.setStatus( ChangeSetElement.Status.ADDED );
-					}
-				} else if( m.group( 1 ).equals( "<<" ) ) {
-					element.setStatus( ChangeSetElement.Status.DELETED );
-				} else {
-					element.setStatus( ChangeSetElement.Status.CHANGED );
-				}
+				//ChangeSetElement element = new ChangeSetElement( file, m.group(3) );
+				Version version = (Version) UCMEntity.getEntity( m.group(2), true );
 				
-				changeset.addElement( element );
+				changeset.addVersion( version );
 				
 				
 				if( file.isDirectory() ) {
-					getDirectoryStatus( file, element.getFullversion(), changeset );
+					//getDirectoryStatus( file, element.getFullversion(), changeset );
 				}
 			}
 		}
@@ -158,20 +151,14 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final Pattern rx_diffAction = Pattern.compile( "^-{5}\\[\\s*(.+)\\s*\\]-{5}$" );
 	private static final Pattern rx_diffFileName = Pattern.compile( "^..(.*)\\s+--\\d+.*$" );
 	
-	public void getDirectoryStatus( File version, String fullVersion, ChangeSet changeset ) throws UCMException {
-
-		if( !version.isDirectory() ) {
-			throw new UCMException( "No support for files!" );
-		}
+	public void getDirectoryStatus( Version version, ChangeSet2 changeset ) throws UCMException {
 		
-		String cmd = "diff -diff -pre " + version.getAbsolutePath() + ( fullVersion != null ? "@@" + fullVersion : "" );
+		String cmd = "diff -diff -pre " + version.getFullyQualifiedName();
 		
 		System.out.println( "$ " + cmd );
 				
 		try {
 			List<String> lines = Cleartool.run( cmd, null, true, true ).stdoutList;
-			
-			System.out.println( "HERE" );
 			
 			for( int i = 0 ; i < lines.size() ; ++i ) {
 				//System.out.println( "[" + i + "] " + lines.get( i ) );
@@ -181,20 +168,30 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 				if( m.find() ) {
 					String action = m.group(1).trim();
 					
-					System.out.println( action );
-					
 					/* ADDED action */
 					if( action.equals( "added" ) ) {
 						/* This is an add, the next line is the file added */
 						Matcher mname = rx_diffFileName.matcher( lines.get( i + 1 ) );
 						if( mname.find() ) {
-							changeset.addElement( new ChangeSetElement( new File( version, mname.group(1) ), fullVersion, ChangeSetElement.Status.ADDED ) );
+							changeset.addElement(new File( version.getFile(), mname.group(1) ), Version.Status.ADDED, version );
 						} else {
 							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
 						}
 						
 						/* Fast forward one line */
 						i++;
+						/* ADDED action */
+					} else if( action.equals( "deleted" ) ) {
+							/* This is an add, the next line is the file added */
+							Matcher mname = rx_diffFileName.matcher( lines.get( i + 1 ) );
+							if( mname.find() ) {
+								changeset.addElement(new File( version.getFile(), mname.group(1) ), Version.Status.DELETED, version );
+							} else {
+								logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
+							}
+							
+							/* Fast forward one line */
+							i++;
 						
 					} else if( action.equals( "renamed to" ) ) {
 						/* This is a rename, the next line is the file added */
@@ -205,20 +202,20 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 						File oldFile = null;
 						
 						if( newname.find() ) {
-							newFile = new File( version, newname.group(1) );
+							newFile = new File( version.getFile(), newname.group(1) );
 						} else {
 							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
 						}
 						
 						if( oldname.find() ) {
-							oldFile = new File( version, oldname.group(1) );
+							oldFile = new File( version.getFile(), oldname.group(1) );
 						} else {
 							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
 						}
 						
-						ChangeSetElement element = new ChangeSetElement( newFile, fullVersion, ChangeSetElement.Status.CHANGED );
-						element.setOldFile( oldFile );
-						changeset.addElement( element );
+						//ChangeSetElement2 element = new ChangeSetElement2( newFile, fullVersion, ChangeSetElement.Status.CHANGED, version );
+						//element.setOldFile( oldFile );
+						//changeset.addElement( element );
 						
 						/* Fast forward four line */
 						i += 4;
@@ -235,6 +232,26 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			throw new UCMException( "Out of bounds: " + e1.getMessage() );
 		} catch( Exception e2 ) {
 			throw new UCMException( "Something new, something unhandled: " + e2.getMessage() );
+		}
+	}
+	
+	public String getPreviousVersion( String version, File viewContext ) throws UCMException {
+		String cmd = "describe -fmt %PVn " + version;
+		
+		try {
+			return Cleartool.run( cmd, viewContext ).stdoutBuffer.toString();
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new UCMException( "Could not get previous version: " + e.getMessage() );
+		}
+	}
+	
+	public String getObjectId( String fqname, File viewContext ) throws UCMException {
+		String cmd = "describe -fmt %On " + fqname;
+		
+		try {
+			return Cleartool.run( cmd, viewContext ).stdoutBuffer.toString();
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new UCMException( "Could not get object id: " + e.getMessage() );
 		}
 	}
 
@@ -417,7 +434,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 				String f = m.group( 3 ).trim();
 				logger.debug( "F: " + f );
 				Version v = (Version) UCMEntity.getEntity( f );
-				v.setSFile( v.getFile().substring( length ) );
+				v.setSFile( v.getFileAsString().substring( length ) );
 
 				if( m.group( 1 ).equals( ">>" ) ) {
 					v.setStatus( Status.ADDED );
@@ -787,7 +804,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	public void loadVersion( Version version ) throws UCMException {
 		try {
-			String cmd = "describe -fmt %u\\n%Vn\\n%Xn \"" + version.getFullyQualifiedName() + "\"";
+			String cmd = "describe -fmt %u\\n%Vn\\n%Xn\\n%[object_kind]p \"" + version.getFullyQualifiedName() + "\"";
 			List<String> list = Cleartool.run( cmd ).stdoutList;
 
 			logger.debug( "DA LIST: " + list );
@@ -804,6 +821,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			Matcher m = rx_extendedName.matcher( ven );
 
 			logger.debug( "VEN: " + ven );
+			
+			if( list.get( 3 ).equals( "file element" ) ) {
+				version.setKind( Kind.FILE_ELEMENT );
+			} else if( list.get( 3 ).equals( "directory version" ) ) {
+				version.setKind( Kind.DIRECTORY_ELEMENT );
+			}
+			
 
 			/*
 			if( m.find() && m.group( 2 ) != null ) {

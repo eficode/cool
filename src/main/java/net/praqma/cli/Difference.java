@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import net.praqma.clearcase.changeset.ChangeSet;
+import net.praqma.clearcase.changeset.ChangeSet2;
+import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
@@ -82,7 +84,7 @@ public class Difference {
         	logger.debug( "View context: " + view.getAbsolutePath() );
         }
         
-        ChangeSet changeset = Version.getDifferences( e1, e2, true, view );
+        ChangeSet2 changeset = ChangeSet2.getChangeSet( (Diffable)e1, (Diffable)e2, view );
 
         System.out.println( changeset.toString() );
 	}

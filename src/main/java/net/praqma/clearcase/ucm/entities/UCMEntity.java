@@ -44,6 +44,14 @@ public abstract class UCMEntity extends UCM {
 		UNLABLED
 	}
 	
+	public enum Kind {
+		UNKNOWN,
+		DIRECTORY_ELEMENT,
+		FILE_ELEMENT,
+	}
+	
+	protected Kind kind = Kind.UNKNOWN;
+	
 	protected LabelStatus labelStatus = LabelStatus.UNKNOWN;
 
 	/* For future caching purposes */
@@ -578,6 +586,14 @@ public abstract class UCMEntity extends UCM {
 		return comment;
 	}
 	
+	public Kind getKind() {
+		return kind;
+	}
+
+	public void setKind( Kind kind ) {
+		this.kind = kind;
+	}
+
 	public String getEntitySelector() {
 		return this.entitySelector;
 	}

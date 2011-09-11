@@ -9,13 +9,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.changeset.ChangeSet;
+import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 
-public class Version extends UCMEntity {
-	/* Version specific fields */
-	private String kind = null;
+public class Version extends UCMEntity implements Comparable<Version> {
 	//private String date = null;
 	private String user = null;
 	private String machine = null;
@@ -24,13 +23,16 @@ public class Version extends UCMEntity {
 	private String branch = null;
 	
 	private boolean oldVersion = false;
+	private File oldFile;
 
 	private SnapshotView view = null;
 
-	private String file = null;
+	private String fullfile = null;
 	private String sfile = null;
-	private File version = null;
-	private String revision = "0";
+	private File file = null;
+	private String version = "";
+	
+	private Integer revision = 0;
 
 	private static String rx_revision = "(\\d+)$";
 	private static Pattern p_revision = Pattern.compile( "@@(.*)$" );
@@ -59,6 +61,7 @@ public class Version extends UCMEntity {
 	}
 	
 	private static final Pattern rx_findAddedElements = Pattern.compile( qfs + ".*?" + qfs + "(\\d+)" + qfs + "(.*?)" + qfs );
+	private static final Pattern rx_findRevision = Pattern.compile( qfs + "(\\d+)$" );
 
 	void postProcess() {
 		logger.trace_function();
@@ -71,34 +74,41 @@ public class Version extends UCMEntity {
 		Matcher m = p_revision.matcher( this.fqname );
 		if( m.find() ) {
 			// this.revision = Integer.parseInt( m.group( 1 ) );
-			this.revision = m.group( 1 );
+			this.version = m.group( 1 );
 		} else {
-			this.revision = "0";
+			this.version = "0";
 		}
 		
 		String tmp = this.fqname;
 		tmp = tmp.replaceFirst( "(?m)@@.*$", "" );
 		tmp = tmp.replaceFirst( "(?m)^\\s+", "" );
-		this.file = tmp;
+		this.fullfile = tmp;
 		
 		/* Check if this is a newly added element
 		 * Ie this is only shown as a parent folder change 
 		 *  view\MonKit006\MonKit006\src@@\main\monkit006_1_dev\2\test\main\monkit006_1_dev\1\java\main\monkit006_1_dev\1
 		 * */
-		Matcher ma = rx_findAddedElements.matcher( revision );
+		this.status = Status.CHANGED;
+		Matcher ma = rx_findAddedElements.matcher( version );
 		while( ma.find() ) {
-			this.file += filesep + ma.group(2);
+			this.fullfile += filesep + ma.group(2);
+			this.status = Status.ADDED;
 		}
 
-		this.version = new File( tmp );
+		this.file = new File( this.fullfile );
+		
+		Matcher r = rx_findRevision.matcher( fqname );
+		if( r.find() ) {
+			this.revision = Integer.parseInt( r.group(1) );
+		}
 	}
 
 	public boolean hijack() {
-		if( this.version.canWrite() ) {
+		if( this.file.canWrite() ) {
 			return true;
 		}
 
-		return this.version.setWritable( true );
+		return this.file.setWritable( true );
 	}
 
 	/* Getters */
@@ -111,24 +121,18 @@ public class Version extends UCMEntity {
 		return this.getUser();
 	}
 
-	public String getFile() throws UCMException {
+	@Deprecated
+	public String getFileAsString() throws UCMException {
 		if( !loaded ) load();
 
-		return this.file;
+		return this.fullfile;
 	}
 
-	/*
-	public String getDate() {
+
+	public String getVersion() throws UCMException {
 		if( !loaded ) load();
 
-		return this.date;
-	}
-	*/
-
-	public String getRevision() throws UCMException {
-		if( !loaded ) load();
-
-		return this.revision;
+		return this.version;
 	}
 
 	public void load2() {
@@ -146,7 +150,7 @@ public class Version extends UCMEntity {
 		this.machine = result.get( "machine" );
 		this.comment = result.get( "comment" );
 		this.checkedout = result.get( "checkedout" ).length() > 0 ? true : false;
-		this.kind = result.get( "kind" );
+		//this.kind = result.get( "kind" );
 		this.branch = result.get( "branch" );
 
 		this.loaded = true;
@@ -187,7 +191,7 @@ public class Version extends UCMEntity {
 	}
 	
 	public void removeVersion() throws UCMException {
-		context.removeVersion( this.version, view.getViewRoot() );
+		context.removeVersion( this.file, view.getViewRoot() );
 	}
 	
 	public static void removeVersion( File file, File viewContext ) throws UCMException {
@@ -195,7 +199,7 @@ public class Version extends UCMEntity {
 	}
 	
 	public void removeName( ) throws UCMException {
-		context.removeName( this.version, view.getViewRoot() );
+		context.removeName( this.file, view.getViewRoot() );
 	}
 	
 	public static void removeName( File file, File viewContext ) throws UCMException {
@@ -207,7 +211,7 @@ public class Version extends UCMEntity {
 	}
 	
 	public void moveFile( File destination ) throws UCMException {
-		context.moveFile( version, destination, view.getViewRoot() );
+		context.moveFile( file, destination, view.getViewRoot() );
 	}
 	
 	public static void checkIn( File file, boolean identical, File view ) throws UCMException {
@@ -223,11 +227,11 @@ public class Version extends UCMEntity {
 	}
 	
 	public void uncheckout() throws UCMException {
-		context.uncheckout( this.getVersion(), true, view.getViewRoot() );
+		context.uncheckout( this.getFile(), true, view.getViewRoot() );
 	}
 	
 	public void uncheckout( boolean keep ) throws UCMException {
-		context.uncheckout( this.getVersion(), keep, view.getViewRoot() );
+		context.uncheckout( this.getFile(), keep, view.getViewRoot() );
 	}
 
 	public void setView( SnapshotView view ) {
@@ -246,12 +250,12 @@ public class Version extends UCMEntity {
 		return sfile;
 	}
 	
-	public void setVersion( File file ) {
-		this.version = file;
+	public void setFile( File file ) {
+		this.file = file;
 	}
 	
-	public File getVersion() {
-		return version;
+	public File getFile() {
+		return file;
 	}
 	
 	public void setStatus( Status status ) {
@@ -262,8 +266,26 @@ public class Version extends UCMEntity {
 		return status;
 	}
 	
+	public void setRevision( int revison ) {
+		this.revision = revision;
+	}
+	
+	public Integer getRevision() {
+		return this.revision;
+	}
+	
 	public static List<File> getUncheckedIn( File viewContext ) throws UCMException {
 		return context.getUnchecedInFiles( viewContext );
+	}
+	
+	public boolean isDirectory() throws UCMException {
+		if( !loaded ) load();
+		return kind.equals( Kind.DIRECTORY_ELEMENT );
+	}
+	
+	public boolean isFile() throws UCMException {
+		if( !loaded ) load();
+		return kind.equals( Kind.FILE_ELEMENT );
 	}
 	
 	@Deprecated
@@ -304,22 +326,44 @@ public class Version extends UCMEntity {
 			return false;
 		}
 	}
+	
+	public void setOldFile( File oldFile ) {
+		this.oldFile = oldFile;
+	}
+	
+	public boolean isMoved() {
+		return ( oldFile != null );
+	}
 
 	public String stringify() throws UCMException {
 		StringBuffer sb = new StringBuffer();
 		sb.append( super.stringify() + linesep );
 
-		sb.append( "Filename: " + this.file + linesep );
-		sb.append( "Revision: " + this.revision + linesep );
+		sb.append( "Filename: " + this.fullfile + linesep );
+		sb.append( "Revision: " + this.version + linesep );
 
 		return sb.toString();
 	}
 	
-	public static ChangeSet getDifferences( UCMEntity e1, UCMEntity e2, boolean merge, File viewContext ) throws UCMException {
-		return context.difference( e1, e2, merge, viewContext );
+	public static ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws UCMException {
+		return context.getChangeset( e1, e2, merge, viewContext );
 	}
 	
 	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException {
 		return context.getBaselineDiff( d1, d2, merge, viewContext );
+	}
+
+	@Override
+	public int compareTo( Version other ) {
+		/* The same file */
+		if( this.file.equals( other.getFile() ) ) {
+			try {
+				return this.version.compareTo( other.getVersion() );
+			} catch (UCMException e) {
+				return -1;
+			}
+		} else {
+			return this.file.compareTo( other.getFile() );
+		}
 	}
 }

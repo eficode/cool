@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.*;
 
 import net.praqma.clearcase.changeset.ChangeSet;
+import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.*;
@@ -107,7 +108,7 @@ public class UCMContext extends Cool {
 			 */
 			try {
 				Version v = (Version) UCMEntity.getEntity( f );
-				v.setSFile( v.getFile().substring( length ) );
+				v.setSFile( v.getFileAsString().substring( length ) );
 				//System.out.println(f);
 				current.changeset.versions.add( v );
 			} catch (UCMException e) {
@@ -169,11 +170,11 @@ public class UCMContext extends Cool {
 	}
 	
 	public void checkOut( Version version, File viewContext ) throws UCMException {
-		strategy.checkOut( version.getVersion(), viewContext );
+		strategy.checkOut( version.getFile(), viewContext );
 	}
 	
 	public void checkIn( Version version, boolean identical, File viewContext ) throws UCMException {
-		strategy.checkIn( version.getVersion(), identical, viewContext );
+		strategy.checkIn( version.getFile(), identical, viewContext );
 	}
 	
 	public void checkIn( File file, boolean identical, File viewContext ) throws UCMException {
@@ -688,10 +689,21 @@ public class UCMContext extends Cool {
 	
 	
 	
-	public ChangeSet difference( UCMEntity e1, UCMEntity e2, boolean merge, File viewContext ) throws UCMException {
-		return strategy.difference( e1, e2, merge, viewContext );
+	public ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws UCMException {
+		return strategy.getChangeset( e1, e2, merge, viewContext );
 	}
 	
+	public void getDirectoryStatus(  Version version, ChangeSet2 changeset ) throws UCMException {
+		strategy.getDirectoryStatus( version, changeset );
+	}
+	
+	public String getPreviousVersion( String version, File viewContext ) throws UCMException {
+		return strategy.getPreviousVersion( version, viewContext );
+	}
+	
+	public String getObjectId( String fqname, File viewContext ) throws UCMException {
+		return strategy.getObjectId( fqname, viewContext );
+	}
 
 	public String getXML() {
 		return strategy.getXML();

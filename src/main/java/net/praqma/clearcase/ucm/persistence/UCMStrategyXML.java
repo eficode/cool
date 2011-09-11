@@ -33,6 +33,7 @@ import net.praqma.clearcase.Region;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.changeset.ChangeSet;
+import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
@@ -1265,17 +1266,29 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public ChangeSet difference( UCMEntity e1, UCMEntity e2, boolean merge, File viewContext ) throws UCMException {
+	public void getDirectoryStatus( Version version, ChangeSet2 changeset ) throws UCMException {
+	}
+
+	@Override
+	public List<String> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void getDirectoryStatus( File version, String fullVersion, ChangeSet changeset ) throws UCMException {
+	public ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public List<String> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException {
+	public String getPreviousVersion( String version, File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getObjectId( String fqname, File viewContext ) throws UCMException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -8,6 +8,7 @@ import net.praqma.clearcase.Region;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.changeset.ChangeSet;
+import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
@@ -32,9 +33,10 @@ interface UCMStrategyInterface
 	
 	/* Common entity */
 	public String getMastership( String fqname ) throws UCMException;
-	public ChangeSet difference( UCMEntity e1, UCMEntity e2, boolean merge, File viewContext ) throws UCMException;
-	public void getDirectoryStatus( File version, String fullVersion, ChangeSet changeset ) throws UCMException;
+	public ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws UCMException;
+	public void getDirectoryStatus( Version version, ChangeSet2 changeset ) throws UCMException;
 	public List<String> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException;
+	public String getObjectId( String fqname, File viewContext ) throws UCMException;
 	
 	/* Project */
 	String getProjectFromStream( String stream );
@@ -100,6 +102,7 @@ interface UCMStrategyInterface
 	public void moveFile( File file, File destination, File viewContext ) throws UCMException;
 	public boolean isUnderSourceControl( File element, File viewContext ) throws UCMException;
 	public boolean isCheckedout( File element, File viewContext ) throws UCMException;
+	public String getPreviousVersion( String version, File viewContext ) throws UCMException;
 	
 	/* Tag */
 	public List<String[]> getTags( String fqname ) throws UCMException;

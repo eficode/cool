@@ -97,7 +97,7 @@ public class Utilities {
 	
 			PrintStream ps;
 			try {
-				ps = new PrintStream( new BufferedOutputStream(new FileOutputStream(version[i].getVersion(), true) ) );
+				ps = new PrintStream( new BufferedOutputStream(new FileOutputStream(version[i].getFile(), true) ) );
 				ps.println( text[i] );
 				ps.close();
 			} catch (FileNotFoundException e) {
