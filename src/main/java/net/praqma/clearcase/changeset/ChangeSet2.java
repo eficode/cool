@@ -3,7 +3,6 @@ package net.praqma.clearcase.changeset;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -52,6 +51,11 @@ public class ChangeSet2 extends Cool {
 			case DELETED:
 					elements.remove( file );
 					break;
+			case ADDED:
+				/* If the version status was changed, let it be added */
+				if( element.getStatus().equals( Status.CHANGED ) ) {
+					elements.put( file, new ChangeSetElement2( file, status, origin ) );		
+				}
 			}
 		} else {
 			elements.put( file, new ChangeSetElement2( file, status, origin ) );
@@ -97,6 +101,20 @@ public class ChangeSet2 extends Cool {
 		return changesetVersions;
 	}
 	
+	public Map<File, ChangeSetElement2> getElements()  {
+		return elements;
+	}
+	
+	public List<ChangeSetElement2> getElementsAsList()  {
+		Set<File> files = elements.keySet();
+		List<ChangeSetElement2> list = new ArrayList<ChangeSetElement2>();
+		for( File file : files ) {
+			list.add( elements.get( file ) );
+		}
+		
+		return list;
+	}
+	
 	public void checkOverlap() {
 		Set<File> files = elements.keySet();
 		List<File> deletes = new ArrayList<File>();
@@ -115,13 +133,13 @@ public class ChangeSet2 extends Cool {
 								
 								String newoid = context.getObjectId( elements.get( file2 ).getOrigin().getFullyQualifiedName() + filesep + file2.getName() + "@@", null );
 								
-								System.out.println( "file1: " + oldver + " + " + oldoid );
-								System.out.println( "file1: " + newoid );
+								//System.out.println( "file1: " + oldver + " + " + oldoid );
+								//System.out.println( "file1: " + newoid );
 								
 								if( oldoid.equals( newoid ) ) {
-									System.out.println( "Object id overlap" );
+									//System.out.println( "Object id overlap" );
 									if( elements.get( file2 ).getStatus().equals( Status.ADDED ) ) {
-										System.out.println( "Potential move of dir" );
+										//System.out.println( "Potential move of dir" );
 										
 										elements.get( file2 ).setStatus( Status.CHANGED );
 										elements.get( file2 ).setOldFile( file1 );
@@ -137,11 +155,9 @@ public class ChangeSet2 extends Cool {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-	
 					}
 				}
 			}
-
 		}
 		
 		for( File file : deletes ) {
@@ -150,7 +166,7 @@ public class ChangeSet2 extends Cool {
 	}
 	
 	public static ChangeSet2 getChangeSet( Diffable d1, Diffable d2, File viewContext ) throws UCMException {
-		ChangeSet2 changeset = context.getChangeset( d1, d2, false, viewContext );
+		ChangeSet2 changeset = context.getChangeset( d1, d2, true, viewContext );
 		
 		/* Sorting the version */
 		Set<File> files = changeset.getChangeset().keySet();

@@ -470,13 +470,15 @@ public class UCMContext extends Cool {
 	// }
 
 	public Tuple<Stream, String> getStreamFromView( File viewroot ) throws UCMException {
+		logger.debug( "1" );
 		File wvroot = strategy.getCurrentViewRoot( viewroot );
-
+		logger.debug( "2" );
 		String viewtag = strategy.viewrootIsValid( wvroot );
-
+		logger.debug( "3" );
 		String streamstr = strategy.getStreamFromView( viewtag );
+		logger.debug( "4" );
 		Stream stream = UCMEntity.getStream( streamstr );
-
+		logger.debug( "5" );
 		return new Tuple<Stream, String>( stream, viewtag );
 	}
 

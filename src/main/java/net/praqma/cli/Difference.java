@@ -3,6 +3,7 @@ package net.praqma.cli;
 import java.io.File;
 import java.io.IOException;
 
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.changeset.ChangeSet;
 import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.interfaces.Diffable;
@@ -56,6 +57,7 @@ public class Difference {
 		net.praqma.util.debug.PraqmaLogger.Logger plogger = net.praqma.util.debug.PraqmaLogger.getLogger();
 		plogger.subscribeAll();
 		plogger.setLocalLog(new File("diff.log"));
+		Cool.setLogger( plogger );
 	       
 
         UCMEntity e1 = UCMEntity.getEntity( osource.getString() );

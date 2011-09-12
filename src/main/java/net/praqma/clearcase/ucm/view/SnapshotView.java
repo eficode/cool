@@ -36,8 +36,6 @@ public class SnapshotView extends UCMView {
 	}
 
 	SnapshotView( File viewroot ) throws UCMException {
-		logger.debug( "Running experimental code." );
-
 		/* TODO Test the view root? Does it exist? Is it a directory? */
 
 		this.viewroot = viewroot;

@@ -95,7 +95,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		int length = viewContext.getAbsoluteFile().toString().length();
 
-		System.out.println(viewContext.getAbsolutePath() + " - " + length);
+		//System.out.println(viewContext.getAbsolutePath() + " - " + length);
 
 		net.praqma.clearcase.changeset.ChangeSet2 changeset = new ChangeSet2( viewContext );
 
@@ -107,7 +107,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 				String f = m.group( 2 ).trim();
 				
-				System.out.println("F: " + f);
+				//System.out.println("F: " + f);
 				logger.debug( "F: " + f );
 				String filename = f.substring( length );
 				File file = new File(f);
@@ -155,7 +155,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		
 		String cmd = "diff -diff -pre " + version.getFullyQualifiedName();
 		
-		System.out.println( "$ " + cmd );
+		//System.out.println( "$ " + cmd );
 				
 		try {
 			List<String> lines = Cleartool.run( cmd, null, true, true ).stdoutList;
@@ -173,7 +173,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 						/* This is an add, the next line is the file added */
 						Matcher mname = rx_diffFileName.matcher( lines.get( i + 1 ) );
 						if( mname.find() ) {
-							changeset.addElement(new File( version.getFile(), mname.group(1) ), Version.Status.ADDED, version );
+							changeset.addElement(new File( version.getFile(), mname.group(1).trim() ), Version.Status.ADDED, version );
 						} else {
 							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
 						}
@@ -185,7 +185,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 							/* This is an add, the next line is the file added */
 							Matcher mname = rx_diffFileName.matcher( lines.get( i + 1 ) );
 							if( mname.find() ) {
-								changeset.addElement(new File( version.getFile(), mname.group(1) ), Version.Status.DELETED, version );
+								changeset.addElement(new File( version.getFile(), mname.group(1).trim() ), Version.Status.DELETED, version );
 							} else {
 								logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
 							}
@@ -1510,13 +1510,16 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	@Override
-	public File getCurrentViewRoot( File viewroot ) {
-		logger.trace_function();
+	public File getCurrentViewRoot( File viewroot ) throws UCMException {
 		logger.debug( viewroot.getAbsolutePath() );
 
-		String wvroot = Cleartool.run( "pwv -root", viewroot ).stdoutBuffer.toString();
-
-		return new File( wvroot );
+		try {
+			String wvroot = Cleartool.run( "pwv -root", viewroot ).stdoutBuffer.toString();
+	
+			return new File( wvroot );
+		} catch( Exception e ) {
+			throw new UCMException( e.getMessage() );
+		}
 	}
 
 	public String viewrootIsValid( File viewroot ) throws UCMException {
