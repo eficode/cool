@@ -92,7 +92,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		Matcher ma = rx_findAddedElements.matcher( version );
 		while( ma.find() ) {
 			this.fullfile += filesep + ma.group(2);
-			this.status = Status.ADDED;
 		}
 
 		this.file = new File( this.fullfile );
@@ -100,6 +99,9 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		Matcher r = rx_findRevision.matcher( fqname );
 		if( r.find() ) {
 			this.revision = Integer.parseInt( r.group(1) );
+			if( this.revision == 1 ) {
+				this.status = Status.ADDED;
+			}
 		}
 	}
 

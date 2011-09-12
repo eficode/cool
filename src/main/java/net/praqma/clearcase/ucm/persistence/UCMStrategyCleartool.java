@@ -1497,7 +1497,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		info.put( "dirs_deleted", dircount );
 
-		logger.print( "Deleted " + dircount + " director" + ( dircount == 1 ? "y" : "ies" ) + " and " + filecount + " file" + ( filecount == 1 ? "" : "s" ) );
+		logger.debug( "Deleted " + dircount + " director" + ( dircount == 1 ? "y" : "ies" ) + " and " + filecount + " file" + ( filecount == 1 ? "" : "s" ) );
 
 		if( dircount + filecount == total ) {
 			info.put( "success", 1 );

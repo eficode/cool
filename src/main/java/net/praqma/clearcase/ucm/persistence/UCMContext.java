@@ -322,7 +322,6 @@ public class UCMContext extends Cool {
 		List<String> bls_str = strategy.getBaselines( component.getFullyQualifiedName(), stream.getFullyQualifiedName(), plevel );
 
 		logger.debug( "I got " + bls_str.size() + " baselines." );
-		net.praqma.util.structure.Printer.listPrinter( bls_str );
 		List<Baseline> bls = new ArrayList<Baseline>();
 
 		for( String bl : bls_str ) {

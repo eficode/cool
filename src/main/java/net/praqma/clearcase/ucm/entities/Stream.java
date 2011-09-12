@@ -2,6 +2,8 @@ package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import net.praqma.clearcase.interfaces.Diffable;
@@ -100,6 +102,26 @@ public class Stream extends UCMEntity implements Diffable {
 	
 	public List<Baseline> getBaselines( Component component, Plevel plevel ) throws UCMException {
 		return context.getBaselines( this, component, plevel, pvob );
+	}
+	
+	public List<Baseline> getBaselines( Component component, Plevel plevel, Date date ) throws UCMException {
+		List<Baseline> baselines = context.getBaselines( this, component, plevel, pvob );
+		
+		if( date == null ) {
+			return baselines;
+		}
+		
+		Iterator<Baseline> it = baselines.iterator();
+		while( it.hasNext() ) {
+			Baseline baseline = it.next();
+			
+			if( date.after( baseline.getDate() ) ) {
+				logger.debug( "Removing [" + baseline.getShortname() + " " + baseline.getDate() + "/" + date + "]" );
+				it.remove();
+			}
+		}
+		
+		return baselines;
 	}
 
 	public List<Stream> getChildStreams() throws UCMException {
