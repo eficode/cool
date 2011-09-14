@@ -152,6 +152,18 @@
 		</repository>
 	</repositories>
 
+	<build>
+	  <extensions>
+	    <!-- Enabling the use of FTP -->
+	    <extension>
+	      <groupId>org.apache.maven.wagon</groupId>
+	      <artifactId>wagon-ssh</artifactId>
+	      <version>1.0</version>
+	    </extension>
+	  </extensions>
+	</build>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -169,7 +181,7 @@
 	</dependencies>
 	
     <scm>
-        <connection>scm:git:ssh://github.com/cool.git</connection>
+        <connection>scm:git:http://github.com/cool.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/Praqma/cool.git</developerConnection>
         <url>https://github.com/Praqma/cool.git</url>
     </scm>
