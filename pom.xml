@@ -136,6 +136,16 @@
 
 		</plugins>
 
+	  <extensions>
+	    <!-- Enabling the use of FTP -->
+	    <extension>
+	      <groupId>org.apache.maven.wagon</groupId>
+	      <artifactId>wagon-ssh</artifactId>
+	      <version>1.0</version>
+	    </extension>
+	  </extensions>
+
+
 	</build>
 
 
@@ -151,17 +161,6 @@
 			<url>http://code.praqma.net/repo/maven</url>
 		</repository>
 	</repositories>
-
-	<build>
-	  <extensions>
-	    <!-- Enabling the use of FTP -->
-	    <extension>
-	      <groupId>org.apache.maven.wagon</groupId>
-	      <artifactId>wagon-ssh</artifactId>
-	      <version>1.0</version>
-	    </extension>
-	  </extensions>
-	</build>
 
 
 	<dependencies>
