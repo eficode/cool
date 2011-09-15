@@ -43,6 +43,10 @@ public class UCMContext extends Cool {
 	public String getMastership( UCMEntity entity ) throws UCMException {
 		return strategy.getMastership( entity.getFullyQualifiedName() );
 	}
+	
+	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException {
+		strategy.changeOwnership( entity, username, viewContext );
+	}
 
 	/* Baseline specific */
 	public List<Activity> getBaselineDiff( SnapshotView view, Baseline baseline ) throws UCMException {

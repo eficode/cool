@@ -254,6 +254,34 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			throw new UCMException( "Could not get object id: " + e.getMessage() );
 		}
 	}
+	
+	private static final String rx_entityNotFound = "cleartool: Error: \\w+ not found: \"\\S+\"\\.";
+	
+	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException {
+		String cmd = "protect -chown " + username + " " + entity.getFullyQualifiedName();
+		
+		try {
+			Cleartool.run( cmd, viewContext );
+		} catch( AbnormalProcessTerminationException e ) {
+			if( e.getMessage().contains( "Unable to determine VOB for pathname" ) ) {
+				throw new UCMException( "Unkown Vob: " + e.getMessage(), UCMType.UNKOWN_VOB );
+			}
+			
+			if( e.getMessage().contains( "Unknown user name" ) ) {
+				throw new UCMException( "Unkown user: " + username, UCMType.UNKNOWN_USER );
+			}
+			
+			if( e.getMessage().matches( rx_entityNotFound ) ) {
+				throw new UCMException( "Entity not found: " + entity.getShortname(), UCMType.ENTITY_NOT_FOUND );
+			}
+			
+			if( e.getMessage().contains( " ClearCase object not found" ) ) {
+				throw new UCMException( "Entity not found: " + entity.getShortname(), UCMType.ENTITY_NOT_FOUND );
+			}			
+			
+			throw new UCMException( e.getMessage(), UCMType.DEFAULT );			
+		}
+	}
 
 	/************************************************************************
 	 * PROJECT FUNCTIONALITY
@@ -1658,6 +1686,10 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 			if( r.stdoutBuffer.toString().contains( "Unable to determine VOB for pathname" ) ) {
 				throw new UCMException( "The Vob " + vob.getName() + " does not exist" );
+			}
+			
+			if( r.stdoutBuffer.toString().contains( "Trouble opening VOB database" ) ) {
+				throw new UCMException( "The Vob " + vob.getName() + " could not be opened" );
 			}
 
 			for( String s : r.stdoutList ) {

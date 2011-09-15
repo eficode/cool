@@ -597,4 +597,8 @@ public abstract class UCMEntity extends UCM {
 	public String getEntitySelector() {
 		return this.entitySelector;
 	}
+	
+	public void changeOwnership( String username, File viewContext ) throws UCMException {
+		context.changeOwnership( this, username, viewContext );
+	}
 }
