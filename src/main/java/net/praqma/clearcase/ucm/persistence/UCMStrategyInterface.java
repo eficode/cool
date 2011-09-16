@@ -37,6 +37,7 @@ interface UCMStrategyInterface
 	public void getDirectoryStatus( Version version, ChangeSet2 changeset ) throws UCMException;
 	public List<String> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException;
 	public String getObjectId( String fqname, File viewContext ) throws UCMException;
+	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException;
 	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException;
 	
 	/* Project */

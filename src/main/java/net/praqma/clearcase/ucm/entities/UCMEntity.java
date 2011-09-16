@@ -601,4 +601,8 @@ public abstract class UCMEntity extends UCM {
 	public void changeOwnership( String username, File viewContext ) throws UCMException {
 		context.changeOwnership( this, username, viewContext );
 	}
+	
+	public static void changeOwnership( String fqname, String username, File viewContext ) throws UCMException {
+		context.changeOwnership( fqname, username, viewContext );
+	}
 }

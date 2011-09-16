@@ -258,7 +258,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final String rx_entityNotFound = "cleartool: Error: \\w+ not found: \"\\S+\"\\.";
 	
 	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException {
-		String cmd = "protect -chown " + username + " " + entity.getFullyQualifiedName();
+		changeOwnership( entity.getFullyQualifiedName(), username, viewContext );
+	}
+	
+	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException {
+		String cmd = "protect -chown " + username + " " + fqname;
 		
 		try {
 			Cleartool.run( cmd, viewContext );
@@ -272,11 +276,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			}
 			
 			if( e.getMessage().matches( rx_entityNotFound ) ) {
-				throw new UCMException( "Entity not found: " + entity.getShortname(), UCMType.ENTITY_NOT_FOUND );
+				throw new UCMException( "Entity not found: " + fqname, UCMType.ENTITY_NOT_FOUND );
 			}
 			
 			if( e.getMessage().contains( " ClearCase object not found" ) ) {
-				throw new UCMException( "Entity not found: " + entity.getShortname(), UCMType.ENTITY_NOT_FOUND );
+				throw new UCMException( "Entity not found: " + fqname, UCMType.ENTITY_NOT_FOUND );
 			}			
 			
 			throw new UCMException( e.getMessage(), UCMType.DEFAULT );			

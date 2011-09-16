@@ -1298,4 +1298,10 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
 }
