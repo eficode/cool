@@ -11,6 +11,7 @@ import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.utils.BaselineList;
+import net.praqma.util.debug.Logger;
 import net.praqma.util.structure.Tuple;
 
 /**
@@ -20,6 +21,8 @@ import net.praqma.util.structure.Tuple;
  * 
  */
 public class SnapshotView extends UCMView {
+	transient private static Logger logger = Logger.getLogger();
+	
 	protected static final String rx_view_uuid = "view_uuid:(.*)";
 
 	private File viewroot = null;

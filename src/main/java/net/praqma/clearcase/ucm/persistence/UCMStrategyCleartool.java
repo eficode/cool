@@ -41,6 +41,7 @@ import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.entities.Version.Status;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
+import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.io.IO;
@@ -48,6 +49,8 @@ import net.praqma.util.structure.Tuple;
 
 public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final String rx_ccdef_allowed = "[\\w\\.-_\\\\]";
+	
+	private static Logger logger = Logger.getLogger();
 
 	/* Some relatively hard coded "variables" */
 	public static final String __TAG_NAME = "tag";
@@ -1115,7 +1118,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	// public List<Tuple<String, String>> GetTags( String fqname ) throws
 	// UCMException
 	public List<String[]> getTags( String fqname ) throws UCMException {
-		logger.trace_function();
 		logger.debug( fqname );
 
 		String cmd = "describe -ahlink " + __TAG_NAME + " -l " + fqname;
@@ -1162,7 +1164,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public String newTag( UCMEntity entity, String cgi ) throws UCMException {
-		logger.trace_function();
 		logger.debug( entity.getFullyQualifiedName() );
 
 		String cmd = "mkhlink -ttext \"" + cgi + "\" " + __TAG_NAME + " " + entity.getFullyQualifiedName();
@@ -1196,7 +1197,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public void deleteTagsWithID( String tagType, String tagID, String entity ) throws UCMException {
-		logger.trace_function();
 		logger.debug( tagType + tagID );
 
 		List<String[]> list = getTags( entity );
@@ -1278,7 +1278,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private final String rx_keep_file = ".*\\.keep$";
 
 	public void checkViewContext( File dir ) throws UCMException {
-		logger.trace_function();
 		logger.debug( "" );
 
 		String cmd = "pwv -root";
@@ -1357,7 +1356,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public void regenerateViewDotDat( File dir, String viewtag ) throws UCMException {
-		logger.trace_function();
 		logger.debug( dir + ", " + viewtag );
 
 		File viewdat = new File( dir + File.separator + "view.dat" );
@@ -1413,7 +1411,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public boolean viewExists( String viewtag ) {
-		logger.trace_function();
 		logger.debug( viewtag );
 
 		String cmd = "lsview " + viewtag;
@@ -1591,7 +1588,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			/* A match is found */
 			uuid = match.group( 1 ).trim();
 		} else {
-			logger.log( "UUID not found!", "warning" );
+			logger.warning( "UUID not found!" );
 			throw new UCMException( "UUID not found" );
 		}
 

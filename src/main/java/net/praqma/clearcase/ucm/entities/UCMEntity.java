@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
+import net.praqma.util.debug.Logger;
 
 /**
  * 
@@ -22,6 +23,7 @@ import net.praqma.clearcase.ucm.UCMException.UCMType;
  */
 public abstract class UCMEntity extends UCM implements Serializable {
 
+	transient private static Logger logger = Logger.getLogger();
 
 	private static final long serialVersionUID = 1123123123L;
 

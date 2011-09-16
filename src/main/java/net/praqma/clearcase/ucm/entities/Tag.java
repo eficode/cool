@@ -9,9 +9,12 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.utils.TagQuery;
+import net.praqma.util.debug.Logger;
 import net.praqma.util.structure.Tuple;
 
 public class Tag extends UCMEntity {
+	transient private static Logger logger = Logger.getLogger();
+	
 	/* Tag specific fields */
 	private String tagType = "";
 	private String tagID = "";

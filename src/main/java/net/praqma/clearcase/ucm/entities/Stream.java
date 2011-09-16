@@ -12,6 +12,7 @@ import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.util.debug.Logger;
 
 /**
  * This is the OO implementation of the ClearCase entity Stream
@@ -22,6 +23,8 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
 public class Stream extends UCMEntity implements Diffable, Serializable {
 
 	private static final long serialVersionUID = 112121212L;
+	
+	transient private static Logger logger = Logger.getLogger();
 	
 	/* Stream specific fields */
 	transient private ArrayList<Baseline> recommendedBaselines = null;
@@ -207,7 +210,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	}
 
 	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UCMException {
-		logger.trace_function();
 		logger.debug( "Getting recommended baselines" );
 
 		if( this.recommendedBaselines == null || force ) {

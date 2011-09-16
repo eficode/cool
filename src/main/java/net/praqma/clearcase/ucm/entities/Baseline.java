@@ -12,8 +12,12 @@ import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.utils.BaselineDiff;
 
 import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.util.debug.Logger;
 
 public class Baseline extends UCMEntity implements Diffable {
+	
+	transient private static Logger logger = Logger.getLogger();
+	
     /* Baseline specific fields */
 
     private Component component = null;

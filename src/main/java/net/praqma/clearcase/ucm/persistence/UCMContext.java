@@ -27,10 +27,13 @@ import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
+import net.praqma.util.debug.Logger;
 import net.praqma.util.structure.Tuple;
 
 public class UCMContext extends Cool {
 	private UCMStrategyInterface strategy;
+	
+	transient private static Logger logger = Logger.getLogger();
 
 	private final Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
 	private final Pattern pattern_cc_name = Pattern.compile( "[\\w\\.][\\w\\.-]*" );

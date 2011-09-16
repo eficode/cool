@@ -3,8 +3,11 @@ package net.praqma.clearcase.ucm.entities;
 import java.util.regex.Matcher;
 
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.util.debug.Logger;
 
 public class HyperLink extends UCMEntity {
+	transient private static Logger logger = Logger.getLogger();
+	
 	/* Hlink specific fields */
 	private Integer identifier = null;
 	private String type = null;

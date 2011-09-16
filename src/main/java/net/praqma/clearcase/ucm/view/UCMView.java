@@ -7,8 +7,10 @@ import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
+import net.praqma.util.debug.Logger;
 
 public class UCMView extends UCM {
+	transient private static Logger logger = Logger.getLogger();
 
 	protected String path;
 	protected String viewtag = "";

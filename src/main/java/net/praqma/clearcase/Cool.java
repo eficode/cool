@@ -6,8 +6,7 @@ import java.util.List;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.persistence.UCMContext;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyCleartool;
-import net.praqma.util.debug.PraqmaLogger;
-import net.praqma.util.debug.PraqmaLogger.Logger;
+import net.praqma.util.debug.Logger;
 
 public abstract class Cool {
 	/* Make sure, that we're using the same instance of the context! */
@@ -19,11 +18,8 @@ public abstract class Cool {
 
 	public static void setContext( ContextType ct ) {
 		if( context != null ) {
-			logger.warning( "Context is already set" );
 			return;
 		}
-
-		logger.log( "Setting context type to " + ct.toString() );
 
 		switch ( ct ) {
 		case XML:
@@ -80,11 +76,9 @@ public abstract class Cool {
 
 		return sb.toString();
 	}
-
-	public static Logger logger = PraqmaLogger.getLogger( false );
-
-	public static void setLogger( Logger logger ) {
-		Cool.logger = PraqmaLogger.getLogger( logger );
-		Cleartool.setCLILogger( Cool.logger );
+	
+	@Deprecated
+	public static void setLogger( Object o ) {
+		
 	}
 }
