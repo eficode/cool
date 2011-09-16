@@ -1,6 +1,7 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -18,14 +19,17 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
  * @author wolfgang
  * 
  */
-public class Stream extends UCMEntity implements Diffable {
+public class Stream extends UCMEntity implements Diffable, Serializable {
+
+	private static final long serialVersionUID = 112121212L;
+	
 	/* Stream specific fields */
-	private ArrayList<Baseline> recommendedBaselines = null;
+	transient private ArrayList<Baseline> recommendedBaselines = null;
 	private Project project = null;
 	private Stream defaultTarget = null;
 	private boolean readonly = true;
 
-	Stream() {
+	public Stream() {
 		super( "stream" );
 	}
 

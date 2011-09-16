@@ -1,6 +1,7 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,7 +20,11 @@ import net.praqma.clearcase.ucm.UCMException.UCMType;
  * @author wolfgang
  * 
  */
-public abstract class UCMEntity extends UCM {
+public abstract class UCMEntity extends UCM implements Serializable {
+
+
+	private static final long serialVersionUID = 1123123123L;
+
 	private static final String rx_ccdef_allowed = "[\\w\\.-]";
 	private static final String rx_ccdef_vob = "[\\\\\\w\\.-/]";
 	private static final Pattern pattern_std_fqname = Pattern.compile( "^(\\w+):(" + rx_ccdef_allowed + "+)@(" + rx_ccdef_vob + "+)$" );
@@ -37,6 +42,10 @@ public abstract class UCMEntity extends UCM {
 
 	protected static TagPool tp = TagPool.GetInstance();
 	
+
+	/* For future caching purposes */
+	private static HashMap<String, UCMEntity> entities = new HashMap<String, UCMEntity>();
+	
 	public enum LabelStatus {
 		UNKNOWN,
 		FULL,
@@ -50,19 +59,18 @@ public abstract class UCMEntity extends UCM {
 		FILE_ELEMENT,
 	}
 	
-	protected Kind kind = Kind.UNKNOWN;
+	transient protected Kind kind = Kind.UNKNOWN;
 	
-	protected LabelStatus labelStatus = LabelStatus.UNKNOWN;
+	transient protected LabelStatus labelStatus = LabelStatus.UNKNOWN;
 
-	/* For future caching purposes */
-	private static HashMap<String, UCMEntity> entities = new HashMap<String, UCMEntity>();
 
-	protected Map<String, String> attributes = new HashMap<String, String>();
+	transient protected Map<String, String> attributes = new HashMap<String, String>();
 	
 	protected Date date;
-	DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd.HHmmss"); // 20060810.225810
 	
-	private String comment;
+	transient DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd.HHmmss"); // 20060810.225810
+	
+	transient private String comment;
 
 	public enum ClearcaseEntityType {
 		Activity, Baseline, Component, HyperLink, Stream, Project, Tag, Version, Undefined;
@@ -87,10 +95,10 @@ public abstract class UCMEntity extends UCM {
 	/* Fields that need not to be loaded */
 	protected String fqname = "";
 	protected String shortname = "";
-	protected ClearcaseEntityType type = ClearcaseEntityType.Undefined;
+	transient protected ClearcaseEntityType type = ClearcaseEntityType.Undefined;
 	protected String pvob = "";
 
-	protected PVob vob = null;
+	transient protected PVob vob = null;
 
 	protected String mastership = null;
 
@@ -99,6 +107,10 @@ public abstract class UCMEntity extends UCM {
 
 	protected boolean loaded = false;
 	private String entitySelector;
+	
+	public UCMEntity() {
+		
+	}
 
 	protected UCMEntity( String entitySelector ) {
 		this.entitySelector = entitySelector;
