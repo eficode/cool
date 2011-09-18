@@ -61,12 +61,12 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		FILE_ELEMENT,
 	}
 	
-	transient protected Kind kind = Kind.UNKNOWN;
+	protected Kind kind = Kind.UNKNOWN;
 	
-	transient protected LabelStatus labelStatus = LabelStatus.UNKNOWN;
+	protected LabelStatus labelStatus = LabelStatus.UNKNOWN;
 
 
-	transient protected Map<String, String> attributes = new HashMap<String, String>();
+	protected Map<String, String> attributes = new HashMap<String, String>();
 	
 	protected Date date;
 	
