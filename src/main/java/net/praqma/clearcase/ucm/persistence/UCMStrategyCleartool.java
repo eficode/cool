@@ -44,6 +44,7 @@ import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
+import net.praqma.util.execute.CommandLine;
 import net.praqma.util.io.IO;
 import net.praqma.util.structure.Tuple;
 
@@ -628,6 +629,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	@Override
 	public List<String> getBaselines( String component, String stream, Plevel plevel ) {
+		
 		String cmd = "lsbl -s -component " + component + " -stream " + stream + ( plevel != null ? " -level " + plevel.toString() : "" );
 		return Cleartool.run( cmd ).stdoutList;
 	}
@@ -799,7 +801,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 */
 	@Override
 	public List<Stream> getChildStreams( String fqstream ) throws UCMException {
-		logger.debug( "" );
+		logger.debug( "1234" );
 		CmdResult res = null;
 
 		String cmd = "desc -fmt %[dstreams]CXp " + fqstream;

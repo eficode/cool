@@ -14,11 +14,14 @@ import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.Logger.LogLevel;
+import net.praqma.util.debug.appenders.StreamAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class Difference {
 	private static Logger logger = Logger.getLogger();
+	
+	private static StreamAppender app = new StreamAppender( System.out );
 	
 	public static void main(String[] args) throws IOException, UCMException {
 		
@@ -36,7 +39,7 @@ public class Difference {
         
         o.parse( args );
         
-        logger.toStdOut( true );
+        Logger.addAppender( app );
         
         try {
             o.checkOptions();
@@ -47,9 +50,9 @@ public class Difference {
         }
 
         if( o.isVerbose() ) {
-        	logger.setMinLogLevel( LogLevel.DEBUG );
+        	app.setMinimumLevel(  LogLevel.DEBUG );
         } else {
-        	logger.setMinLogLevel( LogLevel.INFO );
+        	app.setMinimumLevel( LogLevel.INFO );
         }
         
 		/* Do the ClearCase thing... */
