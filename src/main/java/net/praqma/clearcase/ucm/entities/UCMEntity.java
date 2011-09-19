@@ -163,8 +163,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 *             constructor is not found.
 	 */
 	public static UCMEntity getEntity( String fqname, boolean trusted, boolean cachable ) throws UCMException {
-		// logger.debug( "GetEntity = " + fqname );
-
 		/* Is this needed? */
 		fqname = fqname.trim();
 
