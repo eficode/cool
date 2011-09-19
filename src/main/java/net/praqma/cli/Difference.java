@@ -4,15 +4,12 @@ import java.io.File;
 import java.io.IOException;
 
 import net.praqma.clearcase.Cool;
-import net.praqma.clearcase.changeset.ChangeSet;
 import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.util.debug.Logger;
-import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.Logger.LogLevel;
 import net.praqma.util.debug.appenders.StreamAppender;
 import net.praqma.util.option.Option;

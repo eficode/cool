@@ -3,16 +3,14 @@ package net.praqma.clearcase.cleartool;
 import java.io.File;
 import java.util.ArrayList;
 
-import net.praqma.util.debug.PraqmaLogger;
-import net.praqma.util.debug.PraqmaLogger.Logger;
+import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLineException;
 import net.praqma.util.execute.CommandLineInterface;
-import net.praqma.util.execute.CommandLineInterface.*;
 
 public class CommandLineMock implements CommandLineInterface {
-	private Logger logger = PraqmaLogger.getLogger();
+	private Logger logger = Logger.getLogger();
 
 	private CommandLineMock() {
 

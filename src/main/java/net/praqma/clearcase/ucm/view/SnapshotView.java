@@ -21,6 +21,9 @@ import net.praqma.util.structure.Tuple;
  * 
  */
 public class SnapshotView extends UCMView {
+
+	private static final long serialVersionUID = 7921610562231698232L;
+
 	transient private static Logger logger = Logger.getLogger();
 	
 	protected static final String rx_view_uuid = "view_uuid:(.*)";
@@ -37,8 +40,12 @@ public class SnapshotView extends UCMView {
 	public enum COMP {
 		ALL, MODIFIABLE
 	}
+	
+	public SnapshotView() {
+		
+	}
 
-	SnapshotView( File viewroot ) throws UCMException {
+	public SnapshotView( File viewroot ) throws UCMException {
 		/* TODO Test the view root? Does it exist? Is it a directory? */
 
 		this.viewroot = viewroot;

@@ -1,6 +1,7 @@
 package net.praqma.clearcase.ucm.view;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Map;
 
 import net.praqma.clearcase.ucm.UCMException;
@@ -9,7 +10,10 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.util.debug.Logger;
 
-public class UCMView extends UCM {
+public class UCMView extends UCM implements Serializable {
+
+	private static final long serialVersionUID = 2427000388674097642L;
+
 	transient private static Logger logger = Logger.getLogger();
 
 	protected String path;

@@ -619,4 +619,8 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	public static void changeOwnership( String fqname, String username, File viewContext ) throws UCMException {
 		context.changeOwnership( fqname, username, viewContext );
 	}
+	
+	public boolean isLoaded() {
+		return this.loaded;
+	}
 }

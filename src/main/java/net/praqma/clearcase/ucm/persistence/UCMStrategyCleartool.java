@@ -266,7 +266,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 	
 	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException {
-		String cmd = "protect -chown " + username + " " + fqname;
+		String cmd = "protect -chown " + username + " \"" + fqname + "\"";
 		
 		try {
 			Cleartool.run( cmd, viewContext );
