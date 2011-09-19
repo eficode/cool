@@ -10,11 +10,9 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.*;
 
-import net.praqma.clearcase.changeset.ChangeSet;
 import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
-import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
@@ -33,7 +31,7 @@ import net.praqma.util.structure.Tuple;
 public class UCMContext extends Cool {
 	private UCMStrategyInterface strategy;
 	
-	transient private static Logger logger = Logger.getLogger();
+	private Logger logger = Logger.getLogger();
 
 	private final Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
 	private final Pattern pattern_cc_name = Pattern.compile( "[\\w\\.][\\w\\.-]*" );
