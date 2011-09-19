@@ -843,12 +843,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		try {
 			String cmd = "describe -fmt %u\\n%Vn\\n%Xn\\n%[object_kind]p \"" + version.getFullyQualifiedName() + "\"";
 			List<String> list = Cleartool.run( cmd ).stdoutList;
-
-			logger.debug( "DA LIST: " + list );
 			
 			/* First line, user */
 			version.setUser( list.get( 0 ) );
-			logger.debug( "I AM SETTING THE USER: " + list.get( 0 ) );
 
 			/* Second line, version name */
 			String vn = list.get( 1 );
@@ -857,39 +854,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			String ven = list.get( 2 );
 			Matcher m = rx_extendedName.matcher( ven );
 
-			logger.debug( "VEN: " + ven );
-			
 			if( list.get( 3 ).equals( "file element" ) ) {
 				version.setKind( Kind.FILE_ELEMENT );
 			} else if( list.get( 3 ).equals( "directory version" ) ) {
 				version.setKind( Kind.DIRECTORY_ELEMENT );
 			}
-			
-
-			/*
-			if( m.find() && m.group( 2 ) != null ) {
-				try {
-					logger.debug( "0: " + m.group( 0 ) );
-					logger.debug( "1: " + m.group( 1 ) );
-					logger.debug( "2: " + m.group( 2 ) );
-					logger.debug( "3: " + m.group( 3 ) );
-					logger.debug( "4: " + m.group( 4 ) );
-				} catch (Exception e) {
-
-				}
-				version.setOldVersion( true );
-				//String filename = m.group( 1 ) + m.group( 2 ).substring( m.group( 3 ).length(), m.group( 2 ).length() );
-				Matcher m2 = rx_getFilename.matcher( m.group(2) );
-				String filename = "";
-				if( m2.find() ) {
-					filename = m.group( 1 ) + m2.group( 1 );
-				} else {
-					throw new UCMException( "Unable to get filename" );
-				}
-				version.setVersion( new File( filename ) );
-				logger.debug( "FILENAME: " + filename );
-			}
-			*/
 
 		} catch (Exception e) {
 			throw new UCMException( "Could not load Version: " + e.getMessage() );
