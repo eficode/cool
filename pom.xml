@@ -111,8 +111,8 @@
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 
-                    <finalName>${project.artifactId}</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
+					<finalName>${project.artifactId}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
 
 				</configuration>
 				<executions>
@@ -140,7 +140,7 @@
 	    <!-- Enabling the use of FTP -->
 	    <extension>
 	      <groupId>org.apache.maven.wagon</groupId>
-	      <artifactId>wagon-ssh</artifactId>
+	      <artifactId>wagon-ssh-external</artifactId>
 	      <version>1.0</version>
 	    </extension>
 	  </extensions>
@@ -174,7 +174,13 @@
 		<dependency>
 			<groupId>net.praqma</groupId>
 			<artifactId>praqmajutils</artifactId>
-			<version>0.1.12-SNAPSHOT</version>
+			<version>0.1.12</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.apache.maven.wagon</groupId>
+		  <artifactId>wagon-ssh-external</artifactId>
+		  <version>1.0</version>
 		</dependency>
 
 	</dependencies>
