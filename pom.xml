@@ -15,7 +15,7 @@
         <repository>
             <id>praqma</id>
             <name>praqma</name>
-            <url>scp://10.10.1.25:/var/www/repo/maven</url>
+            <url>scpexe://10.10.1.25:/var/www/repo/maven</url>
         </repository>
     </distributionManagement>
 
