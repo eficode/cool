@@ -22,7 +22,6 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.util.structure.Tuple;
-import net.praqma.util.structure.changeset.ChangeSetElement;
 
 interface UCMStrategyInterface
 {
