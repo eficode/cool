@@ -175,6 +175,7 @@
 			<groupId>net.praqma</groupId>
 			<artifactId>praqmajutils</artifactId>
 			<version>0.1.13-SNAPSHOT</version>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
