@@ -30,7 +30,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	transient private ArrayList<Baseline> recommendedBaselines = null;
 	private Project project = null;
 	private Stream defaultTarget = null;
-	private boolean readonly = true;
+	private boolean readOnly = true;
+	private Baseline foundation;
 
 	public Stream() {
 		super( "stream" );
@@ -76,30 +77,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	}
 
 	public void load() throws UCMException {
-		String r = context.loadStream( this );
-		String[] data = r.split( UCM.delim );
-
-		logger.debug( "RESULT=" + r );
-
-		/* name::project::target_stream::readonly */
-		this.project = UCMEntity.getProject( data[1] );
-		try {
-			this.defaultTarget = UCMEntity.getStream( data[2] );
-		} catch (Exception e) {
-			logger.info( "The Stream did not have a default target." );
-			this.defaultTarget = null;
-		}
-
-		if( data.length > 3 ) {
-			if( data[3].length() > 0 ) {
-				this.readonly = true;
-			} else {
-				this.readonly = false;
-			}
-		} else {
-			this.readonly = false;
-		}
-
+		context.loadStream( this );
+		
 		this.loaded = true;
 	}
 
@@ -140,6 +119,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 			logger.info( "The Stream has no child streams" );
 		}
 		return res;
+	}
+	
+	public void setProject( Project project ) {
+		this.project = project;
+	}
+	
+	public void setDefaultTarget( Stream stream ) {
+		this.defaultTarget = stream;
 	}
 
 	/**
@@ -273,10 +260,22 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	public boolean isDelivering() throws UCMException {
 		return context.isDelivering( this );
 	}
+	
+	public void setReadOnly( boolean readOnly ) {
+		this.readOnly = readOnly;
+	}
 
 	public boolean isReadOnly() throws UCMException {
 		if( !this.loaded ) load();
-		return readonly;
+		return readOnly;
+	}
+	
+	public void setFoundationBaseline( Baseline baseline ) {
+		this.foundation = baseline;
+	}
+	
+	public Baseline getFoundationBaseline() {
+		return this.foundation;
 	}
 
 	public String stringify() throws UCMException {

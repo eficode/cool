@@ -576,10 +576,7 @@ public class UCMContext extends Cool {
 		strategy.createComponent( name, pvob, root, comment, view );
 	}
 
-	public String loadStream( Stream stream ) throws UCMException {
-		logger.log( "Loading stream " + stream.getFullyQualifiedName() );
-
-		return strategy.loadStream( stream.getFullyQualifiedName() );
+	public void loadStream( Stream stream ) throws UCMException {
 	}
 
 	public List<Stream> getChildStreams( Stream stream ) throws UCMException {

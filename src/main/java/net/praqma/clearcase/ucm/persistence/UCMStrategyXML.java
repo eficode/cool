@@ -947,9 +947,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
     }
 
     @Override
-    public String loadStream(String stream) throws UCMException {
-        // TODO Auto-generated method stub
-        return null;
+    public void loadStream(Stream stream) throws UCMException {
     }
 
     @Override

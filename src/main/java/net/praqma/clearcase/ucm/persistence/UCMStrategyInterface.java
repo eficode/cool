@@ -86,7 +86,7 @@ interface UCMStrategyInterface
 	public void cancelRebase( String stream );
 	public List<String> getLatestBaselines( String stream );
 	public void generate( String stream );
-	public String loadStream( String stream ) throws UCMException;
+	public void loadStream( Stream stream ) throws UCMException;
 	public List<Stream> getChildStreams(String fqstream) throws UCMException;
 	
 	/* Version */

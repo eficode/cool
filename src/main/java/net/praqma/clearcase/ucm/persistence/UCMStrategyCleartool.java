@@ -775,14 +775,14 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		return bls;
 	}
 
-	public String loadStream( String stream ) throws UCMException {
+	public void loadStream( Stream stream ) throws UCMException {
 		logger.debug( "Loading " + stream );
 
-		CmdResult res = null;
+		String[] data = null;
 
-		String cmd = "describe -fmt %[name]p" + UCMStrategyInterface.delim + "%[project]Xp" + UCMStrategyInterface.delim + "%X[def_deliver_tgt]p" + UCMStrategyInterface.delim + "%[read_only]p " + stream;
+		String cmd = "describe -fmt %[name]p\n%[project]Xp\n%X[def_deliver_tgt]p\n%[read_only]p\n%[found_bls]p " + stream;
 		try {
-			res = Cleartool.run( cmd );
+			data = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\n" );
 		} catch (AbnormalProcessTerminationException e) {
 			if( e.getMessage().matches( rx_stream_load ) ) {
 				throw new UCMException( "The component \"" + stream + "\", does not exist.", UCMType.LOAD_FAILED );
@@ -790,8 +790,30 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 				throw new UCMException( e.getMessage(), e.getMessage(), UCMType.LOAD_FAILED );
 			}
 		}
+		
+		/* Set project */
+		stream.setProject( UCMEntity.getProject( data[1] ) );
+		
+		/* Set default target */
+		try {
+			stream.setDefaultTarget( UCMEntity.getStream( data[2] ) );
+		} catch (Exception e) {
+			logger.debug( "The Stream did not have a default target." );
+		}
 
-		return res.stdoutBuffer.toString();
+		/* Set read only */
+		if( data[3].length() > 0 ) {
+			stream.setReadOnly( true );
+		} else {
+			stream.setReadOnly( false );
+		}
+		
+		/* Set foundation baseline */
+		try {
+			stream.setFoundationBaseline( UCMEntity.getBaseline( data[4] ) );
+		} catch( Exception e ) {
+			logger.warning( "Could not get the foundation baseline: " + e.getMessage() );
+		}		
 	}
 
 	/**
