@@ -51,7 +51,7 @@ import net.praqma.util.structure.Tuple;
 public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final String rx_ccdef_allowed = "[\\w\\.-_\\\\]";
 	
-	private static Logger logger = Logger.getLogger();
+	private Logger logger = Logger.getLogger();
 
 	/* Some relatively hard coded "variables" */
 	public static final String __TAG_NAME = "tag";
@@ -778,11 +778,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	public void loadStream( Stream stream ) throws UCMException {
 		logger.debug( "Loading " + stream );
 
-		String[] data = null;
+		List<String> data = null;
 
 		String cmd = "describe -fmt %[name]p\n%[project]Xp\n%X[def_deliver_tgt]p\n%[read_only]p\n%[found_bls]Xp " + stream;
 		try {
-			data = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\n" );
+			data = Cleartool.run( cmd ).stdoutList;
 		} catch (AbnormalProcessTerminationException e) {
 			if( e.getMessage().matches( rx_stream_load ) ) {
 				throw new UCMException( "The component \"" + stream + "\", does not exist.", UCMType.LOAD_FAILED );
@@ -791,18 +791,20 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 			}
 		}
 		
+		logger.info( "I got: " + data );
+		
 		/* Set project */
-		stream.setProject( UCMEntity.getProject( data[1] ) );
+		stream.setProject( UCMEntity.getProject( data.get( 1 ) ) );
 		
 		/* Set default target */
 		try {
-			stream.setDefaultTarget( UCMEntity.getStream( data[2] ) );
+			stream.setDefaultTarget( UCMEntity.getStream( data.get( 2 ) ) );
 		} catch (Exception e) {
 			logger.debug( "The Stream did not have a default target." );
 		}
 
 		/* Set read only */
-		if( data[3].length() > 0 ) {
+		if( data.get( 3 ).length() > 0 ) {
 			stream.setReadOnly( true );
 		} else {
 			stream.setReadOnly( false );
@@ -810,7 +812,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		
 		/* Set foundation baseline */
 		try {
-			stream.setFoundationBaseline( UCMEntity.getBaseline( data[4] ) );
+			stream.setFoundationBaseline( UCMEntity.getBaseline( data.get( 4 ) ) );
 		} catch( Exception e ) {
 			logger.warning( "Could not get the foundation baseline: " + e.getMessage() );
 		}		

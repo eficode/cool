@@ -24,7 +24,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 	private static final long serialVersionUID = 112121212L;
 	
-	transient private static Logger logger = Logger.getLogger();
+	transient private Logger logger = Logger.getLogger();
 	
 	/* Stream specific fields */
 	transient private ArrayList<Baseline> recommendedBaselines = null;
@@ -63,7 +63,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		UCMEntity.getNamePart( nstream );
 
 		if( pstream == null || nstream == null ) {
-			logger.error( "Incorrect CreateStream() parameters" );
 			throw new UCMException( "Incorrect CreateStream() parameters" );
 		}
 
@@ -77,6 +76,9 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	}
 
 	public void load() throws UCMException {
+		logger.info( "loading stream" );
+		logger.debug( "loading stream" );
+		logger.fatal( "loading stream" );
 		context.loadStream( this );
 		
 		this.loaded = true;

@@ -16,7 +16,7 @@ import net.praqma.util.debug.Logger;
 
 public class Baseline extends UCMEntity implements Diffable {
 	
-	transient private static Logger logger = Logger.getLogger();
+	transient private Logger logger = Logger.getLogger();
 	
     /* Baseline specific fields */
 
@@ -87,7 +87,7 @@ public class Baseline extends UCMEntity implements Diffable {
     
     public static Baseline create(String basename, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends) throws UCMException {
         if (basename.toLowerCase().startsWith("baseline:")) {
-            logger.warning("The baseline name should not be prefixed with \"baseline:\", removing it");
+            //logger.warning("The baseline name should not be prefixed with \"baseline:\", removing it");
             basename = basename.replaceFirst("baseline:", "");
         }
 
