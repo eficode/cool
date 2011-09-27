@@ -421,6 +421,8 @@ public class UCMContext extends Cool {
 		strategy.createStream( pstream.getFullyQualifiedName(), nstream, readonly, ( baseline != null ? baseline.getFullyQualifiedName() : null ) );
 
 		Stream stream = UCMEntity.getStream( nstream );
+		
+		stream.setCreated( true );
 
 		return stream;
 	}
@@ -572,6 +574,7 @@ public class UCMContext extends Cool {
 	}
 
 	public void loadStream( Stream stream ) throws UCMException {
+		strategy.loadStream( stream );
 	}
 
 	public List<Stream> getChildStreams( Stream stream ) throws UCMException {

@@ -780,7 +780,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		List<String> data = null;
 
-		String cmd = "describe -fmt %[name]p\n%[project]Xp\n%X[def_deliver_tgt]p\n%[read_only]p\n%[found_bls]Xp " + stream;
+		String cmd = "describe -fmt %[name]p\\n%[project]Xp\\n%X[def_deliver_tgt]p\\n%[read_only]p\\n%[found_bls]Xp " + stream;
 		try {
 			data = Cleartool.run( cmd ).stdoutList;
 		} catch (AbnormalProcessTerminationException e) {

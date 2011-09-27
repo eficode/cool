@@ -44,6 +44,8 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	protected static TagPool tp = TagPool.GetInstance();
 	
+	private boolean created = false;
+	
 
 	/* For future caching purposes */
 	private static HashMap<String, UCMEntity> entities = new HashMap<String, UCMEntity>();
@@ -620,5 +622,13 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	
 	public boolean isLoaded() {
 		return this.loaded;
+	}
+
+	public boolean isCreated() {
+		return created;
+	}
+
+	public void setCreated( boolean created ) {
+		this.created = created;
 	}
 }

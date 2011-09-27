@@ -24,7 +24,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 	private static final long serialVersionUID = 112121212L;
 	
-	transient private Logger logger = Logger.getLogger();
+	transient static private Logger logger = Logger.getLogger();
 	
 	/* Stream specific fields */
 	transient private ArrayList<Baseline> recommendedBaselines = null;
@@ -32,7 +32,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	private Stream defaultTarget = null;
 	private boolean readOnly = true;
 	private Baseline foundation;
-
+	
 	public Stream() {
 		super( "stream" );
 	}
@@ -61,6 +61,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 */
 	public static Stream create( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException {
 		UCMEntity.getNamePart( nstream );
+		
+		logger.debug( "PSTREAM:" + pstream.getShortname() + ". NSTREAM: " + nstream + ". BASELINE: " + baseline.getShortname() );
 
 		if( pstream == null || nstream == null ) {
 			throw new UCMException( "Incorrect CreateStream() parameters" );
@@ -76,9 +78,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	}
 
 	public void load() throws UCMException {
-		logger.info( "loading stream" );
 		logger.debug( "loading stream" );
-		logger.fatal( "loading stream" );
 		context.loadStream( this );
 		
 		this.loaded = true;
@@ -175,6 +175,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		/* Determine the name of the entity */
 		UCMEntity.getNamePart( fqname );
 
+		return context.streamExists( fqname );
+	}
+	
+	public boolean exists() {
 		return context.streamExists( fqname );
 	}
 
