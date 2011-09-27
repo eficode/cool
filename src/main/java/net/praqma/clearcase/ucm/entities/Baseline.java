@@ -39,6 +39,7 @@ public class Baseline extends UCMEntity implements Diffable {
      * This function is automatically called when needed by other functions.
      */
     public void load() throws UCMException {
+    	logger.debug( "Loading baseline" );
         String[] rs = context.loadBaseline(this);
 
         /* Component */
@@ -187,6 +188,7 @@ public class Baseline extends UCMEntity implements Diffable {
     }
 
     public Stream getStream() throws UCMException {
+    	logger.info( "Getting stream" );
         if (!loaded) {
             load();
         }

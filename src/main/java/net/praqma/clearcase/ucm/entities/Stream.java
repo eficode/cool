@@ -274,7 +274,9 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		this.foundation = baseline;
 	}
 	
-	public Baseline getFoundationBaseline() {
+	public Baseline getFoundationBaseline() throws UCMException {
+		if( !this.loaded ) load();
+		
 		return this.foundation;
 	}
 
