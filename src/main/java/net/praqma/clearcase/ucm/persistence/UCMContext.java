@@ -63,7 +63,7 @@ public class UCMContext extends Cool {
 	}
 
 	public List<Activity> getBaselineDiff( SnapshotView view, Baseline baseline, Baseline other, boolean nmerge ) throws UCMException {
-		logger.log( view.getViewtag() );
+		logger.debug( view.getViewtag() );
 
 		/* Change if other than -pre */
 		List<String> result = strategy.getBaselineDiff( view.getViewRoot(), baseline.getFullyQualifiedName(), "", nmerge, baseline.getPvobString() );
@@ -286,7 +286,7 @@ public class UCMContext extends Cool {
 	}
 
 	public String[] loadBaseline( Baseline baseline ) throws UCMException {
-		logger.log( "Loading baseline " + baseline.getFullyQualifiedName() );
+		logger.debug( "Loading baseline " + baseline.getFullyQualifiedName() );
 
 		// String result = CTF.LoadBaseline( this.fqname );
 		String result = strategy.loadBaseline( baseline.getFullyQualifiedName() );
@@ -478,15 +478,10 @@ public class UCMContext extends Cool {
 	// }
 
 	public Tuple<Stream, String> getStreamFromView( File viewroot ) throws UCMException {
-		logger.debug( "1" );
 		File wvroot = strategy.getCurrentViewRoot( viewroot );
-		logger.debug( "2" );
 		String viewtag = strategy.viewrootIsValid( wvroot );
-		logger.debug( "3" );
 		String streamstr = strategy.getStreamFromView( viewtag );
-		logger.debug( "4" );
 		Stream stream = UCMEntity.getStream( streamstr );
-		logger.debug( "5" );
 		return new Tuple<Stream, String>( stream, viewtag );
 	}
 
@@ -580,7 +575,7 @@ public class UCMContext extends Cool {
 	}
 
 	public List<Stream> getChildStreams( Stream stream ) throws UCMException {
-		logger.log( "Finding all child streams on " + stream );
+		logger.debug( "Finding all child streams on " + stream );
 
 		return strategy.getChildStreams( stream.getFullyQualifiedName() );
 	}
