@@ -102,7 +102,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	transient protected ClearcaseEntityType type = ClearcaseEntityType.Undefined;
 	protected String pvob = "";
 
-	transient protected PVob vob = null;
+	protected PVob vob = null;
 
 	protected String mastership = null;
 

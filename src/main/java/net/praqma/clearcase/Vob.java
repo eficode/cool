@@ -1,8 +1,10 @@
 package net.praqma.clearcase;
 
+import java.io.Serializable;
+
 import net.praqma.clearcase.ucm.UCMException;
 
-public class Vob extends Cool {
+public class Vob extends Cool implements Serializable {
 
 	protected String name;
 	

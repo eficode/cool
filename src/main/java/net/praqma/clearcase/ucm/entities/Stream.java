@@ -138,8 +138,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * @throws UCMException
 	 */
 	public List<Stream> getSiblingStreams() throws UCMException {
+		logger.info( "Getting sibling streams" );
 		List<Project> projects = Project.getProjects( this.getPVob() );
 		List<Stream> streams = new ArrayList<Stream>();
+		
+		logger.info( projects );
 
 		for( Project p : projects ) {
 			try {
@@ -150,6 +153,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 				/* Just move on! */
 			}
 		}
+		
+		logger.info( streams );
 
 		return streams;
 	}

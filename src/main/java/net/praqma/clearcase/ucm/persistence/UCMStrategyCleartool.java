@@ -340,6 +340,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 */
 
 	public List<Project> getProjects( PVob vob ) throws UCMException {
+		logger.info( "Getting projects for " + vob );
 		String cmd = "lsproject -s -invob " + vob.toString();
 
 		List<String> projs = null;
@@ -349,11 +350,15 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		} catch (AbnormalProcessTerminationException e) {
 			throw new UCMException( e.getMessage(), e.getMessage() );
 		}
+		
+		logger.info( projs );
 
 		List<Project> projects = new ArrayList<Project>();
 		for( String p : projs ) {
 			projects.add( UCMEntity.getProject( p + "@" + vob ) );
 		}
+		
+		logger.info( projects );
 
 		return projects;
 	}
