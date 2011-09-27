@@ -16,7 +16,12 @@ import net.praqma.util.debug.Logger;
 
 public class Baseline extends UCMEntity implements Diffable {
 	
-	transient private Logger logger = Logger.getLogger();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	transient static private Logger logger = Logger.getLogger();
 	
     /* Baseline specific fields */
 
