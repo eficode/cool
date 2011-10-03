@@ -30,11 +30,7 @@ public class Baseline extends UCMEntity implements Diffable {
     private Stream stream = null;
     private ArrayList<Activity> activities = null;
 
-    /**
-     * Nested public class for easy compilation and access of the differences Activities and Versions.
-     * @author wolfgang
-     *
-     */
+
     Baseline() {
     	super( "baseline" );
     }

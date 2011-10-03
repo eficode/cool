@@ -2,6 +2,7 @@ package net.praqma.clearcase.cleartool;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -39,6 +40,11 @@ public class CommandLineMock implements CommandLineInterface {
 	@Override
 	public CmdResult run( String cmd, File dir, boolean merge ) throws CommandLineException, AbnormalProcessTerminationException {
 		return run( cmd, dir, merge, false );
+	}
+	
+	@Override
+	public CmdResult run( String cmd, File dir, boolean merge, boolean ignore, Map<String, String> variables ) throws CommandLineException, AbnormalProcessTerminationException {
+		return run( cmd, dir, merge, ignore, variables );
 	}
 
 	/**/
