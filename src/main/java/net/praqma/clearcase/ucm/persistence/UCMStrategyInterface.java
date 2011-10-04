@@ -26,10 +26,10 @@ import net.praqma.util.structure.Tuple;
 interface UCMStrategyInterface
 {
 	public static final String delim = "::";
-	
+
 	/* General command line stuff */
 	public void checkViewContext( File dir ) throws UCMException;
-	
+
 	/* Common entity */
 	public String getMastership( String fqname ) throws UCMException;
 	public ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws UCMException;
@@ -38,41 +38,41 @@ interface UCMStrategyInterface
 	public String getObjectId( String fqname, File viewContext ) throws UCMException;
 	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException;
 	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException;
-	
+
 	/* Project */
 	String getProjectFromStream( String stream );
 	List<String> getModifiableComponents( String project );
 	public String loadProject( String project ) throws UCMException;
 	public List<Project> getProjects( PVob vob ) throws UCMException;
 	public void createProject( String name, String root, PVob pvob, int policy, String comment, Component ... mcomps ) throws UCMException;
-	
+
 	/* Activity */
 	public String loadActivity( String activity ) throws UCMException;
 	public void createActivity( String name, PVob pvob, boolean force, String comment, File view ) throws UCMException;
-	
+
 	/* Baseline */
 	public String loadBaseline( String baseline ) throws UCMException;
 	public List<String> getBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob ) throws UCMException;
 	public void setPromotionLevel( String baseline, String plevel ) throws UCMException;
 	public void createBaseline( String baseline, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws UCMException;
 	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, boolean merge, SnapshotView view ) throws UCMException;
-	
+
 	public String getBaselineActivities( String baseline );
-	
+
 	public String deliver( String baseline, String stream, String target, File viewroot, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException;
 	public void cancelDeliver( File viewcontext, Stream stream ) throws UCMException;
 	public String deliverStatus( String stream ) throws UCMException;
-	
+
 	/* Component */
 	public List<String> getBaselines( String component, String stream, Plevel plevel );
 	public String getRootDir( String component );
 	public String loadComponent( String component ) throws UCMException;
 	public void createComponent( String name, PVob pvob, String root, String comment, File view ) throws UCMException;
-	
+
 	/* Hyper Links */
 	public String loadHyperLink( String fqname, File dir ) throws UCMException;
 	public List<Tuple<String, String>> getHlinks( String fqname, String hlinkType, File dir ) throws UCMException;
-	
+
 	/* Stream */
 
 	public void recommendBaseline( String stream, String baseline ) throws UCMException;
@@ -88,7 +88,7 @@ interface UCMStrategyInterface
 	public void generate( String stream );
 	public void loadStream( Stream stream ) throws UCMException;
 	public List<Stream> getChildStreams(String fqstream) throws UCMException;
-	
+
 	/* Version */
 	public void loadVersion( Version version ) throws UCMException;
 	public String getVersion( String version, String separator );
@@ -104,16 +104,16 @@ interface UCMStrategyInterface
 	public boolean isUnderSourceControl( File element, File viewContext ) throws UCMException;
 	public boolean isCheckedout( File element, File viewContext ) throws UCMException;
 	public String getPreviousVersion( String version, File viewContext ) throws UCMException;
-	
+
 	/* Tag */
 	public List<String[]> getTags( String fqname ) throws UCMException;
 	public String getTag( String fqname );
 	public String newTag( UCMEntity entity, String cgi ) throws UCMException;
 	public void deleteTag( String fqname );
 	public void deleteTagsWithID( String tagType, String tagID, String entity ) throws UCMException;
-	
+
 	public String putTag( String fqname, String keyval, UCMEntity entity );
-	
+
 	/* Snapshot Views */
 	public void makeSnapshotView( String stream, File viewroot, String viewtag ) throws UCMException;
 	public File getCurrentViewRoot( File viewroot ) throws UCMException;
@@ -123,12 +123,12 @@ interface UCMStrategyInterface
 	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot );
 	public String viewUpdate( File viewroot, boolean overwrite, String loadrules );
 	public void startView( UCMView view ) throws UCMException;
-	
+
 	/* Views */
 	public void createView( String tag, String path, boolean snapshotView, Stream stream ) throws UCMException;
 	public void removeView( UCMView view ) throws UCMException;
 	public Map<String, String> loadView( UCMView view ) throws UCMException;
-	
+
 	/* Vobs */
 	public void createVob( String vobname, boolean UCMProject, String path, String comment ) throws UCMException;
 	public void loadVob( Vob vob ) throws UCMException;
@@ -143,15 +143,17 @@ interface UCMStrategyInterface
 	public Map<String, String> getAttributes( String fqname ) throws UCMException;
 	public Map<String, String> getAttributes( String fqname, File dir ) throws UCMException;
 	public void setAttribute( String fqname, String attribute, String value ) throws UCMException;
-	
+
 	public List<UCMView> getViews( Region region );
-	
-	
-	
-	/* 
+
+
+
+	/*
 	 * OTHER STUFF
 	 * TODO Should be phased out
 	 */
 	public String getXML();
 	public void saveState();
+
+    public void remoteDeliverCancel(String oldViewTag, String oldSourceStream, File dir) throws UCMException;
 }
