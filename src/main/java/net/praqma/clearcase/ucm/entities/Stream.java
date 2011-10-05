@@ -16,23 +16,23 @@ import net.praqma.util.debug.Logger;
 
 /**
  * This is the OO implementation of the ClearCase entity Stream
- * 
+ *
  * @author wolfgang
- * 
+ *
  */
 public class Stream extends UCMEntity implements Diffable, Serializable {
 
 	private static final long serialVersionUID = 112121212L;
-	
+
 	transient static private Logger logger = Logger.getLogger();
-	
+
 	/* Stream specific fields */
 	transient private ArrayList<Baseline> recommendedBaselines = null;
 	private Project project = null;
 	private Stream defaultTarget = null;
 	private boolean readOnly = true;
 	private Baseline foundation;
-	
+
 	public Stream() {
 		super( "stream" );
 	}
@@ -40,7 +40,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	/**
 	 * This method is only available to the package, because only UCMEntity
 	 * should be allowed to call it.
-	 * 
+	 *
 	 * @return A new Stream Entity
 	 */
 	static Stream getEntity() {
@@ -50,7 +50,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	/**
 	 * Create a new stream, given a parent Stream, a fully qualified name for
 	 * the new Stream and whether the Stream is read only or not
-	 * 
+	 *
 	 * @param pstream
 	 *            The parent Stream
 	 * @param nstream
@@ -61,7 +61,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 */
 	public static Stream create( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException {
 		UCMEntity.getNamePart( nstream );
-		
+
 		logger.debug( "PSTREAM:" + pstream.getShortname() + ". NSTREAM: " + nstream + ". BASELINE: " + baseline.getShortname() );
 
 		if( pstream == null || nstream == null ) {
@@ -80,35 +80,35 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	public void load() throws UCMException {
 		logger.debug( "loading stream" );
 		context.loadStream( this );
-		
+
 		this.loaded = true;
 	}
 
 	public List<Baseline> getBaselines( Plevel plevel ) throws UCMException {
 		return context.getBaselines( this, getSingleTopComponent(), plevel, pvob );
 	}
-	
+
 	public List<Baseline> getBaselines( Component component, Plevel plevel ) throws UCMException {
 		return context.getBaselines( this, component, plevel, pvob );
 	}
-	
+
 	public List<Baseline> getBaselines( Component component, Plevel plevel, Date date ) throws UCMException {
 		List<Baseline> baselines = context.getBaselines( this, component, plevel, pvob );
-		
+
 		if( date == null ) {
 			return baselines;
 		}
-		
+
 		Iterator<Baseline> it = baselines.iterator();
 		while( it.hasNext() ) {
 			Baseline baseline = it.next();
-			
+
 			if( date.after( baseline.getDate() ) ) {
 				logger.debug( "Removing [" + baseline.getShortname() + " " + baseline.getDate() + "/" + date + "]" );
 				it.remove();
 			}
 		}
-		
+
 		return baselines;
 	}
 
@@ -122,18 +122,18 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 		return res;
 	}
-	
+
 	public void setProject( Project project ) {
 		this.project = project;
 	}
-	
+
 	public void setDefaultTarget( Stream stream ) {
 		this.defaultTarget = stream;
 	}
 
 	/**
 	 * For each project return their integration streams
-	 * 
+	 *
 	 * @return
 	 * @throws UCMException
 	 */
@@ -141,7 +141,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		logger.info( "Getting sibling streams" );
 		List<Project> projects = Project.getProjects( this.getPVob() );
 		List<Stream> streams = new ArrayList<Stream>();
-		
+
 		logger.info( projects );
 
 		for( Project p : projects ) {
@@ -153,7 +153,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 				/* Just move on! */
 			}
 		}
-		
+
 		logger.info( streams );
 
 		return streams;
@@ -169,7 +169,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 	/**
 	 * Determines whether a Stream exists, given a fully qualified name
-	 * 
+	 *
 	 * @param fqname
 	 *            Fully qualified name
 	 * @return True if the Stream exists, false otherwise
@@ -182,7 +182,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 		return context.streamExists( fqname );
 	}
-	
+
 	public boolean exists() {
 		return context.streamExists( fqname );
 	}
@@ -243,7 +243,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 	/**
 	 * This method returns the default Stream the given Stream will deliver to.
-	 * 
+	 *
 	 * @return A Stream
 	 * @throws UCMException
 	 */
@@ -271,7 +271,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	public boolean isDelivering() throws UCMException {
 		return context.isDelivering( this );
 	}
-	
+
 	public void setReadOnly( boolean readOnly ) {
 		this.readOnly = readOnly;
 	}
@@ -280,14 +280,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		if( !this.loaded ) load();
 		return readOnly;
 	}
-	
+
 	public void setFoundationBaseline( Baseline baseline ) {
 		this.foundation = baseline;
 	}
-	
+
 	public Baseline getFoundationBaseline() throws UCMException {
 		if( !this.loaded ) load();
-		
+
 		return this.foundation;
 	}
 
@@ -309,5 +309,9 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 		return sb.toString();
 	}
+
+    public void deliverRollBack(String oldViewTag, File viewRoot) throws UCMException{
+        context.remoteDeliverCancel(oldViewTag, this.getFullyQualifiedName(), viewRoot);
+    }
 
 }
