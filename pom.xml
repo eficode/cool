@@ -25,7 +25,7 @@
 			<id>hudson</id>
 			<activation>
 				<property>
-					<!-- Hudson by default defines a property BUILD_NUMBER which is used 
+					<!-- Hudson by default defines a property BUILD_NUMBER which is used
 						to enable the profile. -->
 					<name>BUILD_NUMBER</name>
 				</property>

@@ -30,7 +30,7 @@ import net.praqma.util.structure.Tuple;
 
 public class UCMContext extends Cool {
 	private UCMStrategyInterface strategy;
-	
+
 	private Logger logger = Logger.getLogger();
 
 	private final Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
@@ -44,11 +44,11 @@ public class UCMContext extends Cool {
 	public String getMastership( UCMEntity entity ) throws UCMException {
 		return strategy.getMastership( entity.getFullyQualifiedName() );
 	}
-	
+
 	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException {
 		strategy.changeOwnership( fqname, username, viewContext );
 	}
-	
+
 	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException {
 		strategy.changeOwnership( entity, username, viewContext );
 	}
@@ -69,10 +69,10 @@ public class UCMContext extends Cool {
 		List<String> result = strategy.getBaselineDiff( view.getViewRoot(), baseline.getFullyQualifiedName(), "", nmerge, baseline.getPvobString() );
 
 		int length = view.getViewRoot().getAbsoluteFile().toString().length();
-		
+
 		return parseActivityStrings( result, length );
 	}
-	
+
 	public List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException {
 		List<String> lines = strategy.getBaselineDiff( d1, d2, merge, viewContext );
 		//System.out.println("LINES:");
@@ -81,7 +81,7 @@ public class UCMContext extends Cool {
 		//}
 		return parseActivityStrings( lines, viewContext.getAbsoluteFile().toString().length() );
 	}
-	
+
 	public List<Activity> parseActivityStrings( List<String> result, int length ) throws UCMException {
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		Activity current = null;
@@ -123,7 +123,7 @@ public class UCMContext extends Cool {
 			} catch (UCMException e) {
 
 				//System.out.println("Whoops: " + f + ": " + e.getMessage());
-				
+
 				if( e.type == UCMType.ENTITY_ERROR && !current.isSpecialCase() ) {
 					/* Let's try to move on */
 					continue;
@@ -133,7 +133,7 @@ public class UCMContext extends Cool {
 
 		return activities;
 	}
-	
+
 	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, boolean nomerge, SnapshotView view ) throws UCMException {
 		return strategy.baselineDifferences( bl1, bl2, nomerge, view );
 	}
@@ -143,7 +143,7 @@ public class UCMContext extends Cool {
 	}
 
 	/* Version */
-	
+
 	public void loadVersion( Version version ) throws UCMException {
 		strategy.loadVersion( version );
 	}
@@ -164,7 +164,7 @@ public class UCMContext extends Cool {
 
 		return v;
 	}
-	
+
 	public void removeVersion( File file, File viewContext ) throws UCMException {
 		strategy.removeVersion( file, viewContext );
 	}
@@ -173,19 +173,19 @@ public class UCMContext extends Cool {
 		String f = strategy.getVersionExtension( file, viewroot );
 		return (Version) UCMEntity.getEntity( f, false );
 	}
-	
+
 	public void addToSourceControl( File file, boolean mkdir, File view ) throws UCMException {
 		strategy.addToSourceControl( file, mkdir, view );
 	}
-	
+
 	public void checkOut( Version version, File viewContext ) throws UCMException {
 		strategy.checkOut( version.getFile(), viewContext );
 	}
-	
+
 	public void checkIn( Version version, boolean identical, File viewContext ) throws UCMException {
 		strategy.checkIn( version.getFile(), identical, viewContext );
 	}
-	
+
 	public void checkIn( File file, boolean identical, File viewContext ) throws UCMException {
 		strategy.checkIn( file, identical, viewContext );
 	}
@@ -193,19 +193,19 @@ public class UCMContext extends Cool {
 	public void checkOut( File file, File viewContext ) throws UCMException {
 		strategy.checkOut( file, viewContext );
 	}
-		
+
 	public void uncheckout( File file, boolean keep, File viewContext ) throws UCMException {
 		strategy.uncheckout( file, keep, viewContext );
 	}
-	
+
 	public void removeName( File file, File viewContext ) throws UCMException {
 		strategy.removeName( file, viewContext );
 	}
-	
+
 	public void moveFile( File file, File destination, File viewContext ) throws UCMException {
 		strategy.moveFile( file, destination, viewContext );
 	}
-	
+
 	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException {
 		return strategy.getUnchecedInFiles( viewContext );
 	}
@@ -255,7 +255,7 @@ public class UCMContext extends Cool {
 	 * This function creates a new Tag entity and automatically persists it!!!.
 	 * The tagType and tagID constitutes the unique id. The cgi string SHOULD
 	 * NOT contain tagType or tagID.
-	 * 
+	 *
 	 * @param tagType
 	 *            The tag type.
 	 * @param tagID
@@ -284,6 +284,10 @@ public class UCMContext extends Cool {
 
 		return tag;
 	}
+
+        public void remoteDeliverCancel(String oldViewTag, String oldSourceStream, File dir)throws UCMException{
+            strategy.remoteDeliverCancel(oldViewTag, oldSourceStream, dir);
+        }
 
 	public String[] loadBaseline( Baseline baseline ) throws UCMException {
 		logger.debug( "Loading baseline " + baseline.getFullyQualifiedName() );
@@ -399,7 +403,7 @@ public class UCMContext extends Cool {
 		strategy.makeSnapshotView( stream.getFullyQualifiedName(), viewroot, viewtag );
 		return UCMView.getSnapshotView( viewroot );
 	}
-	
+
 	public void removeView( UCMView view ) throws UCMException {
 		strategy.removeView( view );
 	}
@@ -421,12 +425,12 @@ public class UCMContext extends Cool {
 		strategy.createStream( pstream.getFullyQualifiedName(), nstream, readonly, ( baseline != null ? baseline.getFullyQualifiedName() : null ) );
 
 		Stream stream = UCMEntity.getStream( nstream );
-		
+
 		stream.setCreated( true );
 
 		return stream;
 	}
-	
+
 	public void createIntegrationStream( String name, Project project, Baseline baseline ) throws UCMException {
 		strategy.createIntegrationStream( name, project, baseline );
 	}
@@ -508,7 +512,7 @@ public class UCMContext extends Cool {
 
 	/**
 	 * Returns the update log on completion
-	 * 
+	 *
 	 * @param view
 	 * @param overwrite
 	 * @param loadrules
@@ -560,7 +564,7 @@ public class UCMContext extends Cool {
 		}
 		activity.setUser( result );
 	}
-	
+
 	public void createActivity( String name, PVob pvob, boolean force, String comment, File view ) throws UCMException {
 		strategy.createActivity( name, pvob, force, comment, view );
 	}
@@ -588,7 +592,7 @@ public class UCMContext extends Cool {
 	/**
 	 * Retrieve the attributes for an entity, executed from the current working
 	 * directory
-	 * 
+	 *
 	 * @param entity
 	 *            The given entity
 	 * @return A Map of key, value pairs of the attributes
@@ -600,7 +604,7 @@ public class UCMContext extends Cool {
 
 	/**
 	 * Retrieve the attributes for an entity
-	 * 
+	 *
 	 * @param entity
 	 *            The given entity
 	 * @param dir
@@ -664,15 +668,15 @@ public class UCMContext extends Cool {
 	public void removeVob( Vob vob ) throws UCMException {
 		strategy.removeVob( vob );
 	}
-	
+
 	public List<Vob> getVobs( boolean pvobs ) throws UCMException {
 		return strategy.getVobs( pvobs );
 	}
-	
+
 	public boolean isUnderSourceControl( File element, File viewContext ) throws UCMException {
 		return strategy.isUnderSourceControl( element, viewContext );
 	}
-	
+
 	public boolean isCheckedout( File element, File viewContext ) throws UCMException {
 		return strategy.isCheckedout( element, viewContext );
 	}
@@ -682,7 +686,7 @@ public class UCMContext extends Cool {
 	public void createView( String tag, String path, boolean snapshotView, Stream stream ) throws UCMException {
 		strategy.createView( tag, path, snapshotView, stream );
 	}
-	
+
 	public Map<String, String> loadView( UCMView view ) throws UCMException {
 		return strategy.loadView( view );
 	}
@@ -690,22 +694,22 @@ public class UCMContext extends Cool {
 	public List<UCMView> getViews( Region region ) {
 		return strategy.getViews( region );
 	}
-	
-	
-	
-	
+
+
+
+
 	public ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws UCMException {
 		return strategy.getChangeset( e1, e2, merge, viewContext );
 	}
-	
+
 	public void getDirectoryStatus(  Version version, ChangeSet2 changeset ) throws UCMException {
 		strategy.getDirectoryStatus( version, changeset );
 	}
-	
+
 	public String getPreviousVersion( String version, File viewContext ) throws UCMException {
 		return strategy.getPreviousVersion( version, viewContext );
 	}
-	
+
 	public String getObjectId( String fqname, File viewContext ) throws UCMException {
 		return strategy.getObjectId( fqname, viewContext );
 	}
