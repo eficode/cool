@@ -270,7 +270,7 @@ public class UCMContext extends Cool {
 		// System.out.println( "CGI==="+cgi );
 
 		/* Delete any existing Tags with the unique ID */
-		logger.log( "Deleting Tags with ID: " + tagType + tagID + " for entity " + entity.getFullyQualifiedName() );
+		logger.debug( "Deleting Tags with ID: " + tagType + tagID + " for entity " + entity.getFullyQualifiedName() );
 		strategy.deleteTagsWithID( tagType, tagID, entity.getFullyQualifiedName() );
 
 		cgi = "tagtype=" + tagType + "&tagid=" + tagID + ( cgi.length() > 0 ? "&" + cgi : "" );

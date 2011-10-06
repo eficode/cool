@@ -48,7 +48,7 @@ class TagPool extends UCM {
 			}
 		}
 
-		logger.log( "Could not find the Tag with ID " + tagType + tagID + ". Creating new." );
+		logger.debug( "Could not find the Tag with ID " + tagType + tagID + ". Creating new." );
 
 		/* Create new Tag */
 		// Tag tag = context.NewTag( tagType, tagID, entity, "" );

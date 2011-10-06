@@ -118,7 +118,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		try {
 			res = context.getChildStreams( this );
 		} catch (UCMException e) {
-			logger.info( "The Stream has no child streams" );
+			logger.debug( "The Stream has no child streams" );
 		}
 		return res;
 	}
@@ -138,11 +138,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * @throws UCMException
 	 */
 	public List<Stream> getSiblingStreams() throws UCMException {
-		logger.info( "Getting sibling streams" );
+		logger.debug( "Getting sibling streams" );
 		List<Project> projects = Project.getProjects( this.getPVob() );
 		List<Stream> streams = new ArrayList<Stream>();
 
-		logger.info( projects );
+		logger.debug( projects );
 
 		for( Project p : projects ) {
 			try {
@@ -154,7 +154,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 			}
 		}
 
-		logger.info( streams );
+		logger.debug( streams );
 
 		return streams;
 	}

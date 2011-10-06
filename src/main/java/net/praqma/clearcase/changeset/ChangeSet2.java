@@ -13,12 +13,15 @@ import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.entities.Version.Status;
+import net.praqma.util.debug.Logger;
 
 public class ChangeSet2 extends Cool {
 
 	List<Version> changeset2 = new ArrayList<Version>();
 	Map<File, List<Version>> changesetVersions = new HashMap<File, List<Version>>();
 	Map<File, ChangeSetElement2> elements = new HashMap<File, ChangeSetElement2>();
+	
+	private static Logger logger = Logger.getLogger();
 	
 	private File viewContext;
 	
@@ -45,20 +48,24 @@ public class ChangeSet2 extends Cool {
 	}
 	
 	public void addElement( File file, Status status, Version origin ) {
-		if( elements.containsKey( file ) ) {
-			ChangeSetElement2 element = elements.get( file );
-			switch( status ) {
+		addElement( new ChangeSetElement2( file, status, origin ) );
+	}
+	
+	public void addElement( ChangeSetElement2 e ) {
+		if( elements.containsKey( e.getFile() ) ) {
+			ChangeSetElement2 element = elements.get( e.getFile() );
+			switch( e.getStatus() ) {
 			case DELETED:
-					elements.remove( file );
+					elements.remove( e.getFile() );
 					break;
 			case ADDED:
 				/* If the version status was changed, let it be added */
 				if( element.getStatus().equals( Status.CHANGED ) ) {
-					elements.put( file, new ChangeSetElement2( file, status, origin ) );		
+					elements.put( e.getFile(), e );		
 				}
 			}
 		} else {
-			elements.put( file, new ChangeSetElement2( file, status, origin ) );
+			elements.put( e.getFile(), e );
 		}
 	}
 	

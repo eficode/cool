@@ -189,7 +189,7 @@ public class Baseline extends UCMEntity implements Diffable {
     }
 
     public Stream getStream() throws UCMException {
-    	logger.info( "Getting stream" );
+    	logger.debug( "Getting stream" );
         if (!loaded) {
             load();
         }

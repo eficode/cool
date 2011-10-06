@@ -171,7 +171,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		/* If exists, get the entity from cache cache? */
 		if( cachable ) {
 			if( entities.containsKey( fqname ) ) {
-				logger.log( "Fetched " + fqname + " from cache." );
+				logger.debug( "Fetched " + fqname + " from cache." );
 				return entities.get( fqname );
 			}
 		}
@@ -261,7 +261,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		}
 
 		if( cachable ) {
-			logger.log( "Storing " + fqname + " in cache." );
+			logger.debug( "Storing " + fqname + " in cache." );
 			entities.put( fqname, entity );
 		}
 

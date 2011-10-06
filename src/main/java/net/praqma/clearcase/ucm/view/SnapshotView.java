@@ -216,7 +216,7 @@ public class SnapshotView extends UCMView {
 
 		// Cache current directory and chdir into the viewroot
 		String result = context.updateView( this, overwrite, myloadrules );
-		logger.log( result );
+		logger.debug( result );
 
 		return info;
 	}

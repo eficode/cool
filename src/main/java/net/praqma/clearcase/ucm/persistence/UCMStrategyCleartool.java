@@ -65,7 +65,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
     private static final String filesep = System.getProperty("file.separator");
 
     public UCMStrategyCleartool() {
-        logger.log("Using ClearTool strategy");
+        logger.debug("Using ClearTool strategy");
     }
 
     /**/
@@ -106,26 +106,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             Matcher m = rx_versionName.matcher(lines.get(i));
             if (m.find()) {
 
-                //System.out.println(lines.get( i ));
-
                 String f = m.group(2).trim();
 
-                //System.out.println("F: " + f);
                 logger.debug("F: " + f);
-                String filename = f.substring(length);
-                File file = new File(f);
-
-                //Tuple<String, Integer> info = getVersionVersion( m.group(3) );
-
-                //ChangeSetElement element = new ChangeSetElement( file, m.group(3) );
-                Version version = (Version) UCMEntity.getEntity(m.group(2), true);
+                
+                Version version = (Version) UCMEntity.getEntity(m.group(2).trim(), true);
 
                 changeset.addVersion(version);
-
-
-                if (file.isDirectory()) {
-                    //getDirectoryStatus( file, element.getFullversion(), changeset );
-                }
             }
         }
 
@@ -154,7 +141,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
     public void getDirectoryStatus(Version version, ChangeSet2 changeset) throws UCMException {
 
-        String cmd = "diff -diff -pre " + version.getFullyQualifiedName();
+        String cmd = "diff -diff -pre \"" + version.getFullyQualifiedName() + "\"";
 
         //System.out.println( "$ " + cmd );
 
@@ -203,20 +190,24 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
                         File oldFile = null;
 
                         if (newname.find()) {
-                            newFile = new File(version.getFile(), newname.group(1));
+                            newFile = new File(version.getFile(), newname.group(1).trim());
                         } else {
                             logger.warning("Unknown filename line: " + lines.get(i + 1));
                         }
 
                         if (oldname.find()) {
-                            oldFile = new File(version.getFile(), oldname.group(1));
+                            oldFile = new File(version.getFile(), oldname.group(1).trim());
                         } else {
                             logger.warning("Unknown filename line: " + lines.get(i + 1));
                         }
-
-                        //ChangeSetElement2 element = new ChangeSetElement2( newFile, fullVersion, ChangeSetElement.Status.CHANGED, version );
-                        //element.setOldFile( oldFile );
-                        //changeset.addElement( element );
+                        
+                        //changeset.addElement( newFile, Version.Status.CHANGED, version );
+                        
+                        logger.debug( "[" + oldFile + "]" );
+                        logger.debug( "[" + newFile + "]" );
+                        ChangeSetElement2 element = new ChangeSetElement2( newFile, Version.Status.CHANGED, version );
+                        element.setOldFile( oldFile );
+                        changeset.addElement( element );
 
                         /* Fast forward four line */
                         i += 4;
@@ -334,7 +325,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
      * desc -fmt "project:%i@\Cool_PVOB %[istream]Xp\n" project:%i@\Cool_PVOB
      */
     public List<Project> getProjects(PVob vob) throws UCMException {
-        logger.info("Getting projects for " + vob);
+        logger.debug("Getting projects for " + vob);
         String cmd = "lsproject -s -invob " + vob.toString();
 
         List<String> projs = null;
@@ -345,14 +336,14 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             throw new UCMException(e.getMessage(), e.getMessage());
         }
 
-        logger.info(projs);
+        logger.debug(projs);
 
         List<Project> projects = new ArrayList<Project>();
         for (String p : projs) {
             projects.add(UCMEntity.getProject(p + "@" + vob));
         }
 
-        logger.info(projects);
+        logger.debug(projects);
 
         return projects;
     }
@@ -417,7 +408,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             return Cleartool.run(cmd, dir).stdoutList;
         } catch (AbnormalProcessTerminationException e) {
             if (e.getMessage().equalsIgnoreCase("cleartool: Error: The -nmerge option requires that both baselines be from the same stream.")) {
-                logger.log("The given Baseline, \"" + baseline + "\" is the first on the Stream");
+                logger.debug("The given Baseline, \"" + baseline + "\" is the first on the Stream");
 
                 List<String> result = new ArrayList<String>();
 
@@ -790,7 +781,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             }
         }
 
-        logger.info("I got: " + data);
+        logger.debug("I got: " + data);
 
         /* Set project */
         stream.setProject(UCMEntity.getProject(data.get(1)));
@@ -1025,7 +1016,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             uncheckout(file, false, viewContext);
         } catch (UCMException e) {
             /* Could not uncheckout */
-            logger.warning("Could not uncheckout " + file);
+            logger.debug("Could not uncheckout " + file);
         }
 
         try {
@@ -1438,7 +1429,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         /* Remove all other dirs */
         for (File f : other) {
             if (UCM.isVerbose()) {
-                logger.log("Removing " + f);
+                logger.debug("Removing " + f);
             }
             net.praqma.util.io.IO.deleteDirectory(f);
         }
@@ -1502,7 +1493,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
                 d.delete();
                 dircount++;
             } catch (SecurityException e) {
-                logger.log("Unable to delete \"" + d + "\". Probably not empty.");
+                logger.debug("Unable to delete \"" + d + "\". Probably not empty.");
             }
         }
 
@@ -1581,7 +1572,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
     }
 
     public void createView(String tag, String path, boolean snapshotView, Stream stream) throws UCMException {
-        logger.info("Creating " + tag);
+        logger.debug("Creating " + tag);
         String cmd = "mkview -tag " + tag + (snapshotView ? " -snapshot" : "") + (stream != null ? " -stream " + stream.getFullyQualifiedName() : "") + " -stgloc " + (path != null ? path : "-auto");
 
         try {
@@ -1603,7 +1594,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
     public static final Pattern rx_view_get_path = Pattern.compile("^\\s*Global path:\\s*(.*?)\\s*$");
 
     public Map<String, String> loadView(UCMView view) throws UCMException {
-        logger.info("Loading view " + view);
+        logger.debug("Loading view " + view);
 
         String cmd = "lsview -l " + view.getViewtag();
 
@@ -1641,7 +1632,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
     public static final Pattern rx_vob_get_path = Pattern.compile("^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$");
 
     public void createVob(String vobname, boolean UCMProject, String path, String comment) throws UCMException {
-        logger.info("Creating vob " + vobname);
+        logger.debug("Creating vob " + vobname);
 
         String cmd = "mkvob -tag " + vobname + (UCMProject ? " -ucmproject" : "") + (comment != null ? " -c \"" + comment + "\"" : "") + " -stgloc " + (path != null ? path : "-auto");
 
@@ -1653,7 +1644,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
     }
 
     public void loadVob(Vob vob) throws UCMException {
-        logger.info("Loading vob " + vob);
+        logger.debug("Loading vob " + vob);
 
         String cmd = "describe vob:" + vob;
 
@@ -1755,7 +1746,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
     }
 
     public void mountVob(Vob vob) throws UCMException {
-        logger.info("Moulognting vob " + vob);
+        logger.debug("Mounting vob " + vob);
 
         String cmd = "mount " + vob;
         try {
@@ -1771,7 +1762,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
     }
 
     public void unmountVob(Vob vob) throws UCMException {
-        logger.info("UnMounting vob " + vob);
+        logger.debug("UnMounting vob " + vob);
 
         String cmd = "umount " + vob;
         try {

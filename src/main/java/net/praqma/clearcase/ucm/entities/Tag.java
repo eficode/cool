@@ -139,17 +139,17 @@ public class Tag extends UCMEntity {
 	}
 
 	public void setEntry( String key, String value ) {
-		logger.log( "Setting " + key + " = " + value );
+		logger.debug( "Setting " + key + " = " + value );
 		keyval.put( key, value );
 	}
 
 	public boolean removeEntry( String key ) {
 		if( keyval.containsKey( key ) ) {
-			logger.log( "Removing " + key );
+			logger.debug( "Removing " + key );
 			keyval.remove( key );
 			return true;
 		} else {
-			logger.log( "Could not remove " + key );
+			logger.debug( "Could not remove " + key );
 			return false;
 		}
 	}

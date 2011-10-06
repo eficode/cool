@@ -83,7 +83,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		String tmp = this.fqname;
 		tmp = tmp.replaceFirst( "(?m)@@.*$", "" );
 		tmp = tmp.replaceFirst( "(?m)^\\s+", "" );
-		this.fullfile = tmp;
+		this.fullfile = tmp.trim();
 		
 		/* Check if this is a newly added element
 		 * Ie this is only shown as a parent folder change 
