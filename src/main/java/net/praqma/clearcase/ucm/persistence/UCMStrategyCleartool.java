@@ -1264,6 +1264,15 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             throw e;
         }
     }
+    
+	public String getViewtag( File viewContext ) throws UCMException {
+		String cmd = "pwv -s";
+		try {
+			return Cleartool.run( cmd, viewContext ).stdoutBuffer.toString();
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new UCMException( "Unable to get view tag: " + e.getMessage() );
+		}
+	}
 
     public boolean IsVob(File dir) {
         logger.debug("Testing " + dir);

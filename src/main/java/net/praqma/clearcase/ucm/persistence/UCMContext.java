@@ -686,6 +686,10 @@ public class UCMContext extends Cool {
 	public void createView( String tag, String path, boolean snapshotView, Stream stream ) throws UCMException {
 		strategy.createView( tag, path, snapshotView, stream );
 	}
+	
+	public String getViewtag( File viewContext ) throws UCMException {
+		return strategy.getViewtag( viewContext );
+	}
 
 	public Map<String, String> loadView( UCMView view ) throws UCMException {
 		return strategy.loadView( view );

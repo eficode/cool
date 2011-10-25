@@ -1307,4 +1307,10 @@ public class UCMStrategyXML implements UCMStrategyInterface
     public void remoteDeliverCancel(String oldViewTag, String oldSourceStream, File dir) throws UCMException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+	@Override
+	public String getViewtag( File viewContext ) throws UCMException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

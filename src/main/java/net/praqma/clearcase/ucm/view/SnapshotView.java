@@ -112,6 +112,25 @@ public class SnapshotView extends UCMView {
 	private void setStream( Stream stream ) {
 		this.stream = stream;
 	}
+	
+	public static String getViewtag( File viewContext ) throws UCMException {
+		return context.getViewtag( viewContext );
+	}
+	
+	public static SnapshotView getSnapshotViewFromPath( File viewroot ) throws UCMException {
+		String viewtag = getViewtag( viewroot );
+		SnapshotView view = null;
+		
+		if( UCMView.viewExists( viewtag ) ) {
+			try {
+				view = UCMView.getSnapshotView( viewroot );
+			} catch( UCMException e ) {
+				throw new UCMException( "Could not get view for workspace. " + e.getMessage() );
+			}
+		}
+		
+		return view;
+	}
 
 	/**
 	 * Determine if the views view root is valid, returning its view tag

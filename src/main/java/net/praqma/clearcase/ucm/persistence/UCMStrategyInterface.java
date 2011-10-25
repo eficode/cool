@@ -128,6 +128,7 @@ interface UCMStrategyInterface
 	public void createView( String tag, String path, boolean snapshotView, Stream stream ) throws UCMException;
 	public void removeView( UCMView view ) throws UCMException;
 	public Map<String, String> loadView( UCMView view ) throws UCMException;
+	public String getViewtag( File viewContext ) throws UCMException;
 
 	/* Vobs */
 	public void createVob( String vobname, boolean UCMProject, String path, String comment ) throws UCMException;
