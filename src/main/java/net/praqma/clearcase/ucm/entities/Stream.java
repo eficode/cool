@@ -32,6 +32,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	private Stream defaultTarget = null;
 	private boolean readOnly = true;
 	private Baseline foundation;
+	
+	private Stream parent;
 
 	public Stream() {
 		super( "stream" );
@@ -51,7 +53,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * Create a new stream, given a parent Stream, a fully qualified name for
 	 * the new Stream and whether the Stream is read only or not
 	 *
-	 * @param pstream
+	 * @param parent
 	 *            The parent Stream
 	 * @param nstream
 	 *            The fully qualified name of the new Stream
@@ -59,16 +61,22 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 *            Whether the new Stream is read only or not
 	 * @return A new Stream given the parameters
 	 */
-	public static Stream create( Stream pstream, String nstream, boolean readonly, Baseline baseline ) throws UCMException {
+	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline baseline ) throws UCMException {
 		UCMEntity.getNamePart( nstream );
 
-		logger.debug( "PSTREAM:" + pstream.getShortname() + ". NSTREAM: " + nstream + ". BASELINE: " + baseline.getShortname() );
+		logger.debug( "PSTREAM:" + parent.getShortname() + ". NSTREAM: " + nstream + ". BASELINE: " + baseline.getShortname() );
 
-		if( pstream == null || nstream == null ) {
+		if( parent == null || nstream == null ) {
 			throw new UCMException( "Incorrect CreateStream() parameters" );
 		}
 
-		return context.createStream( pstream, nstream, readonly, baseline );
+		Stream stream = context.createStream( parent, nstream, readonly, baseline );
+		
+		if( parent != null ) {
+			stream.setParent( parent );
+		}
+		
+		return stream;
 	}
 
 	public static Stream createIntegration( String name, Project project, Baseline baseline ) throws UCMException {
@@ -289,6 +297,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		if( !this.loaded ) load();
 
 		return this.foundation;
+	}
+	
+	public void setParent( Stream parent ) {
+		this.parent = parent;
+	}
+	
+	public Stream getParent() {
+		return parent;
 	}
 
 	public String stringify() throws UCMException {

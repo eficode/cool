@@ -607,6 +607,10 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	public void setKind( Kind kind ) {
 		this.kind = kind;
 	}
+	
+	public boolean equals( UCMEntity entity ) {
+		return entity.getFullyQualifiedName().equals( this.getFullyQualifiedName() );
+	}
 
 	public String getEntitySelector() {
 		return this.entitySelector;

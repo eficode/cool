@@ -1856,7 +1856,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             throw new UCMException("Could not create the attribute " + attribute, e.getMessage());
         }
     }
-    private static final Pattern __FIND_VIEW_ROOT = Pattern.compile("^\\s*\\**\\s*\\w+\\s*(.+)$");
+    private static final Pattern __FIND_VIEW_ROOT = Pattern.compile("^\\s*\\**\\s*([\\w\\.-]+)\\s*(.+)$");
 
     @Override
     public List<UCMView> getViews(Region region) {
@@ -1869,7 +1869,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             /* Pre process views */
             Matcher m = __FIND_VIEW_ROOT.matcher(s);
             if (m.find()) {
-                views.add(new UCMView(m.group(1).trim()));
+                views.add(new UCMView(m.group(2).trim(), m.group(1).trim()));
             }
         }
 
