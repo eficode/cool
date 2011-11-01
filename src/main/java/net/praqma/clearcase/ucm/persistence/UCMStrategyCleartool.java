@@ -11,18 +11,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.Region;
-import net.praqma.clearcase.Site;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
-import net.praqma.clearcase.changeset.ChangeSet;
 import net.praqma.clearcase.changeset.ChangeSet2;
-import net.praqma.clearcase.changeset.ChangeSetElement;
 import net.praqma.clearcase.changeset.ChangeSetElement2;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.interfaces.Diffable;
@@ -45,7 +41,6 @@ import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
-import net.praqma.util.execute.CommandLine;
 import net.praqma.util.execute.CommandLineException;
 import net.praqma.util.io.IO;
 import net.praqma.util.structure.Tuple;
@@ -786,11 +781,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         /* Set project */
         stream.setProject(UCMEntity.getProject(data.get(1)));
 
-        /* Set default target */
-        try {
-            stream.setDefaultTarget(UCMEntity.getStream(data.get(2)));
-        } catch (Exception e) {
-            logger.debug("The Stream did not have a default target.");
+        /* Set default target, if exists */
+        if( !data.get( 2 ).trim().equals( "" ) ) {
+			try {
+				stream.setDefaultTarget( UCMEntity.getStream( data.get( 2 ) ) );
+			} catch( Exception e ) {
+				logger.debug( "The Stream did not have a default target." );
+			}
         }
 
         /* Set read only */

@@ -100,6 +100,11 @@ public class SnapshotView extends UCMView {
 	public File getViewRoot() {
 		return this.viewroot;
 	}
+	
+	@Override
+	public String getPath() {
+		return this.viewroot.toString();
+	}
 
 	public Stream getStream() throws UCMException {
 		if( this.stream == null ) {
