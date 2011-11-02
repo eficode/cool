@@ -498,8 +498,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             } else {
                 out = Cleartool.run(cmd).stdoutBuffer.toString();
             }
-            logger.debug( "OUT: " + out + "\n" + "MATCH: " + out.matches( "^No changes in component \".*?\" since last baseline; no baseline created.$" ) );
-            return !out.matches( "^No changes in component \".*?\" since last baseline; no baseline created.$" );
+            //logger.debug( "OUT: " + out + "\n" + "MATCH: " + out.matches( "(?s).*No changes in component \".*?\" since last baseline; no baseline created.*" ) );
+            return !out.matches( "(?s).*No changes in component \".*?\" since last baseline; no baseline created.*" );
         } catch (AbnormalProcessTerminationException e) {
             throw new UCMException("Could not create Baseline " + fqname, e.getMessage());
         }
@@ -946,14 +946,22 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
     }
 
-    public void checkIn(File file, boolean identical, File viewContext) throws UCMException {
-        try {
-            String cmd = "checkin -nc " + (identical ? "-identical " : "") + file;
-            Cleartool.run(cmd, viewContext);
-        } catch (Exception e) {
-            throw new UCMException("Could not check in");
-        }
-    }
+	public void checkIn( File file, boolean identical, File viewContext ) throws UCMException {
+		try {
+			String cmd = "checkin -nc " + ( identical ? "-identical " : "" ) + file;
+			Cleartool.run( cmd, viewContext, true, false );
+		} catch( Exception e ) {
+			if( e.getMessage().matches( "(?s).*By default, won't create version with data identical to predecessor.*" ) ) {
+				logger.debug( "Identical version, trying to uncheckout" );
+				uncheckout( file, false, viewContext );
+				return;
+			} else {
+				throw new UCMException( "Could not check in" );
+			}
+			
+		}
+	}
+
     private static final Pattern rx_AlreadyCheckedOut = Pattern.compile("");
 
     public void checkOut(File file, File viewContext) throws UCMException {
