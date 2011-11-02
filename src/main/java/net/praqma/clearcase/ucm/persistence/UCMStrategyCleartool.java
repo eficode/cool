@@ -496,9 +496,10 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             if (view != null) {
                 out = Cleartool.run(cmd, view).stdoutBuffer.toString();
             } else {
-                Cleartool.run(cmd).stdoutBuffer.toString();
+                out = Cleartool.run(cmd).stdoutBuffer.toString();
             }
-            return out.matches( "^No changes in component \".*?\" since last baseline; no baseline created.$" );
+            logger.debug( "OUT: " + out + "\n" + "MATCH: " + out.matches( "^No changes in component \".*?\" since last baseline; no baseline created.$" ) );
+            return !out.matches( "^No changes in component \".*?\" since last baseline; no baseline created.$" );
         } catch (AbnormalProcessTerminationException e) {
             throw new UCMException("Could not create Baseline " + fqname, e.getMessage());
         }
@@ -1066,14 +1067,23 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
     }
 
 	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException {
+		List<File> files = new ArrayList<File>();
+		
 		try {
-			String cmd = "lsco -s -r";
-			List<String> list = Cleartool.run( cmd, viewContext ).stdoutList;
-
-			List<File> files = new ArrayList<File>();
-
-			for( String s : list ) {
-				files.add( new File( s ) );
+			File[] vobs = viewContext.listFiles();
+			for( File vob : vobs ) {
+				logger.debug( "Checking " + vob );
+				if( !vob.isDirectory() || vob.getName().matches( "^\\.{1,2}$" ) ) {
+					continue;
+				}
+				logger.debug( vob + " is a valid vob" );
+				
+				String cmd = "lsco -s -r";
+				List<String> list = Cleartool.run( cmd, vob ).stdoutList;
+	
+				for( String s : list ) {
+					files.add( new File( vob, s ) );
+				}
 			}
 
 			return files;
