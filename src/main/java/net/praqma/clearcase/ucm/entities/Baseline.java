@@ -86,16 +86,20 @@ public class Baseline extends UCMEntity implements Diffable {
         return create( basename, component, view, incremental, identical, null, null );
     }
     
-    public static Baseline create(String basename, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends) throws UCMException {
-        if (basename.toLowerCase().startsWith("baseline:")) {
-            //logger.warning("The baseline name should not be prefixed with \"baseline:\", removing it");
-            basename = basename.replaceFirst("baseline:", "");
-        }
+	public static Baseline create( String basename, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws UCMException {
+		if( basename.toLowerCase().startsWith( "baseline:" ) ) {
+			// logger.warning("The baseline name should not be prefixed with \"baseline:\", removing it");
+			basename = basename.replaceFirst( "baseline:", "" );
+		}
 
-        context.createBaseline(basename, component, view, incremental, identical, activities, depends);
+		boolean created = context.createBaseline( basename, component, view, incremental, identical, activities, depends );
 
-        return UCMEntity.getBaseline(basename + "@" + component.getPvobString(), true);
-    }
+		if( created ) {
+			return UCMEntity.getBaseline( basename + "@" + component.getPvobString(), true );
+		} else {
+			throw new UCMException( "Baseline not created" );
+		}
+	}
 
     /**
      * This method is only available to the package, because only ClearcaseEntity should

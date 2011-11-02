@@ -470,7 +470,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         return versions;
     }
 
-    public void createBaseline(String fqname, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends) throws UCMException {
+    public boolean createBaseline(String fqname, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends) throws UCMException {
         String cmd = "mkbl -component " + component.getFullyQualifiedName() + (identical ? " -identical" : "") + (incremental ? " -incremental" : " -full");
 
         if (depends != null) {
@@ -492,11 +492,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         cmd += " " + fqname;
 
         try {
+        	String out = "";
             if (view != null) {
-                Cleartool.run(cmd, view);
+                out = Cleartool.run(cmd, view).stdoutBuffer.toString();
             } else {
-                Cleartool.run(cmd);
+                Cleartool.run(cmd).stdoutBuffer.toString();
             }
+            return out.matches( "^No changes in component \".*?\" since last baseline; no baseline created.$" );
         } catch (AbnormalProcessTerminationException e) {
             throw new UCMException("Could not create Baseline " + fqname, e.getMessage());
         }
@@ -1063,23 +1065,23 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         }
     }
 
-    public List<File> getUnchecedInFiles(File viewContext) throws UCMException {
-        try {
-            String cmd = "lsco -s -r";
-            List<String> list = Cleartool.run(cmd, viewContext).stdoutList;
+	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException {
+		try {
+			String cmd = "lscomp -s -r";
+			List<String> list = Cleartool.run( cmd, viewContext ).stdoutList;
 
-            List<File> files = new ArrayList<File>();
+			List<File> files = new ArrayList<File>();
 
-            for (String s : list) {
-                files.add(new File(s));
-            }
+			for( String s : list ) {
+				files.add( new File( s ) );
+			}
 
-            return files;
+			return files;
 
-        } catch (Exception e) {
-            throw new UCMException("Could not retreive files");
-        }
-    }
+		} catch( Exception e ) {
+			throw new UCMException( "Could not retreive files" );
+		}
+	}
     /************************************************************************
      * TAG FUNCTIONALITY
      ************************************************************************/

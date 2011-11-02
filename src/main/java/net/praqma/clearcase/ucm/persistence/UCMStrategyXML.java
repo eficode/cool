@@ -1168,9 +1168,9 @@ public class UCMStrategyXML implements UCMStrategyInterface
 
 
 	@Override
-	public void createBaseline( String baseline, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws UCMException {
+	public boolean createBaseline( String baseline, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws UCMException {
 		// TODO Auto-generated method stub
-
+		return true;
 	}
 
 	@Override
