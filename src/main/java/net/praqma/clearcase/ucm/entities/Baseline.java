@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.utils.BaselineDiff;
 
@@ -97,7 +98,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		if( created ) {
 			return UCMEntity.getBaseline( basename + "@" + component.getPvobString(), true );
 		} else {
-			throw new UCMException( "Baseline not created" );
+			throw new UCMException( "Nothing changed", UCMType.NOTHING_CHANGED );
 		}
 	}
 
