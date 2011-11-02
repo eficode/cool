@@ -1067,7 +1067,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException {
 		try {
-			String cmd = "lscomp -s -r";
+			String cmd = "lsco -s -r";
 			List<String> list = Cleartool.run( cmd, viewContext ).stdoutList;
 
 			List<File> files = new ArrayList<File>();
