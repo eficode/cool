@@ -40,15 +40,15 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	protected static final String rx_ccdef_cc_name = "[\\w\\.][\\w\\.-]*";
 
-	private static ClassLoader classloader = UCMEntity.class.getClassLoader();
+	transient private static ClassLoader classloader = UCMEntity.class.getClassLoader();
 
-	protected static TagPool tp = TagPool.GetInstance();
+	transient protected static TagPool tp = TagPool.GetInstance();
 	
 	private boolean created = false;
 	
 
 	/* For future caching purposes */
-	private static HashMap<String, UCMEntity> entities = new HashMap<String, UCMEntity>();
+	transient private static HashMap<String, UCMEntity> entities = new HashMap<String, UCMEntity>();
 	
 	public enum LabelStatus {
 		UNKNOWN,
