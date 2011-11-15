@@ -8,7 +8,7 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
-import net.praqma.clearcase.ucm.view.SnapshotView.COMP;
+import net.praqma.clearcase.ucm.view.SnapshotView.Components;
 import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.PraqmaLogger.Logger;
 
@@ -30,7 +30,7 @@ public class DevelopmentEnvironment {
 		/* Development */
 		SnapshotView devview = Utilities.CreateView( "wolles_test_" + append + "@" + offset.getPVob(), integrationStream, offset, devPath, "wolles_" + append + "dev" );
 		System.out.println("Development stream + view created");
-		devview.Update( true, true, true, false, COMP.MODIFIABLE, null );
+		devview.Update( true, true, true, false, Components.MODIFIABLE, null );
 		System.out.println("Development view updated");
 	}
 }

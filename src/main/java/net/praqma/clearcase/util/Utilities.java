@@ -19,7 +19,7 @@ import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.clearcase.ucm.view.SnapshotView.COMP;
+import net.praqma.clearcase.ucm.view.SnapshotView.Components;
 import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.PraqmaLogger.Logger;
 
@@ -85,7 +85,7 @@ public class Utilities {
 		
 		Stream devStream = Stream.create( parent, name, false, baseline );
 		SnapshotView sv = SnapshotView.create( devStream, viewroot, viewtag );
-		sv.Update( true, true, true, false, COMP.MODIFIABLE, null );
+		sv.Update( true, true, true, false, Components.MODIFIABLE, null );
 		
 		return sv;
 	}

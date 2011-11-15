@@ -12,6 +12,7 @@ import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.util.debug.Logger;
+import net.praqma.util.structure.Printer;
 import net.praqma.util.structure.Tuple;
 
 /**
@@ -37,8 +38,55 @@ public class SnapshotView extends UCMView {
 	
 	private Stream stream;
 
-	public enum COMP {
+	public enum Components {
 		ALL, MODIFIABLE
+	}
+	
+	public static class LoadRules {
+		private String loadRules;
+		
+		/**
+		 * Create load rules based on {@link Components}
+		 * @param view
+		 * @param components
+		 * @throws UCMException
+		 */
+		public LoadRules( SnapshotView view, Components components ) throws UCMException {
+			loadRules = " -add_loadrules ";
+
+			if( components.equals( Components.ALL ) ) {
+				logger.debug( "All components" );
+
+				BaselineList bls = view.stream.getLatestBaselines();
+				for( Baseline b : bls ) {
+					String rule = b.getComponent().getRootDir();
+					rule = rule.replaceFirst( "^\\\\", " " );
+					loadRules += rule;
+				}
+			} else {
+				logger.debug( "Modifiable components" );
+
+				Project project = context.getProjectFromStream( view.stream );
+				List<Component> comps = context.getModifiableComponents( project );
+				for( Component c : comps ) {
+					String rule = c.getRootDir();
+					rule = rule.replaceFirst( "^\\\\", " " );
+					loadRules += rule;
+				}
+			}
+		}
+		
+		/**
+		 * Create load rules based on a string
+		 * @param loadRules
+		 */
+		public LoadRules( String loadRules ) {
+			this.loadRules = loadRules = " -add_loadrules " + loadRules;
+		}
+		
+		public String getLoadRules() {
+			return loadRules;
+		}
 	}
 	
 	public SnapshotView() {
@@ -82,17 +130,6 @@ public class SnapshotView extends UCMView {
 		String viewtag = "cool_" + System.getenv( "COMPUTERNAME" ) + "_env" + viewtagsuffix;
 	}
 
-	/**
-	 * Swipe the view. Leaving only the ClearCase specific files and folders,
-	 * deleting view private.
-	 * 
-	 * @param excludeRoot
-	 *            Whether to swipe the view root or not
-	 */
-	public Map<String, Integer> swipe( boolean excludeRoot ) {
-		return context.swipeView( viewroot, excludeRoot );
-	}
-
 	public static void regenerateViewDotDat( File dir, String viewtag ) throws UCMException {
 		context.regenerateViewDotDat( dir, viewtag );
 	}
@@ -132,6 +169,8 @@ public class SnapshotView extends UCMView {
 			} catch( UCMException e ) {
 				throw new UCMException( "Could not get view for workspace. " + e.getMessage() );
 			}
+		} else {
+			throw new UCMException( "View is not valid" );
 		}
 		
 		return view;
@@ -162,6 +201,34 @@ public class SnapshotView extends UCMView {
 	public void cancel() throws UCMException {
 		context.cancelDeliver( viewroot, null );
 	}
+	
+	public UpdateInfo Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules loadRules ) throws UCMException {
+		
+		UpdateInfo info = new UpdateInfo();
+		
+		// TODO generate the streams config spec if required
+		if( generate ) {
+			this.stream.generate();
+		}
+
+		logger.debug( "STREAM GENEREATES" );
+
+		if( swipe ) {
+			Map<String, Integer> sinfo = this.swipe( excludeRoot );
+			info.success = sinfo.get( "success" ) == 1 ? true : false;
+			info.totalFilesToBeDeleted = sinfo.get( "total" );
+			info.dirsDeleted = sinfo.get( "dirs_deleted" );
+			info.filesDeleted = sinfo.get( "files_deleted" );
+		}
+
+		logger.debug( "SWIPED" );
+
+		// Cache current directory and chdir into the viewroot
+		String result = context.updateView( this, overwrite, loadRules.getLoadRules() );
+		logger.debug( result );
+
+		return info;
+	}
 
 	/**
 	 * 
@@ -172,8 +239,9 @@ public class SnapshotView extends UCMView {
 	 * @param components
 	 * @param loadrules
 	 * @return A Class of result info, currently only about the swipe.
+	 * @deprecated as of 0.3.36
 	 */
-	public UpdateInfo Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, COMP components, String loadrules ) throws UCMException {
+	public UpdateInfo Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, Components components, String loadrules ) throws UCMException {
 		logger.debug( "Updating view: " + components );
 
 		if( ( components != null && loadrules != null ) || ( components == null && loadrules == null ) ) {
@@ -190,7 +258,7 @@ public class SnapshotView extends UCMView {
 		if( components != null ) {
 			myloadrules = " -add_loadrules ";
 
-			if( components == COMP.ALL ) {
+			if( components == Components.ALL ) {
 				logger.debug( "COMP=ALL" );
 
 				BaselineList bls = this.stream.getLatestBaselines();
@@ -244,16 +312,12 @@ public class SnapshotView extends UCMView {
 
 		return info;
 	}
-
-	private void SwipeDir( File dir, FileFilter viewfilter ) {
-		File[] files = dir.listFiles( viewfilter );
-		for( File f : files ) {
-			if( f.isDirectory() ) {
-				net.praqma.util.io.IO.deleteDirectory( f );
-			} else {
-				f.delete();
-			}
-		}
+	
+	public Map<String, Integer> swipe( boolean excludeRoot ) {
+		logger.debug( "Swiping " + this.getViewRoot() );
+		Map<String, Integer> sinfo = context.swipeView( viewroot, excludeRoot );;
+		//Printer.mapPrinter( sinfo );
+		
+		return sinfo;
 	}
-
 }

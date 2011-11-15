@@ -1424,118 +1424,126 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         }
     }
 
-    public Map<String, Integer> swipeView(File viewroot, boolean excludeRoot) {
-        logger.debug(viewroot.toString());
+	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot ) {
+		logger.debug( viewroot.toString() );
 
-        File[] files = viewroot.listFiles();
-        String fls = "";
-        List<File> other = new ArrayList<File>();
-        List<File> root = new ArrayList<File>();
+		File[] files = viewroot.listFiles();
+		String fls = "";
+		List<File> notVobs = new ArrayList<File>();
+		List<File> rootVPFiles = new ArrayList<File>();
 
-        for (File f : files) {
-            if (!f.canWrite()) {
-                logger.debug(f + " is write protected.");
-                continue;
-            }
+		/*
+		 * Scanning root folder for directories that are not vobs and files, not
+		 * view.dat
+		 */
+		for( File f : files ) {
+			if( !f.canWrite() ) {
+				logger.debug( f + " is write protected." );
+				continue;
+			}
 
-            if (f.isDirectory()) {
-                if (IsVob(f)) {
-                    fls += "\"" + f.getAbsolutePath() + "\" ";
-                } else {
-                    other.add(f);
-                }
-            } else {
-                if (f.getName().equalsIgnoreCase("view.dat")) {
-                    continue;
-                }
-                root.add(f);
-            }
-        }
+			if( f.isDirectory() ) {
+				if( IsVob( f ) ) {
+					fls += "\"" + f.getAbsolutePath() + "\" ";
+				} else {
+					notVobs.add( f );
+				}
+			} else {
+				if( f.getName().equalsIgnoreCase( "view.dat" ) ) {
+					continue;
+				}
+				rootVPFiles.add( f );
+			}
+		}
 
-        /* Remove all other dirs */
-        for (File f : other) {
-            if (UCM.isVerbose()) {
-                logger.debug("Removing " + f);
-            }
-            net.praqma.util.io.IO.deleteDirectory(f);
-        }
+		/* Remove all other dirs */
+		for( File notVob : notVobs ) {
+			if( UCM.isVerbose() ) {
+				logger.debug( "Removing " + notVob );
+			}
+			net.praqma.util.io.IO.deleteDirectory( notVob );
+		}
 
-        Map<String, Integer> info = new HashMap<String, Integer>();
-        info.put("success", 1);
+		Map<String, Integer> info = new HashMap<String, Integer>();
+		info.put( "success", 1 );
 
-        if (fls.length() == 0) {
-            logger.debug("No files to delete");
-            return info;
-        }
+		if( fls.length() == 0 ) {
+			logger.debug( "No files to delete" );
+			return info;
+		}
 
-        String cmd = "ls -short -recurse -view_only " + fls;
-        List<String> result = Cleartool.run(cmd).stdoutList;
-        List<File> rnew = new ArrayList<File>();
+		/* Get view private files from vobs */
+		String cmd = "ls -short -recurse -view_only " + fls;
+		List<String> result = Cleartool.run( cmd ).stdoutList;
+		List<File> vpFiles = new ArrayList<File>();
 
-        if (!excludeRoot) {
-            rnew.addAll(root);
-        }
+		if( !excludeRoot ) {
+			vpFiles.addAll( rootVPFiles );
+		}
 
-        int total = result.size() + rnew.size();
+		for( String vpFile : result ) {
+			if( vpFile.matches( rx_co_file ) || vpFile.matches( rx_keep_file ) || vpFile.matches( rx_ctr_file ) ) {
+				continue;
+			}
 
-        info.put("total", total);
+			vpFiles.add( new File( vpFile ) );
+		}
 
-        for (String s : result) {
-            if (s.matches(rx_co_file) || s.matches(rx_keep_file) || s.matches(rx_ctr_file)) {
-                continue;
-            }
+		int total = vpFiles.size();
 
-            rnew.add(new File(s));
-        }
+		info.put( "total", total );
 
-        logger.debug("Found " + total + " files, of which " + (total - rnew.size()) + " were CO, CTR or KEEP's.");
+		logger.debug( "Found " + total + " files, of which " + ( total - vpFiles.size() ) + " were CO, CTR or KEEP's." );
 
-        List<File> dirs = new ArrayList<File>();
-        int dircount = 0;
-        int filecount = 0;
+		List<File> dirs = new ArrayList<File>();
+		int dircount = 0;
+		int filecount = 0;
 
-        /* Removing view private files, saving directories for later */
-        for (File f : rnew) {
-            // logger.debug( "FILE=" + f );
+		/* Removing view private files, saving directories for later */
+		logger.verbose( "Removing files:" );
+		for( File f : vpFiles ) {
+			// logger.debug( "FILE=" + f );
 
-            if (f.exists()) {
-                if (f.isDirectory()) {
-                    dirs.add(f);
-                } else {
-                    // logger.debug( "Deleting " + f );
-                    f.delete();
-                    filecount++;
-                }
-            } else {
-                logger.debug("The file " + f + " does not exist.");
-            }
-        }
+			if( f.exists() ) {
+				if( f.isDirectory() ) {
+					dirs.add( f );
+				} else {
+					logger.verbose( " * " + f );
+					f.delete();
+					filecount++;
+				}
+			} else {
+				logger.debug( "The file " + f + " does not exist." );
+			}
+		}
 
-        info.put("files_deleted", filecount);
+		info.put( "files_deleted", filecount );
 
-        /* TODO Remove the directories, somehow!? Only the empty!? */
-        for (File d : dirs) {
-            try {
-                d.delete();
-                dircount++;
-            } catch (SecurityException e) {
-                logger.debug("Unable to delete \"" + d + "\". Probably not empty.");
-            }
-        }
+		/* TODO Remove the directories, somehow!? Only the empty!? */
+		logger.verbose( "Removing directories:" );
+		for( File d : dirs ) {
+			try {
+				logger.verbose( " * " + d );
+				d.delete();
+				dircount++;
+			} catch( SecurityException e ) {
+				logger.debug( "Unable to delete \"" + d + "\". Probably not empty." );
+			}
+		}
 
-        info.put("dirs_deleted", dircount);
+		info.put( "dirs_deleted", dircount );
 
-        logger.debug("Deleted " + dircount + " director" + (dircount == 1 ? "y" : "ies") + " and " + filecount + " file" + (filecount == 1 ? "" : "s"));
+		logger.debug( "Deleted " + dircount + " director" + ( dircount == 1 ? "y" : "ies" ) + " and " + filecount + " file" + ( filecount == 1 ? "" : "s" ) );
 
-        if (dircount + filecount == total) {
-            info.put("success", 1);
-        } else {
-            logger.warning("Some files were not deleted.");
-            info.put("success", 0);
-        }
+		if( dircount + filecount == total ) {
+			info.put( "success", 1 );
+		} else {
+			logger.warning( "Some files were not deleted." );
+			info.put( "success", 0 );
+		}
 
-        return info;
-    }
+		return info;
+	}
 
     @Override
     public File getCurrentViewRoot(File viewroot) throws UCMException {

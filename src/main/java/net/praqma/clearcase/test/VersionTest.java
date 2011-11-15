@@ -18,7 +18,7 @@ import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.view.SnapshotView;
-import net.praqma.clearcase.ucm.view.SnapshotView.COMP;
+import net.praqma.clearcase.ucm.view.SnapshotView.Components;
 import net.praqma.clearcase.util.Utilities;
 import net.praqma.util.debug.PraqmaLogger;
 import net.praqma.util.debug.PraqmaLogger.Logger;
@@ -74,7 +74,7 @@ public class VersionTest {
 		/* Development */
 		SnapshotView devview = Utilities.CreateView( "wolles_test_" + append + "@" + pvob, intStream, baseline, devpath, "wolles_" + append + "dev" );
 		System.out.println("Development stream + view created");
-		devview.Update( true, true, true, false, COMP.MODIFIABLE, null );
+		devview.Update( true, true, true, false, Components.MODIFIABLE, null );
 		System.out.println("Development view updated");
 		
 		file.getParentFile().mkdirs();
