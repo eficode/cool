@@ -1315,7 +1315,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
 	}
 
 	@Override
-	public void endView( UCMView view ) throws UCMException {
+	public void endView( String viewtag ) throws UCMException {
 		// TODO Auto-generated method stub
 		
 	}

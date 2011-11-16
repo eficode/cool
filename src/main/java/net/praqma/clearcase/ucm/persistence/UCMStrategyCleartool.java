@@ -1661,11 +1661,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
     
-	public void endView( UCMView view ) throws UCMException {
+	public void endView( String viewtag ) throws UCMException {
 		try {
-			Cleartool.run( "endview -server " + view.getViewtag() );
+			Cleartool.run( "endview -server " + viewtag );
 		} catch( Exception e ) {
-			throw new UCMException( "Could not start view " + view.getViewtag() + ": " + e.getMessage() );
+			throw new UCMException( "Could not end view " + viewtag + ": " + e.getMessage() );
 		}
 	}
 	
