@@ -94,6 +94,10 @@ public class UCMView extends UCM implements Serializable {
 		return stream;
 	}
 	
+	public void endView() throws UCMException {
+		context.endView( this );
+	}
+	
 	public String toString() {
 		return viewtag;
 	}

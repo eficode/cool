@@ -1653,13 +1653,22 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         return a;
     }
 
-    public void startView(UCMView view) throws UCMException {
-        try {
-            Cleartool.run("startview " + view.getViewtag());
-        } catch (Exception e) {
-            throw new UCMException("Could not start view " + view.getViewtag() + ": " + e.getMessage());
-        }
-    }
+	public void startView( UCMView view ) throws UCMException {
+		try {
+			Cleartool.run( "startview " + view.getViewtag() );
+		} catch( Exception e ) {
+			throw new UCMException( "Could not start view " + view.getViewtag() + ": " + e.getMessage() );
+		}
+	}
+    
+	public void endView( UCMView view ) throws UCMException {
+		try {
+			Cleartool.run( "endview -server " + view.getViewtag() );
+		} catch( Exception e ) {
+			throw new UCMException( "Could not start view " + view.getViewtag() + ": " + e.getMessage() );
+		}
+	}
+	
     /*****************************
      * Vobs
      *****************************/

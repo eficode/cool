@@ -1313,4 +1313,10 @@ public class UCMStrategyXML implements UCMStrategyInterface
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void endView( UCMView view ) throws UCMException {
+		// TODO Auto-generated method stub
+		
+	}
 }

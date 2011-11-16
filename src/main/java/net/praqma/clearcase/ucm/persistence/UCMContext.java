@@ -471,8 +471,13 @@ public class UCMContext extends Cool {
 
 		return bls;
 	}
+	
 	public void startView( UCMView view ) throws UCMException {
 		strategy.startView( view );
+	}
+	
+	public void endView( UCMView view ) throws UCMException {
+		strategy.endView( view );
 	}
 
 	// public Stream GetStreamFromView( String viewtag )
