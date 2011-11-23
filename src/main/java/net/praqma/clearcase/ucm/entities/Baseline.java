@@ -46,11 +46,9 @@ public class Baseline extends UCMEntity implements Diffable {
 
         /* Component */
         String c = (rs[1].matches("^component:.*$") ? "" : "component:") + (rs[1].matches(".*@\\\\.*$") ? rs[1] : rs[1] + "@" + this.pvob);
-        logger.debug("Component = " + c);
         /* Stream */
         if (rs[2].trim().length() > 0) {
             String s = (rs[2].matches("^stream:.*$") ? "" : "stream:") + (rs[2].matches(".*@\\\\.*$") ? rs[2] : rs[2] + "@" + this.pvob);
-            logger.debug("Stream = " + s);
             this.stream = (Stream) UCMEntity.getEntity(s);
         } else {
             logger.warning("The stream was not set. Propably because the baseline was INITIAL.");
@@ -63,6 +61,7 @@ public class Baseline extends UCMEntity implements Diffable {
         try {
 			this.date = dateFormatter.parse( rs[5] );
 		} catch (ParseException e) {
+			logger.debug( "Unable to parse date: " + e.getMessage() );
 			this.date = null;
 		}
         
@@ -289,9 +288,10 @@ public class Baseline extends UCMEntity implements Diffable {
 
         sb.append(super.stringify());
 
-        sb.append("PLEVEL   : " + this.plevel + linesep);
-        sb.append("Component: " + this.component.toString() + linesep);
-        sb.append("Stream   : " + this.stream.toString() + linesep);
+        sb.append(" * Level    : " + this.plevel + linesep);
+        sb.append(" * Component: " + this.component.toString() + linesep);
+        sb.append(" * Stream   : " + this.stream.toString() + linesep);
+        sb.append(" * Date     : " + this.date.toString() + linesep);
 
         return sb.toString();
     }

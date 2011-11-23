@@ -72,7 +72,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	
 	protected Date date;
 	
-	transient DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd.HHmmss"); // 20060810.225810
+	DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd.HHmmss"); // 20060810.225810
 	
 	transient private String comment;
 
@@ -99,7 +99,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	/* Fields that need not to be loaded */
 	protected String fqname = "";
 	protected String shortname = "";
-	transient protected ClearcaseEntityType type = ClearcaseEntityType.Undefined;
+	protected ClearcaseEntityType type = ClearcaseEntityType.Undefined;
 	protected String pvob = "";
 
 	protected PVob vob = null;
@@ -543,12 +543,12 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	public String stringify() throws UCMException {
 		StringBuffer sb = new StringBuffer();
 
-		sb.append( "----> " + this.fqname + " <----" + linesep );
-		sb.append( "Shortname: " + this.shortname + linesep );
+		sb.append( this.fqname + ":" + linesep );
+		sb.append( " * Shortname: " + this.shortname + linesep );
 		if( !this.type.equals( ClearcaseEntityType.Version ) ) {
-			sb.append( "PVOB     : " + this.pvob + linesep );
+			sb.append( " * PVOB     : " + this.pvob + linesep );
 		}
-		sb.append( "Type     : " + this.type + linesep );
+		sb.append( " * Type     : " + this.type + linesep );
 
 		return sb.toString();
 	}
