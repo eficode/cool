@@ -439,7 +439,7 @@ public class UCMContext extends Cool {
 		strategy.generate( stream.getFullyQualifiedName() );
 	}
 
-	public void rebaseStream( SnapshotView view, Stream stream, Baseline baseline, boolean complete ) {
+	public void rebaseStream( SnapshotView view, Stream stream, Baseline baseline, boolean complete ) throws UCMException {
 		if( strategy.rebaseStream( view.getViewtag(), stream.getFullyQualifiedName(), baseline.getFullyQualifiedName(), complete ) ) {
 			logger.debug( "Rebasing complete" );
 		} else {

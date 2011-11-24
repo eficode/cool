@@ -195,7 +195,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return context.streamExists( fqname );
 	}
 
-	public void rebase( SnapshotView view, Baseline baseline, boolean complete ) {
+	public void rebase( SnapshotView view, Baseline baseline, boolean complete ) throws UCMException {
 		context.rebaseStream( view, this, baseline, complete );
 	}
 

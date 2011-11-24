@@ -81,7 +81,7 @@ interface UCMStrategyInterface
 	public void createStream( String pstream, String nstream, boolean readonly, String baseline ) throws UCMException;
 	public void createIntegrationStream( String name, Project project, Baseline baseline ) throws UCMException;
 	public boolean streamExists( String fqname );
-	public boolean rebaseStream( String viewtag, String stream, String baseline, boolean complete );
+	public boolean rebaseStream( String viewtag, String stream, String baseline, boolean complete ) throws UCMException;
 	public boolean isRebasing( String stream );
 	public void cancelRebase( String stream );
 	public List<String> getLatestBaselines( String stream );

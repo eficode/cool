@@ -722,17 +722,21 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         }
     }
 
-    public boolean rebaseStream(String viewtag, String stream, String baseline, boolean complete) {
+    public boolean rebaseStream(String viewtag, String stream, String baseline, boolean complete) throws UCMException {
         logger.debug("Rebasing " + viewtag);
 
         String cmd = "rebase " + (complete ? "-complete " : "") + " -force -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
-        CmdResult res = Cleartool.run(cmd);
-
-        if (res.stdoutBuffer.toString().matches("^No rebase needed.*")) {
-            return false;
+        try {
+        	CmdResult res = Cleartool.run(cmd);
+        	
+            if (res.stdoutBuffer.toString().matches("^No rebase needed.*")) {
+                return false;
+            } else {
+            	return true;
+            }
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( e.getMessage() );
         }
-
-        return true;
     }
 
     public boolean isRebasing(String stream) {
