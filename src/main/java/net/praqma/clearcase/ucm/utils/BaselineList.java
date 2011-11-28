@@ -3,7 +3,6 @@ package net.praqma.clearcase.ucm.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
@@ -13,7 +12,15 @@ import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.util.debug.Logger;
 
+/**
+ * 
+ * @author wolfgang
+ * @deprecated
+ */
 public class BaselineList extends ArrayList<Baseline> {
+
+	private static final long serialVersionUID = 7674824124243453983L;
+
 	transient private static Logger logger = Logger.getLogger();
 	
 	private Stream stream = null;

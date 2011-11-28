@@ -57,7 +57,7 @@ public class SnapshotView extends UCMView {
 			if( components.equals( Components.ALL ) ) {
 				logger.debug( "All components" );
 
-				BaselineList bls = view.stream.getLatestBaselines();
+				List<Baseline> bls = view.stream.getLatestBaselines();
 				for( Baseline b : bls ) {
 					String rule = b.getComponent().getRootDir();
 					rule = rule.replaceFirst( "^\\\\", " " );
@@ -261,7 +261,7 @@ public class SnapshotView extends UCMView {
 			if( components == Components.ALL ) {
 				logger.debug( "COMP=ALL" );
 
-				BaselineList bls = this.stream.getLatestBaselines();
+				List<Baseline> bls = this.stream.getLatestBaselines();
 				for( Baseline b : bls ) {
 					String rule = b.getComponent().getRootDir();
 					rule = rule.replaceFirst( "^\\\\", " " );

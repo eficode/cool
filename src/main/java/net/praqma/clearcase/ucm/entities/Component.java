@@ -1,12 +1,17 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
+import java.util.List;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.utils.BaselineList;
+import net.praqma.util.debug.Logger;
 
 public class Component extends UCMEntity {
+	
+	private static final long serialVersionUID = -6186110079026697257L;
+	private transient static Logger logger = Logger.getLogger();
+	
 	/* Component specific fields */
 
 	Component() {
@@ -37,12 +42,18 @@ public class Component extends UCMEntity {
 		return context.getRootDir( this );
 	}
 
-	public BaselineList getBaselines( Stream stream ) throws UCMException {
-		return new BaselineList( this, stream, null );
+	public List<Baseline> getBaselines( Stream stream ) throws UCMException {
+		logger.debug( "Getting Baselines from " + stream.getFullyQualifiedName() + " and " + getFullyQualifiedName() );
+
+		return UCM.context.getBaselines( stream, this, null, getPvobString() );
+		//return new BaselineList( this, stream, null );
 	}
 
-	public BaselineList getBaselines( Stream stream, Project.Plevel plevel ) throws UCMException {
-		return new BaselineList( this, stream, plevel );
+	public List<Baseline> getBaselines( Stream stream, Project.Plevel plevel ) throws UCMException {
+		logger.debug( "Getting Baselines from " + stream.getFullyQualifiedName() + " and " + this.getFullyQualifiedName() + " with plevel " + plevel );
+
+		return UCM.context.getBaselines( stream, this, plevel, getPvobString() );
+		//return new BaselineList( this, stream, plevel );
 	}
 
 }

@@ -10,7 +10,6 @@ import java.util.List;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Project.Plevel;
-import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.debug.Logger;
 
@@ -27,7 +26,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	transient static private Logger logger = Logger.getLogger();
 
 	/* Stream specific fields */
-	transient private ArrayList<Baseline> recommendedBaselines = null;
+	private ArrayList<Baseline> recommendedBaselines = null;
 	private Project project = null;
 	private Stream defaultTarget = null;
 	private boolean readOnly = true;
@@ -229,8 +228,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		context.recommendBaseline( this, baseline );
 	}
 
-	public BaselineList getLatestBaselines() throws UCMException {
-		return new BaselineList( context.getLatestBaselines( this ) );
+	public List<Baseline> getLatestBaselines() throws UCMException {
+		return context.getLatestBaselines( this );
 	}
 
 	public Component getSingleTopComponent() throws UCMException {

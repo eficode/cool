@@ -2,6 +2,8 @@ package net.praqma.clearcase.ucm.entities;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.*;
 
 import net.praqma.clearcase.ucm.UCMException;
@@ -49,7 +51,7 @@ public class ComponentTest {
 		Component component = UCMEntity.getComponent( "_System@\\Cool_PVOB", true );
 		Stream stream = UCMEntity.getStream( "Server_int@\\Cool_PVOB", true );
 
-		BaselineList list = component.getBaselines( stream );
+		List<Baseline> list = component.getBaselines( stream );
 
 		assertTrue( list.size() == 0 );
 	}
@@ -59,7 +61,7 @@ public class ComponentTest {
 		Component component = UCMEntity.getComponent( "_System@\\Cool_PVOB", true );
 		Stream stream = UCMEntity.getStream( "Server_int@\\Cool_PVOB", true );
 
-		BaselineList list = component.getBaselines( stream, Plevel.INITIAL );
+		List<Baseline> list = component.getBaselines( stream, Plevel.INITIAL );
 
 		assertTrue( list.size() == 0 );
 	}

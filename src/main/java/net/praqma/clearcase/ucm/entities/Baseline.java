@@ -55,20 +55,27 @@ public class Baseline extends UCMEntity implements Diffable {
         }
 
         /* Now with factory creation! */
+        logger.debug( "[BASELINE] component " + c );
         this.component = (Component) UCMEntity.getEntity(c);
+        logger.debug( "[BASELINE] plevel " + rs[3] );
         this.plevel = Project.getPlevelFromString(rs[3]);
+        logger.debug( "[BASELINE] user " + rs[4] );
         this.user = rs[4];
         try {
+        	logger.debug( "[BASELINE] date " + rs[5] );
 			this.date = dateFormatter.parse( rs[5] );
+			logger.debug( "[BASELINE] date " + this.date );
 		} catch (ParseException e) {
 			logger.debug( "Unable to parse date: " + e.getMessage() );
 			this.date = null;
 		}
         
+        logger.debug( "[BASELINE] label " + rs[6] );
         this.labelStatus = getLabelStatusFromString( rs[6] );
 
         activities = new ArrayList<Activity>();
 
+        logger.debug( "[BASELINE] loaded" );
         this.loaded = true;
     }
 
