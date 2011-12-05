@@ -121,7 +121,7 @@ interface UCMStrategyInterface
 	public boolean viewExists( String viewtag );
 	public void regenerateViewDotDat( File dir, String viewtag ) throws UCMException;
 	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot );
-	public String viewUpdate( File viewroot, boolean overwrite, String loadrules );
+	public String viewUpdate( File viewroot, boolean overwrite, String loadrules ) throws UCMException;
 	public void startView( UCMView view ) throws UCMException;
 	public void endView( String viewtag ) throws UCMException;
 

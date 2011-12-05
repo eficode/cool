@@ -3,3 +3,4 @@
 .settings/
 src/main/java/net/praqma/clearcase/test
 build
+logger_*

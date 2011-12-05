@@ -542,24 +542,24 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             /* Determine cause */
             if (e.getMessage().replace(System.getProperty("line.separator"), " ").contains("requires child development streams to rebase to recommended baselines before performing deliver operation")) {
                 logger.warning("Deliver requires rebase");
-                throw new UCMException("Could not deliver(1): " + e.getMessage(), e.getMessage(), UCMType.DELIVER_REQUIRES_REBASE);
+                throw new UCMException("Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_REQUIRES_REBASE);
             } else if (e.getMessage().replace(System.getProperty("line.separator"), " ").contains("cleartool: Error: Unable to perform merge")) {
                 logger.warning("Merge error");
-                throw new UCMException("Could not deliver(2): " + e.getMessage(), e.getMessage(), UCMType.MERGE_ERROR);
+                throw new UCMException("Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.MERGE_ERROR);
             } else if (e.getMessage().replace(System.getProperty("line.separator"), " ").contains("does not allow deliver operations from streams in other")) {
                 logger.warning("Interproject deliver denied");
-                throw new UCMException("Could not deliver(3): " + e.getMessage(), e.getMessage(), UCMType.INTERPROJECT_DELIVER_DENIED);
+                throw new UCMException("Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.INTERPROJECT_DELIVER_DENIED);
             } else if (e.getMessage().replace(System.getProperty("line.separator"), " ").contains("which is currently involved in an active deliver or rebase operation.  The set activity of this view may not be changed until the operation has completed.")) {
                 logger.warning("Deliver already in progress");
-                throw new UCMException("Could not deliver(6_1): " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS);
+                throw new UCMException("Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS);
             } else if (e.getMessage().contains("active deliver or rebase operation.  The set activity of this view may not be")) {
                 logger.warning("Deliver already in progress");
-                throw new UCMException("Could not deliver(6_2): " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS);
+                throw new UCMException("Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS);
             }
 
             if (e.getMessage().matches("(?s)active deliver or rebase operation.  The set activity of this view may not be")) {
                 logger.warning("Deliver already in progress");
-                throw new UCMException("Could not deliver(6_2): " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS);
+                throw new UCMException("Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS);
             }
 
             Matcher m2 = rx_checkProgress.matcher(e.getMessage());
@@ -1344,19 +1344,33 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             throw new UCMException("Could not create snapshot view \"" + viewtag + "\"", e.getMessage(), UCMType.VIEW_ERROR);
         }
     }
+    
+    private static final Pattern rx_view_rebasing = Pattern.compile( "^\\.*Error: This view is currently being used to rebase stream \"(.+)\"\\.*$" );
 
-    public String viewUpdate(File viewroot, boolean overwrite, String loadrules) {
-        logger.debug(viewroot.getAbsolutePath());
+	public String viewUpdate( File viewroot, boolean overwrite, String loadrules ) throws UCMException {
+		logger.debug( viewroot.getAbsolutePath() );
 
-        String cmd = "setcs -stream";
-        Cleartool.run(cmd, viewroot);
+		String cmd = "setcs -stream";
+		Cleartool.run( cmd, viewroot );
 
-        logger.debug("Updating view");
+		logger.debug( "Updating view" );
 
-        cmd = "update -force " + (overwrite ? " -overwrite " : "") + loadrules;
-        return Cleartool.run(cmd, viewroot, true).stdoutBuffer.toString();
+		cmd = "update -force " + ( overwrite ? " -overwrite " : "" ) + loadrules;
+		try {
+			return Cleartool.run( cmd, viewroot, true ).stdoutBuffer.toString();
+		} catch( AbnormalProcessTerminationException e ) {
+			Matcher m = rx_view_rebasing.matcher( e.getMessage() );
+			if( m.find() ) {
+				logger.warning( "The view is currently rebasing the stream " + m.group( 1  ) + ": " + e.getMessage() );
+				logger.warning( e );
+				throw new UCMException( "The view is currently rebasing the stream " + m.group( 1 ), UCMType.VIEW_CURRENTLY_REBASING );
+			} else  {
+				logger.warning( e );
+				throw new UCMException( "Unable to update view: " + e.getMessage() );
+			}
+		}
 
-    }
+	}
 
     public void regenerateViewDotDat(File dir, String viewtag) throws UCMException {
         logger.debug(dir + ", " + viewtag);

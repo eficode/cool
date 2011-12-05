@@ -522,8 +522,9 @@ public class UCMContext extends Cool {
 	 * @param overwrite
 	 * @param loadrules
 	 * @return String
+	 * @throws UCMException 
 	 */
-	public String updateView( SnapshotView view, boolean overwrite, String loadrules ) {
+	public String updateView( SnapshotView view, boolean overwrite, String loadrules ) throws UCMException {
 		String result = strategy.viewUpdate( view.getViewRoot(), overwrite, loadrules );
 		Matcher match = pattern_cache.matcher( result );
 		if( match.find() ) {

@@ -3,10 +3,8 @@ package net.praqma.clearcase;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.ucm.persistence.UCMContext;
 import net.praqma.clearcase.ucm.persistence.UCMStrategyCleartool;
-import net.praqma.util.debug.Logger;
 
 public abstract class Cool {
 	/* Make sure, that we're using the same instance of the context! */
