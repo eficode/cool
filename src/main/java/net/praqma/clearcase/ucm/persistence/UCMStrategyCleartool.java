@@ -565,7 +565,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             Matcher m2 = rx_checkProgress.matcher(e.getMessage());
             if (m2.find()) {
                 logger.warning("Deliver already in progress");
-                throw new UCMException("Could not deliver(6_3): " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS);
+                throw new UCMException("Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS);
             }
 
             /**
@@ -573,25 +573,25 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
              */
             if (e.getMessage().contains("Deliver operation")) {
                 logger.warning("Deliver already in progress");
-                throw new UCMException("Could not deliver(6_4): " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS);
+                throw new UCMException("Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS);
             }
 
             /* Match for merge errors */
             Matcher m = rx_checkMergeError.matcher(e.getMessage());
             if (m.find()) {
                 logger.warning("Merge error");
-                throw new UCMException("Could not deliver(4): " + e.getMessage(), e.getMessage(), UCMType.MERGE_ERROR);
+                throw new UCMException("Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.MERGE_ERROR);
             }
 
             /* Match for denied deliveries */
             m = rx_checkDeliverDenied.matcher(e.getMessage());
             if (m.find()) {
                 logger.warning("Interproject deliver denied");
-                throw new UCMException("Could not deliver(5): " + e.getMessage(), e.getMessage(), UCMType.INTERPROJECT_DELIVER_DENIED);
+                throw new UCMException("Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.INTERPROJECT_DELIVER_DENIED);
             }
 
             /* If nothing applies.... */
-            throw new UCMException("Could not deliver(0): " + e.getMessage(), e.getMessage());
+            throw new UCMException("Could not deliver: " + e.getMessage(), e.getMessage());
         }
     }
 
