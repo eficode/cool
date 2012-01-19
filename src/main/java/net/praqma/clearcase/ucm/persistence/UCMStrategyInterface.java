@@ -40,8 +40,8 @@ interface UCMStrategyInterface
 	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException;
 
 	/* Project */
-	String getProjectFromStream( String stream );
-	List<String> getModifiableComponents( String project );
+	String getProjectFromStream( String stream ) throws UCMException;
+	List<String> getModifiableComponents( String project ) throws UCMException;
 	public String loadProject( String project ) throws UCMException;
 	public List<Project> getProjects( PVob vob ) throws UCMException;
 	public void createProject( String name, String root, PVob pvob, int policy, String comment, Component ... mcomps ) throws UCMException;
@@ -64,8 +64,8 @@ interface UCMStrategyInterface
 	public String deliverStatus( String stream ) throws UCMException;
 
 	/* Component */
-	public List<String> getBaselines( String component, String stream, Plevel plevel );
-	public String getRootDir( String component );
+	public List<String> getBaselines( String component, String stream, Plevel plevel ) throws UCMException;
+	public String getRootDir( String component ) throws UCMException;
 	public String loadComponent( String component ) throws UCMException;
 	public void createComponent( String name, PVob pvob, String root, String comment, File view ) throws UCMException;
 
@@ -82,16 +82,16 @@ interface UCMStrategyInterface
 	public void createIntegrationStream( String name, Project project, Baseline baseline ) throws UCMException;
 	public boolean streamExists( String fqname );
 	public boolean rebaseStream( String viewtag, String stream, String baseline, boolean complete ) throws UCMException;
-	public boolean isRebasing( String stream );
-	public void cancelRebase( String stream );
-	public List<String> getLatestBaselines( String stream );
-	public void generate( String stream );
+	public boolean isRebasing( String stream ) throws UCMException;
+	public void cancelRebase( String stream ) throws UCMException;
+	public List<String> getLatestBaselines( String stream ) throws UCMException;
+	public void generate( String stream ) throws UCMException;
 	public void loadStream( Stream stream ) throws UCMException;
 	public List<Stream> getChildStreams(String fqstream) throws UCMException;
 
 	/* Version */
 	public void loadVersion( Version version ) throws UCMException;
-	public String getVersion( String version, String separator );
+	public String getVersion( String version, String separator ) throws UCMException;
 	public String getVersionExtension( File file, File viewroot ) throws UCMException;
 	public void addToSourceControl( File file, boolean mkdir, File view ) throws UCMException;
 	public void checkOut( File file, File viewContext ) throws UCMException;
@@ -120,7 +120,7 @@ interface UCMStrategyInterface
 	public String viewrootIsValid( File viewroot ) throws UCMException;
 	public boolean viewExists( String viewtag );
 	public void regenerateViewDotDat( File dir, String viewtag ) throws UCMException;
-	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot );
+	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot ) throws UCMException;
 	public String viewUpdate( File viewroot, boolean overwrite, String loadrules ) throws UCMException;
 	public void startView( UCMView view ) throws UCMException;
 	public void endView( String viewtag ) throws UCMException;
@@ -135,7 +135,7 @@ interface UCMStrategyInterface
 	public void createVob( String vobname, boolean UCMProject, String path, String comment ) throws UCMException;
 	public void loadVob( Vob vob ) throws UCMException;
 	public void mountVob( Vob vob ) throws UCMException;
-	public List<Vob> getVobs( Region region );
+	public List<Vob> getVobs( Region region ) throws UCMException;
 	public void removeVob( Vob vob ) throws UCMException;
 	public void unmountVob( Vob vob ) throws UCMException;
 	public List<Vob> getVobs( boolean pvobs ) throws UCMException;
@@ -146,7 +146,7 @@ interface UCMStrategyInterface
 	public Map<String, String> getAttributes( String fqname, File dir ) throws UCMException;
 	public void setAttribute( String fqname, String attribute, String value ) throws UCMException;
 
-	public List<UCMView> getViews( Region region );
+	public List<UCMView> getViews( Region region ) throws UCMException;
 
 
 

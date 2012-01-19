@@ -148,7 +148,7 @@ public class UCMContext extends Cool {
 		strategy.loadVersion( version );
 	}
 
-	public HashMap<String, String> getVersion( Version version ) {
+	public HashMap<String, String> getVersion( Version version ) throws UCMException {
 		String result = strategy.getVersion( version.getFullyQualifiedName(), "::" );
 		String[] rs = result.split( "::" );
 
@@ -416,7 +416,7 @@ public class UCMContext extends Cool {
 		strategy.regenerateViewDotDat( dir, viewtag );
 	}
 
-	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot ) {
+	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot ) throws UCMException {
 		return strategy.swipeView( viewroot, excludeRoot );
 	}
 
@@ -435,7 +435,7 @@ public class UCMContext extends Cool {
 		strategy.createIntegrationStream( name, project, baseline );
 	}
 
-	public void genereate( Stream stream ) {
+	public void genereate( Stream stream ) throws UCMException {
 		strategy.generate( stream.getFullyQualifiedName() );
 	}
 
@@ -447,11 +447,11 @@ public class UCMContext extends Cool {
 		}
 	}
 
-	public boolean isRebasing( Stream stream ) {
+	public boolean isRebasing( Stream stream ) throws UCMException {
 		return strategy.isRebasing( stream.getFullyQualifiedName() );
 	}
 
-	public void cancelRebase( Stream stream ) {
+	public void cancelRebase( Stream stream ) throws UCMException {
 		strategy.cancelRebase( stream.getFullyQualifiedName() );
 	}
 
@@ -534,7 +534,7 @@ public class UCMContext extends Cool {
 		return "";
 	}
 
-	public String getRootDir( Component component ) {
+	public String getRootDir( Component component ) throws UCMException {
 		logger.debug( component.getFullyQualifiedName() );
 
 		return strategy.getRootDir( component.getFullyQualifiedName() );
@@ -651,7 +651,7 @@ public class UCMContext extends Cool {
 
 	/* VOBS */
 
-	public List<Vob> getVobs( Region region ) {
+	public List<Vob> getVobs( Region region ) throws UCMException {
 		return strategy.getVobs( region );
 	}
 
@@ -701,10 +701,9 @@ public class UCMContext extends Cool {
 		return strategy.loadView( view );
 	}
 
-	public List<UCMView> getViews( Region region ) {
+	public List<UCMView> getViews( Region region ) throws UCMException {
 		return strategy.getViews( region );
 	}
-
 
 
 

@@ -275,15 +275,24 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
     /************************************************************************
      * PROJECT FUNCTIONALITY
+     * @throws UCMException 
      ************************************************************************/
-    public String getProjectFromStream(String stream) {
+    public String getProjectFromStream(String stream) throws UCMException {
         String cmd = "desc -fmt %[project]p " + stream;
-        return Cleartool.run(cmd).stdoutBuffer.toString().trim();
+        try {
+        	return Cleartool.run(cmd).stdoutBuffer.toString().trim();
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to get project from stream: " + e.getMessage() );
+        }
     }
 
-    public List<String> getModifiableComponents(String project) {
+    public List<String> getModifiableComponents(String project) throws UCMException {
         String cmd = "desc -fmt %[mod_comps]p " + project;
-        return Arrays.asList(Cleartool.run(cmd).stdoutBuffer.toString().split("\\s+"));
+        try {
+        	return Arrays.asList(Cleartool.run(cmd).stdoutBuffer.toString().split("\\s+"));
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to modifiable components: " + e.getMessage() );
+        }
     }
 
     public String loadProject(String project) throws UCMException {
@@ -618,18 +627,23 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
     private static final String rx_component_load = "\\s*Error: component not found\\s*";
 
     @Override
-    public List<String> getBaselines(String component, String stream, Plevel plevel) {
-
+    public List<String> getBaselines(String component, String stream, Plevel plevel) throws UCMException {
         String cmd = "lsbl -s -component " + component + " -stream " + stream + (plevel != null ? " -level " + plevel.toString() : "");
-        return Cleartool.run(cmd).stdoutList;
+        try {
+        	return Cleartool.run(cmd).stdoutList;
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to get baselines: " + e.getMessage() );
+        }
     }
 
     @Override
-    public String getRootDir(String component) {
-        logger.debug(component);
-
+    public String getRootDir(String component) throws UCMException {
         String cmd = "desc -fmt %[root_dir]p " + component;
-        return Cleartool.run(cmd).stdoutBuffer.toString();
+        try {
+        	return Cleartool.run(cmd).stdoutBuffer.toString();
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to get rootdir: " + e.getMessage() );
+        }
     }
 
     public String loadComponent(String component) throws UCMException {
@@ -672,9 +686,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
     }
 
-    public String getRecommendedBaselines(String stream) {
+    public String getRecommendedBaselines(String stream) throws UCMException {
         String cmd = "desc -fmt %[rec_bls]p " + stream;
-        return Cleartool.run(cmd).stdoutBuffer.toString();
+        try {
+        	return Cleartool.run(cmd).stdoutBuffer.toString();
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to get recommended baselines from " + stream + ": " + e.getMessage() );
+        }
     }
 
     public String getStreamFromView(String viewtag) throws UCMException {
@@ -707,9 +725,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         }
     }
 
-    public void generate(String stream) {
+    public void generate(String stream) throws UCMException {
         String cmd = "chstream -generate " + stream;
-        Cleartool.run(cmd);
+        try {
+        	Cleartool.run(cmd);
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to generate: " + e.getMessage() );
+        }
     }
 
     public boolean streamExists(String fqname) {
@@ -739,32 +761,44 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         }
     }
 
-    public boolean isRebasing(String stream) {
+    public boolean isRebasing(String stream) throws UCMException {
         String cmd = "rebase -status -stream " + stream;
-        String result = Cleartool.run(cmd).stdoutBuffer.toString();
-        if (result.matches(rx_rebase_in_progress)) {
-            return true;
+        try {
+	        String result = Cleartool.run(cmd).stdoutBuffer.toString();
+	        if (result.matches(rx_rebase_in_progress)) {
+	            return true;
+	        } else {
+	        	return false;
+	        }
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to determine rebasing: " + e.getMessage() );
         }
-
-        return false;
     }
 
-    public void cancelRebase(String stream) {
+    public void cancelRebase(String stream) throws UCMException {
         String cmd = "rebase -cancel -force -stream " + stream;
-        Cleartool.run(cmd);
+        try {
+        	Cleartool.run(cmd);
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to cancel rebase: " + e.getMessage() );
+        }
     }
 
-    public List<String> getLatestBaselines(String stream) {
+    public List<String> getLatestBaselines(String stream) throws UCMException {
         String cmd = "desc -fmt %[latest_bls]Xp " + stream;
-        String[] t = Cleartool.run(cmd).stdoutBuffer.toString().split(" ");
-        List<String> bls = new ArrayList<String>();
-        for (String s : t) {
-            if (s.matches("\\S+")) {
-                bls.add(s);
-            }
+        try {
+	        String[] t = Cleartool.run(cmd).stdoutBuffer.toString().split(" ");
+	        List<String> bls = new ArrayList<String>();
+	        for (String s : t) {
+	            if (s.matches("\\S+")) {
+	                bls.add(s);
+	            }
+	        }
+	
+	        return bls;
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to get latest baseline from " + stream + ": " + e.getMessage() );
         }
-
-        return bls;
     }
 
     public void loadStream(Stream stream) throws UCMException {
@@ -843,10 +877,15 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
     /************************************************************************
      * VERSION FUNCTIONALITY
+     * @throws UCMException 
      ************************************************************************/
-    public String getVersion(String version, String separator) {
+    public String getVersion(String version, String separator) throws UCMException {
         String cmd = "desc -fmt %Nd" + separator + "%u" + separator + "%h" + separator + "%c" + separator + "%Rf" + separator + "%m" + separator + "%Vn" + separator + "%Xn \"" + version + "\"";
-        return Cleartool.run(cmd).stdoutBuffer.toString();
+        try {
+        	return Cleartool.run(cmd).stdoutBuffer.toString();
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to getversion: " + e.getMessage() );
+        }
     }
     private static final String rx_ccdef_voblikename = "[\\\\\\w\\.-/]";
     private static final String rx_ccdef_filename = "[.[^@]+]";
@@ -885,8 +924,12 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         }
 
         String cmd = "desc -fmt %Xn " + file;
-        CmdResult r = Cleartool.run(cmd, viewroot);
-        return r.stdoutBuffer.toString();
+        try {
+	        CmdResult r = Cleartool.run(cmd, viewroot);
+	        return r.stdoutBuffer.toString();
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to get extended version: " + e.getMessage() );
+        }
     }
     private static final Pattern rx_checkExistence = Pattern.compile(".*?Entry named \".*\" already exists.*?");
 
@@ -1204,7 +1247,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
             }
             if (t[1].matches("^.*tagtype=" + tagType + ".*$") && t[1].matches("^.*tagid=" + tagID + ".*$")) {
                 String cmd = "rmhlink " + t[0];
-                Cleartool.run(cmd);
+                try {
+                	Cleartool.run(cmd);
+                } catch( AbnormalProcessTerminationException e ) {
+                	throw new UCMException( "Unable to delete tag with " + tagID + ": " + e.getMessage() );
+                }
             }
         }
 
@@ -1351,7 +1398,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		logger.debug( viewroot.getAbsolutePath() );
 
 		String cmd = "setcs -stream";
-		Cleartool.run( cmd, viewroot );
+		try {
+			Cleartool.run( cmd, viewroot );
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to set cs stream: " + e.getMessage() );
+        }
 
 		logger.debug( "Updating view" );
 
@@ -1383,7 +1434,12 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
         String cmd = "lsview -l " + viewtag;
         /* TODO Check this functions behavior, if the view doesn't exist */
-        String result = Cleartool.run(cmd).stdoutBuffer.toString();
+        String result = "";
+        try {
+        	result = Cleartool.run(cmd).stdoutBuffer.toString();
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to list view tag " + viewtag + ": " + e.getMessage() );
+        }
 
         // System.out.println(result);
 
@@ -1442,7 +1498,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         }
     }
 
-	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot ) {
+	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot ) throws UCMException {
 		logger.debug( viewroot.toString() );
 
 		File[] files = viewroot.listFiles();
@@ -1492,7 +1548,12 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 		/* Get view private files from vobs */
 		String cmd = "ls -short -recurse -view_only " + fls;
-		List<String> result = Cleartool.run( cmd ).stdoutList;
+		List<String> result = null;
+		try {
+			result = Cleartool.run( cmd ).stdoutList;
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to list files " + fls + ": " + e.getMessage() );
+        }
 		List<File> vpFiles = new ArrayList<File>();
 
 		if( !excludeRoot ) {
@@ -1618,9 +1679,12 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         }
 
         String cmd = "lsview -s -uuid " + uuid;
-        String viewtag = Cleartool.run(cmd).stdoutBuffer.toString().trim();
-
-        return viewtag;
+        try {
+        	String viewtag = Cleartool.run(cmd).stdoutBuffer.toString().trim();
+        	return viewtag;
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to list view with " + uuid + ": " + e.getMessage() );
+        }
     }
 
     public void createView(String tag, String path, boolean snapshotView, Stream stream) throws UCMException {
@@ -1770,16 +1834,20 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         }
     }
 
-    public List<Vob> getVobs(Region region) {
+    public List<Vob> getVobs(Region region) throws UCMException {
         String cmd = "lsvob -s" + (region != null ? " -region " + region.getName() : "");
-        CmdResult cr = Cleartool.run(cmd);
-
-        List<Vob> vobs = new ArrayList<Vob>();
-        for (String s : cr.stdoutList) {
-            vobs.add(new Vob(s));
+        try {
+	        CmdResult cr = Cleartool.run(cmd);
+	
+	        List<Vob> vobs = new ArrayList<Vob>();
+	        for (String s : cr.stdoutList) {
+	            vobs.add(new Vob(s));
+	        }
+	
+	        return vobs;
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to get vobs from region " + region.getName() + ": " + e.getMessage() );
         }
-
-        return vobs;
     }
 
     public List<Vob> getVobs(boolean pvobs) throws UCMException {
@@ -1833,9 +1901,13 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
         }
     }
 
-    public int getVobCount() {
+    public int getVobCount() throws UCMException {
         String cmd = "lsvob -short";
-        return Cleartool.run(cmd).stdoutList.size();
+        try {
+        	return Cleartool.run(cmd).stdoutList.size();
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to get vob count: " + e.getMessage() );
+        }
     }
 
     public void removeVob(Vob vob) throws UCMException {
@@ -1920,21 +1992,25 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
     private static final Pattern __FIND_VIEW_ROOT = Pattern.compile("^\\s*\\**\\s*([\\w\\.-]+)\\s*(.+)$");
 
     @Override
-    public List<UCMView> getViews(Region region) {
+    public List<UCMView> getViews(Region region) throws UCMException {
         String cmd = "lsview" + (region != null ? " -region " + region.getName() : "");
-        CmdResult cr = Cleartool.run(cmd);
-
-        List<UCMView> views = new ArrayList<UCMView>();
-        for (String s : cr.stdoutList) {
-
-            /* Pre process views */
-            Matcher m = __FIND_VIEW_ROOT.matcher(s);
-            if (m.find()) {
-                views.add(new UCMView(m.group(2).trim(), m.group(1).trim()));
-            }
+        try {
+	        CmdResult cr = Cleartool.run(cmd);
+	
+	        List<UCMView> views = new ArrayList<UCMView>();
+	        for (String s : cr.stdoutList) {
+	
+	            /* Pre process views */
+	            Matcher m = __FIND_VIEW_ROOT.matcher(s);
+	            if (m.find()) {
+	                views.add(new UCMView(m.group(2).trim(), m.group(1).trim()));
+	            }
+	        }
+	
+	        return views;
+        } catch( AbnormalProcessTerminationException e ) {
+        	throw new UCMException( "Unable to get views from " + region.getName() + ": " + e.getMessage() );
         }
-
-        return views;
     }
 
     /*****************************

@@ -138,7 +138,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return this.version;
 	}
 
-	public void load2() {
+	public void load2() throws UCMException {
 		HashMap<String, String> result = context.getVersion( this );
 
 		//this.date = result.get( "date" );

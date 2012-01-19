@@ -38,7 +38,7 @@ public class Component extends UCMEntity {
 		return UCMEntity.getComponent( name, pvob, true );
 	}
 
-	public String getRootDir() {
+	public String getRootDir() throws UCMException {
 		return context.getRootDir( this );
 	}
 

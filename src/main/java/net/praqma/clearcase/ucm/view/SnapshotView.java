@@ -313,9 +313,9 @@ public class SnapshotView extends UCMView {
 		return info;
 	}
 	
-	public Map<String, Integer> swipe( boolean excludeRoot ) {
+	public Map<String, Integer> swipe( boolean excludeRoot ) throws UCMException {
 		logger.debug( "Swiping " + this.getViewRoot() );
-		Map<String, Integer> sinfo = context.swipeView( viewroot, excludeRoot );;
+		Map<String, Integer> sinfo = context.swipeView( viewroot, excludeRoot );
 		//Printer.mapPrinter( sinfo );
 		
 		return sinfo;

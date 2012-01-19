@@ -198,11 +198,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		context.rebaseStream( view, this, baseline, complete );
 	}
 
-	public boolean isRebaseInProgress() {
+	public boolean isRebaseInProgress() throws UCMException {
 		return context.isRebasing( this );
 	}
 
-	public void cancelRebase() {
+	public void cancelRebase() throws UCMException {
 		context.cancelRebase( this );
 	}
 
@@ -210,7 +210,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return getRecommendedBaselines( false );
 	}
 
-	public void generate() {
+	public void generate() throws UCMException {
 		context.genereate( this );
 	}
 

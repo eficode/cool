@@ -17,7 +17,7 @@ public class RemoveAllViews {
 	private static Logger logger = Logger.getLogger();
 	private static StreamAppender app = new StreamAppender( System.out );
 	
-	public static void main( String[] args ) {
+	public static void main( String[] args ) throws UCMException {
 		
         Options o = new Options( "1.0.0" );
 

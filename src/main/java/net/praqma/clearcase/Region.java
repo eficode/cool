@@ -2,6 +2,7 @@ package net.praqma.clearcase;
 
 import java.util.List;
 
+import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.UCMView;
 
 public class Region extends Cool {
@@ -14,11 +15,11 @@ public class Region extends Cool {
         this.site = site;
     }
 
-    public List<Vob> getVobs() {
+    public List<Vob> getVobs() throws UCMException {
         return site.getVobs( this );
     }
 
-    public List<UCMView> getViews() {
+    public List<UCMView> getViews() throws UCMException {
         return context.getViews( this );
     }
 
