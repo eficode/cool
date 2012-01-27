@@ -384,7 +384,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
     public String loadBaseline(String baseline) throws UCMException {
         logger.debug("Loading " + baseline);
 
-        String cmd = "desc -fmt %n" + Cool.delim + "%[component]p" + Cool.delim + "%[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u" + Cool.delim + "%Nd" + Cool.delim + "%[label_status]p " + baseline;
+        String cmd = "desc -fmt %n" + Cool.delim + "%X[component]p" + Cool.delim + "%X[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u" + Cool.delim + "%Nd" + Cool.delim + "%[label_status]p " + baseline;
         try {
             return Cleartool.run(cmd).stdoutBuffer.toString();
         } catch (AbnormalProcessTerminationException e) {

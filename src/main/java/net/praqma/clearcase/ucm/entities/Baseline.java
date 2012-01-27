@@ -44,11 +44,11 @@ public class Baseline extends UCMEntity implements Diffable {
     	logger.debug( "Loading baseline" );
         String[] rs = context.loadBaseline(this);
 
-        /* Component */
-        String c = (rs[1].matches("^component:.*$") ? "" : "component:") + (rs[1].matches(".*@\\\\.*$") ? rs[1] : rs[1] + "@" + this.pvob);
+        /* Component . component:GENI_Source@\bbComponent */
+        String c = (rs[1].matches("^component:.*$") ? "" : "component:") + (rs[1].matches(".*@\\S+$") ? rs[1] : rs[1] + "@" + this.pvob);
         /* Stream */
         if (rs[2].trim().length() > 0) {
-            String s = (rs[2].matches("^stream:.*$") ? "" : "stream:") + (rs[2].matches(".*@\\\\.*$") ? rs[2] : rs[2] + "@" + this.pvob);
+            String s = (rs[2].matches("^stream:.*$") ? "" : "stream:") + (rs[2].matches(".*@\\S+$") ? rs[2] : rs[2] + "@" + this.pvob);
             this.stream = (Stream) UCMEntity.getEntity(s);
         } else {
             logger.warning("The stream was not set. Propably because the baseline was INITIAL.");
