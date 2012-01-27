@@ -73,11 +73,11 @@ public class CommandLineMock implements CommandLineInterface {
 		 * baseline:CHW_BASELINE_51@\Cool_PVOB
 		 * CHW_BASELINE_51::_System::Server_int::TESTED::chw
 		 */
-		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:CHW_BASELINE_51@\\Cool_PVOB" ) ) {
+		if( cmd.equals( "cleartool desc -fmt %n::%X[component]p::%X[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:CHW_BASELINE_51@\\Cool_PVOB" ) ) {
 			res.stdoutBuffer.append( "CHW_BASELINE_51::_System::Server_int::TESTED::chw::20110810.232400::full" );
 		}
 
-		if( cmd.equals( "cleartool desc -fmt %n::%[component]p::%[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:CHW_BASELINE_51_no@\\Cool_PVOB" ) ) {
+		if( cmd.equals( "cleartool desc -fmt %n::%X[component]p::%X[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:CHW_BASELINE_51_no@\\Cool_PVOB" ) ) {
 			throw new AbnormalProcessTerminationException( "cleartool: Error: Baseline not found: \"CHW_BASELINE_51_no\"." );
 		}
 
