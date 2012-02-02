@@ -508,7 +508,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
                 out = Cleartool.run(cmd).stdoutBuffer.toString();
             }
             logger.debug( "Baseline output: " + out );
-            return !out.matches( "(?s).*No changes in component \".*?\" since last baseline; no baseline created.*" );
+            //return !out.matches( "(?s).*No changes in component \".*?\" since last baseline; no baseline created.*" ); //Created baseline
+            return out.matches( "(?s).*Created baseline \".*?\" in component \".*?\".*" ); //Created baseline
         } catch (AbnormalProcessTerminationException e) {
             throw new UCMException("Could not create Baseline " + fqname, e.getMessage());
         }
