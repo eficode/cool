@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.UCMException.UCMType;
+import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.util.debug.Logger;
@@ -100,6 +101,11 @@ public class UCMView extends UCM implements Serializable {
 	
 	public static void endView( String viewtag ) throws UCMException {
 		context.endView( viewtag );
+	}
+	
+	public static void getViews( Project project ) {
+		// cleartool lsstream -in project:ava2@\chw_PVOB
+		// http://publib.boulder.ibm.com/infocenter/cchelp/v7r0m0/index.jsp?topic=/com.ibm.rational.clearcase.cc_ref.doc/topics/ct_lsstream.htm
 	}
 	
 	public String toString() {

@@ -121,5 +121,13 @@ public class UCMException extends Exception {
 			stream.println( info );
 		}
 	}
+	
+	public void print( PrintStream out ) {
+		out.println( this.getMessage() );
+		this.printInformation( out );
+		if( this.getCause() != null ) {
+			out.println( this.getCause().getMessage() );
+		}
+	}
 
 }
