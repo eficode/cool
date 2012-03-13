@@ -2,7 +2,7 @@ package net.praqma.clearcase.ucm.utils;
 
 import java.util.ArrayList;
 
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.UCM;

@@ -3,7 +3,7 @@ package net.praqma.clearcase.ucm.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
@@ -42,7 +42,7 @@ public class BaselineList extends ArrayList<Baseline> {
 		this.component = component;
 	}
 
-	public BaselineList( Component component, Stream stream, Project.Plevel plevel ) throws UCMException {
+	public BaselineList( Component component, Stream stream, Project.PromotionLevel plevel ) throws UCMException {
 		logger.debug( "Getting Baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with plevel " + plevel );
 
 		this.stream = stream;

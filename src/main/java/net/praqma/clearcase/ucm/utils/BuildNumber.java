@@ -8,8 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.Cool;
-import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.UCMException.UCMType;
+import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.HyperLink;

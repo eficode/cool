@@ -9,7 +9,7 @@ import java.io.PrintStream;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;

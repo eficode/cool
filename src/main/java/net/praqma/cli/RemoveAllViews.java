@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.Site;
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.debug.Logger;

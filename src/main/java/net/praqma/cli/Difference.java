@@ -5,8 +5,8 @@ import java.io.IOException;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.changeset.ChangeSet2;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.interfaces.Diffable;
-import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.debug.Logger;

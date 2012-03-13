@@ -8,7 +8,7 @@ import net.praqma.clearcase.ucm.persistence.UCMStrategyCleartool;
 
 public abstract class Cool {
 	/* Make sure, that we're using the same instance of the context! */
-	public static UCMContext context = null;
+	//public static UCMContext context = null;
 
 	public enum ContextType {
 		XML, CLEARTOOL

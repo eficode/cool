@@ -3,7 +3,7 @@ package net.praqma.clearcase.util;
 import java.io.File;
 
 import net.praqma.clearcase.Cool;
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;

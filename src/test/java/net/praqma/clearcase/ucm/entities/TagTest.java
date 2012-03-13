@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.praqma.clearcase.Cool;
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 

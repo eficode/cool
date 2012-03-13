@@ -1,10 +1,11 @@
 package net.praqma.clearcase.ucm.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.praqma.clearcase.PVob;
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 
 public class Project extends UCMEntity {
     /* Project specific fields */
@@ -33,7 +34,7 @@ public class Project extends UCMEntity {
     }
 
     /* For now, the project implements the Plevel functionality */
-    public enum Plevel {
+    public enum PromotionLevel implements Serializable {
         INITIAL, BUILT, TESTED, RELEASED, REJECTED;
     }
 
@@ -44,11 +45,11 @@ public class Project extends UCMEntity {
      *            , if not a valid Promotion Level INITAL is returned.
      * @return A Promotion Level
      */
-    public static Plevel getPlevelFromString( String str ) {
-        Plevel plevel = Plevel.INITIAL;
+    public static PromotionLevel getPlevelFromString( String str ) {
+        PromotionLevel plevel = PromotionLevel.INITIAL;
 
         try {
-            plevel = Plevel.valueOf( str );
+            plevel = PromotionLevel.valueOf( str );
         } catch( Exception e ) {
             /* Do nothing... */
         }
@@ -56,19 +57,19 @@ public class Project extends UCMEntity {
         return plevel;
     }
 
-    public static Plevel promoteFrom( Plevel plevel ) {
+    public static PromotionLevel promoteFrom( PromotionLevel plevel ) {
         switch( plevel ) {
         case INITIAL:
-            plevel = Plevel.BUILT;
+            plevel = PromotionLevel.BUILT;
             break;
         case BUILT:
-            plevel = Plevel.TESTED;
+            plevel = PromotionLevel.TESTED;
             break;
         case TESTED:
-            plevel = Plevel.RELEASED;
+            plevel = PromotionLevel.RELEASED;
             break;
         case RELEASED:
-            plevel = Plevel.RELEASED;
+            plevel = PromotionLevel.RELEASED;
             break;
         }
 
@@ -124,7 +125,7 @@ public class Project extends UCMEntity {
 
     public static List<String> getPromotionLevels() {
         List<String> retval = new ArrayList<String>();
-        for( Object o : Plevel.values() ) {
+        for( Object o : PromotionLevel.values() ) {
             retval.add( o.toString() );
         }
         return retval;

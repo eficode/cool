@@ -11,9 +11,11 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.*;
 
 import net.praqma.clearcase.changeset.ChangeSet2;
+import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.UCMException.UCMType;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.interfaces.Diffable;
-import net.praqma.clearcase.ucm.UCMException.UCMType;
-import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
@@ -26,6 +28,7 @@ import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.debug.Logger;
+import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.structure.Tuple;
 
 public class UCMContext extends Cool {
@@ -289,11 +292,19 @@ public class UCMContext extends Cool {
             strategy.remoteDeliverCancel(oldViewTag, oldSourceStream, dir);
         }
 
-	public String[] loadBaseline( Baseline baseline ) throws UCMException {
+	public String[] loadBaseline( Baseline baseline ) {
 		logger.debug( "Loading baseline " + baseline.getFullyQualifiedName() );
 
 		// String result = CTF.LoadBaseline( this.fqname );
-		String result = strategy.loadBaseline( baseline.getFullyQualifiedName() );
+		String result = "";
+
+		String cmd = "desc -fmt %n" + Cool.delim + "%X[component]p" + Cool.delim + "%X[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u" + Cool.delim + "%Nd" + Cool.delim + "%[label_status]p " + baseline;
+		try {
+			result = Cleartool.run( cmd ).stdoutBuffer.toString();
+		} catch( AbnormalProcessTerminationException e ) {
+			//throw new UCMException( "Could not load the baseline " + baseline, e.getMessage() );
+			throw new UnableToLoadEntityException( this, e );
+		}
 		logger.debug( "RESULT=" + result );
 
 		String[] rs = result.split( UCMEntity.delim );
@@ -330,7 +341,7 @@ public class UCMContext extends Cool {
 		strategy.recommendBaseline( stream.getFullyQualifiedName(), baseline.getFullyQualifiedName() );
 	}
 
-	public List<Baseline> getBaselines( Stream stream, Component component, Project.Plevel plevel, String pvob ) throws UCMException {
+	public List<Baseline> getBaselines( Stream stream, Component component, Project.PromotionLevel plevel, String pvob ) throws UCMException {
 		logger.debug( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel + " in VOB=" + pvob );
 		List<String> bls_str = strategy.getBaselines( component.getFullyQualifiedName(), stream.getFullyQualifiedName(), plevel );
 

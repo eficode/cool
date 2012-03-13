@@ -2,7 +2,7 @@ package net.praqma.clearcase;
 
 import java.io.Serializable;
 
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 
 public class Vob extends Cool implements Serializable {
 

@@ -2,7 +2,7 @@ package net.praqma.clearcase.ucm.entities;
 
 import java.util.regex.Matcher;
 
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.util.debug.Logger;
 
 public class HyperLink extends UCMEntity {
@@ -26,7 +26,7 @@ public class HyperLink extends UCMEntity {
 
 	}
 
-	public void postProcess() {
+	public void initialize() {
 		Matcher match = UCMEntity.pattern_hlink_fqname.matcher( this.fqname );
 
 		if( !match.find() ) {

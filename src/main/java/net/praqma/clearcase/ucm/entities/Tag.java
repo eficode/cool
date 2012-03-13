@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.ucm.utils.TagQuery;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.structure.Tuple;
@@ -43,7 +43,7 @@ public class Tag extends UCMEntity {
 		return new Tag();
 	}
 
-	public void postProcess() {
+	public void initialize() {
 		this.OID = this.shortname;
 	}
 

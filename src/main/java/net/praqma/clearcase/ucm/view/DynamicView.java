@@ -1,6 +1,6 @@
 package net.praqma.clearcase.ucm.view;
 
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.ucm.entities.Stream;
 
 public class DynamicView extends UCMView {

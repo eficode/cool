@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.junit.*;
 
-import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.entities.Project.Plevel;
+import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.utils.BaselineList;
 
 public class ComponentTest {
@@ -61,7 +61,7 @@ public class ComponentTest {
 		Component component = UCMEntity.getComponent( "_System@\\Cool_PVOB", true );
 		Stream stream = UCMEntity.getStream( "Server_int@\\Cool_PVOB", true );
 
-		List<Baseline> list = component.getBaselines( stream, Plevel.INITIAL );
+		List<Baseline> list = component.getBaselines( stream, PromotionLevel.INITIAL );
 
 		assertTrue( list.size() == 0 );
 	}

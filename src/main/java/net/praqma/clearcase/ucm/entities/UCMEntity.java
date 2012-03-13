@@ -12,8 +12,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.PVob;
-import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.UCMException.UCMType;
+import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UCMEntityNotInitializedException;
+import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.UCMException.UCMType;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
+import net.praqma.clearcase.exceptions.UnknownEntityTypeException;
 import net.praqma.util.debug.Logger;
 
 /**
@@ -45,11 +50,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	transient protected static TagPool tp = TagPool.GetInstance();
 	
 	private boolean created = false;
-	
 
-	/* For future caching purposes */
-	transient private static HashMap<String, UCMEntity> entities = new HashMap<String, UCMEntity>();
-	
 	public enum LabelStatus {
 		UNKNOWN,
 		FULL,
@@ -76,33 +77,11 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	
 	transient private String comment;
 
-	public enum ClearcaseEntityType {
-		Activity, Baseline, Component, HyperLink, Stream, Project, Tag, Version, Undefined;
-
-		static ClearcaseEntityType GetFromString( String type ) {
-			if( type.equalsIgnoreCase( "baseline" ) ) {
-				return Baseline;
-			} else if( type.equalsIgnoreCase( "activity" ) ) {
-				return Activity;
-			} else if( type.equalsIgnoreCase( "project" ) ) {
-				return Project;
-			} else if( type.equalsIgnoreCase( "stream" ) ) {
-				return Stream;
-			} else if( type.equalsIgnoreCase( "component" ) ) {
-				return Component;
-			}
-
-			return Undefined;
-		}
-	}
-
 	/* Fields that need not to be loaded */
 	protected String fqname = "";
 	protected String shortname = "";
-	protected ClearcaseEntityType type = ClearcaseEntityType.Undefined;
-	protected String pvob = "";
-
-	protected PVob vob = null;
+	protected PVob pvob;
+	protected Vob vob;
 
 	protected String mastership = null;
 
@@ -121,33 +100,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	}
 
 	/**
-	 * Overloaded method, defaulting trusted to true and cachable to false.
-	 * 
-	 * @param fqname
-	 *            The fully qualified name
-	 * @return A new entity of the type given by the fully qualified name.
-	 * @throws UCMEntityException
-	 */
-	public static UCMEntity getEntity( String fqname ) throws UCMException {
-		return getEntity( fqname, true, false );
-	}
-
-	/**
-	 * Overloaded method, defaulting cachable to false.
-	 * 
-	 * @param fqname
-	 *            The fully qualified name
-	 * @param trusted
-	 *            If not trusted, the entity's content is loaded from clear
-	 *            case.
-	 * @return A new entity of the type given by the fully qualified name.
-	 * @throws UCMEntityException
-	 */
-	public static UCMEntity getEntity( String fqname, boolean trusted ) throws UCMException {
-		return getEntity( fqname, trusted, false );
-	}
-
-	/**
 	 * Generates a UCM entity given its fully qualified name.
 	 * 
 	 * @param fqname
@@ -159,27 +111,15 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 *            If cachable, the entity is stored and can later be retrieved
 	 *            from the cache without contacting clear case.
 	 * @return A new entity of the type given by the fully qualified name.
-	 * @throws UCMEntityException
-	 *             This exception is thrown if the type of the entity is not
-	 *             recognized, the entity class is not found or the default
-	 *             constructor is not found.
 	 */
-	public static UCMEntity getEntity( String fqname, boolean trusted, boolean cachable ) throws UCMException {
+	protected static UCMEntity getEntity( Class<? extends UCMEntity> clazz, String fqname, boolean trusted ) {
+		
 		/* Is this needed? */
 		fqname = fqname.trim();
-
-		/* If exists, get the entity from cache cache? */
-		if( cachable ) {
-			if( entities.containsKey( fqname ) ) {
-				logger.debug( "Fetched " + fqname + " from cache." );
-				return entities.get( fqname );
-			}
-		}
 
 		UCMEntity entity = null;
 
 		String shortname = "";
-		ClearcaseEntityType type = ClearcaseEntityType.Undefined;
 		String pvob = "";
 
 		/* Test standard fully qualified names */
@@ -222,47 +162,24 @@ public abstract class UCMEntity extends UCM implements Serializable {
 			}
 		}
 
-		/* If the entity is undefined, throw an exception */
-		if( type == ClearcaseEntityType.Undefined ) {
-			logger.error( "The entity type of " + fqname + " was not recognized" );
-			throw new UCMException( "The entity type of " + fqname + " was not recognized", UCMType.ENTITY_ERROR );
-		}
-
-		/* Load the Entity class */
-		Class<UCMEntity> eclass = null;
-		try {
-			eclass = (Class<UCMEntity>) classloader.loadClass( "net.praqma.clearcase.ucm.entities." + type );
-		} catch (ClassNotFoundException e) {
-			logger.error( "The class " + type + " is not available." );
-			throw new UCMException( "The class " + type + " is not available.", UCMType.ENTITY_ERROR );
-		}
-
 		/* Try to instantiate the Entity object */
-		try {
-			entity = (UCMEntity) eclass.newInstance();
-		} catch (Exception e) {
-			logger.error( "Could not instantiate the class " + type );
-			throw new UCMException( "Could not instantiate the class " + type, UCMType.ENTITY_ERROR );
-		}
+		entity = clazz.newInstance();
 
 		/* Storing the variables in the object */
+		/*
 		entity.fqname = fqname;
 		entity.shortname = shortname;
 		entity.type = type;
 		entity.pvob = pvob;
+		*/
 
 		// logger.debug( "Created entity of type " + entity.type );
 
-		entity.postProcess();
+		entity.initialize();
 
 		/* If not trusted, load the entity from the context */
 		if( !trusted ) {
 			entity.load();
-		}
-
-		if( cachable ) {
-			logger.debug( "Storing " + fqname + " in cache." );
-			entities.put( fqname, entity );
 		}
 
 		/* Create the vob object */
@@ -272,22 +189,31 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	}
 
 	/**
-	 * Default PostProcess method. If an entity needs post processing of its
-	 * creation, this method should be overridden.
+	 * Initialize the UCM entity. This is a base implementation, storing the short name and pvob.
 	 */
-	void postProcess() {
-		/* NOP, should be overridden */
+	protected void initialize() {
+		Matcher match = pattern_std_fqname.matcher( fqname );
+		if( match.find() ) {
+			shortname = match.group( 2 );
+			pvob = new PVob( match.group( 3 ) );
+		} else {
+			throw new UCMEntityNotInitializedException( fqname );
+		}
 	}
 
 	/**
 	 * Default load functionality for the entity. Every UCM entity should
 	 * implement this method itself.
+	 * @return 
 	 * 
-	 * @throws UCMException
+	 * @throws UnableToLoadEntityException 
+	 * @throws UCMEntityNotFoundException 
 	 */
-	public void load() throws UCMException {
+	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException {
 		logger.warning( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
+		
+		return this;
 	}
 	
 	public LabelStatus getLabelStatusFromString( String ls ) {
@@ -308,76 +234,11 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	/* Syntactic static helper methods for retrieving entity objects */
 
-	public static Activity getActivity( String name ) throws UCMException {
-		return getActivity( name, true );
-	}
-
-	public static Activity getActivity( String name, boolean trusted ) throws UCMException {
-		if( !name.startsWith( "activity:" ) ) {
-			name = "activity:" + name;
-		}
-		Activity entity = (Activity) UCMEntity.getEntity( name, trusted );
-		return entity;
-	}
-	
-	public static Activity getActivity( String name, PVob pvob, boolean trusted ) throws UCMException {
-		if( !name.startsWith( "activity:" ) ) {
-			name = "activity:" + name;
-		}
-		Activity entity = (Activity) UCMEntity.getEntity( name + "@" + pvob, trusted );
-		return entity;
-	}
-
-	public static Baseline getBaseline( String name ) throws UCMException {
-		return getBaseline( name, true );
-	}
-
-	/**
-	 * Retrieve an Baseline object.
-	 * 
-	 * @param name
-	 *            Fully qualified name
-	 * @param trusted
-	 *            If not trusted, the entity's content is loaded from clear
-	 *            case.
-	 * @return An Baseline object
-	 */
-	public static Baseline getBaseline( String name, boolean trusted ) throws UCMException {
-		if( !name.startsWith( "baseline:" ) ) {
-			name = "baseline:" + name;
-		}
-		Baseline entity = (Baseline) UCMEntity.getEntity( name, trusted );
-		return entity;
-	}
-	
-	public static Baseline getBaseline( String name, PVob pvob, boolean trusted ) throws UCMException {
-		if( !name.startsWith( "baseline:" ) ) {
-			name = "baseline:" + name;
-		}
-		Baseline entity = (Baseline) UCMEntity.getEntity( name + "@" + pvob, trusted );
-		return entity;
-	}
-
-	public static Component getComponent( String name ) throws UCMException {
-		return getComponent( name, true );
-	}
 
 
-	public static Component getComponent( String name, PVob pvob, boolean trusted ) throws UCMException {
-		if( !name.startsWith( "component:" ) ) {
-			name = "component:" + name;
-		}
-		Component entity = (Component) UCMEntity.getEntity( name + "@" + pvob, trusted );
-		return entity;
-	}
-	
-	public static Component getComponent( String name, boolean trusted ) throws UCMException {
-		if( !name.startsWith( "component:" ) ) {
-			name = "component:" + name;
-		}
-		Component entity = (Component) UCMEntity.getEntity( name, trusted );
-		return entity;
-	}
+
+
+
 
 	public static HyperLink getHyperLink( String name ) throws UCMException {
 		return getHyperLink( name, true );
@@ -425,25 +286,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	
 	
-	public static Stream getStream( String name ) throws UCMException {
-		return getStream( name, true );
-	}
-
-	public static Stream getStream( String name, boolean trusted ) throws UCMException {
-		if( !name.startsWith( "stream:" ) ) {
-			name = "stream:" + name;
-		}
-		Stream entity = (Stream) UCMEntity.getEntity( name, trusted );
-		return entity;
-	}
-	
-	public static Stream getStream( String name, PVob pvob, boolean trusted ) throws UCMException {
-		if( !name.startsWith( "stream:" ) ) {
-			name = "stream:" + name;
-		}
-		Stream entity = (Stream) UCMEntity.getEntity( name + "@" + pvob, trusted );
-		return entity;
-	}
 
 	/* Tag stuff */
 
@@ -539,8 +381,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 * 
 	 * @return A String
 	 * @throws UCMException
+	 * @throws UnableToLoadEntityException 
 	 */
-	public String stringify() throws UCMException {
+	public String stringify() throws UnableToLoadEntityException {
 		StringBuffer sb = new StringBuffer();
 
 		sb.append( this.fqname + ":" + linesep );

@@ -10,8 +10,8 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.changeset.ChangeSet;
 import net.praqma.clearcase.changeset.ChangeSet2;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.interfaces.Diffable;
-import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.debug.Logger;
 
@@ -66,7 +66,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	private static final Pattern rx_findAddedElements = Pattern.compile( qfs + ".*?" + qfs + "(\\d+)" + qfs + "(.*?)" + qfs );
 	private static final Pattern rx_findRevision = Pattern.compile( qfs + "(\\d+)$" );
 
-	void postProcess() {
+	protected void initialize() {
 		String fqname = this.fqname.matches( "^\\S:\\\\.*" ) ? this.fqname : System.getProperty( "user.dir" ) + filesep + this.fqname;
 
 		this.fqname = fqname;
@@ -123,14 +123,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	public String blame() throws UCMException {
 		return this.getUser();
 	}
-
-	@Deprecated
-	public String getFileAsString() throws UCMException {
-		if( !loaded ) load();
-
-		return this.fullfile;
-	}
-
 
 	public String getVersion() throws UCMException {
 		if( !loaded ) load();

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.*;
 
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 
 public class StreamTest {
 	@BeforeClass

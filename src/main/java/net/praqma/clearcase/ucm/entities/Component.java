@@ -4,13 +4,21 @@ import java.io.File;
 import java.util.List;
 
 import net.praqma.clearcase.PVob;
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.util.debug.Logger;
+import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Component extends UCMEntity {
 	
 	private static final long serialVersionUID = -6186110079026697257L;
 	private transient static Logger logger = Logger.getLogger();
+	
+	private static final String rx_component_load = "\\s*Error: component not found\\s*";
 	
 	/* Component specific fields */
 
@@ -28,32 +36,68 @@ public class Component extends UCMEntity {
 		return new Component();
 	}
 
-	public void load() throws UCMException {
-		context.loadComponent( this );
+	public UCMEntity load() throws UCMEntityNotFoundException, UnableToLoadEntityException {
+		String cmd = "describe -fmt %[name]p " + this;
+		try {
+			Cleartool.run( cmd );
+		} catch( AbnormalProcessTerminationException e ) {
+			if( e.getMessage().matches( rx_component_load ) ) {
+				//throw new UCMException( "The component \"" + component + "\", does not exist.", UCMType.LOAD_FAILED );
+				throw new UCMEntityNotFoundException( this, e );
+			} else {
+				//throw new UCMException( e.getMessage(), e.getMessage(), UCMType.LOAD_FAILED );
+				throw new UnableToLoadEntityException( this, e );
+			}
+		}
+
+		return this;
 	}
 
-	public static Component create( String name, PVob pvob, String root, String comment, File view ) throws UCMException {
-		context.createComponent( name, pvob, root, comment, view );
+	public static Component create( String name, PVob pvob, String root, String comment, File view ) throws UnableToCreateEntityException {
+		//context.createComponent( name, pvob, root, comment, view );
+		
+		String cmd = "mkcomp" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( root != null ? " -root " + root : " -nroot" ) + " " + name + "@" + pvob;
 
-		return UCMEntity.getComponent( name, pvob, true );
+		try {
+			Cleartool.run( cmd, view );
+		} catch( Exception e ) {
+			//throw new UCMException( e.getMessage(), UCMType.CREATION_FAILED );
+			throw new UnableToCreateEntityException( Component.class, e );
+		}
+
+		return get( name, pvob, true );
 	}
 
-	public String getRootDir() throws UCMException {
-		return context.getRootDir( this );
+	public String getRootDir() throws CleartoolException {
+		//return context.getRootDir( this );
+		String cmd = "desc -fmt %[root_dir]p " + this;
+		try {
+			return Cleartool.run( cmd ).stdoutBuffer.toString();
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new CleartoolException( "Unable to get rootdir: " + e.getMessage(), e );
+		}
 	}
 
-	public List<Baseline> getBaselines( Stream stream ) throws UCMException {
-		logger.debug( "Getting Baselines from " + stream.getFullyQualifiedName() + " and " + getFullyQualifiedName() );
-
-		return UCM.context.getBaselines( stream, this, null, getPvobString() );
-		//return new BaselineList( this, stream, null );
+	
+	
+	public static Component get( String name ) {
+		return get( name, true );
 	}
 
-	public List<Baseline> getBaselines( Stream stream, Project.Plevel plevel ) throws UCMException {
-		logger.debug( "Getting Baselines from " + stream.getFullyQualifiedName() + " and " + this.getFullyQualifiedName() + " with plevel " + plevel );
-
-		return UCM.context.getBaselines( stream, this, plevel, getPvobString() );
-		//return new BaselineList( this, stream, plevel );
+	public static Component get( String name, PVob pvob, boolean trusted ) {
+		if( !name.startsWith( "component:" ) ) {
+			name = "component:" + name;
+		}
+		Component entity = (Component) UCMEntity.getEntity( Component.class, name + "@" + pvob, trusted );
+		return entity;
+	}
+	
+	public static Component get( String name, boolean trusted ) {
+		if( !name.startsWith( "component:" ) ) {
+			name = "component:" + name;
+		}
+		Component entity = (Component) UCMEntity.getEntity( Component.class, name, trusted );
+		return entity;
 	}
 
 }

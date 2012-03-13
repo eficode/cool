@@ -3,7 +3,7 @@ package net.praqma.cli;
 import java.io.File;
 import java.io.IOException;
 
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;

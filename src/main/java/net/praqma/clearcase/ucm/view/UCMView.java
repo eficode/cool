@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Map;
 
-import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.UCMException.UCMType;
+import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;

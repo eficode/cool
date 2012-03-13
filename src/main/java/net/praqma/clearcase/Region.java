@@ -2,7 +2,7 @@ package net.praqma.clearcase;
 
 import java.util.List;
 
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.ucm.view.UCMView;
 
 public class Region extends Cool {

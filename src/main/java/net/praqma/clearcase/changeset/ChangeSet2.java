@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Set;
 
 import net.praqma.clearcase.Cool;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.interfaces.Diffable;
-import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.entities.Version.Status;
 import net.praqma.util.debug.Logger;

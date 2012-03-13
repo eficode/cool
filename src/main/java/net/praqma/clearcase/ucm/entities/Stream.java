@@ -7,9 +7,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.interfaces.Diffable;
-import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.entities.Project.Plevel;
+import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.debug.Logger;
 
@@ -91,15 +92,15 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		this.loaded = true;
 	}
 
-	public List<Baseline> getBaselines( Plevel plevel ) throws UCMException {
+	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UCMException {
 		return context.getBaselines( this, getSingleTopComponent(), plevel, pvob );
 	}
 
-	public List<Baseline> getBaselines( Component component, Plevel plevel ) throws UCMException {
+	public List<Baseline> getBaselines( Component component, PromotionLevel plevel ) throws UCMException {
 		return context.getBaselines( this, component, plevel, pvob );
 	}
 
-	public List<Baseline> getBaselines( Component component, Plevel plevel, Date date ) throws UCMException {
+	public List<Baseline> getBaselines( Component component, PromotionLevel plevel, Date date ) throws UCMException {
 		List<Baseline> baselines = context.getBaselines( this, component, plevel, pvob );
 
 		if( date == null ) {
@@ -328,5 +329,28 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
     public void deliverRollBack(String oldViewTag, File viewRoot) throws UCMException{
         context.remoteDeliverCancel(oldViewTag, this.getFullyQualifiedName(), viewRoot);
     }
+    
+    
+    
+
+	public static Stream get( String name ) {
+		return get( name, true );
+	}
+
+	public static Stream get( String name, boolean trusted ) {
+		if( !name.startsWith( "stream:" ) ) {
+			name = "stream:" + name;
+		}
+		Stream entity = (Stream) UCMEntity.getEntity( Stream.class, name, trusted );
+		return entity;
+	}
+	
+	public static Stream get( String name, PVob pvob, boolean trusted ) {
+		if( !name.startsWith( "stream:" ) ) {
+			name = "stream:" + name;
+		}
+		Stream entity = (Stream) UCMEntity.getEntity( Stream.class, name + "@" + pvob, trusted );
+		return entity;
+	}
 
 }

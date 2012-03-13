@@ -21,15 +21,19 @@ import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.changeset.ChangeSetElement2;
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UnableToListProjectsException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnknownUserException;
+import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.UnknownVobException;
 import net.praqma.clearcase.interfaces.Diffable;
-import net.praqma.clearcase.ucm.UCMException;
-import net.praqma.clearcase.ucm.UCMException.UCMType;
 
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
-import net.praqma.clearcase.ucm.entities.Project.Plevel;
+import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
@@ -249,33 +253,33 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	private static final String rx_entityNotFound = "cleartool: Error: \\w+ not found: \"\\S+\"\\.";
 
-	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException {
+	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException, UCMEntityNotFoundException, UnknownUserException, UnknownVobException {
 		changeOwnership( entity.getFullyQualifiedName(), username, viewContext );
 	}
 
-	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException {
+	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException, UCMEntityNotFoundException, UnknownUserException, UnknownVobException {
 		String cmd = "protect -chown " + username + " \"" + fqname + "\"";
 
 		try {
 			Cleartool.run( cmd, viewContext );
 		} catch( AbnormalProcessTerminationException e ) {
 			if( e.getMessage().contains( "Unable to determine VOB for pathname" ) ) {
-				throw new UCMException( "Unkown Vob: " + e.getMessage(), e, UCMType.UNKOWN_VOB );
+				throw new UnknownVobException( e );
 			}
 
 			if( e.getMessage().contains( "Unknown user name" ) ) {
-				throw new UCMException( "Unkown user: " + username, e, UCMType.UNKNOWN_USER );
+				throw new UnknownUserException( username, e );
 			}
 
 			if( e.getMessage().matches( rx_entityNotFound ) ) {
-				throw new UCMException( "Entity not found: " + fqname, e, UCMType.ENTITY_NOT_FOUND );
+				throw new UCMEntityNotFoundException( fqname, e );
 			}
 
 			if( e.getMessage().contains( " ClearCase object not found" ) ) {
-				throw new UCMException( "Entity not found: " + fqname, e, UCMType.ENTITY_NOT_FOUND );
+				throw new UCMEntityNotFoundException( fqname, e );
 			}
 
-			throw new UCMException( e, UCMType.DEFAULT );
+			throw new UCMException( e );
 		}
 	}
 
@@ -314,7 +318,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
 
-	public void createProject( String name, String root, PVob pvob, int policy, String comment, Component... mcomps ) throws UCMException {
+	public void createProject( String name, String root, PVob pvob, int policy, String comment, Component... mcomps ) throws UnableToCreateEntityException {
 		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + " -modcomp ";
 		for( Component c : mcomps ) {
 			cmd += c.getFullyQualifiedName() + " ";
@@ -327,7 +331,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		try {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not create Project " + root + ": " + e.getMessage(), e, UCMType.CREATION_FAILED );
+			//throw new UCMException( "Could not create Project " + root + ": " + e.getMessage(), e, UCMType.CREATION_FAILED );
+			throw new UnableToCreateEntityException( root, e );
 		}
 	}
 
@@ -335,7 +340,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 * or /f %i in ('cleartool lsproject -s -invob \Cool_PVOB') do @cleartool
 	 * desc -fmt "project:%i@\Cool_PVOB %[istream]Xp\n" project:%i@\Cool_PVOB
 	 */
-	public List<Project> getProjects( PVob vob ) throws UCMException {
+	public List<Project> getProjects( PVob vob ) throws UnableToListProjectsException {
 		logger.debug( "Getting projects for " + vob );
 		String cmd = "lsproject -s -invob " + vob.toString();
 
@@ -344,7 +349,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		try {
 			projs = Cleartool.run( cmd ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( e.getMessage(), e.getMessage() );
+			//throw new UCMException( e.getMessage(), e.getMessage() );
+			throw new UnableToListProjectsException( e );
 		}
 
 		logger.debug( projs );
@@ -365,12 +371,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 * @throws UCMException
 	 ************************************************************************/
 	public String loadActivity( String activity ) throws UCMException {
-		String cmd = "describe -fmt %u " + activity;
-		try {
-			return Cleartool.run( cmd ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( e.getMessage(), e.getMessage() );
-		}
+
 	}
 
 	public void createActivity( String name, PVob pvob, boolean force, String comment, File view ) throws UCMException {
@@ -389,14 +390,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 * @throws UCMException
 	 ************************************************************************/
 	public String loadBaseline( String baseline ) throws UCMException {
-		logger.debug( "Loading " + baseline );
 
-		String cmd = "desc -fmt %n" + Cool.delim + "%X[component]p" + Cool.delim + "%X[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u" + Cool.delim + "%Nd" + Cool.delim + "%[label_status]p " + baseline;
-		try {
-			return Cleartool.run( cmd ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not load the baseline " + baseline, e.getMessage() );
-		}
 	}
 
 	public List<String> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException {
@@ -449,81 +443,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private final Pattern rx_baselineDiff = Pattern.compile( "^(\\S+)\\s*(.*?)\\s*(.*)\\s*$" );
 
 	public List<Version> baselineDifferences( Baseline bl1, Baseline bl2, boolean merge, SnapshotView view ) throws UCMException {
-		String cmd = "diffbl -version " + ( !merge ? "-nmerge " : "" ) + ( bl1 != null ? bl1.getFullyQualifiedName() : "-pre " ) + " " + bl2.getFullyQualifiedName();
 
-		List<String> lines = null;
-
-		try {
-			lines = Cleartool.run( cmd, view.getViewRoot() ).stdoutList;
-		} catch( Exception e ) {
-			throw new UCMException( "Could not retreive the differences of " + bl1 + " and " + bl2 );
-		}
-
-		int length = view.getViewRoot().getAbsoluteFile().toString().length();
-		List<Version> versions = new ArrayList<Version>();
-
-		for( int i = 4; i < lines.size(); i++ ) {
-			Matcher m = rx_baselineDiff.matcher( lines.get( i ) );
-			if( m.find() ) {
-
-				String f = m.group( 3 ).trim();
-				logger.debug( "F: " + f );
-				Version v = (Version) UCMEntity.getEntity( f );
-				v.setSFile( v.getFileAsString().substring( length ) );
-
-				if( m.group( 1 ).equals( ">>" ) ) {
-					v.setStatus( Status.ADDED );
-				} else if( m.group( 1 ).equals( "<<" ) ) {
-					v.setStatus( Status.DELETED );
-				} else {
-					v.setStatus( Status.CHANGED );
-				}
-
-				v.load();
-				versions.add( v );
-			}
-		}
-
-		return versions;
 	}
 
 	public boolean createBaseline( String fqname, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws UCMException {
-		String cmd = "mkbl -component " + component.getFullyQualifiedName() + ( identical ? " -identical" : "" ) + ( incremental ? " -incremental" : " -full" );
 
-		if( depends != null ) {
-			cmd += " -adepends_on";
-			for( Component c : depends ) {
-				cmd += " " + c.getFullyQualifiedName() + ",";
-			}
-			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
-		}
-
-		if( activities != null ) {
-			cmd += " -activities";
-			for( Activity a : activities ) {
-				cmd += " " + a.getFullyQualifiedName() + ",";
-			}
-			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
-		}
-
-		cmd += " " + fqname;
-
-		try {
-			String out = "";
-			if( view != null ) {
-				out = Cleartool.run( cmd, view ).stdoutBuffer.toString();
-			} else {
-				out = Cleartool.run( cmd ).stdoutBuffer.toString();
-			}
-			logger.debug( "Baseline output: " + out );
-			// return !out.matches(
-			// "(?s).*No changes in component \".*?\" since last baseline; no baseline created.*"
-			// ); //Created baseline
-			return out.matches( "(?s).*Created baseline \".*?\" in component \".*?\".*" ); // Created
-																							// baseline
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not create Baseline " + fqname, e.getMessage() );
-		}
 	}
 
 	@Override
@@ -547,83 +471,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final Pattern rx_checkProgress = Pattern.compile( "which is currently involved in an.*?active deliver or rebase operation", Pattern.DOTALL );
 
 	public String deliver( String baseline, String stream, String target, File context, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException {
-		String cmd = "deliver" + ( force ? " -force" : "" ) + ( complete ? " -complete" : "" ) + ( abort ? " -abort" : "" );
-		cmd += ( baseline != null ? " -baseline " + baseline : "" );
-		cmd += ( stream != null ? " -stream " + stream : "" );
-		cmd += ( target != null ? " -target " + target : "" );
-		cmd += ( viewtag != null ? " -to " + viewtag : "" );
-
-		try {
-			String result = Cleartool.run( cmd, context, true ).stdoutBuffer.toString();
-			return result;
-		} catch( AbnormalProcessTerminationException e ) {
-			logger.warning( "Could not deliver to target " + target + ": " + e.getMessage() );
-			logger.warning( e );
-			logger.warning( "---- ENDS HERE ----" );
-
-			/* Determine cause */
-			if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "requires child development streams to rebase to recommended baselines before performing deliver operation" ) ) {
-				logger.warning( "Deliver requires rebase" );
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_REQUIRES_REBASE );
-			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "cleartool: Error: Unable to perform merge" ) ) {
-				logger.warning( "Merge error" );
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.MERGE_ERROR );
-			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "does not allow deliver operations from streams in other" ) ) {
-				logger.warning( "Interproject deliver denied" );
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.INTERPROJECT_DELIVER_DENIED );
-			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "which is currently involved in an active deliver or rebase operation.  The set activity of this view may not be changed until the operation has completed." ) ) {
-				logger.warning( "Deliver already in progress" );
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS );
-			} else if( e.getMessage().contains( "active deliver or rebase operation.  The set activity of this view may not be" ) ) {
-				logger.warning( "Deliver already in progress" );
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS );
-			}
-
-			if( e.getMessage().matches( "(?s)active deliver or rebase operation.  The set activity of this view may not be" ) ) {
-				logger.warning( "Deliver already in progress" );
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS );
-			}
-
-			Matcher m2 = rx_checkProgress.matcher( e.getMessage() );
-			if( m2.find() ) {
-				logger.warning( "Deliver already in progress" );
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS );
-			}
-
-			/**
-			 * in case there is an deliver in progres on the target stream
-			 */
-			if( e.getMessage().contains( "Deliver operation" ) ) {
-				logger.warning( "Deliver already in progress" );
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS );
-			}
-
-			/* Match for merge errors */
-			Matcher m = rx_checkMergeError.matcher( e.getMessage() );
-			if( m.find() ) {
-				logger.warning( "Merge error" );
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.MERGE_ERROR );
-			}
-
-			/* Match for denied deliveries */
-			m = rx_checkDeliverDenied.matcher( e.getMessage() );
-			if( m.find() ) {
-				logger.warning( "Interproject deliver denied" );
-				throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.INTERPROJECT_DELIVER_DENIED );
-			}
-
-			/* If nothing applies.... */
-			throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage() );
-		}
+		
 	}
 
 	public void cancelDeliver( File viewcontext, Stream stream ) throws UCMException {
-		try {
-			String cmd = "deliver -cancel -force" + ( stream != null ? " -stream " + stream.getFullyQualifiedName() : "" );
-			Cleartool.run( cmd, viewcontext );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not cancel deliver: " + e.getMessage(), e.getMessage() );
-		}
+
 	}
 
 	public String deliverStatus( String stream ) throws UCMException {
@@ -641,48 +493,21 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final String rx_component_load = "\\s*Error: component not found\\s*";
 
 	@Override
-	public List<String> getBaselines( String component, String stream, Plevel plevel ) throws UCMException {
-		String cmd = "lsbl -s -component " + component + " -stream " + stream + ( plevel != null ? " -level " + plevel.toString() : "" );
-		try {
-			return Cleartool.run( cmd ).stdoutList;
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to get baselines: " + e.getMessage() );
-		}
+	public List<String> getBaselines( String component, String stream, PromotionLevel plevel ) throws UCMException {
+
 	}
 
 	@Override
 	public String getRootDir( String component ) throws UCMException {
-		String cmd = "desc -fmt %[root_dir]p " + component;
-		try {
-			return Cleartool.run( cmd ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to get rootdir: " + e.getMessage() );
-		}
+
 	}
 
 	public String loadComponent( String component ) throws UCMException {
-		String cmd = "describe -fmt %[name]p " + component;
-		try {
-			Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			if( e.getMessage().matches( rx_component_load ) ) {
-				throw new UCMException( "The component \"" + component + "\", does not exist.", UCMType.LOAD_FAILED );
-			} else {
-				throw new UCMException( e.getMessage(), e.getMessage(), UCMType.LOAD_FAILED );
-			}
-		}
 
-		return "";
 	}
 
 	public void createComponent( String name, PVob pvob, String root, String comment, File view ) throws UCMException {
-		String cmd = "mkcomp" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( root != null ? " -root " + root : " -nroot" ) + " " + name + "@" + pvob;
 
-		try {
-			Cleartool.run( cmd, view );
-		} catch( Exception e ) {
-			throw new UCMException( e.getMessage(), UCMType.CREATION_FAILED );
-		}
 	}
 
 	/************************************************************************

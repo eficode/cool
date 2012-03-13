@@ -9,15 +9,20 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.changeset.ChangeSet;
 import net.praqma.clearcase.changeset.ChangeSet2;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.UnableToListProjectsException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnknownUserException;
+import net.praqma.clearcase.exceptions.UnknownVobException;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.clearcase.ucm.UCMException;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
-import net.praqma.clearcase.ucm.entities.Project.Plevel;
+import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
@@ -36,15 +41,15 @@ interface UCMStrategyInterface
 	public void getDirectoryStatus( Version version, ChangeSet2 changeset ) throws UCMException;
 	public List<String> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException;
 	public String getObjectId( String fqname, File viewContext ) throws UCMException;
-	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException;
-	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException;
+	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException, UCMEntityNotFoundException, UnknownUserException, UnknownVobException;
+	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException, UCMEntityNotFoundException, UnknownUserException, UnknownVobException;
 
 	/* Project */
 	String getProjectFromStream( String stream ) throws UCMException;
 	List<String> getModifiableComponents( String project ) throws UCMException;
 	public String loadProject( String project ) throws UCMException;
-	public List<Project> getProjects( PVob vob ) throws UCMException;
-	public void createProject( String name, String root, PVob pvob, int policy, String comment, Component ... mcomps ) throws UCMException;
+	public List<Project> getProjects( PVob vob ) throws UnableToListProjectsException;
+	public void createProject( String name, String root, PVob pvob, int policy, String comment, Component ... mcomps ) throws UnableToCreateEntityException;
 
 	/* Activity */
 	public String loadActivity( String activity ) throws UCMException;
@@ -64,7 +69,7 @@ interface UCMStrategyInterface
 	public String deliverStatus( String stream ) throws UCMException;
 
 	/* Component */
-	public List<String> getBaselines( String component, String stream, Plevel plevel ) throws UCMException;
+	public List<String> getBaselines( String component, String stream, PromotionLevel plevel ) throws UCMException;
 	public String getRootDir( String component ) throws UCMException;
 	public String loadComponent( String component ) throws UCMException;
 	public void createComponent( String name, PVob pvob, String root, String comment, File view ) throws UCMException;

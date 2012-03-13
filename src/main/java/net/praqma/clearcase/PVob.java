@@ -1,29 +1,31 @@
 package net.praqma.clearcase;
 
-import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.exceptions.UCMException;
 
 public class PVob extends Vob {
 
 	private String localPath;
 	private String globalPath;
+	
+	public static final String rx_format = "\\S+";
 
-	public PVob(String name) {
-		super(name);
-		
+	public PVob( String name ) {
+		super( name );
+
 		this.projectVob = true;
 	}
 
 	public static PVob create( String name, String path, String comment ) throws UCMException {
-		context.createVob(name, true, path, comment);
-		PVob pvob = new PVob(name);
+		context.createVob( name, true, path, comment );
+		PVob pvob = new PVob( name );
 		pvob.storageLocation = path;
-		
+
 		return pvob;
 	}
-	
+
 	public static PVob get( String pvobname ) {
 		try {
-			PVob pvob = new PVob(pvobname);
+			PVob pvob = new PVob( pvobname );
 			pvob.load();
 			return pvob;
 		} catch( Exception e ) {
