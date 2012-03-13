@@ -1,31 +1,18 @@
 package net.praqma.clearcase.exceptions;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
+import net.praqma.clearcase.PVob;
 
-import net.praqma.util.debug.Logger;
-
-//public class UCMException extends RuntimeException
 public class UnableToListProjectsException extends CleartoolException {
-	/**
-	 * 
-	 */
-	public UnableToListProjectsException() {
-		super();
-	}
 
-	public UnableToListProjectsException( String s ) {
-		super( s );
-	}
+	private PVob pvob;
 	
-	public UnableToListProjectsException( Exception e ) {
+	public UnableToListProjectsException( PVob pvob, Exception e ) {
 		super( e );
-	}
-	
-	public UnableToListProjectsException( String s, Exception e ) {
-		super( s, e );
+		this.pvob = pvob;
 	}
 
 	
+	public PVob getPvob() {
+		return pvob;
+	}
 }

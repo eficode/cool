@@ -8,21 +8,32 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.NoSingleTopComponentException;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
+import net.praqma.clearcase.exceptions.UnableToListProjectsException;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
+import net.praqma.clearcase.ucm.utils.Baselines;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.debug.Logger;
+import net.praqma.util.execute.AbnormalProcessTerminationException;
+import net.praqma.util.execute.CmdResult;
 
 /**
  * This is the OO implementation of the ClearCase entity Stream
- *
+ * 
  * @author wolfgang
- *
+ * 
  */
 public class Stream extends UCMEntity implements Diffable, Serializable {
 
-	private static final long serialVersionUID = 112121212L;
+	private static final String rx_stream_load = "\\s*Error: stream not found\\s*";
 
 	transient static private Logger logger = Logger.getLogger();
 
@@ -32,7 +43,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	private Stream defaultTarget = null;
 	private boolean readOnly = true;
 	private Baseline foundation;
-	
+
 	private Stream parent;
 
 	public Stream() {
@@ -42,7 +53,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	/**
 	 * This method is only available to the package, because only UCMEntity
 	 * should be allowed to call it.
-	 *
+	 * 
 	 * @return A new Stream Entity
 	 */
 	static Stream getEntity() {
@@ -52,7 +63,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	/**
 	 * Create a new stream, given a parent Stream, a fully qualified name for
 	 * the new Stream and whether the Stream is read only or not
-	 *
+	 * 
 	 * @param parent
 	 *            The parent Stream
 	 * @param nstream
@@ -60,48 +71,116 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * @param readonly
 	 *            Whether the new Stream is read only or not
 	 * @return A new Stream given the parameters
+	 * @throws UnableToCreateEntityException
 	 */
-	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline baseline ) throws UCMException {
-		UCMEntity.getNamePart( nstream );
+	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline baseline ) throws UnableToCreateEntityException {
+		//UCMEntity.getNamePart( nstream );
 
 		logger.debug( "PSTREAM:" + parent.getShortname() + ". NSTREAM: " + nstream + ". BASELINE: " + baseline.getShortname() );
 
-		if( parent == null || nstream == null ) {
-			throw new UCMException( "Incorrect CreateStream() parameters" );
+		//Stream stream = context.createStream( parent, nstream, readonly, baseline );
+		//strategy.createStream( pstream.getFullyQualifiedName(), nstream, readonly, ( baseline != null ? baseline.getFullyQualifiedName() : null ) );
+
+		logger.debug( "Creating stream " + nstream + " as child of " + parent );
+
+		String cmd = "mkstream -in " + parent + " " + ( baseline != null ? "-baseline " + baseline + " " : "" ) + ( readonly ? "-readonly " : "" ) + nstream;
+		try {
+			Cleartool.run( cmd );
+		} catch( Exception e ) {
+			//throw new UCMException( "Could not create stream: " + e.getMessage() );
+			throw new UnableToCreateEntityException( Stream.class, e );
 		}
 
-		Stream stream = context.createStream( parent, nstream, readonly, baseline );
-		
+		Stream stream = Stream.get( nstream );
+
+		stream.setCreated( true );
+
 		if( parent != null ) {
 			stream.setParent( parent );
 		}
-		
+
 		return stream;
 	}
 
-	public static Stream createIntegration( String name, Project project, Baseline baseline ) throws UCMException {
-		context.createIntegrationStream( name, project, baseline );
+	public static Stream createIntegration( String name, Project project, Baseline baseline ) throws UnableToCreateEntityException {
+		//context.createIntegrationStream( name, project, baseline );
 
-		return UCMEntity.getStream( name, project.getPVob(), true );
+		String cmd = "mkstream -integration -in " + project.getFullyQualifiedName() + " -baseline " + baseline.getFullyQualifiedName() + " " + name + "@" + project.getPVob();
+
+		try {
+			Cleartool.run( cmd );
+		} catch( AbnormalProcessTerminationException e ) {
+			//throw new UCMException( "Could not create integration stream: " + e.getMessage(), UCMType.CREATION_FAILED );
+			throw new UnableToCreateEntityException( Stream.class, e );
+		}
+
+		return Stream.get( name, project.getPVob(), true );
 	}
 
-	public void load() throws UCMException {
+	public UCMEntity load() throws UCMEntityNotFoundException, UnableToLoadEntityException {
 		logger.debug( "loading stream" );
-		context.loadStream( this );
+		//context.loadStream( this );
+
+		List<String> data = null;
+
+		String cmd = "describe -fmt %[name]p\\n%[project]Xp\\n%X[def_deliver_tgt]p\\n%[read_only]p\\n%[found_bls]Xp " + this;
+		try {
+			data = Cleartool.run( cmd ).stdoutList;
+		} catch( AbnormalProcessTerminationException e ) {
+			if( e.getMessage().matches( rx_stream_load ) ) {
+				//throw new UCMException( "The component \"" + this + "\", does not exist.", UCMType.LOAD_FAILED );
+				throw new UCMEntityNotFoundException( this, e );
+			} else {
+				//throw new UCMException( e.getMessage(), e.getMessage(), UCMType.LOAD_FAILED );
+				throw new UnableToLoadEntityException( this, e );
+			}
+		}
+
+		logger.debug( "I got: " + data );
+
+		/* Set project */
+		setProject( Project.get( data.get( 1 ) ) );
+
+		/* Set default target, if exists */
+		if( !data.get( 2 ).trim().equals( "" ) ) {
+			try {
+				setDefaultTarget( Stream.get( data.get( 2 ) ) );
+			} catch( Exception e ) {
+				logger.debug( "The Stream did not have a default target." );
+			}
+		}
+
+		/* Set read only */
+		if( data.get( 3 ).length() > 0 ) {
+			setReadOnly( true );
+		} else {
+			setReadOnly( false );
+		}
+
+		/* Set foundation baseline */
+		try {
+			setFoundationBaseline( Baseline.get( data.get( 4 ) ) );
+		} catch( Exception e ) {
+			logger.warning( "Could not get the foundation baseline: " + e.getMessage() );
+		}
 
 		this.loaded = true;
+
+		return this;
 	}
 
-	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UCMException {
-		return context.getBaselines( this, getSingleTopComponent(), plevel, pvob );
+	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UnableToListBaselinesException {
+		//return context.getBaselines( this, getSingleTopComponent(), plevel, pvob );
+		return Baselines.get( this, getSingleTopComponent(), plevel, pvob );
 	}
 
-	public List<Baseline> getBaselines( Component component, PromotionLevel plevel ) throws UCMException {
-		return context.getBaselines( this, component, plevel, pvob );
+	public List<Baseline> getBaselines( Component component, PromotionLevel plevel ) throws UnableToListBaselinesException {
+		//return context.getBaselines( this, component, plevel, pvob );
+		return Baselines.get( this, component, plevel, pvob );
 	}
 
-	public List<Baseline> getBaselines( Component component, PromotionLevel plevel, Date date ) throws UCMException {
-		List<Baseline> baselines = context.getBaselines( this, component, plevel, pvob );
+	public List<Baseline> getBaselines( Component component, PromotionLevel plevel, Date date ) throws UnableToListBaselinesException {
+		List<Baseline> baselines = Baselines.get( this, component, plevel, pvob );
 
 		if( date == null ) {
 			return baselines;
@@ -120,15 +199,29 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return baselines;
 	}
 
-	public List<Stream> getChildStreams() throws UCMException {
+	public List<Stream> getChildStreams() {
 
-		List<Stream> res = new ArrayList<Stream>();
+		List<Stream> streams = new ArrayList<Stream>();
 		try {
-			res = context.getChildStreams( this );
-		} catch (UCMException e) {
+			CmdResult res = null;
+
+			String cmd = "desc -fmt %[dstreams]CXp " + this;
+			try {
+				res = Cleartool.run( cmd );
+			} catch( AbnormalProcessTerminationException e ) {
+				throw new UCMEntityNotFoundException( this, e );
+			}
+
+			String[] strms = res.stdoutBuffer.toString().split( ", " );
+			for( String stream : strms ) {
+				streams.add( Stream.get( stream ) );
+			}
+
+		} catch( UCMEntityNotFoundException e ) {
 			logger.debug( "The Stream has no child streams" );
 		}
-		return res;
+
+		return streams;
 	}
 
 	public void setProject( Project project ) {
@@ -141,11 +234,12 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 	/**
 	 * For each project return their integration streams
-	 *
+	 * 
 	 * @return
+	 * @throws UnableToListProjectsException 
 	 * @throws UCMException
 	 */
-	public List<Stream> getSiblingStreams() throws UCMException {
+	public List<Stream> getSiblingStreams() throws UnableToListProjectsException {
 		logger.debug( "Getting sibling streams" );
 		List<Project> projects = Project.getProjects( this.getPVob() );
 		List<Stream> streams = new ArrayList<Stream>();
@@ -177,73 +271,123 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 	/**
 	 * Determines whether a Stream exists, given a fully qualified name
-	 *
+	 * 
 	 * @param fqname
 	 *            Fully qualified name
 	 * @return True if the Stream exists, false otherwise
 	 * @throws UCMException
 	 *             Is thrown if the fully qualified name is not a valid name
 	 */
-	public static boolean streamExists( String fqname ) throws UCMException {
-		/* Determine the name of the entity */
-		UCMEntity.getNamePart( fqname );
-
-		return context.streamExists( fqname );
+	public static boolean streamExists( String fqname ) {
+		String cmd = "describe " + fqname;
+		try {
+			Cleartool.run( cmd );
+			return true;
+		} catch( Exception e ) {
+			return false;
+		}
 	}
 
 	public boolean exists() {
-		return context.streamExists( fqname );
+		return streamExists( this.fqname );
 	}
 
-	public void rebase( SnapshotView view, Baseline baseline, boolean complete ) throws UCMException {
-		context.rebaseStream( view, this, baseline, complete );
-	}
 
-	public boolean isRebaseInProgress() throws UCMException {
-		return context.isRebasing( this );
-	}
 
-	public void cancelRebase() throws UCMException {
-		context.cancelRebase( this );
-	}
-
-	public List<Baseline> getRecommendedBaselines() throws UCMException {
+	public List<Baseline> getRecommendedBaselines() throws UnableToListBaselinesException {
 		return getRecommendedBaselines( false );
 	}
 
-	public void generate() throws UCMException {
-		context.genereate( this );
+	public void generate() throws CleartoolException {
+		String cmd = "chstream -generate " + this;
+		try {
+			Cleartool.run( cmd );
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new CleartoolException( e );
+		}
 	}
 
-	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UCMException {
+	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UnableToListBaselinesException {
 		logger.debug( "Getting recommended baselines" );
 
 		if( this.recommendedBaselines == null || force ) {
-			this.recommendedBaselines = context.getRecommendedBaselines( this );
+			//this.recommendedBaselines = context.getRecommendedBaselines( this );
+			ArrayList<Baseline> bls = new ArrayList<Baseline>();
+
+			//String result = strategy.getRecommendedBaselines( stream.getFullyQualifiedName() );
+			String result = "";
+			String cmd = "desc -fmt %[rec_bls]p " + this;
+			try {
+				result = Cleartool.run( cmd ).stdoutBuffer.toString();
+			} catch( AbnormalProcessTerminationException e ) {
+				//throw new UCMException( "Unable to get recommended baselines from " + stream + ": " + e.getMessage() );
+				throw new UnableToListBaselinesException( this, getSingleTopComponent(), null, e );
+			}
+			
+			String[] rs = result.split( " " );
+
+			for( int i = 0; i < rs.length; i++ ) {
+				/* There is something in the element. */
+				if( rs[i].matches( "\\S+" ) ) {
+					// bls.add( (Baseline)UCMEntity.GetEntity( rs[i], true ) );
+					bls.add( Baseline.get( rs[i] + "@" + pvob, true ) );
+				}
+			}
+
+			return bls;
 		}
 
 		return this.recommendedBaselines;
 	}
 
-	public void recommendBaseline( Baseline baseline ) throws UCMException {
-		context.recommendBaseline( this, baseline );
+	public void recommendBaseline( Baseline baseline ) throws CleartoolException {
+		String cmd = "chstream -recommend " + baseline + " " + this;
+		try {
+			Cleartool.run( cmd );
+		} catch( AbnormalProcessTerminationException e ) {
+			//throw new UCMException( "Could not recommend Baseline: " + e.getMessage(), e.getMessage() );
+			throw new CleartoolException( "Unable to recommend " + baseline, e );
+		}
 	}
 
-	public List<Baseline> getLatestBaselines() throws UCMException {
-		return context.getLatestBaselines( this );
+	public List<Baseline> getLatestBaselines() throws CleartoolException {
+		//return context.getLatestBaselines( this );
+		
+		//List<String> bs = strategy.getLatestBaselines( stream.getFullyQualifiedName() );
+		String cmd = "desc -fmt %[latest_bls]Xp " + this;
+		try {
+			String[] t = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
+			List<Baseline> bls = new ArrayList<Baseline>();
+			for( String s : t ) {
+				if( s.matches( "\\S+" ) ) {
+					bls.add( Baseline.get( s.trim() ) );
+				}
+			}
+
+			return bls;
+		} catch( AbnormalProcessTerminationException e ) {
+			//throw new UCMException( "Unable to get latest baseline from " + stream + ": " + e.getMessage() );
+			throw new CleartoolException( "Unable to get latest baselines from " + this, e );
+		}
 	}
 
-	public Component getSingleTopComponent() throws UCMException {
-		List<Baseline> bls = this.getRecommendedBaselines();
+	public Component getSingleTopComponent() throws NoSingleTopComponentException, UnableToLoadEntityException {
+		List<Baseline> bls;
+		try {
+			bls = this.getRecommendedBaselines();
+		} catch( UnableToListBaselinesException e ) {
+			throw new NoSingleTopComponentException( this );
+		}
 
 		if( bls.size() != 1 ) {
-			throw new UCMException( "The Stream " + this.getShortname() + " does not have a single composite component." );
+			//throw new Cleartool( "The Stream " + this.getShortname() + " does not have a single composite component." );
+			throw new NoSingleTopComponentException( this );
 		}
 
 		return bls.get( 0 ).getComponent();
 	}
 
-	public Project getProject() throws UCMException {
+	public Project getProject() throws UCMEntityNotFoundException, UnableToLoadEntityException {
 		if( !this.loaded ) load();
 
 		return this.project;
@@ -251,40 +395,25 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 	/**
 	 * This method returns the default Stream the given Stream will deliver to.
-	 *
+	 * 
 	 * @return A Stream
+	 * @throws UnableToLoadEntityException 
+	 * @throws UCMEntityNotFoundException 
 	 * @throws UCMException
 	 */
-	public Stream getDefaultTarget() throws UCMException {
+	public Stream getDefaultTarget() throws UCMEntityNotFoundException, UnableToLoadEntityException {
 		if( !this.loaded ) {
 			load();
 		}
 		return this.defaultTarget;
 	}
 
-	public boolean deliver( Baseline baseline, Stream target, File viewcontext, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException {
-		try {
-			return context.deliver( baseline, this, target, viewcontext, viewtag, force, complete, abort );
-		} catch (UCMException e) {
-			logger.warning( "Could not deliver baseline: " + e.getMessage() );
-			logger.warning( e );
-			throw e;
-		}
-	}
-
-	public void cancelDeliver( File viewcontext ) throws UCMException {
-		context.cancelDeliver( viewcontext, this );
-	}
-
-	public boolean isDelivering() throws UCMException {
-		return context.isDelivering( this );
-	}
 
 	public void setReadOnly( boolean readOnly ) {
 		this.readOnly = readOnly;
 	}
 
-	public boolean isReadOnly() throws UCMException {
+	public boolean isReadOnly() throws UCMEntityNotFoundException, UnableToLoadEntityException {
 		if( !this.loaded ) load();
 		return readOnly;
 	}
@@ -293,45 +422,46 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		this.foundation = baseline;
 	}
 
-	public Baseline getFoundationBaseline() throws UCMException {
+	public Baseline getFoundationBaseline() throws UCMEntityNotFoundException, UnableToLoadEntityException {
 		if( !this.loaded ) load();
 
 		return this.foundation;
 	}
-	
+
 	public void setParent( Stream parent ) {
 		this.parent = parent;
 	}
-	
+
 	public Stream getParent() {
 		return parent;
 	}
 
-	public String stringify() throws UCMException {
-		if( !this.loaded ) load();
-
+	public String stringify() {
 		StringBuffer sb = new StringBuffer();
+		try {
+			if( !this.loaded ) load();
 
-		sb.append( super.stringify() );
-
-		if( this.recommendedBaselines != null ) {
-			sb.append( "Recommended baselines: " + this.recommendedBaselines.size() + linesep );
-			for( Baseline b : this.recommendedBaselines ) {
-				sb.append( "\t" + b.toString() + linesep );
+			if( this.recommendedBaselines != null ) {
+				sb.append( "Recommended baselines: " + this.recommendedBaselines.size() + linesep );
+				for( Baseline b : this.recommendedBaselines ) {
+					sb.append( "\t" + b.toString() + linesep );
+				}
+			} else {
+				sb.append( "Recommended baselines: Undefined/not loaded" + linesep );
 			}
-		} else {
-			sb.append( "Recommended baselines: Undefined/not loaded" + linesep );
+		} catch( Exception e ) {
+
+		} finally {
+			//sb.append( super.stringify() );
+			sb.insert( 0, super.stringify() );
 		}
 
 		return sb.toString();
 	}
 
-    public void deliverRollBack(String oldViewTag, File viewRoot) throws UCMException{
-        context.remoteDeliverCancel(oldViewTag, this.getFullyQualifiedName(), viewRoot);
-    }
-    
-    
-    
+	public void deliverRollBack( String oldViewTag, File viewRoot ) throws UCMException {
+		context.remoteDeliverCancel( oldViewTag, this.getFullyQualifiedName(), viewRoot );
+	}
 
 	public static Stream get( String name ) {
 		return get( name, true );
@@ -344,7 +474,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		Stream entity = (Stream) UCMEntity.getEntity( Stream.class, name, trusted );
 		return entity;
 	}
-	
+
 	public static Stream get( String name, PVob pvob, boolean trusted ) {
 		if( !name.startsWith( "stream:" ) ) {
 			name = "stream:" + name;

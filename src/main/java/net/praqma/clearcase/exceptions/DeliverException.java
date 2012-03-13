@@ -1,7 +1,6 @@
 package net.praqma.clearcase.exceptions;
 
-import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.Deliver;
 
 public class DeliverException extends CleartoolException {
 	
@@ -14,32 +13,18 @@ public class DeliverException extends CleartoolException {
 	}
 	
 	private Type type;
-	private Baseline baseline;
-	private Stream source;
-	private Stream target;
+	private Deliver deliver;
 	
-	public DeliverException( Baseline b, Stream s, Stream t, Type type, Exception e ) {
+	public DeliverException( Deliver deliver, Type type, Exception e ) {
 		super( e );
-		this.baseline = b;
-		this.source = s;
-		this.target = t;
+		this.deliver = deliver;
 	}
 
 	public Type getType() {
 		return type;
 	}
 
-	public Baseline getBaseline() {
-		return baseline;
+	public Deliver getDeliver() {
+		return deliver;
 	}
-
-	public Stream getSource() {
-		return source;
-	}
-
-	public Stream getTarget() {
-		return target;
-	}
-
-	
 }

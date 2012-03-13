@@ -287,7 +287,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	
 	
 
-	public static Baseline getBaseline( String name ) {
+	public static Baseline get( String name ) {
 		return get( name, true );
 	}
 

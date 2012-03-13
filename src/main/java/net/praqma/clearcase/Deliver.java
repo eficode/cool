@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CancelDeliverException;
+import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.DeliverException;
 import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.exceptions.DeliverException.Type;
@@ -67,36 +68,36 @@ public class Deliver {
 			if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "requires child development streams to rebase to recommended baselines before performing deliver operation" ) ) {
 				logger.warning( "Deliver requires rebase" );
 				//throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_REQUIRES_REBASE );
-				throw new DeliverException( baseline, stream, target, Type.REQUIRES_REBASE, e );
+				throw new DeliverException( this, Type.REQUIRES_REBASE, e );
 			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "cleartool: Error: Unable to perform merge" ) ) {
 				logger.warning( "Merge error" );
 				//throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.MERGE_ERROR );
-				throw new DeliverException( baseline, stream, target, Type.MERGE_ERROR, e );
+				throw new DeliverException( this, Type.MERGE_ERROR, e );
 			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "does not allow deliver operations from streams in other" ) ) {
 				logger.warning( "Interproject deliver denied" );
 				//throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.INTERPROJECT_DELIVER_DENIED );
-				throw new DeliverException( baseline, stream, target, Type.INTERPROJECT_DELIVER_DENIED, e );
+				throw new DeliverException( this, Type.INTERPROJECT_DELIVER_DENIED, e );
 			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "which is currently involved in an active deliver or rebase operation.  The set activity of this view may not be changed until the operation has completed." ) ) {
 				logger.warning( "Deliver already in progress" );
 				//throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS );
-				throw new DeliverException( baseline, stream, target, Type.DELIVER_IN_PROGRESS, e );
+				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
 			} else if( e.getMessage().contains( "active deliver or rebase operation.  The set activity of this view may not be" ) ) {
 				logger.warning( "Deliver already in progress" );
 				//throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS );
-				throw new DeliverException( baseline, stream, target, Type.DELIVER_IN_PROGRESS, e );
+				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
 			}
 
 			if( e.getMessage().matches( "(?s)active deliver or rebase operation.  The set activity of this view may not be" ) ) {
 				logger.warning( "Deliver already in progress" );
 				//throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS );
-				throw new DeliverException( baseline, stream, target, Type.DELIVER_IN_PROGRESS, e );
+				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
 			}
 
 			Matcher m2 = rx_checkProgress.matcher( e.getMessage() );
 			if( m2.find() ) {
 				logger.warning( "Deliver already in progress" );
 				//throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS );
-				throw new DeliverException( baseline, stream, target, Type.DELIVER_IN_PROGRESS, e );
+				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
 			}
 
 			/**
@@ -105,7 +106,7 @@ public class Deliver {
 			if( e.getMessage().contains( "Deliver operation" ) ) {
 				logger.warning( "Deliver already in progress" );
 				//throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.DELIVER_IN_PROGRESS );
-				throw new DeliverException( baseline, stream, target, Type.DELIVER_IN_PROGRESS, e );
+				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
 			}
 
 			/* Match for merge errors */
@@ -113,7 +114,7 @@ public class Deliver {
 			if( m.find() ) {
 				logger.warning( "Merge error" );
 				//throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.MERGE_ERROR );
-				throw new DeliverException( baseline, stream, target, Type.DELIVER_IN_PROGRESS, e );
+				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
 			}
 
 			/* Match for denied deliveries */
@@ -121,12 +122,12 @@ public class Deliver {
 			if( m.find() ) {
 				logger.warning( "Interproject deliver denied" );
 				//throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage(), UCMType.INTERPROJECT_DELIVER_DENIED );
-				throw new DeliverException( baseline, stream, target, Type.INTERPROJECT_DELIVER_DENIED, e );
+				throw new DeliverException( this, Type.INTERPROJECT_DELIVER_DENIED, e );
 			}
 
 			/* If nothing applies.... */
 			//throw new UCMException( "Could not deliver: " + e.getMessage(), e.getMessage() );
-			throw new DeliverException( baseline, stream, target, Type.UNKNOWN, e );
+			throw new DeliverException( this, Type.UNKNOWN, e );
 		}
 
 		// System.out.println( "I GOT: \n\"" + result + "\"\n" );
@@ -161,5 +162,32 @@ public class Deliver {
 			//throw new UCMException( "Could not cancel deliver: " + e.getMessage(), e.getMessage() );
 			throw new CancelDeliverException( stream, e );
 		}
+	}
+	
+	public String getStatus() throws CleartoolException {
+		return Deliver.getStatus( stream );
+	}
+	
+	public static String getStatus( Stream stream ) throws CleartoolException {
+		try {
+			String cmd = "deliver -status -stream " + stream;
+			return Cleartool.run( cmd ).stdoutBuffer.toString();
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new CleartoolException( "Could not get deliver status: " + e.getMessage(), e );
+		}
+	}
+	
+	public boolean isDelivering() throws CleartoolException {
+		return Deliver.isDelivering( stream );
+	}
+	
+	public static boolean isDelivering( Stream stream ) throws CleartoolException {
+		String r = Deliver.getStatus( stream ).trim();
+
+		if( r.startsWith( "No deliver operation in progress on stream" ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }

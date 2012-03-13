@@ -32,15 +32,15 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	private static final long serialVersionUID = 1123123123L;
 
-	private static final String rx_ccdef_allowed = "[\\w\\.-]";
-	private static final String rx_ccdef_vob = "[\\\\\\w\\.-/]";
-	private static final Pattern pattern_std_fqname = Pattern.compile( "^(\\w+):(" + rx_ccdef_allowed + "+)@(" + rx_ccdef_vob + "+)$" );
+	protected static final String rx_ccdef_allowed = "[\\w\\.-]";
+	protected static final String rx_ccdef_vob = "[\\\\\\w\\.-/]";
+	protected static final Pattern pattern_std_fqname = Pattern.compile( "^(\\w+):(" + rx_ccdef_allowed + "+)@(" + rx_ccdef_vob + "+)$" );
 	/* TODO Make a better character class definition for files(Version) */
 	//private static final Pattern pattern_version_fqname = Pattern.compile( "^([\\S\\s\\\\\\/.^@]+)@@(" + rx_ccdef_vob + "+)$" );
-	private static final Pattern pattern_version_fqname = Pattern.compile( "^(.+)@@(.+)$" );
-	private static final String rx_ccdef_filename = "[\\S\\s\\\\\\/.^@]";
+	protected static final Pattern pattern_version_fqname = Pattern.compile( "^(.+)@@(.+)$" );
+	protected static final String rx_ccdef_filename = "[\\S\\s\\\\\\/.^@]";
 	//private static final Pattern pattern_version_fqname = Pattern.compile( "^(" + rx_ccdef_filename + "+)@@(?:(" + rx_ccdef_filename + ")@@)?(" + rx_ccdef_vob + "+)$" );
-	public static final Pattern pattern_hlink_fqname = Pattern.compile( "^hlink:(" + rx_ccdef_allowed + "+)@(\\d+)@(" + rx_ccdef_vob + "+)$" );
+	
 	protected static final Pattern pattern_tag_fqname = Pattern.compile( "^tag@(\\w+)@(" + rx_ccdef_vob + "+)$" );
 
 	protected static final String rx_ccdef_cc_name = "[\\w\\.][\\w\\.-]*";
@@ -190,8 +190,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	/**
 	 * Initialize the UCM entity. This is a base implementation, storing the short name and pvob.
+	 * @throws UCMEntityNotInitializedException 
 	 */
-	protected void initialize() {
+	protected void initialize() throws UCMEntityNotInitializedException {
 		Matcher match = pattern_std_fqname.matcher( fqname );
 		if( match.find() ) {
 			shortname = match.group( 2 );
@@ -210,7 +211,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 * @throws UCMEntityNotFoundException 
 	 */
 	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException {
-		logger.warning( "Load method is not implemented for this Entity(" + this.fqname + ")" );
+		logger.debug( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
 		
 		return this;
@@ -240,49 +241,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 
 
-	public static HyperLink getHyperLink( String name ) throws UCMException {
-		return getHyperLink( name, true );
-	}
-
-	/**
-	 * Retrieve an HyperLink object.
-	 * 
-	 * @param name
-	 *            Fully qualified name
-	 * @param trusted
-	 *            If not trusted, the entity's content is loaded from clear
-	 *            case.
-	 * @return An Stream object
-	 */
-	public static HyperLink getHyperLink( String name, boolean trusted ) throws UCMException {
-		if( !name.startsWith( "hlink:" ) ) {
-			name = "hlink:" + name;
-		}
-
-		HyperLink entity = (HyperLink) UCMEntity.getEntity( name, trusted );
-		return entity;
-	}
 
 
-	public static Project getProject( String name, PVob pvob, boolean trusted ) throws UCMException {
-		if( !name.startsWith( "project:" ) ) {
-			name = "project:" + name;
-		}
-		Project entity = (Project) UCMEntity.getEntity( name + "@" + pvob, trusted );
-		return entity;
-	}
 
-	public static Project getProject( String name, boolean trusted ) throws UCMException {
-		if( !name.startsWith( "project:" ) ) {
-			name = "project:" + name;
-		}
-		Project entity = (Project) UCMEntity.getEntity( name, trusted );
-		return entity;
-	}
-	
-	public static Project getProject( String name ) throws UCMException {
-		return getProject( name, true );
-	}
 
 	
 	
@@ -383,15 +344,11 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 * @throws UCMException
 	 * @throws UnableToLoadEntityException 
 	 */
-	public String stringify() throws UnableToLoadEntityException {
+	public String stringify() {
 		StringBuffer sb = new StringBuffer();
 
 		sb.append( this.fqname + ":" + linesep );
 		sb.append( " * Shortname: " + this.shortname + linesep );
-		if( !this.type.equals( ClearcaseEntityType.Version ) ) {
-			sb.append( " * PVOB     : " + this.pvob + linesep );
-		}
-		sb.append( " * Type     : " + this.type + linesep );
 
 		return sb.toString();
 	}

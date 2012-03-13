@@ -1,11 +1,16 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.exceptions.UCMEntityNotInitializedException;
 import net.praqma.util.debug.Logger;
 
 public class HyperLink extends UCMEntity {
+	
+	public static final Pattern pattern_hlink_fqname = Pattern.compile( "^hlink:(" + rx_ccdef_allowed + "+)@(\\d+)@(" + rx_ccdef_vob + "+)$" );
+	
 	transient private static Logger logger = Logger.getLogger();
 	
 	/* Hlink specific fields */
@@ -17,28 +22,27 @@ public class HyperLink extends UCMEntity {
 		super( "hlink" );
 	}
 
-	public void load() {
-
-		this.loaded = true;
-	}
-
 	public static void create( String type, UCMEntity entity, String key, String value ) {
 
 	}
 
-	public void initialize() {
-		Matcher match = UCMEntity.pattern_hlink_fqname.matcher( this.fqname );
+	@Override
+	public void initialize() throws UCMEntityNotInitializedException {
+		
+		Matcher match = pattern_hlink_fqname.matcher( fqname );
 
-		if( !match.find() ) {
-			logger.warning( "Rather odd, this shouldn've happened...." );
-		} else {
+		if( match.find() ) {
 			this.type = match.group( 1 );
+			shortname = match.group( 1 );
+			pvob = new PVob( match.group( 3 ) );
 			this.identifier = Integer.parseInt( match.group( 2 ) );
+		} else {
+			throw new UCMEntityNotInitializedException( fqname );
 		}
 	}
 
-	public static HyperLink getHyperLink( String fqname, String value ) throws UCMException {
-		HyperLink hlink = UCMEntity.getHyperLink( fqname );
+	public static HyperLink getHyperLink( String fqname, String value ) {
+		HyperLink hlink = get( fqname );
 
 		hlink.setValue( value );
 
@@ -57,5 +61,19 @@ public class HyperLink extends UCMEntity {
 
 	public void setValue( String value ) {
 		this.value = value;
+	}
+	
+	
+	public static HyperLink get( String name ) {
+		return get( name, true );
+	}
+
+	public static HyperLink get( String name, boolean trusted ) {
+		if( !name.startsWith( "hlink:" ) ) {
+			name = "hlink:" + name;
+		}
+
+		HyperLink entity = (HyperLink) UCMEntity.getEntity( HyperLink.class, name, trusted );
+		return entity;
 	}
 }

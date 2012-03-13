@@ -307,33 +307,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public String loadProject( String project ) throws UCMException {
-		logger.debug( project );
 
-		String cmd = "lsproj -fmt %[istream]Xp " + project;
-
-		try {
-			return Cleartool.run( cmd ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( e );
-		}
 	}
 
 	public void createProject( String name, String root, PVob pvob, int policy, String comment, Component... mcomps ) throws UnableToCreateEntityException {
-		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + " -modcomp ";
-		for( Component c : mcomps ) {
-			cmd += c.getFullyQualifiedName() + " ";
-		}
-		if( policy > 0 ) {
-			cmd += " -policy " + Project.getPolicy( policy );
-		}
-		cmd += " " + name + "@" + pvob;
 
-		try {
-			Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( "Could not create Project " + root + ": " + e.getMessage(), e, UCMType.CREATION_FAILED );
-			throw new UnableToCreateEntityException( root, e );
-		}
 	}
 
 	/*
@@ -341,28 +319,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 * desc -fmt "project:%i@\Cool_PVOB %[istream]Xp\n" project:%i@\Cool_PVOB
 	 */
 	public List<Project> getProjects( PVob vob ) throws UnableToListProjectsException {
-		logger.debug( "Getting projects for " + vob );
-		String cmd = "lsproject -s -invob " + vob.toString();
 
-		List<String> projs = null;
-
-		try {
-			projs = Cleartool.run( cmd ).stdoutList;
-		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( e.getMessage(), e.getMessage() );
-			throw new UnableToListProjectsException( e );
-		}
-
-		logger.debug( projs );
-
-		List<Project> projects = new ArrayList<Project>();
-		for( String p : projs ) {
-			projects.add( UCMEntity.getProject( p + "@" + vob ) );
-		}
-
-		logger.debug( projects );
-
-		return projects;
 	}
 
 	/************************************************************************
@@ -478,14 +435,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	}
 
-	public String deliverStatus( String stream ) throws UCMException {
-		try {
-			String cmd = "deliver -status -stream " + stream;
-			return Cleartool.run( cmd ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not get deliver status: " + e.getMessage(), e.getMessage() );
-		}
-	}
+
 
 	/************************************************************************
 	 * COMPONENT FUNCTIONALITY
@@ -517,22 +467,12 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final String rx_stream_load = "\\s*Error: stream not found\\s*";
 
 	public void recommendBaseline( String stream, String baseline ) throws UCMException {
-		String cmd = "chstream -recommend " + baseline + " " + stream;
-		try {
-			Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not recommend Baseline: " + e.getMessage(), e.getMessage() );
-		}
+
 
 	}
 
 	public String getRecommendedBaselines( String stream ) throws UCMException {
-		String cmd = "desc -fmt %[rec_bls]p " + stream;
-		try {
-			return Cleartool.run( cmd ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to get recommended baselines from " + stream + ": " + e.getMessage() );
-		}
+
 	}
 
 	public String getStreamFromView( String viewtag ) throws UCMException {
@@ -545,33 +485,15 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public void createStream( String pstream, String nstream, boolean readonly, String baseline ) throws UCMException {
-		logger.debug( "Creating stream " + nstream + " as child of " + pstream );
 
-		String cmd = "mkstream -in " + pstream + " " + ( baseline != null ? "-baseline " + baseline + " " : "" ) + ( readonly ? "-readonly " : "" ) + nstream;
-		try {
-			Cleartool.run( cmd );
-		} catch( Exception e ) {
-			throw new UCMException( "Could not create stream: " + e.getMessage() );
-		}
 	}
 
 	public void createIntegrationStream( String name, Project project, Baseline baseline ) throws UCMException {
-		String cmd = "mkstream -integration -in " + project.getFullyQualifiedName() + " -baseline " + baseline.getFullyQualifiedName() + " " + name + "@" + project.getPVob();
 
-		try {
-			Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not create integration stream: " + e.getMessage(), UCMType.CREATION_FAILED );
-		}
 	}
 
 	public void generate( String stream ) throws UCMException {
-		String cmd = "chstream -generate " + stream;
-		try {
-			Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to generate: " + e.getMessage() );
-		}
+
 	}
 
 	public boolean streamExists( String fqname ) {
@@ -585,105 +507,23 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public boolean rebaseStream( String viewtag, String stream, String baseline, boolean complete ) throws UCMException {
-		logger.debug( "Rebasing " + viewtag );
 
-		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + viewtag + " -stream " + stream + " -baseline " + baseline;
-		try {
-			CmdResult res = Cleartool.run( cmd );
-
-			if( res.stdoutBuffer.toString().matches( "^No rebase needed.*" ) ) {
-				return false;
-			} else {
-				return true;
-			}
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( e.getMessage() );
-		}
 	}
 
 	public boolean isRebasing( String stream ) throws UCMException {
-		String cmd = "rebase -status -stream " + stream;
-		try {
-			String result = Cleartool.run( cmd ).stdoutBuffer.toString();
-			if( result.matches( rx_rebase_in_progress ) ) {
-				return true;
-			} else {
-				return false;
-			}
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to determine rebasing: " + e.getMessage() );
-		}
+
 	}
 
 	public void cancelRebase( String stream ) throws UCMException {
-		String cmd = "rebase -cancel -force -stream " + stream;
-		try {
-			Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to cancel rebase: " + e.getMessage() );
-		}
+
 	}
 
 	public List<String> getLatestBaselines( String stream ) throws UCMException {
-		String cmd = "desc -fmt %[latest_bls]Xp " + stream;
-		try {
-			String[] t = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
-			List<String> bls = new ArrayList<String>();
-			for( String s : t ) {
-				if( s.matches( "\\S+" ) ) {
-					bls.add( s );
-				}
-			}
 
-			return bls;
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to get latest baseline from " + stream + ": " + e.getMessage() );
-		}
 	}
 
 	public void loadStream( Stream stream ) throws UCMException {
-		logger.debug( "Loading " + stream );
 
-		List<String> data = null;
-
-		String cmd = "describe -fmt %[name]p\\n%[project]Xp\\n%X[def_deliver_tgt]p\\n%[read_only]p\\n%[found_bls]Xp " + stream;
-		try {
-			data = Cleartool.run( cmd ).stdoutList;
-		} catch( AbnormalProcessTerminationException e ) {
-			if( e.getMessage().matches( rx_stream_load ) ) {
-				throw new UCMException( "The component \"" + stream + "\", does not exist.", UCMType.LOAD_FAILED );
-			} else {
-				throw new UCMException( e.getMessage(), e.getMessage(), UCMType.LOAD_FAILED );
-			}
-		}
-
-		logger.debug( "I got: " + data );
-
-		/* Set project */
-		stream.setProject( UCMEntity.getProject( data.get( 1 ) ) );
-
-		/* Set default target, if exists */
-		if( !data.get( 2 ).trim().equals( "" ) ) {
-			try {
-				stream.setDefaultTarget( UCMEntity.getStream( data.get( 2 ) ) );
-			} catch( Exception e ) {
-				logger.debug( "The Stream did not have a default target." );
-			}
-		}
-
-		/* Set read only */
-		if( data.get( 3 ).length() > 0 ) {
-			stream.setReadOnly( true );
-		} else {
-			stream.setReadOnly( false );
-		}
-
-		/* Set foundation baseline */
-		try {
-			stream.setFoundationBaseline( UCMEntity.getBaseline( data.get( 4 ) ) );
-		} catch( Exception e ) {
-			logger.warning( "Could not get the foundation baseline: " + e.getMessage() );
-		}
 	}
 
 	/**
@@ -693,23 +533,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 */
 	@Override
 	public List<Stream> getChildStreams( String fqstream ) throws UCMException {
-		logger.debug( "1234" );
-		CmdResult res = null;
 
-		String cmd = "desc -fmt %[dstreams]CXp " + fqstream;
-		try {
-			res = Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( e.getMessage() );
-		}
-
-		List<Stream> streams = new ArrayList<Stream>();
-		String[] strms = res.stdoutBuffer.toString().split( ", " );
-		for( String stream : strms ) {
-			streams.add( UCMEntity.getStream( stream ) );
-		}
-
-		return streams;
 	}
 
 	public void rebase( Stream stream, Baseline baseline ) {
