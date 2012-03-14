@@ -8,6 +8,7 @@ import java.util.List;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToListProjectsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
@@ -111,7 +112,7 @@ public class Project extends UCMEntity {
 		return p;
 	}
 
-	public static Project create( String name, String root, PVob pvob, int policy, String comment, Component... mcomps ) throws UnableToCreateEntityException {
+	public static Project create( String name, String root, PVob pvob, int policy, String comment, Component... mcomps ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		//context.createProject( name, root, pvob, policy, comment, mcomps );
 
 		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + " -modcomp ";
@@ -133,7 +134,7 @@ public class Project extends UCMEntity {
 		return get( name, pvob, true );
 	}
 
-	public UCMEntity load() throws UnableToLoadEntityException {
+	public UCMEntity load() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		//context.loadProject( this );
 		//String result = strategy.loadProject( project.getFullyQualifiedName() );
 		String result = "";
@@ -158,7 +159,7 @@ public class Project extends UCMEntity {
 		this.stream = stream;
 	}
 
-	public Stream getIntegrationStream() throws UnableToLoadEntityException {
+	public Stream getIntegrationStream() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		if( !this.loaded ) load();
 		return stream;
 	}
@@ -171,7 +172,7 @@ public class Project extends UCMEntity {
 		return retval;
 	}
 
-	public static List<Project> getProjects( PVob pvob ) throws UnableToListProjectsException {
+	public static List<Project> getProjects( PVob pvob ) throws UnableToListProjectsException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		//return context.getProjects( vob );
 		logger.debug( "Getting projects for " + pvob );
 		String cmd = "lsproject -s -invob " + pvob.toString();
@@ -198,7 +199,7 @@ public class Project extends UCMEntity {
 	}
 	
 	
-	public List<Component> getModifiableComponents() {
+	public List<Component> getModifiableComponents() throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, CleartoolException {
 		//List<String> cs = strategy.getModifiableComponents( project.getFullyQualifiedName() );
 		String[] cs;
 		String cmd = "desc -fmt %[mod_comps]p " + this;
@@ -219,11 +220,11 @@ public class Project extends UCMEntity {
 
 	
 	
-	public static Project get( String name ) {
+	public static Project get( String name ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		return get( name, true );
 	}
 
-	public static Project get( String name, PVob pvob, boolean trusted ) {
+	public static Project get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		if( !name.startsWith( "project:" ) ) {
 			name = "project:" + name;
 		}
@@ -231,7 +232,7 @@ public class Project extends UCMEntity {
 		return entity;
 	}
 
-	public static Project get( String name, boolean trusted ) {
+	public static Project get( String name, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		if( !name.startsWith( "project:" ) ) {
 			name = "project:" + name;
 		}

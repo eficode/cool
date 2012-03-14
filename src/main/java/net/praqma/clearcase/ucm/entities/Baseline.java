@@ -12,7 +12,7 @@ import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.NothingNewException;
-import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToPromoteBaselineException;
@@ -249,7 +249,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * 
 	 * @return A BaselineDiff object containing a set of Activities.
 	 */
-	public BaselineDiff getDifferences( SnapshotView view ) throws UCMException {
+	public BaselineDiff getDifferences( SnapshotView view ) {
 		return new BaselineDiff( view, this );
 	}
 
@@ -289,11 +289,11 @@ public class Baseline extends UCMEntity implements Diffable {
 		return sb.toString();
 	}
 
-	public static Baseline get( String name ) {
+	public static Baseline get( String name ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		return get( name, true );
 	}
 
-	public static Baseline get( String name, boolean trusted ) {
+	public static Baseline get( String name, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		if( !name.startsWith( "baseline:" ) ) {
 			name = "baseline:" + name;
 		}
@@ -301,7 +301,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		return entity;
 	}
 
-	public static Baseline get( String name, PVob pvob, boolean trusted ) {
+	public static Baseline get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		if( !name.startsWith( "baseline:" ) ) {
 			name = "baseline:" + name;
 		}

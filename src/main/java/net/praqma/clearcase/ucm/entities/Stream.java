@@ -12,7 +12,6 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.NoSingleTopComponentException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
 import net.praqma.clearcase.exceptions.UnableToListProjectsException;
@@ -72,8 +71,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 *            Whether the new Stream is read only or not
 	 * @return A new Stream given the parameters
 	 * @throws UnableToCreateEntityException
+	 * @throws UCMEntityNotFoundException 
+	 * @throws UnableToLoadEntityException 
 	 */
-	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline baseline ) throws UnableToCreateEntityException {
+	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline baseline ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		//UCMEntity.getNamePart( nstream );
 
 		logger.debug( "PSTREAM:" + parent.getShortname() + ". NSTREAM: " + nstream + ". BASELINE: " + baseline.getShortname() );
@@ -102,7 +103,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return stream;
 	}
 
-	public static Stream createIntegration( String name, Project project, Baseline baseline ) throws UnableToCreateEntityException {
+	public static Stream createIntegration( String name, Project project, Baseline baseline ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		//context.createIntegrationStream( name, project, baseline );
 
 		String cmd = "mkstream -integration -in " + project.getFullyQualifiedName() + " -baseline " + baseline.getFullyQualifiedName() + " " + name + "@" + project.getPVob();
@@ -117,7 +118,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return Stream.get( name, project.getPVob(), true );
 	}
 
-	public UCMEntity load() throws UCMEntityNotFoundException, UnableToLoadEntityException {
+	public UCMEntity load() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
 		logger.debug( "loading stream" );
 		//context.loadStream( this );
 
@@ -199,7 +200,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return baselines;
 	}
 
-	public List<Stream> getChildStreams() {
+	public List<Stream> getChildStreams() throws UnableToCreateEntityException, UnableToLoadEntityException {
 
 		List<Stream> streams = new ArrayList<Stream>();
 		try {
@@ -237,9 +238,12 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * 
 	 * @return
 	 * @throws UnableToListProjectsException 
+	 * @throws UCMEntityNotFoundException 
+	 * @throws UnableToLoadEntityException 
+	 * @throws UnableToCreateEntityException 
 	 * @throws UCMException
 	 */
-	public List<Stream> getSiblingStreams() throws UnableToListProjectsException {
+	public List<Stream> getSiblingStreams() throws UnableToListProjectsException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		logger.debug( "Getting sibling streams" );
 		List<Project> projects = Project.getProjects( this.getPVob() );
 		List<Stream> streams = new ArrayList<Stream>();
@@ -303,7 +307,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		try {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new CleartoolException( e );
+			throw new CleartoolException( "Unable to generate " + this, e );
 		}
 	}
 
@@ -387,7 +391,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return bls.get( 0 ).getComponent();
 	}
 
-	public Project getProject() throws UCMEntityNotFoundException, UnableToLoadEntityException {
+	public Project getProject() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
 		if( !this.loaded ) load();
 
 		return this.project;
@@ -399,9 +403,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * @return A Stream
 	 * @throws UnableToLoadEntityException 
 	 * @throws UCMEntityNotFoundException 
+	 * @throws UnableToCreateEntityException 
 	 * @throws UCMException
 	 */
-	public Stream getDefaultTarget() throws UCMEntityNotFoundException, UnableToLoadEntityException {
+	public Stream getDefaultTarget() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
 		if( !this.loaded ) {
 			load();
 		}
@@ -413,7 +418,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		this.readOnly = readOnly;
 	}
 
-	public boolean isReadOnly() throws UCMEntityNotFoundException, UnableToLoadEntityException {
+	public boolean isReadOnly() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
 		if( !this.loaded ) load();
 		return readOnly;
 	}
@@ -422,7 +427,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		this.foundation = baseline;
 	}
 
-	public Baseline getFoundationBaseline() throws UCMEntityNotFoundException, UnableToLoadEntityException {
+	public Baseline getFoundationBaseline() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
 		if( !this.loaded ) load();
 
 		return this.foundation;
@@ -459,11 +464,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return sb.toString();
 	}
 
-	public static Stream get( String name ) {
+	public static Stream get( String name ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		return get( name, true );
 	}
 
-	public static Stream get( String name, boolean trusted ) {
+	public static Stream get( String name, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		if( !name.startsWith( "stream:" ) ) {
 			name = "stream:" + name;
 		}
@@ -471,7 +476,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return entity;
 	}
 
-	public static Stream get( String name, PVob pvob, boolean trusted ) {
+	public static Stream get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		if( !name.startsWith( "stream:" ) ) {
 			name = "stream:" + name;
 		}
