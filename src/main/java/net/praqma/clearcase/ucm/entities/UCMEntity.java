@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,13 +14,22 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UCMEntityNotInitializedException;
-import net.praqma.clearcase.exceptions.UCMException;
-import net.praqma.clearcase.exceptions.UCMException.UCMType;
+import net.praqma.clearcase.exceptions.HyperlinkException;
+import net.praqma.clearcase.exceptions.UnableToListAttributesException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
+import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
+import net.praqma.clearcase.exceptions.UnknownAttributeException;
 import net.praqma.clearcase.exceptions.UnknownEntityTypeException;
+import net.praqma.clearcase.exceptions.UnknownUserException;
+import net.praqma.clearcase.exceptions.UnknownVobException;
 import net.praqma.util.debug.Logger;
+import net.praqma.util.execute.AbnormalProcessTerminationException;
+import net.praqma.util.execute.CmdResult;
+import net.praqma.util.structure.Tuple;
 
 /**
  * 
@@ -42,8 +52,13 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	//private static final Pattern pattern_version_fqname = Pattern.compile( "^(" + rx_ccdef_filename + "+)@@(?:(" + rx_ccdef_filename + ")@@)?(" + rx_ccdef_vob + "+)$" );
 	
 	protected static final Pattern pattern_tag_fqname = Pattern.compile( "^tag@(\\w+)@(" + rx_ccdef_vob + "+)$" );
+	private static final Pattern pattern_hlink = Pattern.compile( "^\\s*(" + rx_ccdef_allowed + "+@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"*(.*?)\"*\\s*$" );
+	private static final Pattern pattern_hlink_type_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB \"(\\S+)\" .*" );
+	private static final String rx_entityNotFound = "cleartool: Error: \\w+ not found: \"\\S+\"\\.";
 
 	protected static final String rx_ccdef_cc_name = "[\\w\\.][\\w\\.-]*";
+	
+	private static final String rx_attr_find = "^\\s*\\S+\\s*=\\s*\\S*\\s*$";
 
 	transient private static ClassLoader classloader = UCMEntity.class.getClassLoader();
 
@@ -250,11 +265,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	/* Tag stuff */
 
-	public Tag getTag( String tagType, String tagID ) throws UCMException {
-		if( UCM.isVerbose() ) {
-			System.out.println( "Retrieving tags for " + tagType + ", " + tagID );
-		}
-
+	public Tag getTag( String tagType, String tagID ) {
+		logger.debug( "Retrieving tags for " + tagType + ", " + tagID );
+		
 		return tp.getTag( tagType, tagID, this );
 	}
 
@@ -263,14 +276,51 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 * directory
 	 * 
 	 * @return A Map of key, value pairs of the attributes
-	 * @throws UCMException
+	 * @throws UnableToListAttributesException
 	 */
-	public Map<String, String> getAttributes() throws UCMException {
-		return context.getAttributes( this );
+	public static Map<String, String> getAttributes( UCMEntity entity, File context ) throws UnableToListAttributesException {
+		String cmd = "describe -aattr -all " + entity;
+
+		CmdResult res = null;
+		try {
+			res = Cleartool.run( cmd, context );
+		} catch( AbnormalProcessTerminationException e ) {
+			//throw new UCMException( "Could not find attributes on " + fqname + ". Recieved: " + e.getMessage(), e.getMessage() );
+			throw new UnableToListAttributesException( entity, context, e );
+		}
+
+		Map<String, String> atts = new HashMap<String, String>();
+
+		for( String s : res.stdoutList ) {
+			/* A valid attribute */
+			if( s.matches( rx_attr_find ) ) {
+				String[] data = s.split( "=" );
+				atts.put( data[0].trim(), data[1].trim() );
+			}
+		}
+
+		return atts;
+	}
+	
+	public Map<String, String> getAttributes( File context ) throws UnableToListAttributesException {
+		return UCMEntity.getAttributes( this, context );
+	}
+	
+	public static String getAttribute( UCMEntity entity, String attribute ) throws UnknownAttributeException {
+		//return context.getAttributes( this );
+		String cmd = "describe -aattr " + attribute + " -l " + entity;
+
+		CmdResult res = null;
+		try {
+			res = Cleartool.run( cmd );
+		} catch( AbnormalProcessTerminationException e ) {
+			//throw new UCMException( "Could not find attribute with name: " + attribute + " on " + fqname + ". Recieved: " + e.getMessage(), e.getMessage() );
+			throw new UnknownAttributeException( entity, attribute, e );
+		}
 	}
 
 	public String getAttribute( String key ) throws UCMException {
-		Map<String, String> atts = this.getAttributes();
+		Map<String, String> atts = UCMEntity.getAttributes( this, null );
 		if( atts.containsKey( key ) ) {
 			return atts.get( key );
 		} else {
@@ -278,31 +328,65 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		}
 	}
 
-	/**
-	 * Retrieve the attributes for an entity
-	 * 
-	 * @param dir
-	 *            A File object of the directory where the command should be
-	 *            executed
-	 * @return A Map of key, value pairs of the attributes
-	 * @throws UCMException
-	 */
-	public Map<String, String> getAttributes( File dir ) throws UCMException {
-		return context.getAttributes( this, dir );
-	}
 
-	public void setAttribute( String attribute, String value ) throws UCMException {
-		context.setAttribute( this, attribute, value );
-	}
+	public void setAttribute( String attribute, String value, File context ) throws UCMException {
+		//context.setAttribute( this, attribute, value );
+		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + this );
 
-	public List<HyperLink> getHlinks( String hlinkType, File dir ) throws UCMException {
-		logger.debug( "THIS=" + this.getFullyQualifiedName() );
-		return context.getHlinks( this, hlinkType, dir );
+		String cmd = "mkattr -replace " + attribute + " " + value + " " + this;
+		try {
+			Cleartool.run( cmd, context );
+		} catch( AbnormalProcessTerminationException e ) {
+			//throw new UCMException( "Could not create the attribute " + attribute, e.getMessage() );
+			throw new UnableToSetAttributeException( this, attribute, value, context, e );
+		}
+	}
+	
+	public List<HyperLink> getHyperlinks( String hyperlinkType, File context ) {
+		String cmd = "describe -ahlink " + hyperlinkType + " -l " + this;
+
+		CmdResult res = null;
+		try {
+			res = Cleartool.run( cmd, context );
+		} catch( AbnormalProcessTerminationException e ) {
+			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
+			if( match.find() ) {
+				//UCMException ucme = new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e, UCMType.UNKNOWN_HLINK_TYPE );
+				//ucme.addInformation(  "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -nc " + match.group( 1 ) + "@" + match.group( 2 ) );
+				HyperlinkException ex = new HyperlinkException( this, context, match.group( 1 ), e );
+				ex.addInformation(  "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -nc " + match.group( 1 ) + "@" + match.group( 2 ) );
+				throw ex;
+			} else {
+				HyperlinkException ex = new HyperlinkException( this, context, hyperlinkType, e );
+			}
+		}
+
+		List<String> list = res.stdoutList;
+
+		//List<Tuple<String, String>> hlinks = new ArrayList<Tuple<String, String>>();
+		List<HyperLink> hlinks = new ArrayList<HyperLink>();
+
+		/* There are elements */
+		if( list.size() > 2 ) {
+			for( int i = 2; i < list.size(); i++ ) {
+				logger.debug( "[" + i + "]" + list.get( i ) );
+				Matcher match = pattern_hlink.matcher( list.get( i ) );
+				if( match.find() ) {
+					//hlinks.add( new Tuple<String, String>( match.group( 1 ).trim(), match.group( 2 ).trim() ) );
+					
+					HyperLink h = HyperLink.getHyperLink(  match.group( 1 ).trim(), match.group( 2 ).trim() );
+
+					hlinks.add( h );
+				}
+			}
+		}
+
+		return hlinks;
 	}
 
 	/* Getters */
 
-	public String getUser() throws UCMException {
+	public String getUser() throws UnableToLoadEntityException, UCMEntityNotFoundException {
 		if( !loaded ) {
 			load();
 		}
@@ -321,17 +405,32 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return this.shortname;
 	}
 
+	/**
+	 * 
+	 * @deprecated
+	 */
 	public String getPvobString() {
-		return this.pvob;
+		return pvob.getName();
 	}
 
 	public PVob getPVob() {
-		return vob;
+		return pvob;
 	}
 
-	public String getMastership() throws UCMException {
+	public String getMastership() {
 		if( this.mastership == null ) {
-			this.mastership = context.getMastership( this );
+			//this.mastership = context.getMastership( this );
+			String cmd = "describe -fmt %[master]p " + fqname;
+
+			CmdResult ms = null;
+
+			try {
+				ms = Cleartool.run( cmd );
+			} catch( AbnormalProcessTerminationException e ) {
+				throw new CleartoolException( "The mastership was undefined. ", e );
+			}
+
+			this.mastership = ms.stdoutBuffer.toString();
 		}
 
 		return this.mastership;
@@ -355,7 +454,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	private static final Pattern pattern_name_part = Pattern.compile( "^(?:\\w+:)*(.*?)@" );
 
-	public static String getNamePart( String fqname ) throws UCMException {
+	public static String getNamePart( String fqname ) {
 		Matcher m = pattern_name_part.matcher( fqname );
 
 		if( m.find() ) {
@@ -365,7 +464,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 			}
 		}
 
-		throw new UCMException( "Not a valid UCM name.", UCMType.ENTITY_NAME_ERROR );
+		throw new CleartoolException( "Not a valid UCM name." );
 	}
 
 	/**
@@ -375,14 +474,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return this.getFullyQualifiedName();
 	}
 
-	public String getXML() {
-		return context.getXML();
-	}
-
-	public static void saveState() {
-		context.saveState();
-	}
-	
 	public Date getDate() {
 		if(!loaded) try {
 			this.load();
@@ -416,12 +507,34 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return this.entitySelector;
 	}
 	
-	public void changeOwnership( String username, File viewContext ) throws UCMException {
-		context.changeOwnership( this, username, viewContext );
+	public void changeOwnership( String username, File viewContext ) {
+		UCMEntity.changeOwnership( this, username, viewContext );
 	}
 	
-	public static void changeOwnership( String fqname, String username, File viewContext ) throws UCMException {
-		context.changeOwnership( fqname, username, viewContext );
+	public static void changeOwnership( UCMEntity entity, String username, File viewContext ) {
+		String cmd = "protect -chown " + username + " \"" + entity + "\"";
+
+		try {
+			Cleartool.run( cmd, viewContext );
+		} catch( AbnormalProcessTerminationException e ) {
+			if( e.getMessage().contains( "Unable to determine VOB for pathname" ) ) {
+				throw new UnknownVobException( e );
+			}
+
+			if( e.getMessage().contains( "Unknown user name" ) ) {
+				throw new UnknownUserException( username, e );
+			}
+
+			if( e.getMessage().matches( rx_entityNotFound ) ) {
+				throw new UCMEntityNotFoundException( entity, e );
+			}
+
+			if( e.getMessage().contains( " ClearCase object not found" ) ) {
+				throw new UCMEntityNotFoundException( entity, e );
+			}
+
+			throw new UCMException( e );
+		}
 	}
 	
 	public boolean isLoaded() {

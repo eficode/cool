@@ -268,24 +268,26 @@ public class Baseline extends UCMEntity implements Diffable {
 		return this.stream;
 	}
 
-	public String stringify() throws UnableToLoadEntityException {
-		if( !this.loaded ) {
-			load();
-		}
-
+	public String stringify() {
 		StringBuffer sb = new StringBuffer();
 
-		sb.append( super.stringify() );
+		try {
+			if( !this.loaded ) load();
 
-		sb.append( " * Level    : " + this.plevel + linesep );
-		sb.append( " * Component: " + this.component.toString() + linesep );
-		sb.append( " * Stream   : " + this.stream.toString() + linesep );
-		sb.append( " * Date     : " + this.date.toString() + linesep );
+			sb.append( " * Level    : " + this.plevel + linesep );
+			sb.append( " * Component: " + this.component.toString() + linesep );
+			sb.append( " * Stream   : " + this.stream.toString() + linesep );
+			sb.append( " * Date     : " + this.date.toString() + linesep );
+
+		} catch( Exception e ) {
+
+		} finally {
+			//sb.append( super.stringify() );
+			sb.insert( 0, super.stringify() );
+		}
 
 		return sb.toString();
 	}
-	
-	
 
 	public static Baseline get( String name ) {
 		return get( name, true );

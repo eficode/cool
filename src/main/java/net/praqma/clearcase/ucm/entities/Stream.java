@@ -169,7 +169,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return this;
 	}
 
-	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UnableToListBaselinesException {
+	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException {
 		//return context.getBaselines( this, getSingleTopComponent(), plevel, pvob );
 		return Baselines.get( this, getSingleTopComponent(), plevel, pvob );
 	}
@@ -294,7 +294,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 
 
-	public List<Baseline> getRecommendedBaselines() throws UnableToListBaselinesException {
+	public List<Baseline> getRecommendedBaselines() throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException {
 		return getRecommendedBaselines( false );
 	}
 
@@ -307,7 +307,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 	}
 
-	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UnableToListBaselinesException {
+	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException {
 		logger.debug( "Getting recommended baselines" );
 
 		if( this.recommendedBaselines == null || force ) {
@@ -457,10 +457,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 
 		return sb.toString();
-	}
-
-	public void deliverRollBack( String oldViewTag, File viewRoot ) throws UCMException {
-		context.remoteDeliverCancel( oldViewTag, this.getFullyQualifiedName(), viewRoot );
 	}
 
 	public static Stream get( String name ) {

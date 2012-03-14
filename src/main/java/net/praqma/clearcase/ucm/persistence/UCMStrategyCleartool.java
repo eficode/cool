@@ -69,17 +69,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	/**/
 	public String getMastership( String fqname ) throws UCMException {
-		String cmd = "describe -fmt %[master]p " + fqname;
 
-		CmdResult ms = null;
-
-		try {
-			ms = Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "The mastership was undefined. ", e );
-		}
-
-		return ms.stdoutBuffer.toString();
 	}
 
 	// private static final Pattern rx_versionName = Pattern.compile(
@@ -87,37 +77,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final Pattern rx_versionName = Pattern.compile( "^(\\S+)\\s+([\\S\\s.^@]+@@.*)$" );
 
 	public ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws UCMException {
-		String cmd = "diffbl -version " + ( !merge ? "-nmerge " : "" ) + ( e2 == null ? "-pre " : "" ) + " " + e1.getFullyQualifiedName() + ( e2 != null ? e2.getFullyQualifiedName() : "" );
 
-		List<String> lines = null;
-
-		try {
-			lines = Cleartool.run( cmd, viewContext ).stdoutList;
-		} catch( Exception e ) {
-			throw new UCMException( "Could not retreive the differences of " + e1 + " and " + e2 + ": " + e.getMessage(), e );
-		}
-
-		int length = viewContext.getAbsoluteFile().toString().length();
-
-		// System.out.println(viewContext.getAbsolutePath() + " - " + length);
-
-		net.praqma.clearcase.changeset.ChangeSet2 changeset = new ChangeSet2( viewContext );
-
-		for( int i = 0; i < lines.size(); i++ ) {
-			Matcher m = rx_versionName.matcher( lines.get( i ) );
-			if( m.find() ) {
-
-				String f = m.group( 2 ).trim();
-
-				logger.debug( "F: " + f );
-
-				Version version = (Version) UCMEntity.getEntity( m.group( 2 ).trim(), true );
-
-				changeset.addVersion( version );
-			}
-		}
-
-		return changeset;
 	}
 
 	private static Pattern rx_versionVersion = Pattern.compile( "^(.*?)\\\\(\\d+)\\\\.*?$" );
@@ -251,7 +211,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		}
 	}
 
-	private static final String rx_entityNotFound = "cleartool: Error: \\w+ not found: \"\\S+\"\\.";
+	
 
 	public void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UCMException, UCMEntityNotFoundException, UnknownUserException, UnknownVobException {
 		changeOwnership( entity.getFullyQualifiedName(), username, viewContext );
@@ -351,13 +311,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public List<String> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException {
-		String cmd = "diffbl -version -act " + ( !merge ? "-nmerge " : "" ) + ( d2 == null ? "-pre " : "" ) + d1.getFullyQualifiedName() + ( d2 != null ? " " + d2.getFullyQualifiedName() : "" );
-		System.out.println( "$ cleartool " + cmd );
-		try {
-			return Cleartool.run( cmd, viewContext ).stdoutList;
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not get difference between " + d1.getFullyQualifiedName() + " and " + d2.getFullyQualifiedName() + ": " + e.getMessage() );
-		}
+
 	}
 
 	public List<String> getBaselineDiff( File dir, String baseline, String other, boolean nmerge, String pvob ) throws UCMException {
@@ -559,43 +513,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final Pattern rx_getFilename = Pattern.compile( File.pathSeparator + "(.*?)$" );
 
 	public void loadVersion( Version version ) throws UCMException {
-		try {
-			String cmd = "describe -fmt %u\\n%Vn\\n%Xn\\n%[object_kind]p \"" + version.getFullyQualifiedName() + "\"";
-			List<String> list = Cleartool.run( cmd ).stdoutList;
 
-			/* First line, user */
-			version.setUser( list.get( 0 ) );
-
-			/* Second line, version name */
-			String vn = list.get( 1 );
-
-			/* Third line, version extended name */
-			String ven = list.get( 2 );
-			Matcher m = rx_extendedName.matcher( ven );
-
-			if( list.get( 3 ).equals( "file element" ) ) {
-				version.setKind( Kind.FILE_ELEMENT );
-			} else if( list.get( 3 ).equals( "directory version" ) ) {
-				version.setKind( Kind.DIRECTORY_ELEMENT );
-			}
-
-		} catch( Exception e ) {
-			throw new UCMException( "Could not load Version: " + e.getMessage() );
-		}
 	}
 
 	public String getVersionExtension( File file, File viewroot ) throws UCMException {
-		if( !file.exists() ) {
-			throw new UCMException( "The file " + file + " does not exist." );
-		}
 
-		String cmd = "desc -fmt %Xn " + file;
-		try {
-			CmdResult r = Cleartool.run( cmd, viewroot );
-			return r.stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to get extended version: " + e.getMessage() );
-		}
 	}
 
 	private static final Pattern rx_checkExistence = Pattern.compile( ".*?Entry named \".*\" already exists.*?" );
@@ -606,213 +528,37 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 * "c:\Temp\views\snade\001\Snade001\Model\myfile1.txt".
 	 */
 	public void addToSourceControl( File file, boolean mkdir, File view ) throws UCMException {
-		/* Check existence */
-		List<File> files = new ArrayList<File>();
-		File parent = file.getParentFile();
-		logger.debug( "FILE  : " + file );
-		logger.debug( "PARENT: " + parent );
-		while( !parent.equals( view ) ) {
-			files.add( parent );
-			parent = parent.getParentFile();
-		}
-
-		for( int i = files.size() - 1; i >= 0; i-- ) {
-			String cmd = "mkdir " + files.get( i ).getPath();
-			try {
-				/* The parent must be checked out before adding elements */
-				try {
-					checkOut( files.get( i ).getParentFile(), view );
-				} catch( UCMException e ) {
-					/* This probably indicates the directory is checked out */
-				}
-				Cleartool.run( cmd, view );
-			} catch( Exception e ) {
-			}
-		}
-
-		try {
-			/* Check out the folder */
-			try {
-				checkOut( file.getParentFile(), view );
-			} catch( UCMException e ) {
-				/* Maybe it is checked out? */
-			}
-
-			/* Determine whether the File is a file or a directory */
-			String cmd = "";
-			if( mkdir ) {
-				cmd = "mkdir " + file;
-			} else {
-				cmd = "mkelem " + file;
-			}
-			Cleartool.run( cmd, view );
-		} catch( Exception e ) {
-			/* Already added to source control */
-			logger.debug( "---->" + e.getMessage() );
-			Matcher m = rx_checkExistence.matcher( e.getMessage() );
-			if( m.find() ) {
-				logger.debug( file + " already added to source control" );
-				return;
-			}
-
-			throw new UCMException( "Could not add " + file + " to source control", UCMType.DEFAULT );
-		}
 
 	}
 
 	public void checkIn( File file, boolean identical, File viewContext ) throws UCMException {
-		try {
-			String cmd = "checkin -nc " + ( identical ? "-identical " : "" ) + file;
-			Cleartool.run( cmd, viewContext, true, false );
-		} catch( Exception e ) {
-			if( e.getMessage().matches( "(?s).*By default, won't create version with data identical to predecessor.*" ) ) {
-				logger.debug( "Identical version, trying to uncheckout" );
-				uncheckout( file, false, viewContext );
-				return;
-			} else {
-				throw new UCMException( "Could not check in" );
-			}
 
-		}
 	}
 
 	private static final Pattern rx_AlreadyCheckedOut = Pattern.compile( "" );
 
 	public void checkOut( File file, File viewContext ) throws UCMException {
-		try {
-			String cmd = "checkout -nc " + file;
-			Cleartool.run( cmd, viewContext );
-		} catch( Exception e ) {
-			throw new UCMException( "Could not check out " + file );
-		}
+
 	}
 
-	public void uncheckout( File file, boolean keep, File viewContext ) throws UCMException {
-		try {
-			String cmd = "uncheckout -rm " + ( keep ? "-rm " : "" ) + file;
-			Cleartool.run( cmd, viewContext );
-		} catch( Exception e ) {
-			throw new UCMException( "Could not uncheck out" );
-		}
-	}
+
 
 	public void removeVersion( File file, File viewContext ) throws UCMException {
 
-		/* Firstly, checkout directory */
-		try {
-			checkOut( file.getParentFile(), viewContext );
-		} catch( UCMException e ) {
-			/*
-			 * The file is probably already checked out, let's try to continue
-			 */
-		}
 
-		String cmd = "rmver -force -xlabel -xattr -xhlink " + file;
-
-		try {
-			uncheckout( file, false, viewContext );
-		} catch( UCMException e ) {
-			/* Could not uncheckout */
-			logger.warning( "Could not uncheckout " + file );
-		}
-
-		try {
-			Cleartool.run( cmd, viewContext );
-		} catch( Exception e ) {
-			throw new UCMException( "Could not remove " + file + ": " + e.getMessage() );
-		}
 	}
 
 	public void removeName( File file, File viewContext ) throws UCMException {
 
-		/* Firstly, checkout directory */
-		try {
-			checkOut( file.getParentFile(), viewContext );
-		} catch( UCMException e ) {
-			/*
-			 * The file is probably already checked out, let's try to continue
-			 */
-		}
 
-		try {
-			uncheckout( file, false, viewContext );
-		} catch( UCMException e ) {
-			/* Could not uncheckout */
-			logger.debug( "Could not uncheckout " + file );
-		}
-
-		try {
-			// String cmd = "rmname -force " + ( checkedOut ? "" : "-nco " ) +
-			// file;
-			String cmd = "rmname -force -nco " + file;
-			Cleartool.run( cmd, viewContext );
-		} catch( Exception e ) {
-			throw new UCMException( e.getMessage() );
-		}
 	}
 
 	public void moveFile( File file, File destination, File viewContext ) throws UCMException {
-		try {
-			try {
-				checkOut( file.getParentFile(), viewContext );
-			} catch( UCMException e ) {
-				/* Directory could be checked out already, let's proceed */
-			}
 
-			/*
-			 * If destination is a directory and NOT the same as the source,
-			 * let's try to check it out
-			 */
-			if( destination.isDirectory() && !file.getParentFile().equals( destination ) ) {
-				try {
-					checkOut( destination, viewContext );
-				} catch( UCMException e ) {
-					/* Directory could be checked out already, let's proceed */
-				}
-				/*
-				 * If destination is a file and its directory is NOT the same as
-				 * the source, then try to checkout the directory
-				 */
-			} else if( destination.isFile() && !destination.getParentFile().equals( file.getParentFile() ) ) {
-				try {
-					checkOut( destination.getParentFile(), viewContext );
-				} catch( UCMException e ) {
-					/* Directory could be checked out already, let's proceed */
-				}
-			}
-
-			String cmd = "mv " + file + " " + destination;
-			Cleartool.run( cmd, viewContext );
-		} catch( Exception e ) {
-			throw new UCMException( e.getMessage() );
-		}
 	}
 
 	public List<File> getUnchecedInFiles( File viewContext ) throws UCMException {
-		List<File> files = new ArrayList<File>();
 
-		try {
-			File[] vobs = viewContext.listFiles();
-			for( File vob : vobs ) {
-				logger.debug( "Checking " + vob );
-				if( !vob.isDirectory() || vob.getName().matches( "^\\.{1,2}$" ) ) {
-					continue;
-				}
-				logger.debug( vob + " is a valid vob" );
-
-				String cmd = "lsco -s -r";
-				List<String> list = Cleartool.run( cmd, vob ).stdoutList;
-
-				for( String s : list ) {
-					files.add( new File( vob, s ) );
-				}
-			}
-
-			return files;
-
-		} catch( Exception e ) {
-			throw new UCMException( "Could not retreive files" );
-		}
 	}
 
 	/************************************************************************
@@ -826,50 +572,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	// public List<Tuple<String, String>> GetTags( String fqname ) throws
 	// UCMException
 	public List<String[]> getTags( String fqname ) throws UCMException {
-		logger.debug( fqname );
-
-		String cmd = "describe -ahlink " + __TAG_NAME + " -l " + fqname;
-		CmdResult res = null;
-		try {
-			res = Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
-			logger.warning( "Unable to get tags: " + e.getMessage() );
-			if( match.find() ) {
-				logger.debug( "Tag type not found" );
-				//UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + __TAG_NAME + " -c \"Hyperlink type for tagging entities\"\"" );
-				//throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e.getMessage(), UCMType.UNKNOWN_HLINK_TYPE );
-				UCMException ucme = new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e, UCMType.UNKNOWN_HLINK_TYPE );
-				ucme.addInformation(  "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -c \"Hyperlink type for tagging entities\" " + __TAG_NAME + "@" + match.group( 2 ) );
-				throw ucme;
-			} else {
-				logger.debug( "Something else" );
-				throw new UCMException( e );
-			}
-		}
-
-		List<String> list = res.stdoutList;
-
-		// List<Tuple<String, String>> tags = new ArrayList<Tuple<String,
-		// String>>();
-		List<String[]> tags = new ArrayList<String[]>();
-
-		/* There are tags */
-		if( list.size() > 2 ) {
-			for( int i = 2; i < list.size(); i++ ) {
-				if( UCM.isVerbose() ) {
-					logger.debug( "[" + i + "]" + list.get( i ) );
-				}
-				Matcher match = pattern_tags.matcher( list.get( i ) );
-				if( match.find() ) {
-					// tags.add( new Tuple<String, String>( match.group( 1 ),
-					// match.group( 2 ) ) );
-					tags.add( new String[] { match.group( 1 ), match.group( 2 ) } );
-				}
-			}
-		}
-
-		return tags;
+		
 	}
 
 	public String getTag( String fqname ) {
@@ -878,36 +581,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public String newTag( UCMEntity entity, String cgi ) throws UCMException {
-		logger.debug( entity.getFullyQualifiedName() );
 
-		String cmd = "mkhlink -ttext \"" + cgi + "\" " + __TAG_NAME + " " + entity.getFullyQualifiedName();
-
-		CmdResult res = null;
-		try {
-			res = Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			logger.warning( "Unable add tag: " + e.getMessage() );
-			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
-			if( match.find() ) {
-				logger.debug( "Found match" );
-				//UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + __TAG_NAME + " -c \"Hyperlink type for tagging entities\"\"" );
-				//throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found.", e.getMessage(), UCMType.UNKNOWN_HLINK_TYPE );
-				UCMException ucme = new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e, UCMType.UNKNOWN_HLINK_TYPE );
-				ucme.addInformation(  "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -c \"Hyperlink type for tagging entities\" " + __TAG_NAME + "@" + match.group( 2 ) );
-				throw ucme;
-			} else {
-				throw new UCMException( e );
-			}
-		}
-
-		String tag = res.stdoutBuffer.toString();
-
-		Matcher match = pattern_remove_verbose_tag.matcher( tag );
-		if( !match.find() ) {
-			throw new UCMException( "Could not create tag", UCMType.TAG_CREATION_FAILED );
-		}
-
-		return match.group( 1 );
 	}
 
 	public void deleteTag( String fqname ) {
@@ -915,24 +589,6 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public void deleteTagsWithID( String tagType, String tagID, String entity ) throws UCMException {
-		logger.debug( tagType + tagID );
-
-		List<String[]> list = getTags( entity );
-		logger.debug( list.size() + " Tags!" );
-
-		for( String[] t : list ) {
-			if( UCM.isVerbose() ) {
-				logger.debug( "Testing " + t[0] + " > " + t[1] );
-			}
-			if( t[1].matches( "^.*tagtype=" + tagType + ".*$" ) && t[1].matches( "^.*tagid=" + tagID + ".*$" ) ) {
-				String cmd = "rmhlink " + t[0];
-				try {
-					Cleartool.run( cmd );
-				} catch( AbnormalProcessTerminationException e ) {
-					throw new UCMException( "Unable to delete tag with " + tagID + ": " + e.getMessage() );
-				}
-			}
-		}
 
 	}
 
@@ -955,38 +611,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public List<Tuple<String, String>> getHlinks( String fqname, String hlinkType, File dir ) throws UCMException {
-		String cmd = "describe -ahlink " + hlinkType + " -l " + fqname;
 
-		CmdResult res = null;
-		try {
-			res = Cleartool.run( cmd, dir );
-		} catch( AbnormalProcessTerminationException e ) {
-			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
-			if( match.find() ) {
-				UCMException ucme = new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e, UCMType.UNKNOWN_HLINK_TYPE );
-				ucme.addInformation(  "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -nc " + match.group( 1 ) + "@" + match.group( 2 ) );
-				throw ucme;
-			} else {
-				throw new UCMException( e );
-			}
-		}
-
-		List<String> list = res.stdoutList;
-
-		List<Tuple<String, String>> hlinks = new ArrayList<Tuple<String, String>>();
-
-		/* There are elements */
-		if( list.size() > 2 ) {
-			for( int i = 2; i < list.size(); i++ ) {
-				logger.debug( "[" + i + "]" + list.get( i ) );
-				Matcher match = pattern_hlink.matcher( list.get( i ) );
-				if( match.find() ) {
-					hlinks.add( new Tuple<String, String>( match.group( 1 ).trim(), match.group( 2 ).trim() ) );
-				}
-			}
-		}
-
-		return hlinks;
 	}
 
 	/************************************************************************
@@ -1487,33 +1112,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public boolean isCheckedout( File element, File viewContext ) throws UCMException {
-		String cmd = "describe -s " + element;
-		try {
-			String line = Cleartool.run( cmd, viewContext ).stdoutBuffer.toString();
 
-			if( line.endsWith( "\\CHECKEDOUT" ) ) {
-				return true;
-			} else {
-				return false;
-			}
-		} catch( Exception e ) {
-			throw new UCMException( e.getMessage() );
-		}
 	}
 
 	public boolean isUnderSourceControl( File element, File viewContext ) throws UCMException {
-		String cmd = "describe " + element;
-		try {
-			String line = Cleartool.run( cmd, viewContext ).stdoutBuffer.toString();
 
-			if( line.contains( "View private file" ) ) {
-				return false;
-			} else {
-				return true;
-			}
-		} catch( Exception e ) {
-			throw new UCMException( e.getMessage() );
-		}
 	}
 
 	public List<Vob> getVobs( Region region ) throws UCMException {
@@ -1613,16 +1216,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 * @throws UCMException
 	 */
 	public String getAttribute( String fqname, String attribute ) throws UCMException {
-		String cmd = "describe -aattr " + attribute + " -l " + fqname;
 
-		CmdResult res = null;
-		try {
-			res = Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not find attribute with name: " + attribute + " on " + fqname + ". Recieved: " + e.getMessage(), e.getMessage() );
-		}
-
-		return res.toString();
 	}
 
 	private static final String rx_attr_find = "^\\s*\\S+\\s*=\\s*\\S*\\s*$";
@@ -1632,28 +1226,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public Map<String, String> getAttributes( String fqname, File dir ) throws UCMException {
-		logger.debug( "Getting attributes for " + fqname );
 
-		String cmd = "describe -aattr -all " + fqname;
-
-		CmdResult res = null;
-		try {
-			res = Cleartool.run( cmd, dir );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not find attributes on " + fqname + ". Recieved: " + e.getMessage(), e.getMessage() );
-		}
-
-		Map<String, String> atts = new HashMap<String, String>();
-
-		for( String s : res.stdoutList ) {
-			/* A valid attribute */
-			if( s.matches( rx_attr_find ) ) {
-				String[] data = s.split( "=" );
-				atts.put( data[0].trim(), data[1].trim() );
-			}
-		}
-
-		return atts;
 	}
 
 	/**
@@ -1664,14 +1237,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 * @throws UCMException
 	 */
 	public void setAttribute( String fqname, String attribute, String value ) throws UCMException {
-		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + fqname );
 
-		String cmd = "mkattr -replace " + attribute + " " + value + " " + fqname;
-		try {
-			Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not create the attribute " + attribute, e.getMessage() );
-		}
 	}
 
 	private static final Pattern __FIND_VIEW_ROOT = Pattern.compile( "^\\s*\\**\\s*([\\w\\.-]+)\\s*(.+)$" );
@@ -1732,36 +1298,9 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	@Override
 	public void remoteDeliverCancel( String oldViewTag, String oldSourceStream, File dir ) throws UCMException {
 
-		String cmd = "deliver -cancel -force -stream " + oldSourceStream;
-
-		try {
-			if( dir.exists() ) {
-				Cleartool.run( cmd, dir );
-			} else {
-				regenerateViewDotDat( dir, oldViewTag );
-				CmdResult res = Cleartool.run( cmd, dir );
-			}
-		} catch( CommandLineException e ) {
-			throw new UCMException( "Could not regenerate view to force deliver:\n" + e.getMessage(), e.getMessage() );
-		} catch( AbnormalProcessTerminationException aex ) {
-			throw new UCMException( aex.getMessage() );
-		} finally {
-			if( dir.exists() && oldViewTag != null ) {
-				deleteDir( dir );
-			}
-		}
 	}
 
 	private static boolean deleteDir( File dir ) {
-		if( dir.isDirectory() ) {
-			String[] children = dir.list();
-			for( int i = 0; i < children.length; i++ ) {
-				boolean success = deleteDir( new File( dir, children[i] ) );
-				if( !success ) {
-					return false;
-				}
-			}
-		}
-		return dir.delete();
+
 	}
 }

@@ -14,6 +14,8 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
+import net.praqma.util.execute.CmdResult;
+import net.praqma.util.execute.CommandLineException;
 
 public class Deliver {
 	private static Logger logger = Logger.getLogger();
@@ -150,13 +152,49 @@ public class Deliver {
 		return true;
 	}
 	
+	public static void rollBack( String oldViewTag, Stream oldSourceStream, File context ) {
+
+		String cmd = "deliver -cancel -force -stream " + oldSourceStream;
+
+		try {
+			if( context.exists() ) {
+				Cleartool.run( cmd, context );
+			} else {
+				regenerateViewDotDat( context, oldViewTag );
+				CmdResult res = Cleartool.run( cmd, context );
+			}
+		} catch( CommandLineException e ) {
+			throw new UCMException( "Could not regenerate view to force deliver:\n" + e.getMessage(), e.getMessage() );
+		} catch( AbnormalProcessTerminationException aex ) {
+			throw new UCMException( aex.getMessage() );
+		} finally {
+			if( context.exists() && oldViewTag != null ) {
+				deleteDir( context );
+			}
+		}
+	}
+	
+	private static boolean deleteDir( File dir ) {
+		if( dir.isDirectory() ) {
+			String[] children = dir.list();
+			for( int i = 0; i < children.length; i++ ) {
+				boolean success = deleteDir( new File( dir, children[i] ) );
+				if( !success ) {
+					return false;
+				}
+			}
+		}
+		
+		return dir.delete();
+	}
+	
 	public void cancel() throws CancelDeliverException {
 		cancel( stream, context );
 	}
 	
 	public static void cancel( Stream stream, File context ) throws CancelDeliverException {
 		try {
-			String cmd = "deliver -cancel -force" + ( stream != null ? " -stream " + stream.getFullyQualifiedName() : "" );
+			String cmd = "deliver -cancel -force" + ( stream != null ? " -stream " + stream : "" );
 			Cleartool.run( cmd, context );
 		} catch( AbnormalProcessTerminationException e ) {
 			//throw new UCMException( "Could not cancel deliver: " + e.getMessage(), e.getMessage() );
