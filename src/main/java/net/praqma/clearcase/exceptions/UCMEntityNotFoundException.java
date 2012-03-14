@@ -2,7 +2,7 @@ package net.praqma.clearcase.exceptions;
 
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 
-public class UCMEntityNotFoundException extends CleartoolException {
+public class UCMEntityNotFoundException extends ClearCaseException {
 
 	private UCMEntity entity;
 	

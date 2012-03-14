@@ -2,11 +2,12 @@ package net.praqma.clearcase.ucm.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
-import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToListProjectsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
@@ -194,6 +195,26 @@ public class Project extends UCMEntity {
 		logger.debug( projects );
 
 		return projects;
+	}
+	
+	
+	public List<Component> getModifiableComponents() {
+		//List<String> cs = strategy.getModifiableComponents( project.getFullyQualifiedName() );
+		String[] cs;
+		String cmd = "desc -fmt %[mod_comps]p " + this;
+		try {
+			cs = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" );
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new CleartoolException( "Unable to modifiable components", e );
+		}
+		
+		List<Component> comps = new ArrayList<Component>();
+
+		for( String c : cs ) {
+			comps.add( Component.get( c, pvob, true ) );
+		}
+
+		return comps;
 	}
 
 	

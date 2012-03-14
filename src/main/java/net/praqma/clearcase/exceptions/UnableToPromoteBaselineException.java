@@ -4,7 +4,7 @@ import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 
-public class UnableToPromoteBaselineException extends CleartoolException {
+public class UnableToPromoteBaselineException extends ClearCaseException {
 	
 	private UCMEntity entity;
 	private PromotionLevel plevel;

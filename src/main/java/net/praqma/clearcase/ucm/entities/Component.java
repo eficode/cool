@@ -7,7 +7,6 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.util.debug.Logger;
@@ -15,7 +14,6 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Component extends UCMEntity {
 	
-	private static final long serialVersionUID = -6186110079026697257L;
 	private transient static Logger logger = Logger.getLogger();
 	
 	private static final String rx_component_load = "\\s*Error: component not found\\s*";

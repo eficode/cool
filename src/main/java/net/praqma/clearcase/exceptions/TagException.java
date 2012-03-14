@@ -2,7 +2,7 @@ package net.praqma.clearcase.exceptions;
 
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 
-public class TagException extends CleartoolException {
+public class TagException extends ClearCaseException {
 
 	private UCMEntity entity;
 	private String cgi;

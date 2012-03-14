@@ -1,19 +1,26 @@
 package net.praqma.clearcase.ucm.view;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import net.praqma.clearcase.exceptions.UCMException;
-import net.praqma.clearcase.exceptions.UCMException.UCMType;
+import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.ViewException;
+import net.praqma.clearcase.exceptions.ViewException.Type;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.util.debug.Logger;
+import net.praqma.util.execute.CmdResult;
 
 public class UCMView extends UCM implements Serializable {
 
-	private static final long serialVersionUID = 2427000388674097642L;
+	public static final Pattern rx_view_get_path = Pattern.compile( "^\\s*Global path:\\s*(.*?)\\s*$" );
 
 	transient private static Logger logger = Logger.getLogger();
 
@@ -43,14 +50,25 @@ public class UCMView extends UCM implements Serializable {
 		this.stream = stream;
 	}
 
-	public static SnapshotView getSnapshotView(File viewroot) throws UCMException {
+	public static SnapshotView getSnapshotView(File viewroot) {
 		return new SnapshotView(viewroot);
 	}
 
 	public static boolean viewExists(String viewtag) {
-		boolean b = context.viewExists(viewtag);
-		logger.debug("The view " + viewtag + " exists: " + b);
-		return b;
+		//boolean b = context.viewExists(viewtag);
+		
+		logger.debug( viewtag );
+
+		String cmd = "lsview " + viewtag;
+
+		try {
+			String s = Cleartool.run( cmd ).stdoutBuffer.toString();
+			logger.debug( viewtag + " exists" );
+			return true;
+		} catch( Exception e ) {
+			logger.debug( "View check failed: " + e.getMessage() );
+			return false;
+		}
 	}
 
 	public void setPath(String path) {
@@ -65,25 +83,56 @@ public class UCMView extends UCM implements Serializable {
 		return this.viewtag;
 	}
 	
-	public void removeView() throws UCMException {
-		context.removeView( this );
+	public void removeView() throws ViewException {
+		//context.removeView( this );
+		String cmd = "rmview -force " + ( isDynamicView() ? "-tag " + getViewtag() : getStorageLocation() );
+
+		try {
+			Cleartool.run( cmd );
+		} catch( Exception e ) {
+			throw new ViewException( "Unable to remove " + this, path, Type.REMOVE_FAILED, e );
+		}
 	}
 	
 	public boolean isDynamicView() {
 		return this.dynamic;
 	}
 	
-	public void load() throws UCMException {
-		Map<String, String> options = context.loadView( this );
+	public UCMView load() throws ViewException {
+		//Map<String, String> options = context.loadView( this );
 		
+		logger.debug( "Loading view " + this );
+
+		String cmd = "lsview -l " + getViewtag();
+
+		Map<String, String> options = new HashMap<String, String>();
+
+		try {
+			CmdResult r = Cleartool.run( cmd );
+
+			for( String s : r.stdoutList ) {
+				if( s.contains( "Global path" ) ) {
+					Matcher m = rx_view_get_path.matcher( s );
+					if( m.find() ) {
+						options.put( "pathname", m.group( 1 ) );
+					}
+				}
+			}
+
+		} catch( Exception e ) {
+			throw new ViewException( "Unable to load " + this, this.path, Type.LOAD_FAILED, e );
+		}
+
 		try {
 			this.storageLocation = options.get("pathname");
 		} catch( NullPointerException e ) {
-			throw new UCMException( "Could not load " + this.toString() + " correctly: " + e.getMessage(), UCMType.LOAD_FAILED );
+			throw new ViewException( "No storage location", this.path, Type.LOAD_FAILED, e );
 		}
+		
+		return this;
 	}
 	
-	public String getStorageLocation() throws UCMException {
+	public String getStorageLocation() throws ViewException {
 		if( this.storageLocation == null ) {
 			this.load();
 		}
@@ -91,16 +140,20 @@ public class UCMView extends UCM implements Serializable {
 		return this.storageLocation;
 	}
 	
-	public Stream getStream() throws UCMException {
+	public Stream getStream() throws CleartoolException, IOException, ViewException {
 		return stream;
 	}
 	
-	public void end() throws UCMException {
-		context.endView( viewtag );
+	public void end() throws ViewException {
+		end( viewtag );
 	}
 	
-	public static void endView( String viewtag ) throws UCMException {
-		context.endView( viewtag );
+	public static void end( String viewtag ) throws ViewException {
+		try {
+			Cleartool.run( "endview -server " + viewtag );
+		} catch( Exception e ) {
+			throw new ViewException( "Could not end view " + viewtag, null, Type.END_VIEW_FAILED, e );
+		}
 	}
 	
 	public static void getViews( Project project ) {
@@ -110,6 +163,17 @@ public class UCMView extends UCM implements Serializable {
 	
 	public String toString() {
 		return viewtag;
+	}
+	
+	protected static void create( String tag, String path, boolean snapshotView, Stream stream ) throws ViewException {
+		logger.debug( "Creating " + tag );
+		String cmd = "mkview -tag " + tag + ( snapshotView ? " -snapshot" : "" ) + ( stream != null ? " -stream " + stream.getFullyQualifiedName() : "" ) + " -stgloc " + ( path != null ? path : "-auto" );
+
+		try {
+			Cleartool.run( cmd );
+		} catch( Exception e ) {
+			throw new ViewException( "Unable to create view " + tag, path, Type.CREATION_FAILED, e );
+		}
 	}
 
 }

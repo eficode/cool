@@ -3,7 +3,7 @@ package net.praqma.clearcase.exceptions;
 import net.praqma.clearcase.ucm.entities.Stream;
 
 
-public class NoSingleTopComponentException extends CleartoolException {
+public class NoSingleTopComponentException extends ClearCaseException {
 
 	private Stream stream;
 	

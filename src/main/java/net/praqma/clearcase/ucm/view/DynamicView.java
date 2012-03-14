@@ -1,9 +1,14 @@
 package net.praqma.clearcase.ucm.view;
 
-import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.ViewException;
+import net.praqma.clearcase.exceptions.ViewException.Type;
 import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.util.debug.Logger;
 
 public class DynamicView extends UCMView {
+	
+	private static Logger logger = Logger.getLogger();
 	
 	public DynamicView() {
 		
@@ -29,15 +34,20 @@ public class DynamicView extends UCMView {
 	 * @param tag The view tag
 	 * @param path The path
 	 * @return An instance of DynamicView
-	 * @throws UCMException
+	 * @throws ViewException
 	 */
-	public static DynamicView create( String path, String tag, Stream stream ) throws UCMException {
-		context.createView(tag, path, false, stream);
+	public static DynamicView create( String path, String tag, Stream stream ) throws ViewException {
+		//context.createView(tag, path, false, stream);
+		UCMView.create( tag, path, false, stream );
 		return new DynamicView(path, tag, stream);
 	}
 	
 	
-	public void startView() throws UCMException {
-		context.startView( this );
+	public void startView() throws ViewException {
+		try {
+			Cleartool.run( "startview " + getViewtag() );
+		} catch( Exception e ) {
+			throw new ViewException( "Could not start view " + getViewtag(), path, Type.START_VIEW_FAILED, e );
+		}
 	}
 }

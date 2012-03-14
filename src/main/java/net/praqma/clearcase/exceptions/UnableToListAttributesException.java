@@ -4,7 +4,7 @@ import java.io.File;
 
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 
-public class UnableToListAttributesException extends CleartoolException {
+public class UnableToListAttributesException extends ClearCaseException {
 
 	private UCMEntity entity;
 	private File context;

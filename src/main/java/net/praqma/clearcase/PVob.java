@@ -1,6 +1,6 @@
 package net.praqma.clearcase;
 
-import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.CleartoolException;
 
 public class PVob extends Vob {
 
@@ -15,8 +15,8 @@ public class PVob extends Vob {
 		this.projectVob = true;
 	}
 
-	public static PVob create( String name, String path, String comment ) throws UCMException {
-		context.createVob( name, true, path, comment );
+	public static PVob create( String name, String path, String comment ) throws CleartoolException {
+		Vob.create( name, true, path, comment );
 		PVob pvob = new PVob( name );
 		pvob.storageLocation = path;
 

@@ -2,7 +2,7 @@ package net.praqma.clearcase.exceptions;
 
 import net.praqma.clearcase.PVob;
 
-public class UnableToListProjectsException extends CleartoolException {
+public class UnableToListProjectsException extends ClearCaseException {
 
 	private PVob pvob;
 	

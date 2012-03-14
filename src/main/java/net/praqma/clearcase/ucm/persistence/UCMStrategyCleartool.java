@@ -249,21 +249,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	 * @throws UCMException
 	 ************************************************************************/
 	public String getProjectFromStream( String stream ) throws UCMException {
-		String cmd = "desc -fmt %[project]p " + stream;
-		try {
-			return Cleartool.run( cmd ).stdoutBuffer.toString().trim();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to get project from stream: " + e.getMessage(), e );
-		}
+
 	}
 
 	public List<String> getModifiableComponents( String project ) throws UCMException {
-		String cmd = "desc -fmt %[mod_comps]p " + project;
-		try {
-			return Arrays.asList( Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" ) );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to modifiable components: " + e.getMessage(), e );
-		}
+
 	}
 
 	public String loadProject( String project ) throws UCMException {
@@ -430,12 +420,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public String getStreamFromView( String viewtag ) throws UCMException {
-		try {
-			String fqstreamstr = Cleartool.run( "lsstream -fmt %Xn -view " + viewtag ).stdoutBuffer.toString();
-			return fqstreamstr;
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not get Stream from view " + viewtag + ": " + e );
-		}
+
 	}
 
 	public void createStream( String pstream, String nstream, boolean readonly, String baseline ) throws UCMException {
@@ -640,26 +625,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public String getViewtag( File viewContext ) throws UCMException {
-		String cmd = "pwv -s";
-		try {
-			return Cleartool.run( cmd, viewContext ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to get view tag: " + e.getMessage() );
-		}
+
 	}
 
 	public boolean IsVob( File dir ) {
-		logger.debug( "Testing " + dir );
 
-		String cmd = "lsvob \\" + dir.getName();
-		try {
-			Cleartool.run( cmd );
-		} catch( Exception e ) {
-			logger.debug( "E=" + e.getMessage() );
-			return false;
-		}
-
-		return true;
 	}
 
 	public List<String> ListVobs( File viewroot ) {
@@ -680,382 +650,56 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public void makeSnapshotView( String stream, File viewroot, String viewtag ) throws UCMException {
-		logger.debug( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
 
-		if( viewroot.exists() ) {
-			IO.deleteDirectory( viewroot );
-		}
-
-		this.generate( stream );
-
-		String cmd = "mkview -snap -tag " + viewtag + " -stream " + stream + " \"" + viewroot.getAbsolutePath() + "\"";
-
-		try {
-			Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			logger.warning( "Could not create snapshot view \"" + viewtag + "\"" );
-			throw new UCMException( "Could not create snapshot view \"" + viewtag + "\"", e.getMessage(), UCMType.VIEW_ERROR );
-		}
 	}
 
 	private static final Pattern rx_view_rebasing = Pattern.compile( "^\\.*Error: This view is currently being used to rebase stream \"(.+)\"\\.*$" );
 
 	public String viewUpdate( File viewroot, boolean overwrite, String loadrules ) throws UCMException {
-		logger.debug( viewroot.getAbsolutePath() );
-
-		String cmd = "setcs -stream";
-		try {
-			Cleartool.run( cmd, viewroot );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to set cs stream: " + e.getMessage() );
-		}
-
-		logger.debug( "Updating view" );
-
-		cmd = "update -force " + ( overwrite ? " -overwrite " : "" ) + loadrules;
-		try {
-			return Cleartool.run( cmd, viewroot, true ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			Matcher m = rx_view_rebasing.matcher( e.getMessage() );
-			if( m.find() ) {
-				logger.warning( "The view is currently rebasing the stream " + m.group( 1 ) + ": " + e.getMessage() );
-				logger.warning( e );
-				throw new UCMException( "The view is currently rebasing the stream " + m.group( 1 ), UCMType.VIEW_CURRENTLY_REBASING );
-			} else {
-				logger.warning( e );
-				throw new UCMException( "Unable to update view: " + e.getMessage() );
-			}
-		}
 
 	}
 
 	public void regenerateViewDotDat( File dir, String viewtag ) throws UCMException {
-		logger.debug( dir + ", " + viewtag );
-
-		File viewdat = new File( dir + File.separator + "view.dat" );
-
-		if( viewdat.exists() ) {
-			throw new UCMException( "view.dat file already exist. No need for regenrating." );
-		}
-
-		String cmd = "lsview -l " + viewtag;
-		/* TODO Check this functions behavior, if the view doesn't exist */
-		String result = "";
-		try {
-			result = Cleartool.run( cmd ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to list view tag " + viewtag + ": " + e.getMessage() );
-		}
-
-		// System.out.println(result);
-
-		Matcher match = pattern_view_uuid.matcher( result );
-		if( !match.find() ) {
-			logger.warning( "The UUID of the view " + viewtag + " does not exist!" );
-			throw new UCMException( "The UUID of the view " + viewtag + " does not exist!" );
-		}
-
-		String uuid = match.group( 1 );
-
-		cmd = "lsview -uuid " + uuid;
-
-		try {
-			Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to read the UUID(" + uuid + ") from view tag " + viewtag, e.getMessage() );
-		}
-
-		if( dir.exists() ) {
-			logger.warning( "The view root, " + dir + ",  already exists - reuse may be problematic" );
-		} else {
-			dir.mkdirs();
-		}
-
-		try {
-			FileOutputStream fos = new FileOutputStream( viewdat );
-			fos.write( ( "ws_oid:00000000000000000000000000000000 view_uuid:" + uuid ).getBytes() );
-			fos.close();
-		} catch( IOException e ) {
-			throw new UCMException( "Could not create view.dat", e.getMessage(), UCMType.VIEW_ERROR );
-		}
-
-		/* TODO Too much windows.... */
-		// cmd = "attrib +h +r " + viewdat;
-		if( !viewdat.setReadOnly() ) {
-			logger.warning( "Could set view.dat as read only" );
-			throw new UCMException( "Could set view.dat as read only" );
-		}
-		// viewdat.set
-		// Command.run( cmd );
+		
 	}
 
 	public boolean viewExists( String viewtag ) {
-		logger.debug( viewtag );
 
-		String cmd = "lsview " + viewtag;
-
-		try {
-			String s = Cleartool.run( cmd ).stdoutBuffer.toString();
-			logger.debug( "---->" + s );
-			return true;
-		} catch( Exception e ) {
-			logger.debug( "---->" + e.getMessage() );
-			return false;
-		}
 	}
 
 	public Map<String, Integer> swipeView( File viewroot, boolean excludeRoot ) throws UCMException {
-		logger.debug( viewroot.toString() );
-
-		File[] files = viewroot.listFiles();
-		String fls = "";
-		List<File> notVobs = new ArrayList<File>();
-		List<File> rootVPFiles = new ArrayList<File>();
-
-		/*
-		 * Scanning root folder for directories that are not vobs and files, not
-		 * view.dat
-		 */
-		for( File f : files ) {
-			if( !f.canWrite() ) {
-				logger.debug( f + " is write protected." );
-				continue;
-			}
-
-			if( f.isDirectory() ) {
-				if( IsVob( f ) ) {
-					fls += "\"" + f.getAbsolutePath() + "\" ";
-				} else {
-					notVobs.add( f );
-				}
-			} else {
-				if( f.getName().equalsIgnoreCase( "view.dat" ) ) {
-					continue;
-				}
-				rootVPFiles.add( f );
-			}
-		}
-
-		/* Remove all other dirs */
-		for( File notVob : notVobs ) {
-			if( UCM.isVerbose() ) {
-				logger.debug( "Removing " + notVob );
-			}
-			net.praqma.util.io.IO.deleteDirectory( notVob );
-		}
-
-		Map<String, Integer> info = new HashMap<String, Integer>();
-		info.put( "success", 1 );
-
-		if( fls.length() == 0 ) {
-			logger.debug( "No files to delete" );
-			return info;
-		}
-
-		/* Get view private files from vobs */
-		String cmd = "ls -short -recurse -view_only " + fls;
-		List<String> result = null;
-		try {
-			result = Cleartool.run( cmd ).stdoutList;
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to list files " + fls + ": " + e.getMessage() );
-		}
-		List<File> vpFiles = new ArrayList<File>();
-
-		if( !excludeRoot ) {
-			vpFiles.addAll( rootVPFiles );
-		}
-
-		for( String vpFile : result ) {
-			if( vpFile.matches( rx_co_file ) || vpFile.matches( rx_keep_file ) || vpFile.matches( rx_ctr_file ) ) {
-				continue;
-			}
-
-			vpFiles.add( new File( vpFile ) );
-		}
-
-		int total = vpFiles.size();
-
-		info.put( "total", total );
-
-		logger.debug( "Found " + total + " files, of which " + ( total - vpFiles.size() ) + " were CO, CTR or KEEP's." );
-
-		List<File> dirs = new ArrayList<File>();
-		int dircount = 0;
-		int filecount = 0;
-
-		/* Removing view private files, saving directories for later */
-		logger.verbose( "Removing files:" );
-		for( File f : vpFiles ) {
-			// logger.debug( "FILE=" + f );
-
-			if( f.exists() ) {
-				if( f.isDirectory() ) {
-					dirs.add( f );
-				} else {
-					logger.verbose( " * " + f );
-					f.delete();
-					filecount++;
-				}
-			} else {
-				logger.debug( "The file " + f + " does not exist." );
-			}
-		}
-
-		info.put( "files_deleted", filecount );
-
-		/* TODO Remove the directories, somehow!? Only the empty!? */
-		logger.verbose( "Removing directories:" );
-		for( File d : dirs ) {
-			try {
-				logger.verbose( " * " + d );
-				d.delete();
-				dircount++;
-			} catch( SecurityException e ) {
-				logger.debug( "Unable to delete \"" + d + "\". Probably not empty." );
-			}
-		}
-
-		info.put( "dirs_deleted", dircount );
-
-		logger.debug( "Deleted " + dircount + " director" + ( dircount == 1 ? "y" : "ies" ) + " and " + filecount + " file" + ( filecount == 1 ? "" : "s" ) );
-
-		if( dircount + filecount == total ) {
-			info.put( "success", 1 );
-		} else {
-			logger.warning( "Some files were not deleted." );
-			info.put( "success", 0 );
-		}
-
-		return info;
+		
 	}
 
 	@Override
 	public File getCurrentViewRoot( File viewroot ) throws UCMException {
-		logger.debug( viewroot.getAbsolutePath() );
 
-		try {
-			String wvroot = Cleartool.run( "pwv -root", viewroot ).stdoutBuffer.toString();
-
-			return new File( wvroot );
-		} catch( Exception e ) {
-			throw new UCMException( e.getMessage() );
-		}
 	}
 
 	public String viewrootIsValid( File viewroot ) throws UCMException {
-		logger.debug( viewroot.getAbsolutePath() );
 
-		File viewdotdatpname = new File( viewroot + File.separator + "view.dat" );
-
-		logger.debug( "The view file = " + viewdotdatpname );
-
-		FileReader fr = null;
-		try {
-			fr = new FileReader( viewdotdatpname );
-		} catch( FileNotFoundException e1 ) {
-			logger.warning( "\"" + viewdotdatpname + "\" not found!" );
-			throw new UCMException( "The file could not be found. ", e1.getMessage() );
-		}
-
-		BufferedReader br = new BufferedReader( fr );
-		String line;
-		StringBuffer result = new StringBuffer();
-		try {
-			while( ( line = br.readLine() ) != null ) {
-				result.append( line );
-			}
-		} catch( IOException e ) {
-			logger.warning( "Couldn't read lines from " + viewdotdatpname );
-			throw new UCMException( "Could not read lines", e.getMessage() );
-		}
-
-		logger.debug( "FILE CONTENT=" + result.toString() );
-
-		Matcher match = rx_view_uuid.matcher( result.toString() );
-
-		String uuid = "";
-
-		if( match.find() ) {
-			/* A match is found */
-			uuid = match.group( 1 ).trim();
-		} else {
-			logger.warning( "UUID not found!" );
-			throw new UCMException( "UUID not found" );
-		}
-
-		String cmd = "lsview -s -uuid " + uuid;
-		try {
-			String viewtag = Cleartool.run( cmd ).stdoutBuffer.toString().trim();
-			return viewtag;
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to list view with " + uuid + ": " + e.getMessage() );
-		}
 	}
 
 	public void createView( String tag, String path, boolean snapshotView, Stream stream ) throws UCMException {
-		logger.debug( "Creating " + tag );
-		String cmd = "mkview -tag " + tag + ( snapshotView ? " -snapshot" : "" ) + ( stream != null ? " -stream " + stream.getFullyQualifiedName() : "" ) + " -stgloc " + ( path != null ? path : "-auto" );
 
-		try {
-			Cleartool.run( cmd );
-		} catch( Exception e ) {
-			throw new UCMException( e.getMessage(), UCMType.CREATION_FAILED );
-		}
 	}
 
 	public void removeView( UCMView view ) throws UCMException {
-		String cmd = "rmview -force " + ( view.isDynamicView() ? "-tag " + view.getViewtag() : view.getStorageLocation() );
 
-		try {
-			Cleartool.run( cmd );
-		} catch( Exception e ) {
-			throw new UCMException( "Could not remove view: " + e.getMessage() );
-		}
 	}
 
 	public static final Pattern rx_view_get_path = Pattern.compile( "^\\s*Global path:\\s*(.*?)\\s*$" );
 
 	public Map<String, String> loadView( UCMView view ) throws UCMException {
-		logger.debug( "Loading view " + view );
 
-		String cmd = "lsview -l " + view.getViewtag();
-
-		Map<String, String> a = new HashMap<String, String>();
-
-		try {
-			CmdResult r = Cleartool.run( cmd );
-
-			for( String s : r.stdoutList ) {
-				if( s.contains( "Global path" ) ) {
-					Matcher m = rx_view_get_path.matcher( s );
-					if( m.find() ) {
-						a.put( "pathname", m.group( 1 ) );
-					}
-				}
-			}
-
-		} catch( Exception e ) {
-			throw new UCMException( "Could not load Vob: " + e.getMessage() );
-		}
-
-		return a;
 	}
 
 	public void startView( UCMView view ) throws UCMException {
-		try {
-			Cleartool.run( "startview " + view.getViewtag() );
-		} catch( Exception e ) {
-			throw new UCMException( "Could not start view " + view.getViewtag() + ": " + e.getMessage() );
-		}
+
 	}
 
 	public void endView( String viewtag ) throws UCMException {
-		try {
-			Cleartool.run( "endview -server " + viewtag );
-		} catch( Exception e ) {
-			throw new UCMException( "Could not end view " + viewtag + ": " + e.getMessage() );
-		}
+
 	}
 
 	/*****************************
@@ -1064,51 +708,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	public static final Pattern rx_vob_get_path = Pattern.compile( "^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$" );
 
 	public void createVob( String vobname, boolean UCMProject, String path, String comment ) throws UCMException {
-		logger.debug( "Creating vob " + vobname );
 
-		String cmd = "mkvob -tag " + vobname + ( UCMProject ? " -ucmproject" : "" ) + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -stgloc " + ( path != null ? path : "-auto" );
-
-		try {
-			Cleartool.run( cmd );
-		} catch( Exception e ) {
-			throw new UCMException( e.getMessage(), UCMType.CREATION_FAILED );
-		}
 	}
 
 	public void loadVob( Vob vob ) throws UCMException {
-		logger.debug( "Loading vob " + vob );
 
-		String cmd = "describe vob:" + vob;
-
-		try {
-			/*
-			 * We have to ignore any abnormal terminations, because describe can
-			 * return != 0 even when the result is valid
-			 */
-			CmdResult r = Cleartool.run( cmd, null, true, true );
-
-			if( r.stdoutBuffer.toString().contains( "Unable to determine VOB for pathname" ) ) {
-				throw new UCMException( "The Vob " + vob.getName() + " does not exist" );
-			}
-
-			if( r.stdoutBuffer.toString().contains( "Trouble opening VOB database" ) ) {
-				throw new UCMException( "The Vob " + vob.getName() + " could not be opened" );
-			}
-
-			for( String s : r.stdoutList ) {
-				if( s.contains( "VOB storage global pathname" ) ) {
-					Matcher m = rx_vob_get_path.matcher( s );
-					if( m.find() ) {
-						vob.setStorageLocation( m.group( 1 ) );
-					}
-				} else if( s.contains( "project VOB" ) ) {
-					vob.setIsProjectVob( true );
-				}
-			}
-
-		} catch( Exception e ) {
-			throw new UCMException( "Could not load Vob: " + e.getMessage() );
-		}
 	}
 
 	public boolean isCheckedout( File element, File viewContext ) throws UCMException {
@@ -1120,19 +724,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public List<Vob> getVobs( Region region ) throws UCMException {
-		String cmd = "lsvob -s" + ( region != null ? " -region " + region.getName() : "" );
-		try {
-			CmdResult cr = Cleartool.run( cmd );
 
-			List<Vob> vobs = new ArrayList<Vob>();
-			for( String s : cr.stdoutList ) {
-				vobs.add( new Vob( s ) );
-			}
-
-			return vobs;
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to get vobs from region " + region.getName() + ": " + e.getMessage() );
-		}
 	}
 
 	public List<Vob> getVobs( boolean pvobs ) throws UCMException {
@@ -1160,30 +752,11 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public void mountVob( Vob vob ) throws UCMException {
-		logger.debug( "Mounting vob " + vob );
 
-		String cmd = "mount " + vob;
-		try {
-			Cleartool.run( cmd );
-		} catch( Exception e ) {
-			if( e.getMessage().contains( "is already mounted" ) ) {
-				/* No op */
-				return;
-			}
-
-			throw new UCMException( "Could not mount Vob " + vob + ": " + e.getMessage() );
-		}
 	}
 
 	public void unmountVob( Vob vob ) throws UCMException {
-		logger.debug( "UnMounting vob " + vob );
 
-		String cmd = "umount " + vob;
-		try {
-			Cleartool.run( cmd );
-		} catch( Exception e ) {
-			throw new UCMException( "Could not unmount Vob " + vob + ": " + e.getMessage() );
-		}
 	}
 
 	public int getVobCount() throws UCMException {
@@ -1196,13 +769,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public void removeVob( Vob vob ) throws UCMException {
-		String cmd = "rmvob -force " + vob.getStorageLocation();
 
-		try {
-			Cleartool.run( cmd );
-		} catch( Exception e ) {
-			throw new UCMException( "Could remove Vob " + vob + ": " + e.getMessage() );
-		}
 	}
 
 	/*****************************
@@ -1244,24 +811,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	@Override
 	public List<UCMView> getViews( Region region ) throws UCMException {
-		String cmd = "lsview" + ( region != null ? " -region " + region.getName() : "" );
-		try {
-			CmdResult cr = Cleartool.run( cmd );
 
-			List<UCMView> views = new ArrayList<UCMView>();
-			for( String s : cr.stdoutList ) {
-
-				/* Pre process views */
-				Matcher m = __FIND_VIEW_ROOT.matcher( s );
-				if( m.find() ) {
-					views.add( new UCMView( m.group( 2 ).trim(), m.group( 1 ).trim() ) );
-				}
-			}
-
-			return views;
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Unable to get views from " + region.getName() + ": " + e.getMessage() );
-		}
 	}
 
 	/*****************************

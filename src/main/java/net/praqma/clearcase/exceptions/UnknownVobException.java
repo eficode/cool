@@ -7,7 +7,7 @@ import java.util.List;
 import net.praqma.util.debug.Logger;
 
 //public class UCMException extends RuntimeException
-public class UnknownVobException extends CleartoolException {
+public class UnknownVobException extends ClearCaseException {
 	/**
 	 * 
 	 */

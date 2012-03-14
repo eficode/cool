@@ -1,6 +1,6 @@
 package net.praqma.clearcase.exceptions;
 
-public class UCMEntityNotInitializedException extends CleartoolException {
+public class UCMEntityNotInitializedException extends ClearCaseException {
 
 	public UCMEntityNotInitializedException( String s ) {
 		super( s );

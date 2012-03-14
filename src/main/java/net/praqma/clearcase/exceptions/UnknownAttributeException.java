@@ -2,7 +2,7 @@ package net.praqma.clearcase.exceptions;
 
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 
-public class UnknownAttributeException extends CleartoolException {
+public class UnknownAttributeException extends ClearCaseException {
 
 	private UCMEntity entity;
 	private String attribute;

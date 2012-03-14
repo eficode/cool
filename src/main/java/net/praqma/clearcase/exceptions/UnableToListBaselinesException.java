@@ -4,7 +4,7 @@ import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 
-public class UnableToListBaselinesException extends CleartoolException {
+public class UnableToListBaselinesException extends ClearCaseException {
 
 	private Stream s;
 	private Component c;

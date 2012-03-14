@@ -2,7 +2,7 @@ package net.praqma.clearcase.exceptions;
 
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 
-public class UnableToCreateEntityException extends CleartoolException {
+public class UnableToCreateEntityException extends ClearCaseException {
 
 	Class<? extends UCMEntity> clazz;
 

@@ -3,7 +3,7 @@ package net.praqma.clearcase.exceptions;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 
 //public class UCMException extends RuntimeException
-public class UnableToLoadEntityException extends CleartoolException {
+public class UnableToLoadEntityException extends ClearCaseException {
 	
 	private UCMEntity entity;
 	

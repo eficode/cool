@@ -16,9 +16,11 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.TagException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UCMEntityNotInitializedException;
 import net.praqma.clearcase.exceptions.HyperlinkException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToListAttributesException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
@@ -61,8 +63,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	private static final String rx_attr_find = "^\\s*\\S+\\s*=\\s*\\S*\\s*$";
 
 	transient private static ClassLoader classloader = UCMEntity.class.getClassLoader();
-
-	transient protected static TagPool tp = TagPool.GetInstance();
 	
 	private boolean created = false;
 
@@ -126,8 +126,11 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 *            If cachable, the entity is stored and can later be retrieved
 	 *            from the cache without contacting clear case.
 	 * @return A new entity of the type given by the fully qualified name.
+	 * @throws UnableToCreateEntityException 
+	 * @throws UCMEntityNotFoundException 
+	 * @throws UnableToLoadEntityException 
 	 */
-	protected static UCMEntity getEntity( Class<? extends UCMEntity> clazz, String fqname, boolean trusted ) {
+	protected static UCMEntity getEntity( Class<? extends UCMEntity> clazz, String fqname, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		
 		/* Is this needed? */
 		fqname = fqname.trim();
@@ -137,60 +140,15 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		String shortname = "";
 		String pvob = "";
 
-		/* Test standard fully qualified names */
-		Matcher match = pattern_std_fqname.matcher( fqname );
-		if( match.find() ) {
-			ClearcaseEntityType etype = ClearcaseEntityType.GetFromString( match.group( 1 ) );
-
-			/* Set the Entity variables */
-			shortname = match.group( 2 );
-			pvob = match.group( 3 );
-			type = etype;
-		} else {
-
-			/* Not a standard entity, lets try Version */
-			match = pattern_version_fqname.matcher( fqname );
-			if( match.find() ) {
-				/* Set the Entity variables */
-				shortname = match.group( 1 );
-				pvob = match.group( 2 );
-				type = ClearcaseEntityType.Version;
-			} else {
-
-				/* Not a Version entity, lets try Tag */
-				match = pattern_tag_fqname.matcher( fqname );
-				if( match.find() ) {
-					/* Set the Entity variables */
-					shortname = match.group( 1 ); // This is also the eid
-					pvob = match.group( 2 );
-					type = ClearcaseEntityType.Tag;
-				} else {
-					/* Not a Tag entity, lets try HLink(which really is a Tag) */
-					match = pattern_hlink_fqname.matcher( fqname );
-					if( match.find() ) {
-						/* Set the Entity variables */
-						shortname = match.group( 1 );
-						pvob = match.group( 3 );
-						type = ClearcaseEntityType.HyperLink;
-					}
-				}
-			}
+		/* Try to instantiate the Entity object */
+		try {
+			entity = clazz.newInstance();
+			entity.initialize();
+		} catch( Exception e ) {
+			throw new UnableToCreateEntityException( clazz, e );
 		}
 
-		/* Try to instantiate the Entity object */
-		entity = clazz.newInstance();
-
-		/* Storing the variables in the object */
-		/*
-		entity.fqname = fqname;
-		entity.shortname = shortname;
-		entity.type = type;
-		entity.pvob = pvob;
-		*/
-
-		// logger.debug( "Created entity of type " + entity.type );
-
-		entity.initialize();
+		
 
 		/* If not trusted, load the entity from the context */
 		if( !trusted ) {
@@ -265,10 +223,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	/* Tag stuff */
 
-	public Tag getTag( String tagType, String tagID ) {
+	public Tag getTag( String tagType, String tagID ) throws TagException {
 		logger.debug( "Retrieving tags for " + tagType + ", " + tagID );
-		
-		return tp.getTag( tagType, tagID, this );
+		return Tag.getTag( this, tagType, tagID, true );
 	}
 
 	/**
@@ -306,21 +263,8 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return UCMEntity.getAttributes( this, context );
 	}
 	
-	public static String getAttribute( UCMEntity entity, String attribute ) throws UnknownAttributeException {
-		//return context.getAttributes( this );
-		String cmd = "describe -aattr " + attribute + " -l " + entity;
-
-		CmdResult res = null;
-		try {
-			res = Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( "Could not find attribute with name: " + attribute + " on " + fqname + ". Recieved: " + e.getMessage(), e.getMessage() );
-			throw new UnknownAttributeException( entity, attribute, e );
-		}
-	}
-
-	public String getAttribute( String key ) throws UCMException {
-		Map<String, String> atts = UCMEntity.getAttributes( this, null );
+	public String getAttribute( String key ) throws UnableToListAttributesException {
+		Map<String, String> atts = getAttributes( this, null );
 		if( atts.containsKey( key ) ) {
 			return atts.get( key );
 		} else {
@@ -329,7 +273,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	}
 
 
-	public void setAttribute( String attribute, String value, File context ) throws UCMException {
+	public void setAttribute( String attribute, String value, File context ) throws UnableToSetAttributeException {
 		//context.setAttribute( this, attribute, value );
 		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + this );
 
@@ -342,7 +286,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		}
 	}
 	
-	public List<HyperLink> getHyperlinks( String hyperlinkType, File context ) {
+	public List<HyperLink> getHyperlinks( String hyperlinkType, File context ) throws HyperlinkException {
 		String cmd = "describe -ahlink " + hyperlinkType + " -l " + this;
 
 		CmdResult res = null;
@@ -417,7 +361,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return pvob;
 	}
 
-	public String getMastership() {
+	public String getMastership() throws CleartoolException {
 		if( this.mastership == null ) {
 			//this.mastership = context.getMastership( this );
 			String cmd = "describe -fmt %[master]p " + fqname;
@@ -454,7 +398,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	private static final Pattern pattern_name_part = Pattern.compile( "^(?:\\w+:)*(.*?)@" );
 
-	public static String getNamePart( String fqname ) {
+	public static String getNamePart( String fqname ) throws CleartoolException {
 		Matcher m = pattern_name_part.matcher( fqname );
 
 		if( m.find() ) {
@@ -477,8 +421,8 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	public Date getDate() {
 		if(!loaded) try {
 			this.load();
-		} catch (UCMException e) {
-			logger.error( "UNable to load entity" );
+		} catch ( Exception e ) {
+			logger.error( "Unable to load entity" );
 		}
 		return date;
 	}
@@ -507,11 +451,11 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return this.entitySelector;
 	}
 	
-	public void changeOwnership( String username, File viewContext ) {
+	public void changeOwnership( String username, File viewContext ) throws UnknownVobException, UnknownUserException, UCMEntityNotFoundException, CleartoolException {
 		UCMEntity.changeOwnership( this, username, viewContext );
 	}
 	
-	public static void changeOwnership( UCMEntity entity, String username, File viewContext ) {
+	public static void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UnknownVobException, UnknownUserException, UCMEntityNotFoundException, CleartoolException {
 		String cmd = "protect -chown " + username + " \"" + entity + "\"";
 
 		try {
@@ -533,7 +477,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 				throw new UCMEntityNotFoundException( entity, e );
 			}
 
-			throw new UCMException( e );
+			throw new CleartoolException( "Unable to change ownership of " + entity + " to " + username, e );
 		}
 	}
 	

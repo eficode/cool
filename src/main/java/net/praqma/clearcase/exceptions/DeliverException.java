@@ -2,7 +2,7 @@ package net.praqma.clearcase.exceptions;
 
 import net.praqma.clearcase.Deliver;
 
-public class DeliverException extends CleartoolException {
+public class DeliverException extends ClearCaseException {
 	
 	public enum Type {
 		REQUIRES_REBASE,

@@ -6,8 +6,7 @@ import java.util.List;
 
 import net.praqma.util.debug.Logger;
 
-//public class UCMException extends RuntimeException
-public class UCMException extends Exception {
+public class ClearCaseException extends Exception {
 	/**
 	 * 
 	 */
@@ -16,19 +15,19 @@ public class UCMException extends Exception {
 	protected List<String> information = new ArrayList<String>();
 
 
-	public UCMException() {
+	public ClearCaseException() {
 		super();
 	}
 
-	public UCMException( String s ) {
+	public ClearCaseException( String s ) {
 		super( s );
 	}
 	
-	public UCMException( Exception e ) {
+	public ClearCaseException( Exception e ) {
 		super( e );
 	}
 	
-	public UCMException( String s, Exception e ) {
+	public ClearCaseException( String s, Exception e ) {
 		super( s, e );
 	}
 
