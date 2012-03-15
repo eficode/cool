@@ -56,7 +56,7 @@ public abstract class CoolTestCase extends TestCase {
 
 	@Override
 	protected void setUp() {
-		logger.debug( "Setup" );
+		logger.debug( "Setup ClearCase" );
 
 		TestConfiguration config = getClass().getAnnotation( TestConfiguration.class );
 		String project = config.project();
@@ -87,16 +87,18 @@ public abstract class CoolTestCase extends TestCase {
 
 	@Override
 	protected void runTest() throws Throwable {
+		logger.info( "RUN TEST" );
 		if( !fail ) {
 			super.runTest();
 		} else {
 			logger.fatal( "ClearCase not set up, unable to run test" );
+			throw new Exception( "ClearCase not set up, unable to run test" );
 		}
 	}
 
 	@Override
 	public void runBare() throws Throwable {
-		System.out.println( "runBare!" );
+		logger.info( "BEFORE BARE" );
 		Thread t = Thread.currentThread();
 		String o = getClass().getName() + '.' + t.getName();
 		t.setName( "Executing " + getName() );
@@ -105,6 +107,7 @@ public abstract class CoolTestCase extends TestCase {
 		} finally {
 			t.setName( o );
 		}
+		logger.info( "AFTER BARE" );
 	}
 
 	@Override
