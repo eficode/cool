@@ -25,6 +25,7 @@ import net.praqma.clearcase.exceptions.UnableToListAttributesException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
 import net.praqma.clearcase.exceptions.UnknownAttributeException;
+import net.praqma.clearcase.exceptions.UnknownEntityException;
 import net.praqma.clearcase.exceptions.UnknownEntityTypeException;
 import net.praqma.clearcase.exceptions.UnknownUserException;
 import net.praqma.clearcase.exceptions.UnknownVobException;
@@ -206,21 +207,25 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	public LabelStatus getLabelStatus() {
 		return labelStatus;
 	}
+	
+	public static UCMEntity get( String fqname, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnknownEntityException {
+		if( fqname.startsWith( "baseline:" ) ) {
+			return Baseline.get( fqname, trusted );
+		} else if( fqname.startsWith( "project:" ) ) {
+			return Project.get( fqname, trusted );
+		} else if( fqname.startsWith( "stream:" ) ) {
+			return Stream.get( fqname, trusted );
+		} else if( fqname.startsWith( "activity:" ) ) {
+			return Activity.get( fqname, trusted );
+		} else if( fqname.startsWith( "component:" ) ) {
+			return Component.get( fqname, trusted );
+		}		
+		
+		throw new UnknownEntityException( fqname );
+	}
 
 	/* Syntactic static helper methods for retrieving entity objects */
 
-
-
-
-
-
-
-
-
-
-
-	
-	
 
 	/* Tag stuff */
 

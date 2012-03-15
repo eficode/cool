@@ -175,12 +175,12 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return Baselines.get( this, getSingleTopComponent(), plevel, pvob );
 	}
 
-	public List<Baseline> getBaselines( Component component, PromotionLevel plevel ) throws UnableToListBaselinesException {
+	public List<Baseline> getBaselines( Component component, PromotionLevel plevel ) throws UnableToListBaselinesException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		//return context.getBaselines( this, component, plevel, pvob );
 		return Baselines.get( this, component, plevel, pvob );
 	}
 
-	public List<Baseline> getBaselines( Component component, PromotionLevel plevel, Date date ) throws UnableToListBaselinesException {
+	public List<Baseline> getBaselines( Component component, PromotionLevel plevel, Date date ) throws UnableToListBaselinesException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		List<Baseline> baselines = Baselines.get( this, component, plevel, pvob );
 
 		if( date == null ) {

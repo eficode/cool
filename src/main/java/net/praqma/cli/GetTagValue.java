@@ -1,23 +1,33 @@
 package net.praqma.cli;
 
-import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.exceptions.TagException;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
+import net.praqma.clearcase.exceptions.UnknownEntityException;
 import net.praqma.clearcase.ucm.entities.Tag;
-import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.appenders.Appender;
+import net.praqma.util.debug.appenders.ConsoleAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class GetTagValue {
-	public static void main( String[] args ) throws UCMException {
+	private static Logger logger = Logger.getLogger();
+	private static Appender app = new ConsoleAppender();
+	
+	public static void main( String[] args ) throws ClearCaseException {
 		try {
 			run( args );
-		} catch (UCMException e) {
-			System.err.println( UCM.getMessagesAsString() );
+		} catch( ClearCaseException e ) {
+			e.print( System.err );
 			throw e;
 		}
 	}
 
-	public static void run( String[] args ) throws UCMException {
+	public static void run( String[] args ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnknownEntityException, TagException {
 		Options o = new Options();
 
 		Option oentity = new Option( "entity", "e", true, 1, "The UCM entity" );
@@ -29,6 +39,9 @@ public class GetTagValue {
 		o.setOption( okey );
 		o.setOption( otagtype );
 		o.setOption( otagid );
+		
+        app.setTemplate( "[%level]%space %message%newline" );
+        Logger.addAppender( app );
 
 		o.setDefaultOptions();
 
@@ -41,31 +54,23 @@ public class GetTagValue {
 		try {
 			o.checkOptions();
 		} catch (Exception e) {
-			System.err.println( "Incorrect option: " + e.getMessage() );
+			logger.fatal( "Incorrect option: " + e.getMessage() );
 			o.display();
 			System.exit( 1 );
 		}
 
-		/* Do the ClearCase thing... */
-		UCM.setContext( UCM.ContextType.CLEARTOOL );
-
 		UCMEntity e = null;
 
-		try {
-			e = UCMEntity.getEntity( oentity.getString(), false );
-		} catch (UCMException ex) {
-			System.err.println( ex.getMessage() );
-			System.exit( 1 );
-		}
+		e = UCMEntity.get( oentity.getString(), false );
 
 		Tag tag = e.getTag( otagtype.getString(), otagid.getString() );
 
 		String value = tag.getEntry( okey.getString() );
 
 		if( value == null ) {
-			System.out.println( "Unknown key, " + okey.getString() );
+			logger.info( "Unknown key, " + okey.getString() );
 		} else {
-			System.out.println( value );
+			logger.info( value );
 		}
 	}
 

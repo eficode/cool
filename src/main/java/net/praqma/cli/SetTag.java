@@ -1,134 +1,103 @@
 package net.praqma.cli;
 
-
-import net.praqma.clearcase.exceptions.UCMException;
-import net.praqma.clearcase.exceptions.UCMException.UCMType;
+import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.exceptions.TagException;
+import net.praqma.clearcase.exceptions.TagException.Type;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
+import net.praqma.clearcase.exceptions.UnknownEntityException;
 import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.appenders.Appender;
+import net.praqma.util.debug.appenders.ConsoleAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
-public class SetTag
-{
-	public static void main( String[] args ) throws UCMException
-	{
-		try
-		{
+public class SetTag {
+	
+	private static Logger logger = Logger.getLogger();
+	private static Appender app = new ConsoleAppender();
+	
+	public static void main( String[] args ) throws ClearCaseException {
+		try {
 			run( args );
-		}
-		catch( UCMException e )
-		{
-			System.err.println( UCM.getMessagesAsString() );
+		} catch( ClearCaseException e ) {
+			e.print( System.err );
 			throw e;
 		}
 	}
-	
-	public static void run( String[] args ) throws UCMException
-	{
+
+	public static void run( String[] args ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnknownEntityException, TagException {
+		Logger.addAppender( app );
 		Options o = new Options();
-		
-		Option oentity  = new Option( "entity", "e", true, 1, "The UCM entity" );
-		Option otag     = new Option( "tag", "t", true, 1, "The tag. Given as: \"key1=val1&key2=val2\"" );
+
+		Option oentity = new Option( "entity", "e", true, 1, "The UCM entity" );
+		Option otag = new Option( "tag", "t", true, 1, "The tag. Given as: \"key1=val1&key2=val2\"" );
 		Option otagtype = new Option( "tagtype", "y", true, 1, "The tag type" );
-		Option otagid   = new Option( "tagid", "i", true, 1, "The tag id" );
-		
+		Option otagid = new Option( "tagid", "i", true, 1, "The tag id" );
+
 		o.setOption( oentity );
 		o.setOption( otag );
 		o.setOption( otagtype );
 		o.setOption( otagid );
-		
+
 		o.setDefaultOptions();
-		
+
 		o.setHeader( "Set a tag for an UCM entity" );
 		o.setSyntax( "SetTag -e <entity> -t <tag> -y <tag type> -i <tag id>" );
 		o.setDescription( "Examples:" + Options.linesep + "SetTag -e baseline:bls@\\somevob -T \"key1=val1&key2=val2\" -y myjob -i 10101" + Options.linesep + "SetTag -e baseline:bls@\\somevob -T \"key1=&key2=val2\" -y myjob -i 10101" + Options.linesep + "The last example will remove key1 from the tag" );
-		
+
 		o.parse( args );
-		
-		try
-		{
+
+		try {
 			o.checkOptions();
-		}
-		catch ( Exception e )
-		{
-			System.err.println( "Incorrect option: " + e.getMessage() );
+		} catch( Exception e ) {
+			logger.fatal( "Incorrect option: " + e.getMessage() );
 			o.display();
 			System.exit( 1 );
 		}
-		
-		/* Do the ClearCase thing... */
-		UCM.setContext( UCM.ContextType.CLEARTOOL );
-		
-		UCM.setVerbose( o.verbose() );
-		
+
 		UCMEntity e = null;
-		
-		try
-		{
-			e = UCMEntity.getEntity( oentity.getString(), false );
-		}
-		catch( UCMException ex )
-		{
-			System.err.println( ex.getMessage() );
-			System.exit( 1 );
-		}
-		
+
+		e = UCMEntity.get( oentity.getString(), false );
+
+
 		Tag tag = e.getTag( otagtype.getString(), otagid.getString() );
-		
+
 		/* Split key value structure */
 		String[] tags = otag.getString().split( "&" );
-		
-		for( String t : tags )
-		{
-			
+
+		for( String t : tags ) {
+
 			String[] entry = t.split( "=" );
 
-			try
-			{
-				if( o.verbose() )
-				{
-					System.out.print( "+(" + entry[0] + ", " + entry[1] + ") " );
-				}
-				
+			try {
+				logger.verbose( "+(" + entry[0] + ", " + entry[1] + ") " );
+
 				tag.setEntry( entry[0].trim(), entry[1].trim() );
-			}
-			catch( ArrayIndexOutOfBoundsException ea )
-			{
-				if( o.verbose() )
-				{
-					System.out.print( "-(" + entry[0] + ") " );
-				}
+			} catch( ArrayIndexOutOfBoundsException ea ) {
+				logger.info( "-(" + entry[0] + ") " );
 				tag.removeEntry( entry[0] );
 			}
 		}
-		
-		if( o.verbose() )
-		{
-			System.out.println( "" );
-		}
-		
-		try
-		{
+
+		try {
 			tag.persist();
-		}
-		catch( UCMException ex )
-		{
-			if( ex.type == UCMType.TAG_CREATION_FAILED )
-			{
-				System.err.println( "Could not persist the tag." );
+		} catch( TagException ex ) {
+			if( ex.getType().equals( Type.CREATION_FAILED ) ) {
+				logger.fatal( "Could not persist the tag." );
 				System.exit( 1 );
 			}
 		}
-		
-		if( tag.isCreated() )
-		{
-			System.out.println( "Tag created." );
-		}
-		else
-		{
-			System.out.println( "Tag updated." );
+
+		if( tag.isCreated() ) {
+			logger.info( "Tag created." );
+		} else {
+			logger.info( "Tag updated." );
 		}
 	}
-		
+
 }

@@ -1,10 +1,10 @@
 package net.praqma.cli;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
-import net.praqma.clearcase.exceptions.UCMException;
-import net.praqma.clearcase.ucm.entities.UCM;
+import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.debug.Logger.LogLevel;
@@ -17,16 +17,16 @@ public class CleanView {
 	private static Logger logger = Logger.getLogger();
 	private static StreamAppender app = new StreamAppender( System.out );
 	
-	public static void main( String[] args ) throws UCMException {
+	public static void main( String[] args ) throws IOException, ClearCaseException {
 		try {
 			run( args );
-		} catch( UCMException e ) {
-			System.err.println( UCM.getMessagesAsString() );
+		} catch( ClearCaseException e ) {
+			e.print( System.err );
 			throw e;
 		}
 	}
 
-	public static void run( String[] args ) throws UCMException {
+	public static void run( String[] args ) throws ClearCaseException, IOException {
 		Options o = new Options();
 
 		Option opath = new Option( "path", "p", false, 1, "ClearCase view to be cleaned" );
@@ -55,9 +55,6 @@ public class CleanView {
 			o.display();
 			System.exit( 1 );
 		}
-
-		/* Do the ClearCase thing... */
-		UCM.setContext( UCM.ContextType.CLEARTOOL );
 		
 		File viewroot = null;
 		if( opath.isUsed() ) {

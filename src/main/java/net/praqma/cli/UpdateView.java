@@ -1,9 +1,10 @@
 package net.praqma.cli;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
-import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.SnapshotView.Components;
@@ -11,24 +12,26 @@ import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules;
 import net.praqma.clearcase.ucm.view.SnapshotView.UpdateInfo;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.debug.Logger.LogLevel;
+import net.praqma.util.debug.appenders.Appender;
+import net.praqma.util.debug.appenders.ConsoleAppender;
 import net.praqma.util.debug.appenders.StreamAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class UpdateView {
-	
 	private static Logger logger = Logger.getLogger();
+	private static Appender app = new ConsoleAppender();
 	
-	public static void main( String[] args ) throws UCMException {
+	public static void main( String[] args ) throws ClearCaseException, IOException {
 		try {
 			run( args );
-		} catch( UCMException e ) {
-			System.err.println( UCM.getMessagesAsString() );
+		} catch( ClearCaseException e ) {
+			e.print( System.err );
 			throw e;
 		}
 	}
 
-	public static void run( String[] args ) throws UCMException {
+	public static void run( String[] args ) throws ClearCaseException, IOException {
 		Options o = new Options();
 
 		Option opath = new Option( "path", "p", false, 1, "ClearCase view to be cleaned" );
@@ -46,6 +49,9 @@ public class UpdateView {
 		
 		o.setOption( oall );
 		o.setOption( omodifiable );
+		
+        app.setTemplate( "[%level]%space %message%newline" );
+        Logger.addAppender( app );
 
         o.setDefaultOptions();
         
@@ -58,9 +64,6 @@ public class UpdateView {
 			o.display();
 			System.exit( 1 );
 		}
-
-		/* Do the ClearCase thing... */
-		UCM.setContext( UCM.ContextType.CLEARTOOL );
 		
 		File viewroot = null;
 		if( opath.isUsed() ) {

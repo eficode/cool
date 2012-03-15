@@ -19,7 +19,6 @@ import net.praqma.clearcase.exceptions.UnableToPromoteBaselineException;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Version.Status;
-import net.praqma.clearcase.ucm.utils.BaselineDiff;
 
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.debug.Logger;
@@ -259,9 +258,11 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * 
 	 * @return A BaselineDiff object containing a set of Activities.
 	 */
+	/*
 	public BaselineDiff getDifferences( SnapshotView view ) {
 		return new BaselineDiff( view, this );
 	}
+	*/
 
 	public Component getComponent() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		if( !loaded ) {

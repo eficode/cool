@@ -6,7 +6,12 @@ import java.util.Map;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
-import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.NothingNewException;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
+import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
@@ -14,21 +19,21 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.view.DynamicView;
-import net.praqma.util.debug.PraqmaLogger;
-import net.praqma.util.debug.PraqmaLogger.Logger;
+import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.appenders.Appender;
+import net.praqma.util.debug.appenders.ConsoleAppender;
 
 public class BootstrapProject {
 	
-	/*
-	private static String vobtag = "\\TEST16";
-	private static String pvobtag = "\\TEST16_PVOB";
-	*/
 	private static final String dynView = "COOLbaseview";
 	private static final String bootstrapView = "COOLbootstrapview";
 	
+	private static Logger logger = Logger.getLogger();
+	private static Appender app = new ConsoleAppender();
+	
 	
 
-	public static void main( String[] args ) throws UCMException {
+	public static void main( String[] args ) throws ViewException, CleartoolException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, NothingNewException {
 		
 		if( args.length < 2 ) {
 			System.err.println( "No path given" );
@@ -44,20 +49,13 @@ public class BootstrapProject {
                                                      Project.POLICY_DELIVER_REQUIRE_REBASE );
 	}
 	
-	public static void bootstrap( String vobname, String componentName, File viewPath, int policies ) throws UCMException {
+	public static void bootstrap( String vobname, String componentName, File viewPath, int policies ) throws ViewException, CleartoolException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, NothingNewException {
 		
 		System.out.println("Bootstrapping");
 		String vobtag = "\\" + vobname;
 		String pvobtag = vobtag + "_PVOB";
 		
-		/* Do the ClearCase thing... */
-		UCM.setContext( UCM.ContextType.CLEARTOOL );
-
-		/* Setup the logger */
-        Logger logger = PraqmaLogger.getLogger(false);
-        logger.subscribeAll();
-        logger.setLocalLog( new File( "ccbootstrap.log") );
-        Cool.setLogger(logger);
+		Logger.addAppender( app );
         
         /* Dynamic view path */
         //File viewPath = new File( "M:\\" );
@@ -111,7 +109,7 @@ public class BootstrapProject {
 		System.out.println("Creating integration stream");
 		
 		/* Create integration stream */
-		Baseline testInitial = UCMEntity.getBaseline( componentName + "_INITIAL", pvob,	true );
+		Baseline testInitial = Baseline.get( componentName + "_INITIAL", pvob,	true );
 		Stream intStream = Stream.createIntegration( "Bootstrap_int", project, testInitial );
 		
 		/* Baselines */
