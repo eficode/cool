@@ -86,7 +86,7 @@ public class UCMView extends UCM implements Serializable {
 		return this.viewtag;
 	}
 	
-	public void removeView() throws ViewException {
+	public void remove() throws ViewException {
 		//context.removeView( this );
 		String cmd = "rmview -force " + ( isDynamicView() ? "-tag " + getViewtag() : getStorageLocation() );
 

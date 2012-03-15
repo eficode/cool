@@ -25,7 +25,6 @@ public abstract class Cleartool extends Cool {
 	private static Logger logger = Logger.getLogger();
 
 	static {
-		logger.debug( "Cleartool environment: " + System.getProperty( "cleartool" ) );
 		cli = CommandLine.getInstance();
 	}
 

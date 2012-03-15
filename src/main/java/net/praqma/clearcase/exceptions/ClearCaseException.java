@@ -1,6 +1,8 @@
 package net.praqma.clearcase.exceptions;
 
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,8 +56,25 @@ public class ClearCaseException extends Exception {
 			stream.println( info );
 		}
 	}
+	
+	public void printInformation( PrintWriter stream ) {
+		for( String info : information ) {
+			stream.println( info );
+		}
+	}
 
 	public void print( PrintStream out ) {
+		out.println( this.getMessage() );
+		this.printInformation( out );
+		if( this.getCause() != null ) {
+			if( this.getCause() instanceof AbnormalProcessTerminationException ) {
+				out.println( "Command was: " + ( (AbnormalProcessTerminationException) this.getCause() ).getCommand() );
+			}
+			out.println( this.getCause().getMessage() );
+		}
+	}
+	
+	public void print( PrintWriter out ) {
 		out.println( this.getMessage() );
 		this.printInformation( out );
 		if( this.getCause() != null ) {
