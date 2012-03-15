@@ -838,7 +838,7 @@ public class UCMStrategyXML implements UCMStrategyInterface
     }
 
     @Override
-    public String deliver(String baseline, String stream, String target, File viewroot, String viewtag, boolean force, boolean complete, boolean abort)
+    public String deliver(String baseline, String stream, String target, File viewroot, String viewtag, boolean force, boolean complete, boolean abort, boolean resume)
             throws UCMException {
         // TODO Auto-generated method stub
         return null;

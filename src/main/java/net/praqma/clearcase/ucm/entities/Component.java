@@ -45,14 +45,26 @@ public class Component extends UCMEntity {
 	public List<Baseline> getBaselines( Stream stream ) throws UCMException {
 		logger.debug( "Getting Baselines from " + stream.getFullyQualifiedName() + " and " + getFullyQualifiedName() );
 
-		return UCM.context.getBaselines( stream, this, null, getPvobString() );
-		//return new BaselineList( this, stream, null );
+		return this.getBaselines(stream, null, false);
 	}
 
 	public List<Baseline> getBaselines( Stream stream, Project.Plevel plevel ) throws UCMException {
+		logger.debug( "Getting Baselines from " + stream.getFullyQualifiedName() + " and " + getFullyQualifiedName() );
+
+		return this.getBaselines(stream, plevel, false);
+	}
+
+	public List<Baseline> getBaselines( Stream stream, boolean multisitePolling ) throws UCMException {
+		logger.debug( "Getting Baselines from " + stream.getFullyQualifiedName() + " and " + getFullyQualifiedName() );
+
+		return this.getBaselines(stream, null, multisitePolling);
+		//return new BaselineList( this, stream, null );
+	}
+
+	public List<Baseline> getBaselines( Stream stream, Project.Plevel plevel, boolean multisitePolling ) throws UCMException {
 		logger.debug( "Getting Baselines from " + stream.getFullyQualifiedName() + " and " + this.getFullyQualifiedName() + " with plevel " + plevel );
 
-		return UCM.context.getBaselines( stream, this, plevel, getPvobString() );
+		return stream.getBaselines(this, plevel, multisitePolling);
 		//return new BaselineList( this, stream, plevel );
 	}
 

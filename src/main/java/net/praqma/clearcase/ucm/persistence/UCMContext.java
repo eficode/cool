@@ -353,7 +353,7 @@ public class UCMContext extends Cool {
 	private static final Pattern rx_deliver_find_baseline = Pattern.compile( "Baselines to be delivered:\\s*baseline:", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE );
 	private static final Pattern rx_deliver_find_nobaseline = Pattern.compile( "Baselines to be delivered:\\s*baseline:", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE );
 
-	public boolean deliver( Baseline baseline, Stream stream, Stream target, File context, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException {
+	public boolean deliver( Baseline baseline, Stream stream, Stream target, File context, String viewtag, boolean force, boolean complete, boolean abort, boolean resume  ) throws UCMException {
 		logger.debug( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );
 		String bl = baseline != null ? baseline.getFullyQualifiedName() : null;
 		String st = stream != null ? stream.getFullyQualifiedName() : null;
@@ -361,7 +361,7 @@ public class UCMContext extends Cool {
 		// strategy.deliver( baseline.GetFQName(), stream.GetFQName(),
 		// target.GetFQName(), view.GetViewRoot(), view.GetViewtag(), force,
 		// complete, abort );
-		String result = strategy.deliver( bl, st, ta, context, viewtag, force, complete, abort );
+		String result = strategy.deliver( bl, st, ta, context, viewtag, force, complete, abort, resume  );
 
 		// System.out.println( "I GOT: \n\"" + result + "\"\n" );
 
@@ -381,6 +381,11 @@ public class UCMContext extends Cool {
 		}
 
 		return true;
+	}
+
+	public String deliverStatus(Stream stream ) throws UCMException {
+		String st = stream != null ? stream.getFullyQualifiedName() : null;
+		return strategy.deliverStatus( st );
 	}
 
 	public void cancelDeliver( File viewcontext, Stream stream ) throws UCMException {

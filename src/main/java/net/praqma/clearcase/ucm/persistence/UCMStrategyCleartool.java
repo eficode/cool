@@ -546,8 +546,8 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	private static final Pattern rx_checkDeliverDenied = Pattern.compile( "does not allow deliver operations from streams in other", Pattern.DOTALL );
 	private static final Pattern rx_checkProgress = Pattern.compile( "which is currently involved in an.*?active deliver or rebase operation", Pattern.DOTALL );
 
-	public String deliver( String baseline, String stream, String target, File context, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException {
-		String cmd = "deliver" + ( force ? " -force" : "" ) + ( complete ? " -complete" : "" ) + ( abort ? " -abort" : "" );
+	public String deliver( String baseline, String stream, String target, File context, String viewtag, boolean force, boolean complete, boolean abort, boolean resume  ) throws UCMException {
+		String cmd = "deliver" + ( force ? " -force" : "" ) + ( complete ? " -complete" : "" ) + ( abort ? " -abort" : "" ) + ( resume ? " -resume" : "" );
 		cmd += ( baseline != null ? " -baseline " + baseline : "" );
 		cmd += ( stream != null ? " -stream " + stream : "" );
 		cmd += ( target != null ? " -target " + target : "" );

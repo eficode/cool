@@ -2,18 +2,34 @@ package net.praqma.clearcase.ucm.entities;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+
 import org.junit.*;
 
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.Logger.LogLevel;
+import net.praqma.util.debug.appenders.Appender;
+import net.praqma.util.debug.appenders.ConsoleAppender;
 
 public class BaselineTest
 {
+    private static Appender app;
+		
 	@BeforeClass
-	public static void startup()
-	{
+	public static void startup() {
 		UCM.setContext( UCM.ContextType.CLEARTOOL );
+		
+        app = new ConsoleAppender();
+        app.setMinimumLevel( LogLevel.DEBUG );
+        Logger.addAppender( app );
 	}
-
+	
+    @AfterClass
+    public static void end() {
+        Logger.removeAppender( app ); 
+       }
+    
 	@Test
 	public void testLoad()
 	{
@@ -88,6 +104,18 @@ public class BaselineTest
 		Baseline bl = UCMEntity.getBaseline( "baseline:CHW_BASELINE_51@\\Cool_PVOB", true );
 		
 		bl.promote();
+	}
+
+	@Test
+	public void testDeliver() throws UCMException
+	{
+		Baseline bl = UCMEntity.getBaseline( "CHW_BASELINE_51_posted_delivery@\\Cool_PVOB", true );
+		Stream source = UCMEntity.getStream("stream:bn_stream@\\Cool_PVOB");
+		Stream target = UCMEntity.getStream("stream:bn_stream@\\Cool_PVOB");
+		assertNotNull( bl.stringify() );
+		assertNotNull( source.stringify() );
+		assertNotNull( target.stringify() );
+		bl.deliver(source, target, (File) null, "viewtag", false, false, false);
 	}
 
 	/*

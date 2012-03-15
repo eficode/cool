@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.clearcase.ucm.UCMException.UCMType;
 import net.praqma.clearcase.ucm.entities.Project.Plevel;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.debug.Logger;
@@ -31,6 +34,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	private Stream defaultTarget = null;
 	private boolean readOnly = true;
 	private Baseline foundation;
+
+	private String status = null;
 	
 	private Stream parent;
 
@@ -91,16 +96,26 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		this.loaded = true;
 	}
 
-	public List<Baseline> getBaselines( Plevel plevel ) throws UCMException {
-		return context.getBaselines( this, getSingleTopComponent(), plevel, pvob );
+	public List<Baseline> getBaselines( Plevel plevel, boolean multisitePolling ) throws UCMException {
+		return this.getBaselines(getSingleTopComponent(), plevel, multisitePolling);
 	}
 
-	public List<Baseline> getBaselines( Component component, Plevel plevel ) throws UCMException {
-		return context.getBaselines( this, component, plevel, pvob );
+	public List<Baseline> getBaselines( Component component, Plevel plevel, boolean multisitePolling ) throws UCMException {
+		return this.getBaselines( component, plevel, null, multisitePolling );
 	}
 
-	public List<Baseline> getBaselines( Component component, Plevel plevel, Date date ) throws UCMException {
-		List<Baseline> baselines = context.getBaselines( this, component, plevel, pvob );
+	public List<Baseline> getBaselines( Component component, Plevel plevel, Date date, boolean multisitePolling ) throws UCMException {
+		
+		List<Baseline> baselines = null;
+		
+		if(this.hasPostedDelivery()) {
+			if(multisitePolling)
+				baselines = this.getPostedBaselines(component, plevel);
+			else
+				baselines = new ArrayList<Baseline>();
+		}
+		else
+			baselines = context.getBaselines( this, component, plevel, pvob );
 
 		if( date == null ) {
 			return baselines;
@@ -119,13 +134,30 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return baselines;
 	}
 
-	public List<Stream> getChildStreams() throws UCMException {
+	public List<Stream> getChildStreams(boolean multisitePolling) throws UCMException {
 
 		List<Stream> res = new ArrayList<Stream>();
 		try {
 			res = context.getChildStreams( this );
 		} catch (UCMException e) {
 			logger.debug( "The Stream has no child streams" );
+		}
+
+		Iterator<Stream> it = res.iterator();
+		String mastership = this.getMastership();
+		while( it.hasNext() ) {
+			Stream stream = it.next();
+			String childMastership = stream.getMastership();
+			logger.debug( "Child Mastership = %s" + childMastership );
+
+			if(stream.hasPostedDelivery() && !multisitePolling) {
+				logger.debug( "Removing [" + stream.getShortname() + "] due to non-supported posted delivery" );
+				it.remove();
+			}
+			else if(!mastership.equals(childMastership)) {
+				logger.debug( "Removing [" + stream.getShortname() + "] due to different mastership" );
+				it.remove();
+			}
 		}
 		return res;
 	}
@@ -261,14 +293,50 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return this.defaultTarget;
 	}
 
-	public boolean deliver( Baseline baseline, Stream target, File viewcontext, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException {
-		try {
-			return context.deliver( baseline, this, target, viewcontext, viewtag, force, complete, abort );
-		} catch (UCMException e) {
-			logger.warning( "Could not deliver baseline: " + e.getMessage() );
-			logger.warning( e );
-			throw e;
+	public boolean hasPostedDelivery() throws UCMException {
+		if( status == null ) 
+			status = context.deliverStatus(this); 
+		return status.contains( "Operation posted from" );
+	}
+
+	public List<Baseline> getPostedBaselines( Component component, Plevel plevel) throws UCMException {
+		List<Baseline> res = new ArrayList<Baseline>();
+		if( status == null ) 
+			status = context.deliverStatus(this); 
+        Matcher m = Pattern.compile(".*baseline:(\\S*).*").matcher(status); 
+		if (m.find()) {
+            logger.warning("Posted baseline : " + m.group(1));
+            //should maybe also select on component
+            Baseline b = UCMEntity.getBaseline( m.group(1), true );
+            if(b.getPromotionLevel(true) == plevel)
+            	res.add(b);
 		}
+		return res;
+	}
+	
+
+	public boolean deliver( Baseline baseline, Stream target, File viewcontext, String viewtag, boolean force, boolean complete, boolean abort ) throws UCMException {
+        try {
+            return context.deliver(baseline, this, target, viewcontext, viewtag, force, complete, abort, false);
+        } catch (UCMException e) {
+        	if (e.type == UCMType.DELIVER_IN_PROGRESS) { //could be a posted delivery
+        		if(this.hasPostedDelivery()) {
+        	        try {
+        	            return context.deliver(null, this, null, viewcontext, viewtag, force, complete, abort, true);
+        	        } catch (UCMException e1) {
+        	            logger.warning("Could not resume posted delivery: " + e1.getMessage());
+        	            logger.warning(e1);
+        	            throw e1;
+        	        }
+
+        		} 
+        		
+        	}
+        		
+            logger.warning("Could not deliver baseline: " + e.getMessage());
+            logger.warning(e);
+            throw e;
+        }
 	}
 
 	public void cancelDeliver( File viewcontext ) throws UCMException {

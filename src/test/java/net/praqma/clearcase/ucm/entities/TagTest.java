@@ -8,14 +8,31 @@ import java.util.Map;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.ucm.UCMException;
+import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.Logger.LogLevel;
+import net.praqma.util.debug.appenders.Appender;
+import net.praqma.util.debug.appenders.ConsoleAppender;
+
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TagTest extends Cool {
+    private static Appender app;
+	
 	@BeforeClass
 	public static void startup() {
 		UCM.setContext( UCM.ContextType.CLEARTOOL );
+		
+        app = new ConsoleAppender();
+        app.setMinimumLevel( LogLevel.DEBUG );
+        Logger.addAppender( app );
 	}
+	
+    @AfterClass
+    public static void end() {
+        Logger.removeAppender( app ); 
+       }
 
 	/*
 	 * @Test public void testPostProcess() { fail( "Not yet implemented" ); }

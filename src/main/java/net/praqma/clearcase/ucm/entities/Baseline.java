@@ -204,14 +204,7 @@ public class Baseline extends UCMEntity implements Diffable {
     public boolean deliverForced(Stream stream, Stream target, File viewcontext, String viewtag) throws UCMException {
         //logger.info( "Trying to deliver the Baseline " + this.GetFQName() + " from " + stream.GetFQName() + " to " + target.GetFQName() );
 
-        try {
-            context.deliver(this, stream, target, viewcontext, viewtag, true, true, true);
-        } catch (UCMException e) {
-            logger.warning("Could not deliver baseline: " + e.getMessage());
-            throw e;
-        }
-
-        return true;
+        return this.deliver(stream, target, viewcontext, viewtag, true, true, true);
     }
 
     /**
@@ -228,8 +221,23 @@ public class Baseline extends UCMEntity implements Diffable {
      */
     public boolean deliver(Stream stream, Stream target, File viewcontext, String viewtag, boolean force, boolean complete, boolean abort) throws UCMException {
         try {
-            return context.deliver(this, stream, target, viewcontext, viewtag, force, complete, abort);
+            return context.deliver(this, stream, target, viewcontext, viewtag, force, complete, abort, false);
         } catch (UCMException e) {
+        	if (e.type == UCMType.DELIVER_IN_PROGRESS) { //could be a posted delivery
+        		String status = context.deliverStatus(stream);
+        		if(status.replace( System.getProperty( "line.separator" ), " " ).contains( "Operation posted from" ) ) {
+        	        try {
+        	            return context.deliver(null, stream, null, viewcontext, viewtag, force, complete, abort, true);
+        	        } catch (UCMException e1) {
+        	            logger.warning("Could not resume posted delivery: " + e1.getMessage());
+        	            logger.warning(e1);
+        	            throw e1;
+        	        }
+
+        		} 
+        		
+        	}
+        		
             logger.warning("Could not deliver baseline: " + e.getMessage());
             logger.warning(e);
             throw e;

@@ -4,16 +4,22 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
-import net.praqma.util.debug.Logger;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+
+import net.praqma.clearcase.ucm.entities.UCM;
+import net.praqma.util.debug.*;
+import net.praqma.util.debug.Logger.LogLevel;
+import net.praqma.util.debug.appenders.*;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLineException;
 import net.praqma.util.execute.CommandLineInterface;
 
 public class CommandLineMock implements CommandLineInterface {
-	private Logger logger = Logger.getLogger();
-
-	private CommandLineMock() {
+    private static Logger logger = Logger.getLogger();
+    
+    private CommandLineMock() {
 
 	}
 
@@ -80,7 +86,17 @@ public class CommandLineMock implements CommandLineInterface {
 		if( cmd.equals( "cleartool desc -fmt %n::%X[component]p::%X[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:CHW_BASELINE_51_no@\\Cool_PVOB" ) ) {
 			throw new AbnormalProcessTerminationException( "cleartool: Error: Baseline not found: \"CHW_BASELINE_51_no\"." );
 		}
-
+		
+		if( cmd.equals( "cleartool desc -fmt %n::%X[component]p::%X[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:CHW_BASELINE_51_posted_delivery@\\Cool_PVOB" ) ) {
+			res.stdoutBuffer.append( "CHW_BASELINE_51::_System::Server_int::TESTED::chw::20110810.232400::full" );
+		}
+		/*
+		if( cmd.equals( "cleartool desc -fmt %n::%X[component]p::%X[bl_stream]p::%[plevel]p::%u::%Nd::%[label_status]p baseline:CHW_BASELINE_51_posted_delivery@\\Cool_PVOB" ) ) {
+			res.stdoutBuffer.append( "Deliver operation in progress on stream astream. Dadada. Operation posted from replica xxxx is ready to integrate at replica yyyy. DaDa ");
+		}
+		*/
+		
+		
 		if( cmd.equals( "cleartool chbl -level RELEASED baseline baseline:CHW_BASELINE_51@\\Cool_PVOB" ) ) {
 
 		}
@@ -143,6 +159,7 @@ public class CommandLineMock implements CommandLineInterface {
 		 */
 		/* STREAMS */
 
+		//logger.debug("CMD = " + cmd);
 		if( cmd.equals( "cleartool desc -fmt %[rec_bls]p stream:bn_stream@\\Cool_PVOB" ) ) {
 			res.stdoutBuffer.append( "rec_baseline000001" );
 		}
@@ -155,6 +172,14 @@ public class CommandLineMock implements CommandLineInterface {
 			res.stdoutBuffer.append( "rec_baseline000001" );
 		}
 
+		//logger.debug("CMD = " + "cleartool describe -fmt %[name]p\\n%[project]Xp\\n%X[def_deliver_tgt]p\\n%[read_only]p\\n%[found_bls]Xp stream:bn_stream@\\Cool_PVOB");
+		if( cmd.contains( "cleartool describe -fmt %[name]p\\n%[project]Xp\\n%X[def_deliver_tgt]p\\n%[read_only]p\\n%[found_bls]Xp stream:bn_stream@\\Cool_PVOB" ) ) {
+			res.stdoutList.add( "rec_baseline7" );
+			res.stdoutList.add( "bn_project@\\Cool_PVOB" );
+			res.stdoutList.add( "" );
+			res.stdoutList.add( "" );
+		}
+		
 		/* Baselines */
 
 		/*
@@ -208,6 +233,13 @@ public class CommandLineMock implements CommandLineInterface {
 			res.stdoutList.add( "   nobuildnumber.file@1234@\\Cool_PVOB ->  " + ( versionDotH != null ? versionDotH.getAbsolutePath() : "version.h" ) + " " );
 		}
 
+		// cleartool deliver
+		// 
+		logger.debug("CMD = " + cmd);
+		if( cmd.equals( "cleartool deliver -baseline baseline:CHW_BASELINE_51_posted_delivery@\\Cool_PVOB -stream stream:bn_stream@\\Cool_PVOB -target stream:bn_stream@\\Cool_PVOB -to viewtag" ) ) {
+			logger.debug( "CMD = " + cmd );
+			res.stdoutBuffer.append( "Deliver operation in progress on stream astream. Dadada. Operation posted from replica xxxx is ready to integrate at replica yyyy. DaDa ");
+		}
 		return res;
 	}
 
