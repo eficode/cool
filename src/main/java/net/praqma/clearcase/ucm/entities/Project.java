@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
@@ -175,6 +176,28 @@ public class Project extends UCMEntity {
 	public Stream getIntegrationStream() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		if( !this.loaded ) load();
 		return stream;
+	}
+	
+	public List<Stream> getStreams() throws CleartoolException {
+		String cmd = "lsstream -in " + this;
+		
+		List<String> list;
+		try {
+			list = Cleartool.run( cmd ).stdoutList;
+		} catch( Exception e ) {
+			throw new CleartoolException( "Unable to list streams for " + this, e );
+		}
+		
+		List<Stream> streams = new ArrayList<Stream>();
+		for( String item : list ) {
+			try {
+				streams.add( Stream.get( item ) );
+			} catch( ClearCaseException e ) {
+				logger.error( "Could not get " + item );
+			}
+		}
+		
+		return streams;
 	}
 
 	public static List<String> getPromotionLevels() {

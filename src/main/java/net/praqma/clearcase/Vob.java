@@ -10,6 +10,13 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.CmdResult;
 
+/**
+ * Vob class represented by a fully qualified vob name, including \ or /<br>
+ * To get the name of vob use getName()
+ * 
+ * @author wolfgang
+ *
+ */
 public class Vob extends Cool implements Serializable {
 	
 	public static final Pattern rx_vob_get_path = Pattern.compile( "^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$" );

@@ -20,6 +20,7 @@ import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.utils.Baselines;
 import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
@@ -395,6 +396,24 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		if( !this.loaded ) load();
 
 		return this.project;
+	}
+	
+	public List<UCMView> getViews() throws CleartoolException {
+		String cmd = "describe -fmt %X[views]p " + this;
+		
+		String[] views = null;
+		try {
+			views = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
+			
+		} catch( Exception e ) {
+			throw new CleartoolException( "Unable to list views for " + this, e );
+		}
+		
+		for( String view : views ) {
+			
+		}
+		
+		return null;
 	}
 
 	/**
