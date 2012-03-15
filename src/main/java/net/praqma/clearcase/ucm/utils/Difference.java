@@ -6,7 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
-import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
@@ -80,7 +83,7 @@ public class Difference {
 		this.bl2 = bl2;
 	}
 
-	public void get( boolean merge, SnapshotView view ) {
+	public List<Version> get( boolean merge, SnapshotView view ) throws CleartoolException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		String cmd = "diffbl -version " + ( !merge ? "-nmerge " : "" ) + ( bl1 != null ? bl1.getFullyQualifiedName() : "-pre " ) + " " + bl2.getFullyQualifiedName();
 
 		List<String> lines = null;
@@ -88,7 +91,7 @@ public class Difference {
 		try {
 			lines = Cleartool.run( cmd, view.getViewRoot() ).stdoutList;
 		} catch( Exception e ) {
-			throw new UCMException( "Could not retreive the differences of " + bl1 + " and " + bl2 );
+			throw new CleartoolException( "Could not retreive the differences of " + bl1 + " and " + bl2 );
 		}
 
 		int length = view.getViewRoot().getAbsoluteFile().toString().length();
@@ -100,7 +103,7 @@ public class Difference {
 
 				String f = m.group( 3 ).trim();
 				logger.debug( "F: " + f );
-				Version v = (Version) UCMEntity.getEntity( f );
+				Version v = (Version) Version.get( f );
 				v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
 
 				if( m.group( 1 ).equals( ">>" ) ) {

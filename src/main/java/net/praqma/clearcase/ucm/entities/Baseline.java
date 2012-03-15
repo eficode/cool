@@ -45,8 +45,10 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * This function is automatically called when needed by other functions.
 	 * 
 	 * @throws UnableToLoadEntityException
+	 * @throws UCMEntityNotFoundException 
+	 * @throws UnableToCreateEntityException 
 	 */
-	public UCMEntity load() throws UnableToLoadEntityException {
+	public UCMEntity load() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		logger.debug( "Loading baseline " + this );
 
 		String result = "";
@@ -106,12 +108,14 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @return Baseline
 	 * @throws NothingNewException
 	 * @throws UnableToCreateEntityException
+	 * @throws UCMEntityNotFoundException 
+	 * @throws UnableToLoadEntityException 
 	 */
-	public static Baseline create( String basename, Component component, File view, boolean incremental, boolean identical ) throws NothingNewException, UnableToCreateEntityException {
+	public static Baseline create( String basename, Component component, File view, boolean incremental, boolean identical ) throws NothingNewException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		return create( basename, component, view, incremental, identical, null, null );
 	}
 
-	public static Baseline create( String basename, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws NothingNewException, UnableToCreateEntityException {
+	public static Baseline create( String basename, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws NothingNewException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		/* Remove prefixed baseline: */
 		if( basename.toLowerCase().startsWith( "baseline:" ) ) {
 			basename = basename.replaceFirst( "baseline:", "" );
@@ -154,7 +158,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		}
 
 		if( created ) {
-			return get( basename + "@" + component.getPvobString(), true );
+			return get( basename, component.getPVob(), true );
 		} else {
 			throw new NothingNewException();
 		}
@@ -169,8 +173,10 @@ public class Baseline extends UCMEntity implements Diffable {
 	 *            Whether to use the cached promotion level or not
 	 * @return The promotion level of the Baseline
 	 * @throws UnableToLoadEntityException
+	 * @throws UCMEntityNotFoundException 
+	 * @throws UnableToCreateEntityException 
 	 */
-	public Project.PromotionLevel getPromotionLevel( boolean cached ) throws UnableToLoadEntityException {
+	public Project.PromotionLevel getPromotionLevel( boolean cached ) throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		if( !loaded ) {
 			this.load();
 		}
@@ -197,8 +203,10 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @return The new promotion level.
 	 * @throws UnableToLoadEntityException
 	 * @throws UnableToPromoteBaselineException
+	 * @throws UCMEntityNotFoundException 
+	 * @throws UnableToCreateEntityException 
 	 */
-	public Project.PromotionLevel promote() throws UnableToLoadEntityException, UnableToPromoteBaselineException {
+	public Project.PromotionLevel promote() throws UnableToLoadEntityException, UnableToPromoteBaselineException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		if( !loaded ) {
 			this.load();
 		}
@@ -219,8 +227,10 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * 
 	 * @throws UnableToLoadEntityException
 	 * @throws UnableToPromoteBaselineException
+	 * @throws UCMEntityNotFoundException 
+	 * @throws UnableToCreateEntityException 
 	 */
-	public Project.PromotionLevel demote() throws UnableToLoadEntityException, UnableToPromoteBaselineException {
+	public Project.PromotionLevel demote() throws UnableToLoadEntityException, UnableToPromoteBaselineException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		if( !loaded ) {
 			this.load();
 		}
@@ -253,14 +263,14 @@ public class Baseline extends UCMEntity implements Diffable {
 		return new BaselineDiff( view, this );
 	}
 
-	public Component getComponent() throws UnableToLoadEntityException {
+	public Component getComponent() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		if( !loaded ) {
 			load();
 		}
 		return this.component;
 	}
 
-	public Stream getStream() throws UnableToLoadEntityException {
+	public Stream getStream() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		logger.debug( "Getting stream" );
 		if( !loaded ) {
 			load();

@@ -224,7 +224,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	/* Tag stuff */
 
-	public Tag getTag( String tagType, String tagID ) throws TagException {
+	public Tag getTag( String tagType, String tagID ) throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		logger.debug( "Retrieving tags for " + tagType + ", " + tagID );
 		return Tag.getTag( this, tagType, tagID, true );
 	}
@@ -260,6 +260,10 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return atts;
 	}
 	
+	public Map<String, String> getAttributes() throws UnableToListAttributesException {
+		return UCMEntity.getAttributes( this, null );
+	}
+	
 	public Map<String, String> getAttributes( File context ) throws UnableToListAttributesException {
 		return UCMEntity.getAttributes( this, context );
 	}
@@ -273,6 +277,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		}
 	}
 
+	public void setAttribute( String attribute, String value ) throws UnableToSetAttributeException {
+		setAttribute( attribute, value, null );
+	}
 
 	public void setAttribute( String attribute, String value, File context ) throws UnableToSetAttributeException {
 		//context.setAttribute( this, attribute, value );
@@ -287,7 +294,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		}
 	}
 	
-	public List<HyperLink> getHyperlinks( String hyperlinkType, File context ) throws HyperlinkException {
+	public List<HyperLink> getHyperlinks( String hyperlinkType, File context ) throws HyperlinkException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		String cmd = "describe -ahlink " + hyperlinkType + " -l " + this;
 
 		CmdResult res = null;

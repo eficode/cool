@@ -4,7 +4,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UCMEntityNotInitializedException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.util.debug.Logger;
 
 public class HyperLink extends UCMEntity {
@@ -41,7 +44,7 @@ public class HyperLink extends UCMEntity {
 		}
 	}
 
-	public static HyperLink getHyperLink( String fqname, String value ) {
+	public static HyperLink getHyperLink( String fqname, String value ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		HyperLink hlink = get( fqname );
 
 		hlink.setValue( value );
@@ -64,11 +67,11 @@ public class HyperLink extends UCMEntity {
 	}
 	
 	
-	public static HyperLink get( String name ) {
+	public static HyperLink get( String name ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		return get( name, true );
 	}
 
-	public static HyperLink get( String name, boolean trusted ) {
+	public static HyperLink get( String name, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		if( !name.startsWith( "hlink:" ) ) {
 			name = "hlink:" + name;
 		}

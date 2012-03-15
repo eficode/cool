@@ -8,10 +8,10 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CancelDeliverException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.DeliverException;
-import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.exceptions.DeliverException.Type;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
@@ -152,7 +152,7 @@ public class Deliver {
 		return true;
 	}
 	
-	public static void rollBack( String oldViewTag, Stream oldSourceStream, File context ) {
+	public static void rollBack( String oldViewTag, Stream oldSourceStream, File context ) throws CleartoolException {
 
 		String cmd = "deliver -cancel -force -stream " + oldSourceStream;
 
@@ -160,13 +160,11 @@ public class Deliver {
 			if( context.exists() ) {
 				Cleartool.run( cmd, context );
 			} else {
-				regenerateViewDotDat( context, oldViewTag );
+				SnapshotView.regenerateViewDotDat( context, oldViewTag );
 				CmdResult res = Cleartool.run( cmd, context );
 			}
-		} catch( CommandLineException e ) {
-			throw new UCMException( "Could not regenerate view to force deliver:\n" + e.getMessage(), e.getMessage() );
-		} catch( AbnormalProcessTerminationException aex ) {
-			throw new UCMException( aex.getMessage() );
+		} catch( Exception e ) {
+			throw new CleartoolException( "Could not regenerate view to force deliver: " + oldViewTag, e );
 		} finally {
 			if( context.exists() && oldViewTag != null ) {
 				deleteDir( context );

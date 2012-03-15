@@ -5,7 +5,10 @@ import java.util.List;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
@@ -18,7 +21,7 @@ public class Baselines {
 	
 	
 	
-	public static List<Baseline> get( Stream stream, Component component, PromotionLevel plevel, PVob pvob ) throws UnableToListBaselinesException {
+	public static List<Baseline> get( Stream stream, Component component, PromotionLevel plevel, PVob pvob ) throws UnableToListBaselinesException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		logger.debug( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel + " in VOB=" + pvob );
 		//List<String> bls_str = strategy.getBaselines( component.getFullyQualifiedName(), stream.getFullyQualifiedName(), plevel );
 		List<String> bls_str = null;
@@ -35,7 +38,7 @@ public class Baselines {
 		List<Baseline> bls = new ArrayList<Baseline>();
 
 		for( String bl : bls_str ) {
-			bls.add( Baseline.get( bl + "@" + pvob, true ) );
+			bls.add( Baseline.get( bl, pvob, true ) );
 		}
 
 		return bls;

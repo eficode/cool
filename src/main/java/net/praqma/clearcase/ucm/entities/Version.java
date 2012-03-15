@@ -12,12 +12,11 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
-import net.praqma.clearcase.changeset.ChangeSet;
 import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UCMException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.UCMEntity.Kind;
@@ -136,7 +135,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 	/* Getters */
 
-	public static Version getUnextendedVersion( File file, File viewroot ) throws CleartoolException, IOException {
+	public static Version getUnextendedVersion( File file, File viewroot ) throws CleartoolException, IOException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		//return context.getVersionExtension( file, viewroot );
 		
 		if( !file.exists() ) {
@@ -155,7 +154,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return (Version) UCMEntity.getEntity( Version.class, f, false );
 	}
 
-	public String blame() throws UnableToLoadEntityException, UCMEntityNotFoundException {
+	public String blame() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToCreateEntityException {
 		return this.getUser();
 	}
 
@@ -195,7 +194,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return this;
 	}
 	
-	public static Version create( File file, boolean mkdir, SnapshotView view ) throws CleartoolException, IOException {
+	public static Version create( File file, boolean mkdir, SnapshotView view ) throws CleartoolException, IOException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 
 		Version.addToSourceControl( file, mkdir, view.getViewRoot() );
 		
@@ -260,8 +259,9 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 		}
 	
-	public void checkIn() throws UCMException {
+	public void checkIn() throws CleartoolException {
 		//context.checkIn( this, false, view.getViewRoot() );
+		checkIn( file, false, view.getViewRoot() );
 	}
 	
 	public static void checkIn( File file, boolean identical, File viewContext ) throws CleartoolException {
@@ -335,10 +335,10 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		removeName( this.file, view.getViewRoot() );
 	}
 	
-	public static void removeName( File file, File viewContext ) throws CleartoolException {
+	public static void removeName( File file, File context ) throws CleartoolException {
 		/* Firstly, checkout directory */
 		try {
-			checkOut( file.getParentFile(), viewContext );
+			checkOut( file.getParentFile(), context );
 		} catch( CleartoolException e ) {
 			/*
 			 * The file is probably already checked out, let's try to continue
@@ -346,7 +346,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		}
 
 		try {
-			uncheckout( file, false, viewContext );
+			uncheckout( file, false, context );
 		} catch( CleartoolException e ) {
 			/* Could not uncheckout */
 			logger.debug( "Could not uncheckout " + file );
@@ -356,9 +356,9 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			// String cmd = "rmname -force " + ( checkedOut ? "" : "-nco " ) +
 			// file;
 			String cmd = "rmname -force -nco " + file;
-			Cleartool.run( cmd, viewContext );
+			Cleartool.run( cmd, context );
 		} catch( Exception e ) {
-			throw new CleartoolException( e );
+			throw new CleartoolException( "Unable to remove name " + file + " at " + context, e );
 		}
 	}
 	
@@ -568,7 +568,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return sb.toString();
 	}
 	
-	public static ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws UCMException {
+	public static ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws CleartoolException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		//return context.getChangeset( e1, e2, merge, viewContext );
 		String cmd = "diffbl -version " + ( !merge ? "-nmerge " : "" ) + ( e2 == null ? "-pre " : "" ) + " " + e1.getFullyQualifiedName() + ( e2 != null ? e2.getFullyQualifiedName() : "" );
 
@@ -577,7 +577,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		try {
 			lines = Cleartool.run( cmd, viewContext ).stdoutList;
 		} catch( Exception e ) {
-			throw new UCMException( "Could not retreive the differences of " + e1 + " and " + e2 + ": " + e.getMessage(), e );
+			throw new CleartoolException( "Could not retreive the differences of " + e1 + " and " + e2 + ": " + e.getMessage(), e );
 		}
 
 		int length = viewContext.getAbsoluteFile().toString().length();
@@ -603,7 +603,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return changeset;
 	}
 	
-	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws CleartoolException {
+	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws CleartoolException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		//return context.getBaselineDiff( d1, d2, merge, viewContext );
 		String cmd = "diffbl -version -act " + ( !merge ? "-nmerge " : "" ) + ( d2 == null ? "-pre " : "" ) + d1.getFullyQualifiedName() + ( d2 != null ? " " + d2.getFullyQualifiedName() : "" );
 
@@ -630,5 +630,14 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		} else {
 			return this.file.compareTo( other.getFile() );
 		}
+	}
+	
+	
+	public static Version get( String name ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+		return (Version) UCMEntity.getEntity( Version.class, name, false );
+	}
+	
+	public static Version get( String name, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+		return (Version) UCMEntity.getEntity( Version.class, name, trusted );
 	}
 }

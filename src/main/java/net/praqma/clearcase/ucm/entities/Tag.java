@@ -12,8 +12,10 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.TagException;
-import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.exceptions.TagException.Type;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.utils.TagQuery;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -196,12 +198,15 @@ public class Tag extends UCMEntity {
 	 * 
 	 * @return The new Tag.
 	 * @throws TagException
+	 * @throws UCMEntityNotFoundException 
+	 * @throws UnableToLoadEntityException 
+	 * @throws UnableToCreateEntityException 
 	 */
-	public Tag persist() throws TagException {
+	public Tag persist() throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		return persist( this );
 	}
 
-	public static Tag persist( Tag tag ) throws TagException {
+	public static Tag persist( Tag tag ) throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		/* Make the new tag */
 		Tag newtag = Tag.newTag( tag.getTagType(), tag.getTagID(), tag.getTagEntity(), Tag.mapToCGI( tag.GetEntries(), true ) );
 
@@ -215,7 +220,7 @@ public class Tag extends UCMEntity {
 
 	}
 
-	public static List<Tag> getTags( UCMEntity entity ) throws TagException {
+	public static List<Tag> getTags( UCMEntity entity ) throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		logger.debug( entity );
 
 		String cmd = "describe -ahlink " + __TAG_NAME + " -l " + entity;
@@ -269,7 +274,7 @@ public class Tag extends UCMEntity {
 		return tags;
 	}
 
-	private static void deleteTagsWithID( String tagType, String tagID, UCMEntity entity ) throws TagException {
+	private static void deleteTagsWithID( String tagType, String tagID, UCMEntity entity ) throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		logger.debug( tagType + tagID );
 
 		List<Tag> list = getTags( entity );
@@ -291,7 +296,7 @@ public class Tag extends UCMEntity {
 
 	}
 	
-	public static Tag getTag( UCMEntity entity, String tagType, String tagID, boolean create ) throws TagException {
+	public static Tag getTag( UCMEntity entity, String tagType, String tagID, boolean create ) throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		logger.debug( entity.toString() );
 		List<Tag> tags = getTags( entity );
 
@@ -313,7 +318,7 @@ public class Tag extends UCMEntity {
 		}
 	}
 	
-	private static Tag newTag( UCMEntity entity, String tagType, String tagID ) {
+	private static Tag newTag( UCMEntity entity, String tagType, String tagID ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		Tag tag = (Tag) UCMEntity.getEntity( Tag.class, "tag@0@" + filesep + entity.getPVob().getName(), true );
 		// tag.SetEntry( "tagtype", tagType );
 		// tag.SetEntry( "tagid", tagID );
@@ -326,7 +331,7 @@ public class Tag extends UCMEntity {
 		return tag;
 	}
 
-	private static Tag newTag( String tagType, String tagID, UCMEntity entity, String cgi ) throws TagException {
+	private static Tag newTag( String tagType, String tagID, UCMEntity entity, String cgi ) throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		logger.debug( "ENTITY=" + entity.toString() );
 		logger.debug( "CGI FOR NEW = " + cgi );
 		// System.out.println( "CGI==="+cgi );

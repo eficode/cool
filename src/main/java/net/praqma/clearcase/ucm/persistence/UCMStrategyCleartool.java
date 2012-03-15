@@ -104,111 +104,14 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 
 	public void getDirectoryStatus( Version version, ChangeSet2 changeset ) throws UCMException {
 
-		String cmd = "diff -diff -pre \"" + version.getFullyQualifiedName() + "\"";
-
-		// System.out.println( "$ " + cmd );
-
-		try {
-			List<String> lines = Cleartool.run( cmd, null, true, true ).stdoutList;
-
-			for( int i = 0; i < lines.size(); ++i ) {
-				// System.out.println( "[" + i + "] " + lines.get( i ) );
-				Matcher m = rx_diffAction.matcher( lines.get( i ) );
-
-				/* A diff action */
-				if( m.find() ) {
-					String action = m.group( 1 ).trim();
-
-					/* ADDED action */
-					if( action.equals( "added" ) ) {
-						/* This is an add, the next line is the file added */
-						Matcher mname = rx_diffFileName.matcher( lines.get( i + 1 ) );
-						if( mname.find() ) {
-							changeset.addElement( new File( version.getFile(), mname.group( 1 ).trim() ), Version.Status.ADDED, version );
-						} else {
-							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
-						}
-
-						/* Fast forward one line */
-						i++;
-						/* ADDED action */
-					} else if( action.equals( "deleted" ) ) {
-						/* This is an add, the next line is the file added */
-						Matcher mname = rx_diffFileName.matcher( lines.get( i + 1 ) );
-						if( mname.find() ) {
-							changeset.addElement( new File( version.getFile(), mname.group( 1 ).trim() ), Version.Status.DELETED, version );
-						} else {
-							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
-						}
-
-						/* Fast forward one line */
-						i++;
-
-					} else if( action.equals( "renamed to" ) ) {
-						/* This is a rename, the next line is the file added */
-						Matcher oldname = rx_diffFileName.matcher( lines.get( i + 1 ) );
-						Matcher newname = rx_diffFileName.matcher( lines.get( i + 3 ) );
-
-						File newFile = null;
-						File oldFile = null;
-
-						if( newname.find() ) {
-							newFile = new File( version.getFile(), newname.group( 1 ).trim() );
-						} else {
-							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
-						}
-
-						if( oldname.find() ) {
-							oldFile = new File( version.getFile(), oldname.group( 1 ).trim() );
-						} else {
-							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
-						}
-
-						// changeset.addElement( newFile,
-						// Version.Status.CHANGED, version );
-
-						logger.debug( "[" + oldFile + "]" );
-						logger.debug( "[" + newFile + "]" );
-						ChangeSetElement2 element = new ChangeSetElement2( newFile, Version.Status.CHANGED, version );
-						element.setOldFile( oldFile );
-						changeset.addElement( element );
-
-						/* Fast forward four line */
-						i += 4;
-
-					} else {
-						/* I don't know this action, let's move on */
-						logger.warning( "Unhandled diff action: " + action );
-					}
-				}
-			}
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not execute the command: " + e.getMessage(), e );
-		} catch( IndexOutOfBoundsException e1 ) {
-			throw new UCMException( "Out of bounds: " + e1.getMessage(), e1 );
-		} catch( Exception e2 ) {
-			throw new UCMException( "Something new, something unhandled: " + e2.getMessage(), e2 );
-		}
 	}
 
 	public String getPreviousVersion( String version, File viewContext ) throws UCMException {
-		String cmd = "describe -fmt %PVn " + version;
 
-		try {
-			return Cleartool.run( cmd, viewContext ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not get previous version: " + e.getMessage(), e );
-		}
 	}
 
 	public String getObjectId( String fqname, File viewContext ) throws UCMException {
-		String cmd = "describe -fmt %On " + fqname;
 
-		try {
-			return Cleartool.run( cmd, viewContext ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UCMException( "Could not get object id: " + e.getMessage(), e );
-		}
 	}
 
 	
@@ -218,29 +121,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException, UCMEntityNotFoundException, UnknownUserException, UnknownVobException {
-		String cmd = "protect -chown " + username + " \"" + fqname + "\"";
 
-		try {
-			Cleartool.run( cmd, viewContext );
-		} catch( AbnormalProcessTerminationException e ) {
-			if( e.getMessage().contains( "Unable to determine VOB for pathname" ) ) {
-				throw new UnknownVobException( e );
-			}
-
-			if( e.getMessage().contains( "Unknown user name" ) ) {
-				throw new UnknownUserException( username, e );
-			}
-
-			if( e.getMessage().matches( rx_entityNotFound ) ) {
-				throw new UCMEntityNotFoundException( fqname, e );
-			}
-
-			if( e.getMessage().contains( " ClearCase object not found" ) ) {
-				throw new UCMEntityNotFoundException( fqname, e );
-			}
-
-			throw new UCMException( e );
-		}
 	}
 
 	/************************************************************************
@@ -282,13 +163,7 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 	}
 
 	public void createActivity( String name, PVob pvob, boolean force, String comment, File view ) throws UCMException {
-		String cmd = "mkactivity" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( force ? " -force" : "" ) + ( name != null ? " " + name + "@" + pvob : "" );
 
-		try {
-			Cleartool.run( cmd, view );
-		} catch( Exception e ) {
-			throw new UCMException( e.getMessage(), UCMType.CREATION_FAILED );
-		}
 	}
 
 	/************************************************************************

@@ -170,7 +170,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return this;
 	}
 
-	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException {
+	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		//return context.getBaselines( this, getSingleTopComponent(), plevel, pvob );
 		return Baselines.get( this, getSingleTopComponent(), plevel, pvob );
 	}
@@ -298,7 +298,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 
 
-	public List<Baseline> getRecommendedBaselines() throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException {
+	public List<Baseline> getRecommendedBaselines() throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		return getRecommendedBaselines( false );
 	}
 
@@ -311,7 +311,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 	}
 
-	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException {
+	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		logger.debug( "Getting recommended baselines" );
 
 		if( this.recommendedBaselines == null || force ) {
@@ -334,7 +334,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 				/* There is something in the element. */
 				if( rs[i].matches( "\\S+" ) ) {
 					// bls.add( (Baseline)UCMEntity.GetEntity( rs[i], true ) );
-					bls.add( Baseline.get( rs[i] + "@" + pvob, true ) );
+					bls.add( Baseline.get( rs[i], pvob, true ) );
 				}
 			}
 
@@ -354,7 +354,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 	}
 
-	public List<Baseline> getLatestBaselines() throws CleartoolException {
+	public List<Baseline> getLatestBaselines() throws CleartoolException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		//return context.getLatestBaselines( this );
 		
 		//List<String> bs = strategy.getLatestBaselines( stream.getFullyQualifiedName() );
@@ -375,7 +375,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 	}
 
-	public Component getSingleTopComponent() throws NoSingleTopComponentException, UnableToLoadEntityException {
+	public Component getSingleTopComponent() throws NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
 		List<Baseline> bls;
 		try {
 			bls = this.getRecommendedBaselines();

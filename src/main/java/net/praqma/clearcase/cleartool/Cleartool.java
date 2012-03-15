@@ -26,11 +26,7 @@ public abstract class Cleartool extends Cool {
 
 	static {
 		logger.debug( "Cleartool environment: " + System.getProperty( "cleartool" ) );
-		if( System.getProperty( "cleartool" ) != null && System.getProperty( "cleartool" ).equalsIgnoreCase( "mock" ) ) {
-			cli = CommandLineMock.getInstance();
-		} else {
-			cli = CommandLine.getInstance();
-		}
+		cli = CommandLine.getInstance();
 	}
 
 	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException {

@@ -3,7 +3,6 @@ package net.praqma.clearcase;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.RebaseException;
-import net.praqma.clearcase.exceptions.UCMException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.SnapshotView;
@@ -62,7 +61,7 @@ public class Rebase {
 			}
 		} catch( AbnormalProcessTerminationException e ) {
 			//throw new UCMException( "Unable to determine rebasing: " + e.getMessage() );
-			throw new CleartoolException( e );
+			throw new CleartoolException( "Unable to determine progress of " + stream, e );
 		}
 	}
 	
@@ -75,7 +74,7 @@ public class Rebase {
 		try {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new CleartoolException( e );
+			throw new CleartoolException( "Unable to cancel rebase of " + stream, e );
 		}
 	}
 }
