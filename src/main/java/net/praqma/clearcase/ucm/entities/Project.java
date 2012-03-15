@@ -13,6 +13,7 @@ import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToListProjectsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
+import net.praqma.clearcase.exceptions.UnableToRemoveEntityException;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
@@ -252,6 +253,16 @@ public class Project extends UCMEntity {
 		}
 
 		return comps;
+	}
+	
+	public void remove() throws UnableToRemoveEntityException {
+		String cmd = "rmproject -force " + this;
+		
+		try {
+			Cleartool.run( cmd );
+		} catch( Exception e ) {
+			throw new UnableToRemoveEntityException( this, e );
+		}
 	}
 
 	

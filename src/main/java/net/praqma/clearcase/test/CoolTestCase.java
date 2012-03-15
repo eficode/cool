@@ -50,8 +50,8 @@ public abstract class CoolTestCase extends TestCase {
 	protected String dynamicView = "TestDynamicView";
 	private DynamicView baseView;
 
-	protected void createComponents( int rooted, int rootless ) {
-
+	public DynamicView getBaseView() {
+		return baseView;
 	}
 
 	@Override
@@ -139,24 +139,13 @@ public abstract class CoolTestCase extends TestCase {
 
 				/* Getting streams */
 				logger.info( "Getting streams" );
-				List<Stream> streams = new ArrayList<Stream>();
+				
 				for( Project project : projects ) {
+					logger.verbose( "Cleaning " + project );
+					
+					List<Stream> streams = new ArrayList<Stream>();
 					try {
-						streams.addAll( project.getStreams() );
-					} catch( ClearCaseException e ) {
-						e.print( appender.getOut() );
-						if( !tearDownAsMuchAsPossible ) {
-							throw e;
-						}
-					}
-				}
-				logger.debug( "Found " + streams.size() + " stream" + ( streams.size() == 1 ? "" : "s" ) );
-
-				/* Get views for streams and delete 'em */
-				for( Stream stream : streams ) {
-					List<UCMView> views = null;
-					try {
-						views = stream.getViews();
+						streams = project.getStreams();
 					} catch( ClearCaseException e ) {
 						e.print( appender.getOut() );
 						if( !tearDownAsMuchAsPossible ) {
@@ -164,12 +153,41 @@ public abstract class CoolTestCase extends TestCase {
 						}
 					}
 					
-					logger.debug( "Found " + views.size() + " view" + ( views.size() == 1 ? "" : "s" ) );
+					
+					logger.debug( "Found " + streams.size() + " stream" + ( streams.size() == 1 ? "" : "s" ) );
 
-					for( UCMView view : views ) {
+					/* Get views for streams and delete 'em */
+					for( Stream stream : streams ) {
+						logger.verbose( "Cleaning " + stream );
+						
+						List<UCMView> views = null;
 						try {
-							logger.debug( "Removing " + view );
-							view.remove();
+							views = stream.getViews();
+						} catch( ClearCaseException e ) {
+							e.print( appender.getOut() );
+							if( !tearDownAsMuchAsPossible ) {
+								throw e;
+							}
+						}
+						
+						logger.debug( "Found " + views.size() + " view" + ( views.size() == 1 ? "" : "s" ) );
+
+						for( UCMView view : views ) {
+							try {
+								logger.verbose( "Removing " + view );
+								view.remove();
+							} catch( ClearCaseException e ) {
+								e.print( appender.getOut() );
+								if( !tearDownAsMuchAsPossible ) {
+									throw e;
+								}
+							}
+						}
+						
+						/* Remove stream */
+						try {
+							logger.verbose( "Removing " + stream );
+							stream.remove();
 						} catch( ClearCaseException e ) {
 							e.print( appender.getOut() );
 							if( !tearDownAsMuchAsPossible ) {
@@ -177,11 +195,22 @@ public abstract class CoolTestCase extends TestCase {
 							}
 						}
 					}
+					
+					/* Remove project */
+					try {
+						logger.verbose( "Removing " + project );
+						project.remove();
+					} catch( ClearCaseException e ) {
+						e.print( appender.getOut() );
+						if( !tearDownAsMuchAsPossible ) {
+							throw e;
+						}
+					}
+					
 				}
-
-				logger.info( "Removing PVob " + pvob );
 				
 				try {
+					logger.info( "Removing PVob " + pvob );
 					pvob.remove();
 				} catch( ClearCaseException e ) {
 					e.print( appender.getOut() );

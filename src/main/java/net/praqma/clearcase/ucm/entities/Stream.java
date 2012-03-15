@@ -16,6 +16,7 @@ import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
 import net.praqma.clearcase.exceptions.UnableToListProjectsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
+import net.praqma.clearcase.exceptions.UnableToRemoveEntityException;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.utils.Baselines;
@@ -414,6 +415,16 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 		
 		return null;
+	}
+	
+	public void remove() throws UnableToRemoveEntityException {
+		String cmd = "rmstream -force " + this;
+		
+		try {
+			Cleartool.run( cmd );
+		} catch( Exception e ) {
+			throw new UnableToRemoveEntityException( this, e );
+		}
 	}
 
 	/**
