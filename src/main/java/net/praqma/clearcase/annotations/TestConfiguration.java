@@ -6,6 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention( RetentionPolicy.RUNTIME )
 public @interface TestConfiguration {
 	String project() default "test-project";
-	String[] component();
-	String[] stream();
+	String pvob() default "TestPVOB";
+	//String path() default "cc-test";
 }

@@ -154,7 +154,7 @@ public class Vob extends Cool implements Serializable {
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
-			throw new CleartoolException( "Could remove Vob " + this, e );
+			throw new CleartoolException( "Could not remove Vob " + this, e );
 		}
 	}
 	
