@@ -55,7 +55,7 @@ public class RemoveAllViews {
 		for( UCMView view : views ) {
 			try {
 				logger.info( "Removing " + view.getViewtag() );
-				view.removeView();
+				view.remove();
 			} catch( ClearCaseException e ) {
 				logger.warning( "Failed to remove " + view.getViewtag() );
 			}

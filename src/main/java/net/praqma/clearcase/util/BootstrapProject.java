@@ -77,7 +77,7 @@ public class BootstrapProject {
         try {
         	System.out.println("Removing baseview");
         	DynamicView dv = new DynamicView(null,dynView);
-        	dv.removeView();
+        	dv.remove();
         } catch( Exception e ) {
         	System.out.println("Error while removing: " + e.getMessage());
         }
