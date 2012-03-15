@@ -112,6 +112,19 @@ public class Project extends UCMEntity {
 		return p;
 	}
 
+	/**
+	 * Create a project.
+	 * @param name The name of the Project
+	 * @param root If not null, the root folder of the project
+	 * @param pvob The {@link PVob}}
+	 * @param policy Policies as integer
+	 * @param comment If not null, the comment of the project
+	 * @param mcomps Modifiable components of the project
+	 * @return
+	 * @throws UnableToCreateEntityException
+	 * @throws UnableToLoadEntityException
+	 * @throws UCMEntityNotFoundException
+	 */
 	public static Project create( String name, String root, PVob pvob, int policy, String comment, Component... mcomps ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		//context.createProject( name, root, pvob, policy, comment, mcomps );
 

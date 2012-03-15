@@ -2,12 +2,20 @@ package net.praqma.clearcase.test;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.BeforeClass;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.annotations.TestConfiguration;
 import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
+import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Project;
+import net.praqma.clearcase.ucm.entities.Stream;
 
 import junit.framework.TestCase;
 
