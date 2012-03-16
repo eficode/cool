@@ -505,4 +505,13 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	public void setCreated( boolean created ) {
 		this.created = created;
 	}
+	
+	public String getNormalizedName() {
+		int idx = fqname.indexOf( ':' );
+		if( idx < 0 ) {
+			return fqname;
+		} else {
+			return fqname.substring( idx + 1 );
+		}
+	}
 }
