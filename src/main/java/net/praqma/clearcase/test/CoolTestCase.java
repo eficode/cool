@@ -98,7 +98,12 @@ public abstract class CoolTestCase extends TestCase {
 			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
 			
 			project = Project.create( projectName, null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Test", modelComponent, clientComponent );
-			integrationStream = Stream.createIntegration( integrationName, project, null );
+			
+			/**/
+			Baseline SystemINITIAL = Baseline.get( "_System_INITIAL", pvob, true );
+			Baseline ModelINITIAL = Baseline.get( "Model_INITIAL", pvob, true );
+			Baseline ClientINITIAL = Baseline.get( "Client_INITIAL", pvob, true );
+			integrationStream = Stream.createIntegration( integrationName, project, SystemINITIAL, ModelINITIAL, ClientINITIAL );
 			
 			/**/
 			bootstrapView = DynamicView.create( null, bootstrapViewTag, integrationStream );
