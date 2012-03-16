@@ -101,6 +101,9 @@ public abstract class CoolTestCase extends TestCase {
 		
 		/* Base path */
 		basepath = new File( new File( path ), dynamicView + "/" + this.pvob.getName() );
+		basepath.mkdirs();
+		
+		logger.verbose( "Base path is " + basepath.getAbsolutePath() );
 	}
 
 	@Override
