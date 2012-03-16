@@ -15,6 +15,7 @@ import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToListProjectsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Component;
@@ -49,10 +50,16 @@ public abstract class CoolTestCase extends TestCase {
 	protected boolean fail = false;
 
 	protected String dynamicView = "TestDynamicView";
-	private DynamicView baseView;
+	protected DynamicView baseView;
+	protected File basepath;
 
 	public DynamicView getBaseView() {
 		return baseView;
+	}
+	
+	public void bootStrap() throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+		/* Unrooted component */
+		Component.create( "_System", pvob, null, "Unrooted system component", basepath );
 	}
 
 	@Override
@@ -60,7 +67,7 @@ public abstract class CoolTestCase extends TestCase {
 		logger.debug( "Setup ClearCase" );
 
 		TestConfiguration config = getClass().getAnnotation( TestConfiguration.class );
-		String project = config.project();
+		String path = config.path();
 		String pvob = Cool.filesep + config.pvob();
 
 		removePvob = false;
@@ -83,6 +90,9 @@ public abstract class CoolTestCase extends TestCase {
 			logger.fatal( "The PVob " + pvob + " already exists" );
 			fail = true;
 		}
+		
+		/* Base path */
+		basepath = new File( new File( path ), dynamicView + "/" + this.pvob.getName() );
 	}
 
 	@Override
@@ -130,6 +140,7 @@ public abstract class CoolTestCase extends TestCase {
 				}
 				
 				/* Removing baseview */
+				/*
 				logger.verbose( "Removing base view" );
 				try {
 					baseView.remove();
@@ -139,6 +150,7 @@ public abstract class CoolTestCase extends TestCase {
 						throw e;
 					}
 				}
+				*/
 				
 				try {
 					logger.info( "Removing PVob " + pvob );

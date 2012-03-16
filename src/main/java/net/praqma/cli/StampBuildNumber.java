@@ -9,6 +9,7 @@ import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.HyperlinkException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.UCM;
@@ -33,7 +34,7 @@ public class StampBuildNumber extends Cool {
 		}
 	}
 
-	public static void run( String[] args ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, BuildNumberException, HyperlinkException, IOException {
+	public static void run( String[] args ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, BuildNumberException, HyperlinkException, IOException, UnableToGetEntityException {
 		Options o = new Options( net.praqma.cool.Version.version );
 
 		Option obaseline = new Option( "baseline", "b", true, 1, "Given a Baseline, the buildnumber.file is stamped" );

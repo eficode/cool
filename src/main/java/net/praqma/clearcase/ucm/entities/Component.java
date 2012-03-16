@@ -8,6 +8,7 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -51,7 +52,7 @@ public class Component extends UCMEntity {
 		return this;
 	}
 
-	public static Component create( String name, PVob pvob, String root, String comment, File view ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Component create( String name, PVob pvob, String root, String comment, File view ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		//context.createComponent( name, pvob, root, comment, view );
 		
 		String cmd = "mkcomp" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( root != null ? " -root " + root : " -nroot" ) + " " + name + "@" + pvob;
@@ -78,11 +79,11 @@ public class Component extends UCMEntity {
 
 	
 	
-	public static Component get( String name ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Component get( String name ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		return get( name, true );
 	}
 
-	public static Component get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Component get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		if( !name.startsWith( "component:" ) ) {
 			name = "component:" + name;
 		}
@@ -90,7 +91,7 @@ public class Component extends UCMEntity {
 		return entity;
 	}
 	
-	public static Component get( String name, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Component get( String name, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		if( !name.startsWith( "component:" ) ) {
 			name = "component:" + name;
 		}

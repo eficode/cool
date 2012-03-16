@@ -21,6 +21,7 @@ import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToListViewsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
@@ -80,8 +81,9 @@ public class SnapshotView extends UCMView {
 		 * @throws UnableToLoadEntityException
 		 * @throws UCMEntityNotFoundException
 		 * @throws UnableToCreateEntityException 
+		 * @throws UnableToGetEntityException 
 		 */
-		public LoadRules( SnapshotView view, Components components ) throws CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToCreateEntityException {
+		public LoadRules( SnapshotView view, Components components ) throws CleartoolException, UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException, UnableToLoadEntityException {
 			loadRules = " -add_loadrules ";
 
 			if( components.equals( Components.ALL ) ) {
@@ -124,7 +126,7 @@ public class SnapshotView extends UCMView {
 
 	}
 
-	public SnapshotView( File viewroot ) throws CleartoolException, IOException, ViewException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public SnapshotView( File viewroot ) throws CleartoolException, IOException, ViewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		/* TODO Test the view root? Does it exist? Is it a directory? */
 
 		this.viewroot = viewroot;
@@ -151,8 +153,9 @@ public class SnapshotView extends UCMView {
 	 * @throws UCMEntityNotFoundException 
 	 * @throws UnableToLoadEntityException 
 	 * @throws UnableToCreateEntityException 
+	 * @throws UnableToGetEntityException 
 	 */
-	public static SnapshotView create( Stream stream, File viewroot, String viewtag ) throws CleartoolException, ViewException, IOException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static SnapshotView create( Stream stream, File viewroot, String viewtag ) throws CleartoolException, ViewException, IOException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		//context.makeSnapshotView( stream, viewroot, viewtag );
 
 		logger.debug( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
@@ -260,7 +263,7 @@ public class SnapshotView extends UCMView {
 		return this.viewroot.toString();
 	}
 
-	public Stream getStream() throws CleartoolException, IOException, ViewException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public Stream getStream() throws CleartoolException, IOException, ViewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		if( this.stream == null ) {
 			Stream stream = getStreamFromView( getViewRoot() ).getFirst();
 			this.stream = stream;
@@ -359,7 +362,7 @@ public class SnapshotView extends UCMView {
 		public Integer dirsDeleted = 0;
 	}
 
-	public Tuple<Stream, String> getStreamFromView( File viewroot ) throws CleartoolException, IOException, ViewException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public Tuple<Stream, String> getStreamFromView( File viewroot ) throws CleartoolException, IOException, ViewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		File wvroot = getCurrentViewRoot( viewroot );
 		String viewtag = viewrootIsValid( wvroot );
 		String streamstr = getStreamFromView( viewtag );

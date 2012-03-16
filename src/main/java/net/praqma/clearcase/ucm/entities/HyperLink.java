@@ -7,6 +7,7 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UCMEntityNotInitializedException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.util.debug.Logger;
 
@@ -44,7 +45,7 @@ public class HyperLink extends UCMEntity {
 		}
 	}
 
-	public static HyperLink getHyperLink( String fqname, String value ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static HyperLink getHyperLink( String fqname, String value ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		HyperLink hlink = get( fqname );
 
 		hlink.setValue( value );
@@ -67,11 +68,11 @@ public class HyperLink extends UCMEntity {
 	}
 	
 	
-	public static HyperLink get( String name ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static HyperLink get( String name ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		return get( name, true );
 	}
 
-	public static HyperLink get( String name, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static HyperLink get( String name, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		if( !name.startsWith( "hlink:" ) ) {
 			name = "hlink:" + name;
 		}

@@ -9,6 +9,7 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
@@ -83,7 +84,7 @@ public class Difference {
 		this.bl2 = bl2;
 	}
 
-	public List<Version> get( boolean merge, SnapshotView view ) throws CleartoolException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public List<Version> get( boolean merge, SnapshotView view ) throws CleartoolException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		String cmd = "diffbl -version " + ( !merge ? "-nmerge " : "" ) + ( bl1 != null ? bl1.getFullyQualifiedName() : "-pre " ) + " " + bl2.getFullyQualifiedName();
 
 		List<String> lines = null;

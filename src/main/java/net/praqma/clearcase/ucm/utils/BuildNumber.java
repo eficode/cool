@@ -15,6 +15,7 @@ import net.praqma.clearcase.exceptions.NoSingleTopComponentException;
 import net.praqma.clearcase.exceptions.NothingNewException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToListAttributesException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
@@ -56,7 +57,7 @@ public class BuildNumber extends Cool {
 		return result;
 	}
 
-	public static Tuple<Baseline, String[]> createBuildNumber( String baseline, Component component, File view ) throws BuildNumberException, NothingNewException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Tuple<Baseline, String[]> createBuildNumber( String baseline, Component component, File view ) throws BuildNumberException, NothingNewException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		Matcher match = pattern_buildnumber.matcher( baseline );
 
 		if( !match.find() ) {
@@ -78,7 +79,7 @@ public class BuildNumber extends Cool {
 		return result;
 	}
 
-	public static int stampFromComponent( Component component, File dir, String major, String minor, String patch, String sequence, boolean ignoreErrors ) throws BuildNumberException, HyperlinkException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, IOException {
+	public static int stampFromComponent( Component component, File dir, String major, String minor, String patch, String sequence, boolean ignoreErrors ) throws BuildNumberException, HyperlinkException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, IOException, UnableToGetEntityException {
 		List<HyperLink> result = component.getHyperlinks( __BUILD_NUMBER_FILE, dir );
 
 		if( result.size() == 0 ) {
@@ -103,11 +104,11 @@ public class BuildNumber extends Cool {
 		return number;
 	}
 
-	public static int stampIntoCode( Baseline baseline ) throws BuildNumberException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, HyperlinkException, IOException {
+	public static int stampIntoCode( Baseline baseline ) throws BuildNumberException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, HyperlinkException, IOException, UnableToGetEntityException {
 		return stampIntoCode( baseline, null, false );
 	}
 
-	public static int stampIntoCode( Baseline baseline, File dir ) throws BuildNumberException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, HyperlinkException, IOException {
+	public static int stampIntoCode( Baseline baseline, File dir ) throws BuildNumberException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, HyperlinkException, IOException, UnableToGetEntityException {
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.getComponent();
 
@@ -116,7 +117,7 @@ public class BuildNumber extends Cool {
 		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], false );
 	}
 
-	public static int stampIntoCode( Baseline baseline, File dir, boolean ignoreErrors ) throws BuildNumberException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, HyperlinkException, IOException {
+	public static int stampIntoCode( Baseline baseline, File dir, boolean ignoreErrors ) throws BuildNumberException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, HyperlinkException, IOException, UnableToGetEntityException {
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.getComponent();
 
@@ -180,9 +181,10 @@ public class BuildNumber extends Cool {
 	 * @throws UnableToCreateEntityException 
 	 * @throws UnableToLoadEntityException 
 	 * @throws NoSingleTopComponentException 
+	 * @throws UnableToGetEntityException 
 	 * @throws UCMException
 	 */
-	public static Integer getNextBuildSequence( Project project ) throws UnableToSetAttributeException, BuildNumberException, UnableToListAttributesException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
+	public static Integer getNextBuildSequence( Project project ) throws UnableToSetAttributeException, BuildNumberException, UnableToListAttributesException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		Component c = project.getIntegrationStream().getSingleTopComponent();
 
 		/* Get the build number sequence */
@@ -217,9 +219,10 @@ public class BuildNumber extends Cool {
 	 * @throws UnableToLoadEntityException 
 	 * @throws NoSingleTopComponentException 
 	 * @throws UnableToListAttributesException 
+	 * @throws UnableToGetEntityException 
 	 * @throws UCMException
 	 */
-	public static int isValidUCMBuildNumber( Project project ) throws NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToListAttributesException {
+	public static int isValidUCMBuildNumber( Project project ) throws NoSingleTopComponentException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToListAttributesException, UnableToGetEntityException, UnableToLoadEntityException {
 		int valid = 0;
 
 		Component c = project.getIntegrationStream().getSingleTopComponent();
@@ -256,9 +259,10 @@ public class BuildNumber extends Cool {
 	 * @throws UnableToLoadEntityException 
 	 * @throws NoSingleTopComponentException 
 	 * @throws UnableToSetAttributeException 
+	 * @throws UnableToGetEntityException 
 	 * @throws UCMException
 	 */
-	public static String getBuildNumber( Project project ) throws BuildNumberException, UnableToListAttributesException, UnableToSetAttributeException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
+	public static String getBuildNumber( Project project ) throws BuildNumberException, UnableToListAttributesException, UnableToSetAttributeException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		String exceptionMsg = "";
 
 		/* Get build number info */

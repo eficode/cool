@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.util.debug.Logger;
@@ -75,9 +76,9 @@ public class Activity extends UCMEntity {
 	 * @return
 	 * @throws UnableToCreateEntityException 
 	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToLoadEntityException 
+	 * @throws UnableToGetEntityException  
 	 */
-	public static Activity create( String name, PVob pvob, boolean force, String comment, File view ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Activity create( String name, PVob pvob, boolean force, String comment, File view ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		String cmd = "mkactivity" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( force ? " -force" : "" ) + ( name != null ? " " + name + "@" + pvob : "" );
 
 		try {
@@ -97,7 +98,7 @@ public class Activity extends UCMEntity {
 	
 	
 	
-	public static List<Activity> parseActivityStrings( List<String> result, int length ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static List<Activity> parseActivityStrings( List<String> result, int length ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		Activity current = null;
 		//System.out.println("PARSING:");
@@ -143,11 +144,11 @@ public class Activity extends UCMEntity {
 	
 	
 	
-	public static Activity get( String name ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Activity get( String name ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		return get( name, true );
 	}
 
-	public static Activity get( String name, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Activity get( String name, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		if( !name.startsWith( "activity:" ) ) {
 			name = "activity:" + name;
 		}
@@ -155,7 +156,7 @@ public class Activity extends UCMEntity {
 		return entity;
 	}
 	
-	public static Activity get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Activity get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		if( !name.startsWith( "activity:" ) ) {
 			name = "activity:" + name;
 		}

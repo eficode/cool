@@ -21,6 +21,7 @@ import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UCMEntityNotInitializedException;
 import net.praqma.clearcase.exceptions.HyperlinkException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToListAttributesException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
@@ -129,9 +130,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UnableToCreateEntityException 
 	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToLoadEntityException 
+	 * @throws UnableToGetEntityException  
 	 */
-	protected static UCMEntity getEntity( Class<? extends UCMEntity> clazz, String fqname, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	protected static UCMEntity getEntity( Class<? extends UCMEntity> clazz, String fqname, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		
 		/* Is this needed? */
 		fqname = fqname.trim();
@@ -153,7 +154,11 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 		/* If not trusted, load the entity from the context */
 		if( !trusted ) {
-			entity.load();
+			try {
+				entity.load();
+			} catch( UnableToLoadEntityException e ) {
+				throw new UnableToGetEntityException( entity, e );
+			}
 		}
 
 		/* Create the vob object */
@@ -184,8 +189,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 * @throws UnableToLoadEntityException 
 	 * @throws UCMEntityNotFoundException 
 	 * @throws UnableToCreateEntityException 
+	 * @throws UnableToGetEntityException 
 	 */
-	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToCreateEntityException {
+	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException {
 		logger.debug( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
 		
@@ -208,7 +214,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return labelStatus;
 	}
 	
-	public static UCMEntity get( String fqname, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnknownEntityException {
+	public static UCMEntity get( String fqname, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnknownEntityException, UnableToGetEntityException {
 		if( fqname.startsWith( "baseline:" ) ) {
 			return Baseline.get( fqname, trusted );
 		} else if( fqname.startsWith( "project:" ) ) {
@@ -229,7 +235,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	/* Tag stuff */
 
-	public Tag getTag( String tagType, String tagID ) throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public Tag getTag( String tagType, String tagID ) throws TagException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		logger.debug( "Retrieving tags for " + tagType + ", " + tagID );
 		return Tag.getTag( this, tagType, tagID, true );
 	}
@@ -299,7 +305,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		}
 	}
 	
-	public List<HyperLink> getHyperlinks( String hyperlinkType, File context ) throws HyperlinkException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public List<HyperLink> getHyperlinks( String hyperlinkType, File context ) throws HyperlinkException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		String cmd = "describe -ahlink " + hyperlinkType + " -l " + this;
 
 		CmdResult res = null;
@@ -343,7 +349,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	/* Getters */
 
-	public String getUser() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToCreateEntityException {
+	public String getUser() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException {
 		if( !loaded ) {
 			load();
 		}
@@ -362,13 +368,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return this.shortname;
 	}
 
-	/**
-	 * 
-	 * @deprecated
-	 */
-	public String getPvobString() {
-		return pvob.getName();
-	}
 
 	public PVob getPVob() {
 		return pvob;

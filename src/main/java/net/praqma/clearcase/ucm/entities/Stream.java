@@ -13,6 +13,7 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.NoSingleTopComponentException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
 import net.praqma.clearcase.exceptions.UnableToListProjectsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
@@ -74,9 +75,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * @return A new Stream given the parameters
 	 * @throws UnableToCreateEntityException
 	 * @throws UCMEntityNotFoundException 
+	 * @throws UnableToGetEntityException 
 	 * @throws UnableToLoadEntityException 
 	 */
-	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline baseline ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline baseline ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		//UCMEntity.getNamePart( nstream );
 
 		logger.debug( "PSTREAM:" + parent.getShortname() + ". NSTREAM: " + nstream + ". BASELINE: " + baseline.getShortname() );
@@ -105,7 +107,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return stream;
 	}
 
-	public static Stream createIntegration( String name, Project project, Baseline baseline ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Stream createIntegration( String name, Project project, Baseline baseline ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		//context.createIntegrationStream( name, project, baseline );
 
 		String cmd = "mkstream -integration -in " + project.getFullyQualifiedName() + " -baseline " + baseline.getFullyQualifiedName() + " " + name + "@" + project.getPVob();
@@ -120,7 +122,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return Stream.get( name, project.getPVob(), true );
 	}
 
-	public UCMEntity load() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
+	public UCMEntity load() throws UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException, UnableToLoadEntityException {
 		logger.debug( "loading stream" );
 		//context.loadStream( this );
 
@@ -172,17 +174,17 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return this;
 	}
 
-	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
+	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		//return context.getBaselines( this, getSingleTopComponent(), plevel, pvob );
 		return Baselines.get( this, getSingleTopComponent(), plevel, pvob );
 	}
 
-	public List<Baseline> getBaselines( Component component, PromotionLevel plevel ) throws UnableToListBaselinesException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public List<Baseline> getBaselines( Component component, PromotionLevel plevel ) throws UnableToListBaselinesException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		//return context.getBaselines( this, component, plevel, pvob );
 		return Baselines.get( this, component, plevel, pvob );
 	}
 
-	public List<Baseline> getBaselines( Component component, PromotionLevel plevel, Date date ) throws UnableToListBaselinesException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public List<Baseline> getBaselines( Component component, PromotionLevel plevel, Date date ) throws UnableToListBaselinesException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		List<Baseline> baselines = Baselines.get( this, component, plevel, pvob );
 
 		if( date == null ) {
@@ -202,7 +204,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return baselines;
 	}
 
-	public List<Stream> getChildStreams() throws UnableToCreateEntityException, UnableToLoadEntityException {
+	public List<Stream> getChildStreams() throws UnableToCreateEntityException, UnableToGetEntityException {
 
 		List<Stream> streams = new ArrayList<Stream>();
 		try {
@@ -243,9 +245,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * @throws UCMEntityNotFoundException 
 	 * @throws UnableToLoadEntityException 
 	 * @throws UnableToCreateEntityException 
+	 * @throws UnableToGetEntityException 
 	 * @throws UCMException
 	 */
-	public List<Stream> getSiblingStreams() throws UnableToListProjectsException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public List<Stream> getSiblingStreams() throws UnableToListProjectsException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		logger.debug( "Getting sibling streams" );
 		List<Project> projects = Project.getProjects( this.getPVob() );
 		List<Stream> streams = new ArrayList<Stream>();
@@ -300,7 +303,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 
 
-	public List<Baseline> getRecommendedBaselines() throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
+	public List<Baseline> getRecommendedBaselines() throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		return getRecommendedBaselines( false );
 	}
 
@@ -313,7 +316,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 	}
 
-	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
+	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException {
 		logger.debug( "Getting recommended baselines" );
 
 		if( this.recommendedBaselines == null || force ) {
@@ -356,7 +359,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 	}
 
-	public List<Baseline> getLatestBaselines() throws CleartoolException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public List<Baseline> getLatestBaselines() throws CleartoolException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		//return context.getLatestBaselines( this );
 		
 		//List<String> bs = strategy.getLatestBaselines( stream.getFullyQualifiedName() );
@@ -377,7 +380,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 	}
 
-	public Component getSingleTopComponent() throws NoSingleTopComponentException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException {
+	public Component getSingleTopComponent() throws NoSingleTopComponentException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException {
 		List<Baseline> bls;
 		try {
 			bls = this.getRecommendedBaselines();
@@ -393,7 +396,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return bls.get( 0 ).getComponent();
 	}
 
-	public Project getProject() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
+	public Project getProject() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
 		if( !this.loaded ) load();
 
 		return this.project;
@@ -434,9 +437,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * @throws UnableToLoadEntityException 
 	 * @throws UCMEntityNotFoundException 
 	 * @throws UnableToCreateEntityException 
+	 * @throws UnableToGetEntityException 
 	 * @throws UCMException
 	 */
-	public Stream getDefaultTarget() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
+	public Stream getDefaultTarget() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
 		if( !this.loaded ) {
 			load();
 		}
@@ -448,7 +452,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		this.readOnly = readOnly;
 	}
 
-	public boolean isReadOnly() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
+	public boolean isReadOnly() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
 		if( !this.loaded ) load();
 		return readOnly;
 	}
@@ -457,7 +461,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		this.foundation = baseline;
 	}
 
-	public Baseline getFoundationBaseline() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
+	public Baseline getFoundationBaseline() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
 		if( !this.loaded ) load();
 
 		return this.foundation;
@@ -494,11 +498,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return sb.toString();
 	}
 
-	public static Stream get( String name ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Stream get( String name ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		return get( name, true );
 	}
 
-	public static Stream get( String name, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Stream get( String name, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		if( !name.startsWith( "stream:" ) ) {
 			name = "stream:" + name;
 		}
@@ -506,7 +510,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return entity;
 	}
 
-	public static Stream get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
+	public static Stream get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		if( !name.startsWith( "stream:" ) ) {
 			name = "stream:" + name;
 		}
