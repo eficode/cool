@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 
@@ -115,7 +116,20 @@ public abstract class CoolTestCase extends TestCase {
 
 		if( removePvob ) {
 			try {
-				/* Removing baseview, maybe this should be last? */
+				/* Removing views */
+				Set<String> viewTags = UCMView.getViews().keySet();
+				for( String viewTag : viewTags ) {
+					try {
+						UCMView.getViews().get( viewTag ).remove();
+					} catch( ClearCaseException e ) {
+						e.print( appender.getOut() );
+						if( !tearDownAsMuchAsPossible ) {
+							throw e;
+						}
+					}
+				}
+				
+				/* Removing baseview */
 				logger.verbose( "Removing base view" );
 				try {
 					baseView.remove();
@@ -124,91 +138,6 @@ public abstract class CoolTestCase extends TestCase {
 					if( !tearDownAsMuchAsPossible ) {
 						throw e;
 					}
-				}
-
-				/* Getting projects */
-				logger.info( "Getting projects" );
-				List<Project> projects = null;
-				try {
-					projects = Project.getProjects( pvob );
-				} catch( ClearCaseException e ) {
-					e.print( appender.getOut() );
-					if( !tearDownAsMuchAsPossible ) {
-						throw e;
-					}
-				}
-				logger.debug( "Found " + projects.size() + " project" + ( projects.size() == 1 ? "" : "s" ) );
-
-				/* Getting streams */
-				logger.info( "Getting streams" );
-				
-				for( Project project : projects ) {
-					logger.verbose( "Cleaning " + project );
-					
-					List<Stream> streams = new ArrayList<Stream>();
-					try {
-						streams = project.getStreams();
-					} catch( ClearCaseException e ) {
-						e.print( appender.getOut() );
-						if( !tearDownAsMuchAsPossible ) {
-							throw e;
-						}
-					}
-					
-					
-					logger.debug( "Found " + streams.size() + " stream" + ( streams.size() == 1 ? "" : "s" ) );
-
-					/* Get views for streams and delete 'em */
-					for( Stream stream : streams ) {
-						logger.verbose( "Cleaning " + stream );
-						
-						List<UCMView> views = null;
-						try {
-							views = stream.getViews();
-						} catch( ClearCaseException e ) {
-							e.print( appender.getOut() );
-							if( !tearDownAsMuchAsPossible ) {
-								throw e;
-							}
-						}
-						
-						logger.debug( "Found " + views.size() + " view" + ( views.size() == 1 ? "" : "s" ) );
-
-						for( UCMView view : views ) {
-							try {
-								logger.verbose( "Removing " + view );
-								view.remove();
-							} catch( ClearCaseException e ) {
-								e.print( appender.getOut() );
-								if( !tearDownAsMuchAsPossible ) {
-									throw e;
-								}
-							}
-						}
-						
-						/* Remove stream */
-						try {
-							logger.verbose( "Removing " + stream );
-							stream.remove();
-						} catch( ClearCaseException e ) {
-							e.print( appender.getOut() );
-							if( !tearDownAsMuchAsPossible ) {
-								throw e;
-							}
-						}
-					}
-					
-					/* Remove project */
-					try {
-						logger.verbose( "Removing " + project );
-						project.remove();
-					} catch( ClearCaseException e ) {
-						e.print( appender.getOut() );
-						if( !tearDownAsMuchAsPossible ) {
-							throw e;
-						}
-					}
-					
 				}
 				
 				try {
