@@ -1,6 +1,9 @@
 package net.praqma.clearcase.test;
 
 import net.praqma.clearcase.annotations.TestConfiguration;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 
 import org.junit.Test;
 
@@ -10,12 +13,9 @@ import org.junit.Test;
 public class Testing extends CoolTestCase {
 	
 	@Test
-	public void testbla() {
+	public void testbla() throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+		bootStrap();
 		assertTrue( true );
 	}
-	
-	@Test
-	public void testbla3() {
-		assertTrue( true );
-	}
+
 }

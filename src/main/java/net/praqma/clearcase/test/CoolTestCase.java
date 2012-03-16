@@ -131,6 +131,7 @@ public abstract class CoolTestCase extends TestCase {
 	@Override
 	protected void tearDown() {
 		logger.info( "Tear down ClearCase" );
+		boolean tearDownSuccess = true;
 
 		if( removePvob ) {
 			try {
@@ -140,6 +141,7 @@ public abstract class CoolTestCase extends TestCase {
 					try {
 						UCMView.getViews().get( viewTag ).remove();
 					} catch( ClearCaseException e ) {
+						tearDownSuccess = false;
 						e.print( appender.getOut() );
 						if( !tearDownAsMuchAsPossible ) {
 							throw e;
@@ -164,15 +166,23 @@ public abstract class CoolTestCase extends TestCase {
 					logger.info( "Removing PVob " + pvob );
 					pvob.remove();
 				} catch( ClearCaseException e ) {
+					tearDownSuccess = false;
 					e.print( appender.getOut() );
 					if( !tearDownAsMuchAsPossible ) {
 						throw e;
 					}
 				}
 			} catch( ClearCaseException e ) {
+				tearDownSuccess = false;
 				logger.fatal( "Unable to tear down ClearCase" );
 				e.print( System.err );
 			}
+		}
+		
+		if( tearDownSuccess ) {
+			logger.info( "Tear down is successful" );
+		} else {
+			logger.fatal( "Tear down failed" );
 		}
 	}
 }
