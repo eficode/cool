@@ -14,7 +14,7 @@ public class Testing extends CoolTestCase {
 
 	@Test
 	public void testBasic() throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		bootStrap();
+		bootStrap( "testProject", "test_int" );
 
 		assertTrue( true );
 	}
