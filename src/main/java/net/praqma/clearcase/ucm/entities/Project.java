@@ -136,7 +136,7 @@ public class Project extends UCMEntity {
 		
 		if( mcomps != null ) {
 			for( Component c : mcomps ) {
-				cmd += " " + c.getNormalizedName() + ",";
+				cmd += c.getNormalizedName() + ",";
 			}
 			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
 		}
