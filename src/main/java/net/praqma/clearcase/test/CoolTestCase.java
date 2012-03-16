@@ -20,6 +20,7 @@ import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToListProjectsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
+import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
@@ -60,6 +61,8 @@ public abstract class CoolTestCase extends TestCase {
 	protected Component systemComponent;
 	protected Component modelComponent;
 	protected Component clientComponent;
+	
+	protected Baseline structure;
 
 	public DynamicView getBaseView() {
 		return baseView;
@@ -73,6 +76,8 @@ public abstract class CoolTestCase extends TestCase {
 			/* Rooted components */
 			modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath );
 			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
+			
+			structure = Baseline.create( "intermediate System", systemComponent, null, false, false, null, new Component[] { modelComponent, clientComponent } );
 			
 			return true;
 		} catch( ClearCaseException e ) {
