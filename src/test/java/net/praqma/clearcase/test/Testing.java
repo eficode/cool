@@ -15,8 +15,7 @@ public class Testing extends CoolTestCase {
 	@Test
 	public void testBasic() throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		bootStrap();
-		Project project = Project.create( "testProject", null, pvob, 0, "Test", modelComponent, clientComponent );
-		Stream.createIntegration( "test_int", project, structure );
+
 		assertTrue( true );
 	}
 

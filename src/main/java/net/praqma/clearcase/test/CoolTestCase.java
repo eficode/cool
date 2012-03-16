@@ -56,10 +56,17 @@ public abstract class CoolTestCase extends TestCase {
 
 	protected File prefix;
 
-	protected String dynamicView = "TestDynamicView";
+	protected String dynamicViewTag = "TestDynamicView";
+	protected String bootstrapViewTag = "TestBootstrapView";
+	
 	protected DynamicView baseView;
+	protected DynamicView bootstrapView;
 	private String basepathStr;
 	protected File basepath;
+	protected File bootstrappath;
+	
+	protected Project project;
+	protected Stream integrationStream;
 	
 	protected Component systemComponent;
 	protected Component modelComponent;
@@ -80,7 +87,7 @@ public abstract class CoolTestCase extends TestCase {
 		return baseView;
 	}
 	
-	public boolean bootStrap() {
+	public boolean bootStrap( String projectName, String integrationName ) {
 		try {
 			/* Unrooted component */
 			systemComponent = Component.create( "_System", pvob, null, "Unrooted system component", basepath );
@@ -89,7 +96,14 @@ public abstract class CoolTestCase extends TestCase {
 			modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath );
 			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
 			
-			structure = Baseline.create( "Structure", systemComponent, null, LabelBehaviour.DEFAULT, false, null, new Component[] { modelComponent, clientComponent } );
+			project = Project.create( projectName, null, pvob, 0, "Test", modelComponent, clientComponent );
+			integrationStream = Stream.createIntegration( integrationName, project, structure );
+			
+			/**/
+			bootstrapView = DynamicView.create( null, bootstrapViewTag, integrationStream );
+			bootstrappath = new File( prefix, bootstrapViewTag + "/" + this.pvob.getName() );
+			
+			structure = Baseline.create( "Structure", systemComponent, bootstrappath, LabelBehaviour.DEFAULT, false, null, new Component[] { modelComponent, clientComponent } );
 			
 			return true;
 		} catch( ClearCaseException e ) {
@@ -113,9 +127,9 @@ public abstract class CoolTestCase extends TestCase {
 				this.pvob = PVob.create( pvob, null, "testing" );
 				this.pvob.mount();
 				logger.verbose( "Creating dynamic view" );
-				baseView = DynamicView.create( null, dynamicView, null );
+				baseView = DynamicView.create( null, dynamicViewTag, null );
 				logger.verbose( "Starting view" );
-				new DynamicView( null, dynamicView ).startView();
+				new DynamicView( null, dynamicViewTag ).startView();
 				removePvob = true;
 			} catch( ClearCaseException e ) {
 				e.print( System.err );
@@ -127,7 +141,7 @@ public abstract class CoolTestCase extends TestCase {
 		}
 		
 		/* Base path */
-		basepath = new File( prefix, dynamicView + "/" + this.pvob.getName() );
+		basepath = new File( prefix, dynamicViewTag + "/" + this.pvob.getName() );
 		
 		/* Prepare */
 		try {
