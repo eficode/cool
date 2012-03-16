@@ -52,6 +52,10 @@ public abstract class CoolTestCase extends TestCase {
 	protected String dynamicView = "TestDynamicView";
 	protected DynamicView baseView;
 	protected File basepath;
+	
+	protected Component systemComponent;
+	protected Component modelComponent;
+	protected Component clientComponent;
 
 	public DynamicView getBaseView() {
 		return baseView;
@@ -59,7 +63,11 @@ public abstract class CoolTestCase extends TestCase {
 	
 	public void bootStrap() throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		/* Unrooted component */
-		Component.create( "_System", pvob, null, "Unrooted system component", basepath );
+		systemComponent = Component.create( "_System", pvob, null, "Unrooted system component", basepath );
+		
+		/* Rooted components */
+		modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath );
+		clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
 	}
 
 	@Override
