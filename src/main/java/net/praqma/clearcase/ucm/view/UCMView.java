@@ -26,6 +26,8 @@ public class UCMView extends UCM implements Serializable {
 	public static final Pattern rx_view_get_path = Pattern.compile( "^\\s*Global path:\\s*(.*?)\\s*$" );
 
 	transient private static Logger logger = Logger.getLogger();
+	
+	private static Map<String, UCMView> createdViews = new HashMap<String, UCMView>();
 
 	protected String path;
 	protected String viewtag = "";
@@ -163,6 +165,24 @@ public class UCMView extends UCM implements Serializable {
 		// cleartool lsstream -in project:ava2@\chw_PVOB
 		// http://publib.boulder.ibm.com/infocenter/cchelp/v7r0m0/index.jsp?topic=/com.ibm.rational.clearcase.cc_ref.doc/topics/ct_lsstream.htm
 	}
+	
+	protected static void addView( String viewTag, UCMView view ) {
+		createdViews.put( viewTag, view );
+	}
+	
+	public static UCMView getView( String viewTag ) throws ViewException {
+		if( createdViews.containsKey( viewTag ) ) {
+			return createdViews.get( viewTag );
+		} else {
+			throw new ViewException( "", null, Type.DOES_NOT_EXIST, null );
+		}
+	}
+	
+	public static Map<String, UCMView> getViews() {
+		return createdViews;
+	}
+	
+	
 	
 	public String toString() {
 		return viewtag;

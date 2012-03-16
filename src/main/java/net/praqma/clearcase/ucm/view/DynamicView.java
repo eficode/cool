@@ -31,15 +31,17 @@ public class DynamicView extends UCMView {
 	
 	/**
 	 * Creates a dynamic view in the given path. If path is null -auto is used
-	 * @param tag The view tag
+	 * @param tagTag The view tag
 	 * @param path The path
 	 * @return An instance of DynamicView
 	 * @throws ViewException
 	 */
-	public static DynamicView create( String path, String tag, Stream stream ) throws ViewException {
+	public static DynamicView create( String path, String tagTag, Stream stream ) throws ViewException {
 		//context.createView(tag, path, false, stream);
-		UCMView.create( tag, path, false, stream );
-		return new DynamicView(path, tag, stream);
+		UCMView.create( tagTag, path, false, stream );
+		DynamicView view = new DynamicView(path, tagTag, stream);
+		addView( tagTag, view );
+		return view;
 	}
 	
 	

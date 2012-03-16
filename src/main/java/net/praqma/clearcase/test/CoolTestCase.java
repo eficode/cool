@@ -77,7 +77,6 @@ public abstract class CoolTestCase extends TestCase {
 			} catch( ClearCaseException e ) {
 				e.print( System.err );
 				fail = true;
-
 			}
 		} else {
 			logger.fatal( "The PVob " + pvob + " already exists" );

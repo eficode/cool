@@ -12,6 +12,7 @@ public class ViewException extends ClearCaseException {
 		END_VIEW_FAILED,
 		START_VIEW_FAILED,
 		INFO_FAILED,
+		DOES_NOT_EXIST,
 		REBASING,
 		UNKNOWN
 	}
