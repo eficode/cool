@@ -1,11 +1,13 @@
 package net.praqma.clearcase.test;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
 
 import net.praqma.clearcase.Cool;
@@ -101,6 +103,14 @@ public abstract class CoolTestCase extends TestCase {
 		
 		/* Base path */
 		basepath = new File( new File( path ), dynamicView + "/" + this.pvob.getName() );
+		
+		/* Prepare */
+		try {
+			FileUtils.deleteDirectory( basepath );
+		} catch( IOException e ) {
+			logger.error( "Unable to delete " + basepath.getAbsolutePath() );
+		}
+		
 		basepath.mkdirs();
 		
 		logger.verbose( "Base path is " + basepath.getAbsolutePath() );
