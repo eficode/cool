@@ -19,6 +19,10 @@ public class PVob extends Vob {
 		Vob.create( name, true, path, comment );
 		PVob pvob = new PVob( name );
 		pvob.storageLocation = path;
+		
+		if( path == null ) {
+			pvob.load();
+		}
 
 		return pvob;
 	}
