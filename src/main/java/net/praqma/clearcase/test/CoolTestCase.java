@@ -49,13 +49,15 @@ public abstract class CoolTestCase extends TestCase {
 	}
 
 	protected PVob pvob;
+	private String pvobStr;
 	protected boolean removePvob = false;
 	protected boolean fail = false;
-	
-	protected File prefix = new File( "m:/" );
+
+	protected File prefix;
 
 	protected String dynamicView = "TestDynamicView";
 	protected DynamicView baseView;
+	private String basepathStr;
 	protected File basepath;
 	
 	protected Component systemComponent;
@@ -63,6 +65,15 @@ public abstract class CoolTestCase extends TestCase {
 	protected Component clientComponent;
 	
 	protected Baseline structure;
+	
+	public CoolTestCase() {
+		logger.verbose( "Constructor" );
+		
+		/* Check options */
+		pvobStr = System.getProperty( "pvob", "TESTING_PVOB" );
+		basepathStr = System.getProperty( "path", "" );
+		prefix = new File( System.getProperty( "path", "m:/" ) );
+	}
 
 	public DynamicView getBaseView() {
 		return baseView;
@@ -77,7 +88,7 @@ public abstract class CoolTestCase extends TestCase {
 			modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath );
 			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
 			
-			structure = Baseline.create( "intermediate System", systemComponent, null, false, false, null, new Component[] { modelComponent, clientComponent } );
+			structure = Baseline.create( "Structure", systemComponent, null, false, false, null, new Component[] { modelComponent, clientComponent } );
 			
 			return true;
 		} catch( ClearCaseException e ) {
@@ -90,9 +101,7 @@ public abstract class CoolTestCase extends TestCase {
 	protected void setUp() {
 		logger.debug( "Setup ClearCase" );
 
-		TestConfiguration config = getClass().getAnnotation( TestConfiguration.class );
-		String path = config.path();
-		String pvob = Cool.filesep + config.pvob();
+		String pvob = Cool.filesep + pvobStr;
 
 		removePvob = false;
 		PVob pv = PVob.get( pvob );
