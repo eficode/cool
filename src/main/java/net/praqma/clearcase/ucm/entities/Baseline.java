@@ -35,6 +35,30 @@ public class Baseline extends UCMEntity implements Diffable {
 	private Project.PromotionLevel plevel = Project.PromotionLevel.INITIAL;
 	private Stream stream = null;
 	private ArrayList<Activity> activities = null;
+	
+	public enum LabelBehaviour {
+		NOLABEL,
+		INCREMENTAL,
+		FULL,
+		DEFAULT;
+		
+		public String toArgument() {
+			switch( this ) {
+			case NOLABEL:
+				return "-nlabel";
+			case INCREMENTAL:
+				return "-incremental";
+			case FULL:
+				return "-full";
+			default:
+				return "-incremental";
+			}
+		}
+		
+		public static LabelBehaviour fromIncremental( boolean incremental ) {
+			return ( incremental ? INCREMENTAL : FULL );
+		}
+	}
 
 	Baseline() {
 		super( "baseline" );
@@ -118,6 +142,10 @@ public class Baseline extends UCMEntity implements Diffable {
 	}
 
 	public static Baseline create( String basename, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws NothingNewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+		return create( basename, component, view, LabelBehaviour.fromIncremental( incremental ), identical, activities, depends );
+	}
+	
+	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical, Activity[] activities, Component[] depends ) throws NothingNewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		/* Remove prefixed baseline: */
 		if( basename.toLowerCase().startsWith( "baseline:" ) ) {
 			basename = basename.replaceFirst( "baseline:", "" );
@@ -143,7 +171,7 @@ public class Baseline extends UCMEntity implements Diffable {
 			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
 		}
 
-		cmd += incremental ? " -incremental" : " -full";
+		cmd += " " + labelBehaviour.toArgument();
 		cmd += " " + basename;
 
 		try {

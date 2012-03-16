@@ -24,6 +24,7 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.clearcase.ucm.view.DynamicView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.debug.Logger;
@@ -88,7 +89,7 @@ public abstract class CoolTestCase extends TestCase {
 			modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath );
 			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
 			
-			structure = Baseline.create( "Structure", systemComponent, null, false, false, null, new Component[] { modelComponent, clientComponent } );
+			structure = Baseline.create( "Structure", systemComponent, null, LabelBehaviour.FULL, false, null, new Component[] { modelComponent, clientComponent } );
 			
 			return true;
 		} catch( ClearCaseException e ) {
