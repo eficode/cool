@@ -98,6 +98,7 @@ public abstract class CoolTestCase extends TestCase {
 			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
 			
 			project = Project.create( projectName, null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Test", modelComponent, clientComponent );
+			logger.debug( "Creating stream" );
 			integrationStream = Stream.createIntegration( integrationName, project, structure );
 			
 			/**/

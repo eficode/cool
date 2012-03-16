@@ -109,9 +109,9 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 	public static Stream createIntegration( String name, Project project, Baseline baseline ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		//context.createIntegrationStream( name, project, baseline );
-
-		String cmd = "mkstream -integration -in " + project.getFullyQualifiedName() + " -baseline " + baseline.getFullyQualifiedName() + " " + name + "@" + project.getPVob();
-
+		logger.debug( "1" );
+		String cmd = "mkstream -integration -in " + project + " -baseline " + baseline.getNormalizedName() + " " + name + "@" + project.getPVob();
+		logger.debug( "2" );
 		try {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
