@@ -96,6 +96,7 @@ public abstract class CoolTestCase extends TestCase {
 			try {
 				logger.verbose( "Creating pvob " + pvob );
 				this.pvob = PVob.create( pvob, null, "testing" );
+				this.pvob.mount();
 				logger.verbose( "Creating dynamic view" );
 				baseView = DynamicView.create( null, dynamicView, null );
 				logger.verbose( "Starting view" );
