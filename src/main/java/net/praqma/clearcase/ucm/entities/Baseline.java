@@ -51,7 +51,7 @@ public class Baseline extends UCMEntity implements Diffable {
 			case FULL:
 				return "-full";
 			default:
-				return "-incremental";
+				return "";
 			}
 		}
 		

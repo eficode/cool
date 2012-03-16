@@ -89,7 +89,7 @@ public abstract class CoolTestCase extends TestCase {
 			modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath );
 			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
 			
-			structure = Baseline.create( "Structure", systemComponent, null, LabelBehaviour.FULL, false, null, new Component[] { modelComponent, clientComponent } );
+			structure = Baseline.create( "Structure", systemComponent, null, LabelBehaviour.DEFAULT, false, null, new Component[] { modelComponent, clientComponent } );
 			
 			return true;
 		} catch( ClearCaseException e ) {
