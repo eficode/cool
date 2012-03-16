@@ -114,7 +114,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		logger.debug( "2" );
 		try {
 			Cleartool.run( cmd );
-		} catch( AbnormalProcessTerminationException e ) {
+		} catch( Exception e ) {
 			//throw new UCMException( "Could not create integration stream: " + e.getMessage(), UCMType.CREATION_FAILED );
 			throw new UnableToCreateEntityException( Stream.class, e );
 		}
