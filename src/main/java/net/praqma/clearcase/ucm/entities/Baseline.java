@@ -125,7 +125,7 @@ public class Baseline extends UCMEntity implements Diffable {
 
 		boolean created = false; // context.createBaseline( basename, component, view, incremental, identical, activities, depends );
 
-		String cmd = "mkbl -component " + component.getFullyQualifiedName() + ( identical ? " -identical" : "" );
+		String cmd = "mkbl -nc -component " + component.getFullyQualifiedName() + ( identical ? " -identical" : "" );
 
 		if( depends != null ) {
 			cmd += " -adepends_on";
