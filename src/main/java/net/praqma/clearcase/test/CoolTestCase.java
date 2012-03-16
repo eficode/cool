@@ -3,6 +3,7 @@ package net.praqma.clearcase.test;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.security.Policy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -96,7 +97,7 @@ public abstract class CoolTestCase extends TestCase {
 			modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath );
 			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
 			
-			project = Project.create( projectName, null, pvob, 0, "Test", modelComponent, clientComponent );
+			project = Project.create( projectName, null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Test", modelComponent, clientComponent );
 			integrationStream = Stream.createIntegration( integrationName, project, structure );
 			
 			/**/

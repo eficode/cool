@@ -133,9 +133,14 @@ public class Project extends UCMEntity {
 		//context.createProject( name, root, pvob, policy, comment, mcomps );
 
 		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + " -modcomp ";
-		for( Component c : mcomps ) {
-			cmd += c.getFullyQualifiedName() + " ";
+		
+		if( mcomps != null ) {
+			for( Component c : mcomps ) {
+				cmd += " " + c.getNormalizedName() + ",";
+			}
+			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
 		}
+		
 		if( policy > 0 ) {
 			cmd += " -policy " + Project.getPolicy( policy );
 		}
