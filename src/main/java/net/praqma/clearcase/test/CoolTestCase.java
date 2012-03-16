@@ -50,6 +50,8 @@ public abstract class CoolTestCase extends TestCase {
 	protected PVob pvob;
 	protected boolean removePvob = false;
 	protected boolean fail = false;
+	
+	protected File prefix = new File( "m:/" );
 
 	protected String dynamicView = "TestDynamicView";
 	protected DynamicView baseView;
@@ -109,7 +111,7 @@ public abstract class CoolTestCase extends TestCase {
 		}
 		
 		/* Base path */
-		basepath = new File( new File( path ), dynamicView + "/" + this.pvob.getName() );
+		basepath = new File( prefix, dynamicView + "/" + this.pvob.getName() );
 		
 		/* Prepare */
 		try {

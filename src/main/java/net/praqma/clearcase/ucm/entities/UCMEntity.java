@@ -173,7 +173,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 * @throws UCMEntityNotInitializedException 
 	 */
 	protected void initialize() throws UCMEntityNotInitializedException {
-		logger.debug( "FQNAME: " + fqname );
 		Matcher match = pattern_std_fqname.matcher( fqname );
 		if( match.find() ) {
 			shortname = match.group( 2 );
