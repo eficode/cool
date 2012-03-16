@@ -158,7 +158,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		if( depends != null ) {
 			cmd += " -adepends_on";
 			for( Component c : depends ) {
-				cmd += " " + c.getNormalizedName() + ",";
+				cmd += c.getNormalizedName() + ",";
 			}
 			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
 		}
