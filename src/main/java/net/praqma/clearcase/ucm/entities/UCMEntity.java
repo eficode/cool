@@ -145,6 +145,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		/* Try to instantiate the Entity object */
 		try {
 			entity = clazz.newInstance();
+			entity.fqname = fqname;
 			entity.initialize();
 		} catch( Exception e ) {
 			throw new UnableToCreateEntityException( clazz, e );
