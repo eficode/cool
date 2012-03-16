@@ -63,13 +63,20 @@ public abstract class CoolTestCase extends TestCase {
 		return baseView;
 	}
 	
-	public void bootStrap() throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		/* Unrooted component */
-		systemComponent = Component.create( "_System", pvob, null, "Unrooted system component", basepath );
-		
-		/* Rooted components */
-		modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath );
-		clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
+	public boolean bootStrap() {
+		try {
+			/* Unrooted component */
+			systemComponent = Component.create( "_System", pvob, null, "Unrooted system component", basepath );
+			
+			/* Rooted components */
+			modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath );
+			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
+			
+			return true;
+		} catch( ClearCaseException e ) {
+			e.print( appender.getOut() );
+			return false;
+		}
 	}
 
 	@Override
