@@ -82,6 +82,7 @@ public abstract class CoolTestCase extends TestCase {
 		pvobStr = System.getProperty( "pvob", "TESTING_PVOB" );
 		basepathStr = System.getProperty( "path", "" );
 		prefix = new File( System.getProperty( "path", "m:/" ) );
+		dynamicViewTag = System.getProperty( "viewtag", "TestDynamicView" );
 	}
 
 	public DynamicView getBaseView() {
@@ -237,8 +238,11 @@ public abstract class CoolTestCase extends TestCase {
 				}
 			} catch( ClearCaseException e ) {
 				tearDownSuccess = false;
-				logger.fatal( "Unable to tear down ClearCase" );
+				logger.fatal( "Failed to tear down ClearCase" );
 				e.print( System.err );
+			} catch( Exception e ) {
+				tearDownSuccess = false;
+				logger.error( "Failed to tear down: " + e.getMessage() );
 			}
 		}
 		
