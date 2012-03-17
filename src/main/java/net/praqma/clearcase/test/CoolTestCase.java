@@ -115,6 +115,9 @@ public abstract class CoolTestCase extends TestCase {
 		} catch( ClearCaseException e ) {
 			e.print( appender.getOut() );
 			return false;
+		} catch( Exception e ) {
+			logger.error( "Error: " + e.getMessage() );
+			return false;
 		}
 	}
 
@@ -222,6 +225,8 @@ public abstract class CoolTestCase extends TestCase {
 				
 				try {
 					logger.info( "Removing PVob " + pvob );
+					/* Unmount before remove */
+					pvob.unmount();
 					pvob.remove();
 				} catch( ClearCaseException e ) {
 					tearDownSuccess = false;
