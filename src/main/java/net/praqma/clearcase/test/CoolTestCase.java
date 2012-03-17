@@ -64,6 +64,7 @@ public abstract class CoolTestCase extends TestCase {
 	protected DynamicView bootstrapView;
 	private String basepathStr;
 	protected File basepath;
+	protected File viewpath;
 	protected File bootstrappath;
 	
 	protected Project project;
@@ -82,6 +83,7 @@ public abstract class CoolTestCase extends TestCase {
 		pvobStr = System.getProperty( "pvob", "TESTING_PVOB" );
 		basepathStr = System.getProperty( "path", "" );
 		prefix = new File( System.getProperty( "path", "m:/" ) );
+		viewpath = new File( System.getProperty( "viewpath", "" ) );
 		dynamicViewTag = System.getProperty( "viewtag", "TestDynamicView" );
 	}
 
@@ -152,14 +154,7 @@ public abstract class CoolTestCase extends TestCase {
 		
 		/* Base path */
 		basepath = new File( prefix, dynamicViewTag + "/" + this.pvob.getName() );
-		
-		/* Prepare */
-		try {
-			FileUtils.deleteDirectory( basepath );
-		} catch( IOException e ) {
-			logger.error( "Unable to delete " + basepath.getAbsolutePath() );
-		}
-		
+
 		basepath.mkdirs();
 		
 		logger.verbose( "Base path is " + basepath.getAbsolutePath() );
