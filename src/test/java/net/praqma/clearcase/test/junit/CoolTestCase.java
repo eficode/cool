@@ -155,7 +155,10 @@ public abstract class CoolTestCase extends TestCase {
 		/* Base path */
 		basepath = new File( prefix, dynamicViewTag + "/" + this.pvob.getName() );
 
+		logger.verbose( "Preparing " + basepath );
 		basepath.mkdirs();
+		logger.verbose( "Preparing " + viewpath );
+		viewpath.mkdirs();
 		
 		logger.verbose( "Base path is " + basepath.getAbsolutePath() );
 	}
@@ -231,6 +234,11 @@ public abstract class CoolTestCase extends TestCase {
 						throw e;
 					}
 				}
+				
+				/**/
+				logger.info( "Removing " + viewpath );
+				FileUtils.deleteDirectory( viewpath );
+				
 			} catch( ClearCaseException e ) {
 				tearDownSuccess = false;
 				logger.fatal( "Failed to tear down ClearCase" );
@@ -239,6 +247,7 @@ public abstract class CoolTestCase extends TestCase {
 				tearDownSuccess = false;
 				logger.error( "Failed to tear down: " + e.getMessage() );
 			}
+			
 		}
 		
 		if( tearDownSuccess ) {

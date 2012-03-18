@@ -25,7 +25,9 @@ public class Testing extends CoolTestCase {
 	public void testBasic() throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, CleartoolException, ViewException, UnableToLoadEntityException, IOException {
 		bootStrap( "testProject", "test_int" );
 		
-		SnapshotView.create( integrationStream, new File( viewpath, "test01" ), "test01" );
+		File vp = new File( viewpath, "test01" );
+		SnapshotView.create( integrationStream, vp, "test01" );
+		
 
 		assertTrue( true );
 	}
