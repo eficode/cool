@@ -82,7 +82,7 @@ public abstract class CoolTestCase extends TestCase {
 		pvobStr = System.getProperty( "pvob", "TESTING_PVOB" );
 		basepathStr = System.getProperty( "path", "" );
 		prefix = new File( System.getProperty( "path", "m:/" ) );
-		viewpath = new File( System.getProperty( "viewpath", "" ) );
+		viewpath = new File( System.getProperty( "viewpath", "views" ) );
 		dynamicViewTag = System.getProperty( "viewtag", "TestDynamicView" );
 	}
 

@@ -14,6 +14,8 @@ import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.clearcase.ucm.view.SnapshotView.Components;
+import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules;
 
 import org.junit.Test;
 
@@ -26,7 +28,8 @@ public class Testing extends CoolTestCase {
 		bootStrap( "testProject", "test_int" );
 		
 		File vp = new File( viewpath, "test01" );
-		SnapshotView.create( integrationStream, vp, "test01" );
+		SnapshotView view = SnapshotView.create( integrationStream, vp, "test01" );
+		view.Update( false, false, false, false, new LoadRules( view, Components.ALL ) );
 		
 
 		assertTrue( true );
