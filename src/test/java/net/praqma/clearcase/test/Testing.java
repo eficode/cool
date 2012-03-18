@@ -3,6 +3,8 @@ package net.praqma.clearcase.test;
 import java.io.File;
 import java.io.IOException;
 
+import net.praqma.clearcase.test.junit.CoolTestCase;
+
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;

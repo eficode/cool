@@ -1,4 +1,4 @@
-package net.praqma.clearcase.test;
+package net.praqma.clearcase.test.junit;
 
 import java.io.File;
 import java.io.IOException;
