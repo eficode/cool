@@ -44,7 +44,6 @@ public abstract class CoolTestCase extends TestCase {
 	protected static boolean tearDownAsMuchAsPossible = true;
 
 	static {
-		System.out.println( "STATIC" );
 		appender.setTemplate( "[%level]%space %message%newline" );
 		appender.setMinimumLevel( LogLevel.DEBUG );
 		Logger.addAppender( appender );
@@ -155,9 +154,9 @@ public abstract class CoolTestCase extends TestCase {
 		/* Base path */
 		basepath = new File( prefix, dynamicViewTag + "/" + this.pvob.getName() );
 
-		logger.verbose( "Preparing " + basepath );
+		logger.verbose( "Preparing " + basepath.getAbsolutePath() );
 		basepath.mkdirs();
-		logger.verbose( "Preparing " + viewpath );
+		logger.verbose( "Preparing " + viewpath.getAbsolutePath() );
 		viewpath.mkdirs();
 		
 		logger.verbose( "Base path is " + basepath.getAbsolutePath() );
@@ -165,7 +164,6 @@ public abstract class CoolTestCase extends TestCase {
 
 	@Override
 	protected void runTest() throws Throwable {
-		logger.info( "RUN TEST" );
 		if( !fail ) {
 			super.runTest();
 		} else {
@@ -176,7 +174,6 @@ public abstract class CoolTestCase extends TestCase {
 
 	@Override
 	public void runBare() throws Throwable {
-		logger.info( "BEFORE BARE" );
 		Thread t = Thread.currentThread();
 		String o = getClass().getName() + '.' + t.getName();
 		t.setName( "Executing " + getName() );
@@ -185,7 +182,6 @@ public abstract class CoolTestCase extends TestCase {
 		} finally {
 			t.setName( o );
 		}
-		logger.info( "AFTER BARE" );
 	}
 
 	@Override
