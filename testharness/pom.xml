@@ -6,12 +6,12 @@
 		<artifactId>clearcase</artifactId>
 		<version>0.4.0-SNAPSHOT</version>
 	</parent>
-	
+		
 	<groupId>net.praqma</groupId>
-	<artifactId>clearcase-api</artifactId>
+	<artifactId>clearcase-test-harness</artifactId>
 	<packaging>jar</packaging>
 	<version>0.4.0-SNAPSHOT</version>
-	<name>ClearCase API</name>
+	<name>ClearCase API test harness</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -27,6 +27,7 @@
 	</distributionManagement>
 
 	<build>
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-install-plugin</artifactId>
@@ -67,6 +68,11 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+			</plugin>
+
 		</plugins>
 
 		<extensions>
@@ -98,13 +104,31 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+		</dependency>
+		
+    <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.1</version>
+    </dependency>
+
+		<dependency>
 			<groupId>net.praqma</groupId>
 			<artifactId>praqmajutils</artifactId>
 			<version>0.1.19-SNAPSHOT</version>
 			<optional>true</optional>
 		</dependency>
+		
+		<dependency>
+			<groupId>net.praqma</groupId>
+			<artifactId>clearcase-api</artifactId>
+			<version>0.4.0-SNAPSHOT</version>
+			<optional>true</optional>
+		</dependency>
 
 	</dependencies>
-
 
 </project>
