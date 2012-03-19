@@ -78,17 +78,22 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * @throws UnableToGetEntityException 
 	 * @throws UnableToLoadEntityException 
 	 */
-	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline baseline ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		//UCMEntity.getNamePart( nstream );
-
-		logger.debug( "PSTREAM:" + parent.getShortname() + ". NSTREAM: " + nstream + ". BASELINE: " + baseline.getShortname() );
-
-		//Stream stream = context.createStream( parent, nstream, readonly, baseline );
-		//strategy.createStream( pstream.getFullyQualifiedName(), nstream, readonly, ( baseline != null ? baseline.getFullyQualifiedName() : null ) );
+	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline ... baselines ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 
 		logger.debug( "Creating stream " + nstream + " as child of " + parent );
 
-		String cmd = "mkstream -in " + parent + " " + ( baseline != null ? "-baseline " + baseline + " " : "" ) + ( readonly ? "-readonly " : "" ) + nstream;
+		String cmd = "mkstream -in " + parent;
+		if( baselines != null && baselines.length > 0 ) {
+			cmd += " -baseline ";
+			for( Baseline b : baselines ) {
+				cmd += b.getNormalizedName() + ",";
+			}
+			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
+		}
+		
+		cmd += ( readonly ? " -readonly" : "" );
+		cmd += " " + nstream;
+		
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {

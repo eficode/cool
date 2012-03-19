@@ -20,7 +20,6 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.ucm.view.SnapshotView.Components;
-import net.praqma.jenkins.utils.exceptions.UCMViewException;
 
 /**
  * Helper class for UCM views

@@ -4,7 +4,7 @@
 	
 	<parent>
 		<groupId>net.praqma</groupId>
-		<artifactId>COOL</artifactId>
+		<artifactId>coolness</artifactId>
 		<version>0.4.0-SNAPSHOT</version>
 	</parent>
 	
@@ -137,31 +137,10 @@
 
 		</plugins>
 
-		<extensions>
-			<!-- Enabling the use of FTP -->
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh-external</artifactId>
-				<version>1.0</version>
-			</extension>
-		</extensions>
-
 
 	</build>
 
 
-	<reporting>
-		<plugins>
-		</plugins>
-	</reporting>
-
-	<repositories>
-		<repository>
-			<id>praqma</id>
-			<name>praqma</name>
-			<url>http://code.praqma.net/repo/maven</url>
-		</repository>
-	</repositories>
 
 
 	<dependencies>
@@ -186,11 +165,5 @@
 		</dependency>
 
 	</dependencies>
-
-	<scm>
-		<connection>scm:git:http://github.com/Praqma/cool.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/Praqma/cool.git</developerConnection>
-		<url>https://github.com/Praqma/cool.git</url>
-	</scm>
 
 </project>
