@@ -3,7 +3,7 @@
 	<groupId>net.praqma</groupId>
 	<artifactId>COOL</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3.41-SNAPSHOT</version>
+	<version>0.3.41</version>
 	<name>ClearCase Oriented Open Library</name>
 	<url>http://maven.apache.org</url>
 
