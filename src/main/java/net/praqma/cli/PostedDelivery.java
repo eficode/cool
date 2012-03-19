@@ -1,7 +1,5 @@
 package net.praqma.cli;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 import java.util.Map;
 
