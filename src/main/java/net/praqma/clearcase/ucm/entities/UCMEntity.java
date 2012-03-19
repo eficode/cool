@@ -90,7 +90,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	
 	protected Date date;
 	
-	DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd.HHmmss"); // 20060810.225810
+	protected static transient DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd.HHmmss"); // 20060810.225810
 	
 	transient private String comment;
 

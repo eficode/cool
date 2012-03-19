@@ -96,7 +96,7 @@ public class Baseline extends UCMEntity implements Diffable {
 			String s = ( rs[2].matches( "^stream:.*$" ) ? "" : "stream:" ) + ( rs[2].matches( ".*@" + PVob.rx_format + "$" ) ? rs[2] : rs[2] + "@" + this.pvob );
 			this.stream = Stream.get( s );
 		} else {
-			logger.warning( "The stream was not set. Propably because the baseline was INITIAL." );
+			logger.debug( "No stream set for baseline" );
 		}
 
 		/* Now with factory creation! */
