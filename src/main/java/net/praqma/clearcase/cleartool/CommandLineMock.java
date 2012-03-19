@@ -4,9 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.util.debug.*;
 import net.praqma.util.debug.Logger.LogLevel;
