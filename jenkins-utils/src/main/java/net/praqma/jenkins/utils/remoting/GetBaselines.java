@@ -21,6 +21,12 @@ import hudson.FilePath.FileCallable;
 import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
 
+/**
+ * List baselines
+ * 
+ * @author wolfgang
+ *
+ */
 public class GetBaselines implements FileCallable<List<Baseline>> {
 
 	private TaskListener listener;
@@ -30,6 +36,14 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 
 	private Date date;
 	private Baseline first;
+	
+	public GetBaselines( TaskListener listener, Component component, Stream stream, PromotionLevel plevel ) {
+		this.listener = listener;
+
+		this.component = component;
+		this.stream = stream;
+		this.plevel = plevel;
+	}
 
 	public GetBaselines( TaskListener listener, Component component, Stream stream, PromotionLevel plevel, Date date ) {
 		this.listener = listener;
@@ -86,20 +100,52 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 			if( baseline.getShortname().startsWith( "deliverbl." ) || baseline.getLabelStatus().equals( LabelStatus.UNLABLED ) ) {
 				it.remove();
 				pruned++;
+				continue;
+			}
+			
+			/* Load the baseline */
+			try {
+				baseline.load();
+			} catch( ClearCaseException e ) {
+				out.println( "[ClearCase] Unable to load " + baseline.getNormalizedName() );
+				it.remove();
+				pruned++;
+				continue;
+				/* Just continue */
 			}
 		}
 		if( pruned > 0 ) {
 			out.println( "[ClearCase] Pruned " + pruned + " baselines" );
 		}
 
-		/* Sort by date */
+		/* Sort by date - first is oldest, last is newest */
 		Collections.sort( baselines, new AscendingDateSort() );
 
 		/* Get from a specific baseline */
 		if( first != null ) {
-			for( Baseline baseline : baselines ) {
-
+			Iterator<Baseline> itFirst = baselines.iterator();
+			while( itFirst.hasNext() ) {
+				Baseline baseline = itFirst.next();
+				if( baseline.equals( first ) ) {
+					/* We found the baseline we were looking for */
+					break;
+				} else {
+					itFirst.remove();
+				}
 			}
+		} else if( date != null ) {
+			Iterator<Baseline> itDate = baselines.iterator();
+			while( itDate.hasNext() ) {
+				Baseline baseline = itDate.next();
+				if( baseline.getDate().before( date ) ) {
+					itDate.remove();
+				} else {
+					/* We must be after date, since the list is sorted, there's no more baselines before date */
+					break;
+				}
+			}
+		} else {
+			/* No modifier */
 		}
 
 		return baselines;
