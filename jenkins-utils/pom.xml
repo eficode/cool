@@ -35,9 +35,10 @@
 			<url>http://code.praqma.net/repo/maven/</url>
 		</repository>
 		
+		
         <repository>
             <id>jenkins-ci</id>
-            <url>http://repo.jenkins-ci.org/</url>
+            <url>http://repo.jenkins-ci.org/public/</url>
         </repository>
 	</repositories>
 
