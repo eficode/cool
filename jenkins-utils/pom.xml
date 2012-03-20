@@ -8,7 +8,6 @@
 		<version>0.4.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>net.praqma</groupId>
 	<artifactId>jenkins-cool-utils</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>Jenkins ClearCase utilities</name>

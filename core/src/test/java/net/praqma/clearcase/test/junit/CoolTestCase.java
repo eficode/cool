@@ -195,7 +195,7 @@ public abstract class CoolTestCase extends TestCase {
 				Set<String> viewTags = UCMView.getViews().keySet();
 				for( String viewTag : viewTags ) {
 					try {
-						UCMView.getViews().get( viewTag ).remove();
+						UCMView.getViews().get( viewTag ).end().remove();
 					} catch( ClearCaseException e ) {
 						tearDownSuccess = false;
 						e.print( appender.getOut() );

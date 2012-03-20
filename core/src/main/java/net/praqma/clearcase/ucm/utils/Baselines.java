@@ -22,8 +22,8 @@ public class Baselines {
 	
 	
 	
-	public static List<Baseline> get( Stream stream, Component component, PromotionLevel plevel, PVob pvob ) throws UnableToListBaselinesException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		logger.debug( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel + " in VOB=" + pvob );
+	public static List<Baseline> get( Stream stream, Component component, PromotionLevel plevel ) throws UnableToListBaselinesException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+		logger.debug( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel );
 		//List<String> bls_str = strategy.getBaselines( component.getFullyQualifiedName(), stream.getFullyQualifiedName(), plevel );
 		List<String> bls_str = null;
 		
@@ -39,7 +39,7 @@ public class Baselines {
 		List<Baseline> bls = new ArrayList<Baseline>();
 
 		for( String bl : bls_str ) {
-			bls.add( Baseline.get( bl, pvob, true ) );
+			bls.add( Baseline.get( bl, stream.getPVob(), true ) );
 		}
 
 		return bls;

@@ -150,8 +150,9 @@ public class UCMView extends UCM implements Serializable {
 		return stream;
 	}
 	
-	public void end() throws ViewException {
+	public UCMView end() throws ViewException {
 		end( viewtag );
+		return this;
 	}
 	
 	public static void end( String viewtag ) throws ViewException {
