@@ -21,7 +21,7 @@ public class Vob extends Cool implements Serializable {
 	
 	public static final Pattern rx_vob_get_path = Pattern.compile( "^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$" );
 	
-	private static Logger logger = Logger.getLogger();
+	transient private static Logger logger = Logger.getLogger();
 
 	protected String name;
 	

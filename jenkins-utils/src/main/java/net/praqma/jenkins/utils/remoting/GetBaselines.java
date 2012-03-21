@@ -33,11 +33,13 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 	private Component component;
 	private Stream stream;
 	private PromotionLevel plevel;
+	
+	private int max;
 
 	private Date date;
-	private Baseline first;
+	private Baseline after;
 	
-	public GetBaselines( TaskListener listener, Component component, Stream stream, PromotionLevel plevel ) {
+	public GetBaselines( TaskListener listener, Component component, Stream stream, PromotionLevel plevel, int max ) {
 		this.listener = listener;
 
 		this.component = component;
@@ -45,7 +47,7 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 		this.plevel = plevel;
 	}
 
-	public GetBaselines( TaskListener listener, Component component, Stream stream, PromotionLevel plevel, Date date ) {
+	public GetBaselines( TaskListener listener, Component component, Stream stream, PromotionLevel plevel, int max, Date date ) {
 		this.listener = listener;
 
 		this.component = component;
@@ -55,14 +57,23 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 		this.date = date;
 	}
 
-	public GetBaselines( TaskListener listener, Component component, Stream stream, PromotionLevel plevel, Baseline first ) {
+	/**
+	 * Retrieve a list of {@link Baseline}s after a given {@link Baseline} in chronological order
+	 * @param listener
+	 * @param component
+	 * @param stream
+	 * @param plevel
+	 * @param max
+	 * @param after
+	 */
+	public GetBaselines( TaskListener listener, Component component, Stream stream, PromotionLevel plevel, int max, Baseline after ) {
 		this.listener = listener;
 
 		this.component = component;
 		this.stream = stream;
 		this.plevel = plevel;
 
-		this.first = first;
+		this.after = after;
 	}
 
 	private class AscendingDateSort implements Comparator<Baseline> {
@@ -82,6 +93,8 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 	@Override
 	public List<Baseline> invoke( File f, VirtualChannel channel ) throws IOException, InterruptedException {
 		PrintStream out = listener.getLogger();
+		
+		out.println( "Getting baselines for " + component.getNormalizedName() + " and " + stream.getNormalizedName() );
 
 		List<Baseline> baselines = null;
 
@@ -122,15 +135,17 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 		Collections.sort( baselines, new AscendingDateSort() );
 
 		/* Get from a specific baseline */
-		if( first != null ) {
-			Iterator<Baseline> itFirst = baselines.iterator();
-			while( itFirst.hasNext() ) {
-				Baseline baseline = itFirst.next();
-				if( baseline.equals( first ) ) {
+		if( after != null ) {
+			Iterator<Baseline> itAfter = baselines.iterator();
+			while( itAfter.hasNext() ) {
+				Baseline baseline = itAfter.next();
+				if( baseline.equals( after ) ) {
 					/* We found the baseline we were looking for */
+					/* Let's remove this too */
+					itAfter.remove();
 					break;
 				} else {
-					itFirst.remove();
+					itAfter.remove();
 				}
 			}
 		} else if( date != null ) {
@@ -147,8 +162,15 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 		} else {
 			/* No modifier */
 		}
+		
+		/* Max? 0 = unlimited */
+		if( max > 0 ) {
+			return baselines.subList( 0, max );
+		} else {
+			return baselines;
+		}
 
-		return baselines;
+		
 	}
 
 }

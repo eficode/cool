@@ -8,6 +8,7 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Project;
 import hudson.FilePath.FileCallable;
+import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
 
 public class DetermineProject implements FileCallable<Project> {
@@ -28,8 +29,10 @@ public class DetermineProject implements FileCallable<Project> {
 				return ucmproject;
 			} catch( ClearCaseException e ) {
 				/* Not a valid project */
+			} catch( NullPointerException e ) {
+				/* project was probably null, which is allowable */
 			}
-		}
+		}		
 		
 		throw new IOException( "No such project" );
 	}
