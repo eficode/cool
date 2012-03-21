@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.entities;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -79,11 +80,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * @throws UnableToLoadEntityException 
 	 */
 	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline ... baselines ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-
+		return create( parent, nstream, readonly, Arrays.asList( baselines ) );
+	}
+	
+	public static Stream create( Stream parent, String nstream, boolean readonly, List<Baseline> baselines ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		logger.debug( "Creating stream " + nstream + " as child of " + parent );
 
 		String cmd = "mkstream -in " + parent;
-		if( baselines != null && baselines.length > 0 ) {
+		if( baselines != null && baselines.size() > 0 ) {
 			cmd += " -baseline ";
 			for( Baseline b : baselines ) {
 				cmd += b.getNormalizedName() + ",";

@@ -74,18 +74,17 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToGetEntityException 
 	 */
 	public UCMEntity load() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		logger.debug( "Loading baseline " + this );
+		//logger.debug( "Loading baseline " + this );
 
 		String result = "";
 
 		String cmd = "desc -fmt %n" + Cool.delim + "%X[component]p" + Cool.delim + "%X[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u" + Cool.delim + "%Nd" + Cool.delim + "%[label_status]p " + this;
 		try {
 			result = Cleartool.run( cmd ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
+		} catch( Exception e ) {
 			//throw new UCMException( "Could not load the baseline " + baseline, e.getMessage() );
 			throw new UnableToLoadEntityException( this, e );
 		}
-		logger.debug( "RESULT=" + result );
 
 		String[] rs = result.split( UCMEntity.delim );
 
@@ -112,7 +111,7 @@ public class Baseline extends UCMEntity implements Diffable {
 
 		this.labelStatus = getLabelStatusFromString( rs[6] );
 
-		logger.debug( "[BASELINE] component: " + this.component + ", stream: " + this.stream + ", plevel: " + this.plevel + ", user: " + this.user + ", date: " + this.date + ", label " + this.labelStatus );
+		//logger.debug( "[BASELINE] component: " + this.component + ", stream: " + this.stream + ", plevel: " + this.plevel + ", user: " + this.user + ", date: " + this.date + ", label " + this.labelStatus );
 
 		activities = new ArrayList<Activity>();
 		this.loaded = true;

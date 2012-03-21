@@ -38,8 +38,10 @@ public class Baselines {
 		logger.debug( "I got " + bls_str.size() + " baselines." );
 		List<Baseline> bls = new ArrayList<Baseline>();
 
+		int c = 0;
 		for( String bl : bls_str ) {
 			bls.add( Baseline.get( bl, stream.getPVob(), true ) );
+			c++;
 		}
 
 		return bls;

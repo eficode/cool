@@ -3,6 +3,7 @@ package net.praqma.jenkins.utils.remoting;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -16,6 +17,11 @@ import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.UCMEntity.LabelStatus;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.utils.Baselines;
+import net.praqma.util.debug.Logger;
+import net.praqma.util.debug.Logger.LogLevel;
+import net.praqma.util.debug.appenders.Appender;
+import net.praqma.util.debug.appenders.FileAppender;
+import net.praqma.util.debug.appenders.StreamAppender;
 
 import hudson.FilePath.FileCallable;
 import hudson.model.TaskListener;
@@ -45,6 +51,8 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 		this.component = component;
 		this.stream = stream;
 		this.plevel = plevel;
+		
+		this.max = max;
 	}
 
 	public GetBaselines( TaskListener listener, Component component, Stream stream, PromotionLevel plevel, int max, Date date ) {
@@ -55,6 +63,8 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 		this.plevel = plevel;
 
 		this.date = date;
+		
+		this.max = max;
 	}
 
 	/**
@@ -74,6 +84,7 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 		this.plevel = plevel;
 
 		this.after = after;
+		this.max = max;
 	}
 
 	private class AscendingDateSort implements Comparator<Baseline> {
@@ -91,8 +102,13 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 	}
 
 	@Override
-	public List<Baseline> invoke( File f, VirtualChannel channel ) throws IOException, InterruptedException {
+	public List<Baseline> invoke( File workspace, VirtualChannel channel ) throws IOException, InterruptedException {
 		PrintStream out = listener.getLogger();
+		
+		//Appender app = new FileAppender( new File( workspace, "out.log" ) );
+		//Appender app = new StreamAppender( out );
+		//app.setMinimumLevel( LogLevel.DEBUG );
+		//Logger.addAppender( app );
 		
 		out.println( "Getting baselines for " + component.getNormalizedName() + " and " + stream.getNormalizedName() );
 
@@ -119,8 +135,8 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 			/* Load the baseline */
 			try {
 				baseline.load();
-			} catch( ClearCaseException e ) {
-				out.println( "[ClearCase] Unable to load " + baseline.getNormalizedName() );
+			} catch( Exception e ) {
+				out.println( "[ClearCase] Unable to load " + baseline.getNormalizedName() + ": " + e.getMessage() );
 				it.remove();
 				pruned++;
 				continue;
@@ -139,6 +155,7 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 			Iterator<Baseline> itAfter = baselines.iterator();
 			while( itAfter.hasNext() ) {
 				Baseline baseline = itAfter.next();
+				out.println( "Removing " + baseline.getNormalizedName() );
 				if( baseline.equals( after ) ) {
 					/* We found the baseline we were looking for */
 					/* Let's remove this too */
@@ -149,6 +166,7 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 				}
 			}
 		} else if( date != null ) {
+			out.println( "Date is " + date );
 			Iterator<Baseline> itDate = baselines.iterator();
 			while( itDate.hasNext() ) {
 				Baseline baseline = itDate.next();
@@ -163,9 +181,13 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 			/* No modifier */
 		}
 		
+		out.println( "Done: " + baselines.subList( 0, max ) );
+		
 		/* Max? 0 = unlimited */
 		if( max > 0 ) {
-			return baselines.subList( 0, max );
+			ArrayList<Baseline> n = new ArrayList<Baseline>();
+			n.addAll( baselines.subList( 0, max ) );
+			return n;
 		} else {
 			return baselines;
 		}
