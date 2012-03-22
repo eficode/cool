@@ -11,6 +11,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
+import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
@@ -87,20 +91,6 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 		this.max = max;
 	}
 
-	private class AscendingDateSort implements Comparator<Baseline> {
-
-		@Override
-		public int compare( Baseline bl1, Baseline bl2 ) {
-			if( bl2.getDate() == null ) {
-				return 1;
-			}
-			if( bl1.getDate() == null ) {
-				return -1;
-			}
-			return (int) ( ( bl1.getDate().getTime() / 1000 ) - ( bl2.getDate().getTime() / 1000 ) );
-		}
-	}
-
 	@Override
 	public List<Baseline> invoke( File workspace, VirtualChannel channel ) throws IOException, InterruptedException {
 		PrintStream out = listener.getLogger();
@@ -111,88 +101,13 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 		//Logger.addAppender( app );
 		
 		out.println( "Getting baselines for " + component.getNormalizedName() + " and " + stream.getNormalizedName() );
-
-		List<Baseline> baselines = null;
-
+		
 		try {
-			baselines = Baselines.get( stream, component, plevel );
-		} catch( ClearCaseException e ) {
-			e.print( out );
+			return Baselines.get( component, stream, plevel, max, after );
+		} catch( Exception e ) {
 			throw new IOException( "Unable to get baselines", e );
 		}
 
-		/* Prune */
-		int pruned = 0;
-		Iterator<Baseline> it = baselines.iterator();
-		while( it.hasNext() ) {
-			Baseline baseline = it.next();
-			if( baseline.getShortname().startsWith( "deliverbl." ) || baseline.getLabelStatus().equals( LabelStatus.UNLABLED ) ) {
-				it.remove();
-				pruned++;
-				continue;
-			}
-			
-			/* Load the baseline */
-			try {
-				baseline.load();
-			} catch( Exception e ) {
-				out.println( "[ClearCase] Unable to load " + baseline.getNormalizedName() + ": " + e.getMessage() );
-				it.remove();
-				pruned++;
-				continue;
-				/* Just continue */
-			}
-		}
-		if( pruned > 0 ) {
-			out.println( "[ClearCase] Pruned " + pruned + " baselines" );
-		}
-
-		/* Sort by date - first is oldest, last is newest */
-		Collections.sort( baselines, new AscendingDateSort() );
-
-		/* Get from a specific baseline */
-		if( after != null ) {
-			Iterator<Baseline> itAfter = baselines.iterator();
-			while( itAfter.hasNext() ) {
-				Baseline baseline = itAfter.next();
-				out.println( "Removing " + baseline.getNormalizedName() );
-				if( baseline.equals( after ) ) {
-					/* We found the baseline we were looking for */
-					/* Let's remove this too */
-					itAfter.remove();
-					break;
-				} else {
-					itAfter.remove();
-				}
-			}
-		} else if( date != null ) {
-			out.println( "Date is " + date );
-			Iterator<Baseline> itDate = baselines.iterator();
-			while( itDate.hasNext() ) {
-				Baseline baseline = itDate.next();
-				if( baseline.getDate().before( date ) ) {
-					itDate.remove();
-				} else {
-					/* We must be after date, since the list is sorted, there's no more baselines before date */
-					break;
-				}
-			}
-		} else {
-			/* No modifier */
-		}
-		
-		out.println( "Done: " + baselines.subList( 0, max ) );
-		
-		/* Max? 0 = unlimited */
-		if( max > 0 ) {
-			ArrayList<Baseline> n = new ArrayList<Baseline>();
-			n.addAll( baselines.subList( 0, max ) );
-			return n;
-		} else {
-			return baselines;
-		}
-
-		
 	}
 
 }
