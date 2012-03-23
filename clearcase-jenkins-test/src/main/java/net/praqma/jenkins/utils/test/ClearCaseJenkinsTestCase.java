@@ -5,7 +5,7 @@ import net.praqma.clearcase.test.junit.CoolTestCase;
 import org.jvnet.hudson.test.HudsonTestCase;
 
 public class ClearCaseJenkinsTestCase extends HudsonTestCase {
-	public CoolTestCase coolTest = new CoolTestCase();
+	public CoolTestCase coolTest = new ConcreteCoolTestCase();
 	
 	public CoolTestCase getCoolTestCase() {
 		return coolTest;
