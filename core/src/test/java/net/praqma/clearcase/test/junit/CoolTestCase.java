@@ -35,7 +35,7 @@ import net.praqma.util.debug.appenders.ConsoleAppender;
 
 import junit.framework.TestCase;
 
-public class CoolTestCase extends TestCase {
+public abstract class CoolTestCase extends TestCase {
 
 	protected static Logger logger = Logger.getLogger();
 	protected static ConsoleAppender appender = new ConsoleAppender();
