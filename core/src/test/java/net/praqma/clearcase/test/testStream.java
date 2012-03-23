@@ -16,7 +16,7 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.SnapshotView.Components;
 import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules;
 
-public class testStream extends CoolTestCase {
+public class TestStream extends CoolTestCase {
 
 	@Test
 	public void testFoundationBaselines() throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, CleartoolException, ViewException, UnableToLoadEntityException, IOException {
