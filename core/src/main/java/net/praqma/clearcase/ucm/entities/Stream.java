@@ -45,7 +45,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	private Project project = null;
 	private Stream defaultTarget = null;
 	private boolean readOnly = true;
-	private Baseline foundations;
+	private List<Baseline> foundations = new ArrayList<Baseline>();
 
 	private Stream parent;
 
@@ -183,7 +183,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 		/* Set foundation baseline */
 		try {
-			setFoundationBaseline( Baseline.get( data.get( 4 ) ) );
+			String[] blss = data.get( 4 ).split( "\\s+" );
+			for( String bls : blss ) {
+				addFoundationBaseline( Baseline.get( bls ) );
+			}
 		} catch( Exception e ) {
 			logger.warning( "Could not get the foundation baseline: " + e.getMessage() );
 		}
@@ -335,7 +338,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 	}
 
-	public ArrayList<Baseline> getRecommendedBaselines( boolean force ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException {
+	public List<Baseline> getRecommendedBaselines( boolean force ) throws UnableToListBaselinesException, NoSingleTopComponentException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException {
 		logger.debug( "Getting recommended baselines" );
 
 		if( this.recommendedBaselines == null || force ) {
@@ -476,11 +479,34 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return readOnly;
 	}
 
+	/**
+	 * Add a single foundation baseline
+	 * @param baseline
+	 */
 	public void setFoundationBaseline( Baseline baseline ) {
-		this.foundations = baseline;
+		this.foundations.clear();
+		this.foundations.add( baseline );
+	}
+	
+	public void addFoundationBaseline( Baseline baseline ) {
+		this.foundations.add( baseline );
 	}
 
+	/**
+	 * Get the first foundation baseline. This is a method implemented to maintain backwards compatibility. 
+	 * @return
+	 * @throws UCMEntityNotFoundException
+	 * @throws UnableToLoadEntityException
+	 * @throws UnableToCreateEntityException
+	 * @throws UnableToGetEntityException
+	 */
 	public Baseline getFoundationBaseline() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
+		if( !this.loaded ) load();
+
+		return this.foundations.get( 0 );
+	}
+	
+	public List<Baseline> getFoundationBaselines() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
 		if( !this.loaded ) load();
 
 		return this.foundations;
