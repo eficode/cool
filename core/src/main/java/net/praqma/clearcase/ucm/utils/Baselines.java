@@ -146,10 +146,10 @@ public class Baselines {
 			/* No modifier */
 		}
 		
-		logger.verbose( "Done: " + baselines.subList( 0, max ) );
+		logger.verbose( "Done" );
 		
 		/* Max? 0 = unlimited */
-		if( max > 0 ) {
+		if( max > 0 && baselines.size() > 0 ) {
 			ArrayList<Baseline> n = new ArrayList<Baseline>();
 			n.addAll( baselines.subList( 0, max ) );
 			return n;

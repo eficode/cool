@@ -10,6 +10,7 @@
 	<modules>
 		<module>core</module>
 		<module>jenkins-utils</module>
+		<module>clearcase-jenkins-test</module>
 	</modules>
 
 	<properties>

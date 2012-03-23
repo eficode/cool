@@ -35,7 +35,7 @@ import net.praqma.util.debug.appenders.ConsoleAppender;
 
 import junit.framework.TestCase;
 
-public abstract class CoolTestCase extends TestCase {
+public class CoolTestCase extends TestCase {
 
 	protected static Logger logger = Logger.getLogger();
 	protected static ConsoleAppender appender = new ConsoleAppender();
@@ -124,7 +124,7 @@ public abstract class CoolTestCase extends TestCase {
 	}
 
 	@Override
-	protected void setUp() {
+	public void setUp() {
 		logger.debug( "Setup ClearCase" );
 
 		String pvob = Cool.filesep + pvobStr;
@@ -163,7 +163,7 @@ public abstract class CoolTestCase extends TestCase {
 	}
 
 	@Override
-	protected void runTest() throws Throwable {
+	public void runTest() throws Throwable {
 		if( !fail ) {
 			super.runTest();
 		} else {
@@ -171,21 +171,13 @@ public abstract class CoolTestCase extends TestCase {
 			throw new Exception( "ClearCase not set up, unable to run test" );
 		}
 	}
-
-	@Override
-	public void runBare() throws Throwable {
-		Thread t = Thread.currentThread();
-		String o = getClass().getName() + '.' + t.getName();
-		t.setName( "Executing " + getName() );
-		try {
-			super.runBare();
-		} finally {
-			t.setName( o );
-		}
+	
+	public boolean hasFailed() {
+		return fail;
 	}
 
 	@Override
-	protected void tearDown() {
+	public void tearDown() {
 		logger.info( "Tear down ClearCase" );
 		boolean tearDownSuccess = true;
 

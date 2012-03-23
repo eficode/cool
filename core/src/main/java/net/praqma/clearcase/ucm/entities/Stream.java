@@ -45,7 +45,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	private Project project = null;
 	private Stream defaultTarget = null;
 	private boolean readOnly = true;
-	private Baseline foundation;
+	private Baseline foundations;
 
 	private Stream parent;
 
@@ -477,13 +477,13 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	}
 
 	public void setFoundationBaseline( Baseline baseline ) {
-		this.foundation = baseline;
+		this.foundations = baseline;
 	}
 
 	public Baseline getFoundationBaseline() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
 		if( !this.loaded ) load();
 
-		return this.foundation;
+		return this.foundations;
 	}
 
 	public void setParent( Stream parent ) {
