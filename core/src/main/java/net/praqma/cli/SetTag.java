@@ -63,7 +63,7 @@ public class SetTag {
 
 		UCMEntity e = null;
 
-		e = UCMEntity.get( oentity.getString(), false );
+		e = UCMEntity.getEntity( oentity.getString() ).load();
 
 
 		Tag tag = e.getTag( otagtype.getString(), otagid.getString() );

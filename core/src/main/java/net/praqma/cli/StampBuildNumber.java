@@ -67,7 +67,7 @@ public class StampBuildNumber extends Cool {
 			ignoreErrors = true;
 		}
 
-		Baseline baseline = Baseline.get( obaseline.getString(), false );
+		Baseline baseline = Baseline.get( obaseline.getString() ).load();
 		File dir = odir.used ? new File( odir.getString() ) : null;
 		int number = BuildNumber.stampIntoCode( baseline, dir, ignoreErrors );
 
