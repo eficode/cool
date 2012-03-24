@@ -1,26 +1,13 @@
 package net.praqma.clearcase.test.junit;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.security.Policy;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.BeforeClass;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
-import net.praqma.clearcase.annotations.TestConfiguration;
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToGetEntityException;
-import net.praqma.clearcase.exceptions.UnableToListProjectsException;
-import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
@@ -30,7 +17,6 @@ import net.praqma.clearcase.ucm.view.DynamicView;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.debug.Logger.LogLevel;
-import net.praqma.util.debug.appenders.Appender;
 import net.praqma.util.debug.appenders.ConsoleAppender;
 
 import junit.framework.TestCase;
@@ -57,7 +43,7 @@ public abstract class CoolTestCase extends TestCase {
 	protected File prefix;
 
 	protected String dynamicViewTag = "TestDynamicView";
-	protected String bootstrapViewTag = "TestBootstrapView";
+	protected String bootstrapViewTag = "";
 	
 	protected DynamicView baseView;
 	protected DynamicView bootstrapView;
@@ -84,6 +70,7 @@ public abstract class CoolTestCase extends TestCase {
 		prefix = new File( System.getProperty( "path", "m:/" ) );
 		viewpath = new File( System.getProperty( "viewpath", "views" ) );
 		dynamicViewTag = System.getProperty( "viewtag", "TestDynamicView" );
+		bootstrapViewTag = System.getProperty( "bootstrapviewtag", "TestBootstrapView" );
 	}
 
 	public DynamicView getBaseView() {
