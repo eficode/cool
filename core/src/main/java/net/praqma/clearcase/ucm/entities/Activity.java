@@ -45,7 +45,7 @@ public class Activity extends UCMEntity {
 	 * 
 	 * @throws UCMException
 	 */
-	public UCMEntity load() throws UnableToLoadEntityException {
+	public Activity load() throws UnableToLoadEntityException {
 		String result = "";
 
 		/* The special case branch */

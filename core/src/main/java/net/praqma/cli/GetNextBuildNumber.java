@@ -63,9 +63,9 @@ public class GetNextBuildNumber {
 		Project project = null;
 
 		if( oproject.used ) {
-			project = Project.get( oproject.getString(), false );
+			project = Project.get( oproject.getString() ).load();
 		} else {
-			Stream stream = Stream.get( ostream.getString(), false );
+			Stream stream = Stream.get( ostream.getString() ).load();
 			project = stream.getProject();
 		}
 

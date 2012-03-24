@@ -168,7 +168,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 * @throws UnableToCreateEntityException 
 	 * @throws UnableToGetEntityException 
 	 */
-	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException {
+	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToCreateEntityException {
 		logger.debug( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
 		

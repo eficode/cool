@@ -134,7 +134,7 @@ public class Tag extends UCMEntity {
 	 * 
 	 * @return
 	 */
-	public UCMEntity load() {
+	public Tag load() {
 		// TODO This method was not implemented????
 		//Tuple<String, String> t = context.getTag( this );
 		// this.OID = t.t1;

@@ -35,7 +35,7 @@ public class Component extends UCMEntity {
 		return new Component();
 	}
 
-	public UCMEntity load() throws UCMEntityNotFoundException, UnableToLoadEntityException {
+	public Component load() throws UCMEntityNotFoundException, UnableToLoadEntityException {
 		String cmd = "describe -fmt %[name]p " + this;
 		try {
 			Cleartool.run( cmd );

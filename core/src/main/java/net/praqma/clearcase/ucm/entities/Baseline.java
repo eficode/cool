@@ -73,7 +73,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToCreateEntityException 
 	 * @throws UnableToGetEntityException 
 	 */
-	public UCMEntity load() throws UnableToLoadEntityException, UnableToCreateEntityException {
+	public Baseline load() throws UnableToLoadEntityException, UnableToCreateEntityException {
 		//logger.debug( "Loading baseline " + this );
 
 		String result = "";

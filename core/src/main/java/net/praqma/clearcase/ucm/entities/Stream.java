@@ -141,7 +141,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return Stream.get( name, project.getPVob() );
 	}
 
-	public UCMEntity load() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
+	public Stream load() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
 		logger.debug( "loading stream" );
 		//context.loadStream( this );
 

@@ -166,7 +166,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 
 	
-	public UCMEntity load() throws UnableToLoadEntityException {
+	public Version load() throws UnableToLoadEntityException {
 		try {
 			String cmd = "describe -fmt %u\\n%Vn\\n%Xn\\n%[object_kind]p \"" + this + "\"";
 			List<String> list = Cleartool.run( cmd ).stdoutList;

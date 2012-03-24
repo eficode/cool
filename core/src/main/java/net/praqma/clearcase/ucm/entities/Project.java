@@ -156,7 +156,7 @@ public class Project extends UCMEntity {
 		return get( name, pvob );
 	}
 
-	public UCMEntity load() throws UnableToLoadEntityException, UnableToCreateEntityException {
+	public Project load() throws UnableToLoadEntityException, UnableToCreateEntityException {
 		//context.loadProject( this );
 		//String result = strategy.loadProject( project.getFullyQualifiedName() );
 		String result = "";
