@@ -1,6 +1,5 @@
 package net.praqma.clearcase.test;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -12,9 +11,6 @@ import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.test.junit.CoolTestCase;
-import net.praqma.clearcase.ucm.view.SnapshotView;
-import net.praqma.clearcase.ucm.view.SnapshotView.Components;
-import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules;
 
 public class TestStream extends CoolTestCase {
 

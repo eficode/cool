@@ -156,7 +156,7 @@ public class Project extends UCMEntity {
 		return get( name, pvob );
 	}
 
-	public UCMEntity load() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public UCMEntity load() throws UnableToLoadEntityException, UnableToCreateEntityException {
 		//context.loadProject( this );
 		//String result = strategy.loadProject( project.getFullyQualifiedName() );
 		String result = "";
@@ -181,8 +181,7 @@ public class Project extends UCMEntity {
 		this.stream = stream;
 	}
 
-	public Stream getIntegrationStream() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		if( !this.loaded ) load();
+	public Stream getIntegrationStream() {
 		return stream;
 	}
 	

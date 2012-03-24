@@ -141,7 +141,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return Stream.get( name, project.getPVob() );
 	}
 
-	public UCMEntity load() throws UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException, UnableToLoadEntityException {
+	public UCMEntity load() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException {
 		logger.debug( "loading stream" );
 		//context.loadStream( this );
 
@@ -418,9 +418,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return bls.get( 0 ).getComponent();
 	}
 
-	public Project getProject() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
-		if( !this.loaded ) load();
-
+	public Project getProject() {
 		return this.project;
 	}
 	
@@ -462,10 +460,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * @throws UnableToGetEntityException 
 	 * @throws UCMException
 	 */
-	public Stream getDefaultTarget() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
-		if( !this.loaded ) {
-			load();
-		}
+	public Stream getDefaultTarget() {
 		return this.defaultTarget;
 	}
 
@@ -474,8 +469,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		this.readOnly = readOnly;
 	}
 
-	public boolean isReadOnly() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
-		if( !this.loaded ) load();
+	public boolean isReadOnly() {
 		return readOnly;
 	}
 
@@ -500,15 +494,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 * @throws UnableToCreateEntityException
 	 * @throws UnableToGetEntityException
 	 */
-	public Baseline getFoundationBaseline() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
-		if( !this.loaded ) load();
-
+	public Baseline getFoundationBaseline() {
 		return this.foundations.get( 0 );
 	}
 	
-	public List<Baseline> getFoundationBaselines() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
-		if( !this.loaded ) load();
-
+	public List<Baseline> getFoundationBaselines() {
 		return this.foundations;
 	}
 

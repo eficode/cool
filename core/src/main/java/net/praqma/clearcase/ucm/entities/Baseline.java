@@ -73,7 +73,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToCreateEntityException 
 	 * @throws UnableToGetEntityException 
 	 */
-	public UCMEntity load() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public UCMEntity load() throws UnableToLoadEntityException, UnableToCreateEntityException {
 		//logger.debug( "Loading baseline " + this );
 
 		String result = "";
@@ -207,10 +207,8 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToCreateEntityException 
 	 * @throws UnableToGetEntityException 
 	 */
-	public Project.PromotionLevel getPromotionLevel( boolean cached ) throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		if( !loaded ) {
-			this.load();
-		}
+	public Project.PromotionLevel getPromotionLevel( boolean cached ) {
+
 		//TODO if !loaded return this.plevel DONE.....
 		if( cached ) {
 			return this.plevel;
@@ -238,10 +236,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToCreateEntityException 
 	 * @throws UnableToGetEntityException 
 	 */
-	public Project.PromotionLevel promote() throws UnableToLoadEntityException, UnableToPromoteBaselineException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		if( !loaded ) {
-			this.load();
-		}
+	public Project.PromotionLevel promote() throws UnableToPromoteBaselineException {
 
 		if( this.plevel.equals( PromotionLevel.REJECTED ) ) {
 			//throw new UCMException("Cannot promote from REJECTED");
@@ -263,10 +258,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToCreateEntityException 
 	 * @throws UnableToGetEntityException 
 	 */
-	public Project.PromotionLevel demote() throws UnableToLoadEntityException, UnableToPromoteBaselineException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		if( !loaded ) {
-			this.load();
-		}
+	public Project.PromotionLevel demote() throws UnableToPromoteBaselineException {
 
 		this.plevel = Project.PromotionLevel.REJECTED;
 		setPromotionLevel( this.plevel );
@@ -299,18 +291,11 @@ public class Baseline extends UCMEntity implements Diffable {
 	}
 	*/
 
-	public Component getComponent() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		if( !loaded ) {
-			load();
-		}
+	public Component getComponent() {
 		return this.component;
 	}
 
-	public Stream getStream() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		logger.debug( "Getting stream" );
-		if( !loaded ) {
-			load();
-		}
+	public Stream getStream() {
 		return this.stream;
 	}
 
