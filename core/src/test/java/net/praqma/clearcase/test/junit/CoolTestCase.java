@@ -89,16 +89,16 @@ public abstract class CoolTestCase extends TestCase {
 			project = Project.create( projectName, null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Test", modelComponent, clientComponent );
 			
 			/**/
-			Baseline SystemINITIAL = Baseline.get( "_System_INITIAL", pvob, true );
-			Baseline ModelINITIAL = Baseline.get( "Model_INITIAL", pvob, true );
-			Baseline ClientINITIAL = Baseline.get( "Client_INITIAL", pvob, true );
+			Baseline SystemINITIAL = Baseline.get( "_System_INITIAL", pvob, true ).load();
+			Baseline ModelINITIAL = Baseline.get( "Model_INITIAL", pvob, true ).load();
+			Baseline ClientINITIAL = Baseline.get( "Client_INITIAL", pvob, true ).load();
 			integrationStream = Stream.createIntegration( integrationName, project, SystemINITIAL, ModelINITIAL, ClientINITIAL );
 			
 			/**/
 			bootstrapView = DynamicView.create( null, bootstrapViewTag, integrationStream );
 			bootstrappath = new File( prefix, bootstrapViewTag + "/" + this.pvob.getName() );
 			
-			structure = Baseline.create( "Structure", systemComponent, bootstrappath, LabelBehaviour.DEFAULT, false, null, new Component[] { modelComponent, clientComponent } );
+			structure = Baseline.create( "Structure", systemComponent, bootstrappath, LabelBehaviour.DEFAULT, false, null, new Component[] { modelComponent, clientComponent } ).load();
 			
 			return true;
 		} catch( ClearCaseException e ) {
