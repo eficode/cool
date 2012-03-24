@@ -123,12 +123,13 @@ public abstract class CoolTestCase extends TestCase {
 			try {
 				logger.verbose( "Creating pvob " + pvob );
 				this.pvob = PVob.create( pvob, null, "testing" );
+				removePvob = true;
 				this.pvob.mount();
 				logger.verbose( "Creating dynamic view" );
 				baseView = DynamicView.create( null, dynamicViewTag, null );
 				logger.verbose( "Starting view" );
 				new DynamicView( null, dynamicViewTag ).startView();
-				removePvob = true;
+				
 			} catch( ClearCaseException e ) {
 				e.print( System.err );
 				fail = true;
