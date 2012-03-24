@@ -98,7 +98,7 @@ public class Activity extends UCMEntity {
 	
 	
 	
-	public static List<Activity> parseActivityStrings( List<String> result, int length ) throws UnableToCreateEntityException {
+	public static List<Activity> parseActivityStrings( List<String> result, int length ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		Activity current = null;
 		//System.out.println("PARSING:");
@@ -132,7 +132,7 @@ public class Activity extends UCMEntity {
 			 * it
 			 */
 			
-			Version v = (Version) UCMEntity.getEntity( Version.class, f );
+			Version v = (Version) UCMEntity.getEntity( Version.class, f ).load();
 			v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
 			//System.out.println(f);
 			current.changeset.versions.add( v );

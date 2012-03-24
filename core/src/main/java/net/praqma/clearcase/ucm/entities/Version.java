@@ -136,7 +136,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 	/* Getters */
 
-	public static Version getUnextendedVersion( File file, File viewroot ) throws CleartoolException, IOException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Version getUnextendedVersion( File file, File viewroot ) throws CleartoolException, IOException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException {
 		//return context.getVersionExtension( file, viewroot );
 		
 		if( !file.exists() ) {
@@ -152,7 +152,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			throw new CleartoolException( "Unable to get extended version: " + e.getMessage(), e );
 		}
 		
-		return (Version) UCMEntity.getEntity( Version.class, f );
+		return (Version) UCMEntity.getEntity( Version.class, f ).load();
 	}
 
 	public String blame() throws UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException, UnableToLoadEntityException {
@@ -195,7 +195,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return this;
 	}
 	
-	public static Version create( File file, boolean mkdir, SnapshotView view ) throws CleartoolException, IOException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Version create( File file, boolean mkdir, SnapshotView view ) throws CleartoolException, IOException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException {
 
 		Version.addToSourceControl( file, mkdir, view.getViewRoot() );
 		
