@@ -110,19 +110,19 @@ public class Bootstrap {
 			modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath ).load();
 			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath ).load();
 			
-			project = Project.create( projectName, null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Test", modelComponent, clientComponent ).load();
+			project = Project.create( projectName, null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Test", modelComponent, clientComponent );
 			
 			/**/
 			Baseline SystemINITIAL = Baseline.get( "_System_INITIAL", pvob, true ).load();
 			Baseline ModelINITIAL = Baseline.get( "Model_INITIAL", pvob, true ).load();
 			Baseline ClientINITIAL = Baseline.get( "Client_INITIAL", pvob, true ).load();
-			integrationStream = Stream.createIntegration( integrationName, project, SystemINITIAL, ModelINITIAL, ClientINITIAL ).load();
+			integrationStream = Stream.createIntegration( integrationName, project, SystemINITIAL, ModelINITIAL, ClientINITIAL );
 			
 			/**/
 			bootstrapView = DynamicView.create( null, bootstrapViewTag, integrationStream );
 			bootstrappath = new File( prefix, bootstrapViewTag + "/" + this.pvob.getName() );
 			
-			structure = Baseline.create( "Structure", systemComponent, bootstrappath, LabelBehaviour.DEFAULT, false, null, new Component[] { modelComponent, clientComponent } ).load();
+			structure = Baseline.create( "Structure", systemComponent, bootstrappath, LabelBehaviour.DEFAULT, false, null, new Component[] { modelComponent, clientComponent } );
 			
 			return true;
 		} catch( Exception e ) {
