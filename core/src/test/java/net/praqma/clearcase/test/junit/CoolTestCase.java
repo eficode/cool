@@ -221,6 +221,9 @@ public abstract class CoolTestCase extends TestCase {
 			} catch( Exception e ) {
 				tearDownSuccess = false;
 				logger.error( "Failed to tear down: " + e.getMessage() );
+			} finally {
+				logger.debug( "Clearing views" );
+				UCMView.getViews().clear();
 			}
 			
 		}
