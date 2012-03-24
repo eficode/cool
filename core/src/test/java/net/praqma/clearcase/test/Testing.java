@@ -24,11 +24,11 @@ import org.junit.Test;
 public class Testing extends CoolTestCase {
 
 	@Test
-	public void testBasic() throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, CleartoolException, ViewException, UnableToLoadEntityException, IOException {
+	public void testBasic() throws Exception {
 		bootStrap( "testProject", "test_int" );
 		
-		File vp = new File( viewpath, "test01" );
-		SnapshotView view = SnapshotView.create( integrationStream, vp, "test01" );
+		File vp = new File( bootstrap.viewpath, "test01" );
+		SnapshotView view = SnapshotView.create( bootstrap.integrationStream, vp, "test01" );
 		view.Update( false, false, false, false, new LoadRules( view, Components.ALL ) );
 		
 

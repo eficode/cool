@@ -10,10 +10,9 @@ import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class ClearCaseException extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5325867242379727760L;
+	
+	
+	private static Logger logger = Logger.getLogger();
 
 	protected List<String> information = new ArrayList<String>();
 
@@ -82,6 +81,19 @@ public class ClearCaseException extends Exception {
 				out.println( "Command was: " + ( (AbnormalProcessTerminationException) this.getCause() ).getCommand() );
 			}
 			out.println( this.getCause().getMessage() );
+		}
+	}
+	
+	public void log() {
+		logger.warning( this.getMessage() );
+		for( String info : information ) {
+			logger.warning( info );
+		}
+		if( this.getCause() != null ) {
+			if( this.getCause() instanceof AbnormalProcessTerminationException ) {
+				logger.warning( "Command was: " + ( (AbnormalProcessTerminationException) this.getCause() ).getCommand() );
+			}
+			logger.warning( this.getCause().getMessage() );
 		}
 	}
 
