@@ -118,28 +118,15 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	/**
 	 * Generates a UCM entity given its fully qualified name.
-	 * 
-	 * @param fqname
-	 *            The fully qualified name
-	 * @param trusted
-	 *            If not trusted, the entity's content is loaded from clear
-	 *            case.
-	 * @param cachable
-	 *            If cachable, the entity is stored and can later be retrieved
-	 *            from the cache without contacting clear case.
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UnableToCreateEntityException 
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToGetEntityException  
 	 */
-	protected static UCMEntity getEntity( Class<? extends UCMEntity> clazz, String fqname, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	protected static UCMEntity getEntity( Class<? extends UCMEntity> clazz, String fqname ) throws UnableToCreateEntityException {
 		
 		/* Is this needed? */
 		fqname = fqname.trim();
 
 		UCMEntity entity = null;
-
-		String shortname = "";
 		String pvob = "";
 
 		/* Try to instantiate the Entity object */
@@ -149,17 +136,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 			entity.initialize();
 		} catch( Exception e ) {
 			throw new UnableToCreateEntityException( clazz, e );
-		}
-
-		
-
-		/* If not trusted, load the entity from the context */
-		if( !trusted ) {
-			try {
-				entity.load();
-			} catch( UnableToLoadEntityException e ) {
-				throw new UnableToGetEntityException( entity, e );
-			}
 		}
 
 		/* Create the vob object */
@@ -215,17 +191,17 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return labelStatus;
 	}
 	
-	public static UCMEntity get( String fqname, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnknownEntityException, UnableToGetEntityException {
+	public static UCMEntity getEntity( String fqname ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnknownEntityException, UnableToGetEntityException {
 		if( fqname.startsWith( "baseline:" ) ) {
-			return Baseline.get( fqname, trusted );
+			return Baseline.get( fqname );
 		} else if( fqname.startsWith( "project:" ) ) {
-			return Project.get( fqname, trusted );
+			return Project.get( fqname );
 		} else if( fqname.startsWith( "stream:" ) ) {
-			return Stream.get( fqname, trusted );
+			return Stream.get( fqname );
 		} else if( fqname.startsWith( "activity:" ) ) {
-			return Activity.get( fqname, trusted );
+			return Activity.get( fqname );
 		} else if( fqname.startsWith( "component:" ) ) {
-			return Component.get( fqname, trusted );
+			return Component.get( fqname );
 		}		
 		
 		throw new UnknownEntityException( fqname );
@@ -350,10 +326,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	/* Getters */
 
-	public String getUser() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException {
-		if( !loaded ) {
-			load();
-		}
+	public String getUser() {
 		return this.user;
 	}
 
@@ -432,11 +405,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	}
 
 	public Date getDate() {
-		if(!loaded) try {
-			this.load();
-		} catch ( Exception e ) {
-			logger.error( "Unable to load entity" );
-		}
 		return date;
 	}
 	

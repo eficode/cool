@@ -91,14 +91,14 @@ public class Activity extends UCMEntity {
 		Activity activity = null;
 		
 		if( name != null ) {
-			activity = get( name, pvob, true );
+			activity = get( name, pvob );
 		}
 		return activity;
 	}
 	
 	
 	
-	public static List<Activity> parseActivityStrings( List<String> result, int length ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static List<Activity> parseActivityStrings( List<String> result, int length ) throws UnableToCreateEntityException {
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		Activity current = null;
 		//System.out.println("PARSING:");
@@ -108,7 +108,7 @@ public class Activity extends UCMEntity {
 
 			/* This line is a new activity */
 			if( match.find() ) {
-				current = get( match.group( 1 ), true );
+				current = get( match.group( 1 ) );
 
 				/* A special case? */
 				if( current.getShortname().equals( "no_activity" ) ) {
@@ -132,7 +132,7 @@ public class Activity extends UCMEntity {
 			 * it
 			 */
 			
-			Version v = (Version) UCMEntity.getEntity( Version.class, f, false );
+			Version v = (Version) UCMEntity.getEntity( Version.class, f );
 			v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
 			//System.out.println(f);
 			current.changeset.versions.add( v );
@@ -142,25 +142,19 @@ public class Activity extends UCMEntity {
 		return activities;
 	}
 	
-	
-	
-	public static Activity get( String name ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return get( name, true );
-	}
-
-	public static Activity get( String name, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Activity get( String name ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "activity:" ) ) {
 			name = "activity:" + name;
 		}
-		Activity entity = (Activity) UCMEntity.getEntity( Activity.class, name, trusted );
+		Activity entity = (Activity) UCMEntity.getEntity( Activity.class, name );
 		return entity;
 	}
-	
-	public static Activity get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+
+	public static Activity get( String name, PVob pvob ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "activity:" ) ) {
 			name = "activity:" + name;
 		}
-		Activity entity = (Activity) UCMEntity.getEntity( Activity.class, name + "@" + pvob, trusted );
+		Activity entity = (Activity) UCMEntity.getEntity( Activity.class, name + "@" + pvob );
 		return entity;
 	}
 	
