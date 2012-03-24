@@ -25,7 +25,7 @@ public class DetermineProject implements FileCallable<Project> {
 	public Project invoke( File f, VirtualChannel channel ) throws IOException, InterruptedException {
 		for( String project : projects ) {
 			try {
-				Project ucmproject = Project.get( project, pvob, false );
+				Project ucmproject = Project.get( project, pvob ).load();
 				return ucmproject;
 			} catch( ClearCaseException e ) {
 				/* Not a valid project */
