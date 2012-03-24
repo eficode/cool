@@ -83,16 +83,16 @@ public abstract class CoolTestCase extends TestCase {
 			systemComponent = Component.create( "_System", pvob, null, "Unrooted system component", basepath );
 			
 			/* Rooted components */
-			modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath );
-			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath );
+			modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath ).load();
+			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath ).load();
 			
-			project = Project.create( projectName, null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Test", modelComponent, clientComponent );
+			project = Project.create( projectName, null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Test", modelComponent, clientComponent ).load();
 			
 			/**/
 			Baseline SystemINITIAL = Baseline.get( "_System_INITIAL", pvob, true ).load();
 			Baseline ModelINITIAL = Baseline.get( "Model_INITIAL", pvob, true ).load();
 			Baseline ClientINITIAL = Baseline.get( "Client_INITIAL", pvob, true ).load();
-			integrationStream = Stream.createIntegration( integrationName, project, SystemINITIAL, ModelINITIAL, ClientINITIAL );
+			integrationStream = Stream.createIntegration( integrationName, project, SystemINITIAL, ModelINITIAL, ClientINITIAL ).load();
 			
 			/**/
 			bootstrapView = DynamicView.create( null, bootstrapViewTag, integrationStream );
