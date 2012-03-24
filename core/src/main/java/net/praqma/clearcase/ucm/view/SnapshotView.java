@@ -91,7 +91,7 @@ public class SnapshotView extends UCMView {
 
 				List<Baseline> bls = view.stream.getLatestBaselines();
 				for( Baseline b : bls ) {
-					String rule = b.getComponent().getRootDir();
+					String rule = b.load().getComponent().getRootDir();
 					rule = rule.replaceFirst( "^\\\\", " " );
 					loadRules += rule;
 				}
