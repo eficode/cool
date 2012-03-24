@@ -335,23 +335,19 @@ public class Baseline extends UCMEntity implements Diffable {
 		return sb.toString();
 	}
 
-	public static Baseline get( String name ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return get( name, true );
-	}
-
-	public static Baseline get( String name, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Baseline get( String name ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "baseline:" ) ) {
 			name = "baseline:" + name;
 		}
-		Baseline entity = (Baseline) UCMEntity.getEntity( Baseline.class, name, trusted );
+		Baseline entity = (Baseline) UCMEntity.getEntity( Baseline.class, name );
 		return entity;
 	}
 
-	public static Baseline get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Baseline get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "baseline:" ) ) {
 			name = "baseline:" + name;
 		}
-		Baseline entity = (Baseline) UCMEntity.getEntity( Baseline.class, name + "@" + pvob, trusted );
+		Baseline entity = (Baseline) UCMEntity.getEntity( Baseline.class, name + "@" + pvob );
 		return entity;
 	}
 }

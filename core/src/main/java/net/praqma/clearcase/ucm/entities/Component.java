@@ -64,7 +64,7 @@ public class Component extends UCMEntity {
 			throw new UnableToCreateEntityException( Component.class, e );
 		}
 
-		return get( name, pvob, true );
+		return get( name, pvob );
 	}
 
 	public String getRootDir() throws CleartoolException {
@@ -78,24 +78,19 @@ public class Component extends UCMEntity {
 	}
 
 	
-	
-	public static Component get( String name ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return get( name, true );
-	}
-
-	public static Component get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Component get( String name, PVob pvob ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "component:" ) ) {
 			name = "component:" + name;
 		}
-		Component entity = (Component) UCMEntity.getEntity( Component.class, name + "@" + pvob, trusted );
+		Component entity = (Component) UCMEntity.getEntity( Component.class, name + "@" + pvob );
 		return entity;
 	}
 	
-	public static Component get( String name, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Component get( String name ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "component:" ) ) {
 			name = "component:" + name;
 		}
-		Component entity = (Component) UCMEntity.getEntity( Component.class, name, trusted );
+		Component entity = (Component) UCMEntity.getEntity( Component.class, name );
 		return entity;
 	}
 

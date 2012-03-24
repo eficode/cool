@@ -152,7 +152,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			throw new CleartoolException( "Unable to get extended version: " + e.getMessage(), e );
 		}
 		
-		return (Version) UCMEntity.getEntity( Version.class, f, false );
+		return (Version) UCMEntity.getEntity( Version.class, f );
 	}
 
 	public String blame() throws UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException, UnableToLoadEntityException {
@@ -595,7 +595,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 				logger.debug( "F: " + f );
 
-				Version version = (Version) UCMEntity.getEntity( Version.class, m.group( 2 ).trim(), true );
+				Version version = (Version) UCMEntity.getEntity( Version.class, m.group( 2 ).trim() );
 
 				changeset.addVersion( version );
 			}
@@ -632,13 +632,9 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			return this.file.compareTo( other.getFile() );
 		}
 	}
-	
-	
-	public static Version get( String name ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return (Version) UCMEntity.getEntity( Version.class, name, false );
-	}
-	
-	public static Version get( String name, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return (Version) UCMEntity.getEntity( Version.class, name, trusted );
+
+
+	public static Version get( String name ) throws UnableToCreateEntityException {
+		return (Version) UCMEntity.getEntity( Version.class, name );
 	}
 }

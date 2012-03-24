@@ -153,7 +153,7 @@ public class Project extends UCMEntity {
 			throw new UnableToCreateEntityException( Project.class, e );
 		}
 
-		return get( name, pvob, true );
+		return get( name, pvob );
 	}
 
 	public UCMEntity load() throws UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
@@ -256,7 +256,7 @@ public class Project extends UCMEntity {
 		List<Component> comps = new ArrayList<Component>();
 
 		for( String c : cs ) {
-			comps.add( Component.get( c, pvob, true ) );
+			comps.add( Component.get( c, pvob ) );
 		}
 
 		return comps;
@@ -273,24 +273,19 @@ public class Project extends UCMEntity {
 	}
 
 	
-	
-	public static Project get( String name ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return get( name, true );
-	}
-
-	public static Project get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Project get( String name, PVob pvob ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "project:" ) ) {
 			name = "project:" + name;
 		}
-		Project entity = (Project) UCMEntity.getEntity( Project.class, name + "@" + pvob, trusted );
+		Project entity = (Project) UCMEntity.getEntity( Project.class, name + "@" + pvob );
 		return entity;
 	}
 
-	public static Project get( String name, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Project get( String name ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "project:" ) ) {
 			name = "project:" + name;
 		}
-		Project entity = (Project) UCMEntity.getEntity( Project.class, name, trusted );
+		Project entity = (Project) UCMEntity.getEntity( Project.class, name );
 		return entity;
 	}
 

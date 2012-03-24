@@ -266,7 +266,7 @@ public class Tag extends UCMEntity {
 					// match.group( 2 ) ) );
 					//tags.add( new String[] { match.group( 1 ), match.group( 2 ) } );
 					
-					Tag tag = (Tag) UCMEntity.getEntity( Tag.class, match.group( 1 ).trim(), true );
+					Tag tag = (Tag) UCMEntity.getEntity( Tag.class, match.group( 1 ).trim() );
 					tag.setKeyValue( match.group( 2 ) );
 					tags.add( tag );
 				}
@@ -321,7 +321,7 @@ public class Tag extends UCMEntity {
 	}
 	
 	private static Tag newTag( UCMEntity entity, String tagType, String tagID ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		Tag tag = (Tag) UCMEntity.getEntity( Tag.class, "tag@0@" + filesep + entity.getPVob().getName(), true );
+		Tag tag = (Tag) UCMEntity.getEntity( Tag.class, "tag@0@" + filesep + entity.getPVob().getName() );
 		// tag.SetEntry( "tagtype", tagType );
 		// tag.SetEntry( "tagid", tagID );
 		String cgi = "tagtype=" + tagType + "&tagid=" + tagID;
@@ -345,7 +345,7 @@ public class Tag extends UCMEntity {
 		cgi = "tagtype=" + tagType + "&tagid=" + tagID + ( cgi.length() > 0 ? "&" + cgi : "" );
 		String fqname = storeTag( entity, cgi );
 
-		Tag tag = (Tag) UCMEntity.getEntity( Tag.class, fqname, true );
+		Tag tag = (Tag) UCMEntity.getEntity( Tag.class, fqname );
 		// tag.SetEntry( "tagtype", tagType );
 		// tag.SetEntry( "tagid", tagID );
 		tag.setKeyValue( cgi );

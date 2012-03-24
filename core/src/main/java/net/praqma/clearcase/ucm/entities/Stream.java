@@ -138,7 +138,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 			throw new UnableToCreateEntityException( Stream.class, e );
 		}
 
-		return Stream.get( name, project.getPVob(), true );
+		return Stream.get( name, project.getPVob() );
 	}
 
 	public UCMEntity load() throws UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException, UnableToLoadEntityException {
@@ -543,23 +543,19 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return sb.toString();
 	}
 
-	public static Stream get( String name ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return get( name, true );
-	}
-
-	public static Stream get( String name, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Stream get( String name ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "stream:" ) ) {
 			name = "stream:" + name;
 		}
-		Stream entity = (Stream) UCMEntity.getEntity( Stream.class, name, trusted );
+		Stream entity = (Stream) UCMEntity.getEntity( Stream.class, name );
 		return entity;
 	}
 
-	public static Stream get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Stream get( String name, PVob pvob ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "stream:" ) ) {
 			name = "stream:" + name;
 		}
-		Stream entity = (Stream) UCMEntity.getEntity( Stream.class, name + "@" + pvob, trusted );
+		Stream entity = (Stream) UCMEntity.getEntity( Stream.class, name + "@" + pvob );
 		return entity;
 	}
 

@@ -67,17 +67,12 @@ public class HyperLink extends UCMEntity {
 		this.value = value;
 	}
 	
-	
-	public static HyperLink get( String name ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return get( name, true );
-	}
-
-	public static HyperLink get( String name, boolean trusted ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static HyperLink get( String name ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "hlink:" ) ) {
 			name = "hlink:" + name;
 		}
 
-		HyperLink entity = (HyperLink) UCMEntity.getEntity( HyperLink.class, name, trusted );
+		HyperLink entity = (HyperLink) UCMEntity.getEntity( HyperLink.class, name );
 		return entity;
 	}
 }
