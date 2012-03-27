@@ -31,7 +31,7 @@ public class Folder extends UCMEntity {
         if(!fqname.startsWith( "folder:" )) {
             return ( Folder )UCMEntity.getEntity( Folder.class, "folder:"+fqname+"@"+vob );
         }
-        return ( Folder )UCMEntity.getEntity( Folder.class, fqname+"@"+vob.getName() );
+        return ( Folder )UCMEntity.getEntity( Folder.class, fqname+"@"+vob );
     }
     
     
