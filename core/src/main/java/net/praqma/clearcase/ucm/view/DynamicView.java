@@ -34,15 +34,15 @@ public class DynamicView extends UCMView {
 	 * 
 	 * @param tagTag
 	 *            The view tag
-	 * @param path
+	 * @param stgloc
 	 *            The path
 	 * @return An instance of DynamicView
 	 * @throws ViewException
 	 */
-	public static DynamicView create( String path, String tagTag, Stream stream ) throws ViewException {
+	public static DynamicView create( String stgloc, String tagTag, Stream stream ) throws ViewException {
 		//context.createView(tag, path, false, stream);
-		UCMView.create( tagTag, path, false, stream );
-		DynamicView view = new DynamicView( path, tagTag, stream );
+		UCMView.create( tagTag, stgloc, false, stream );
+		DynamicView view = new DynamicView( stgloc, tagTag, stream );
 		addView( tagTag, view );
 		return view;
 	}
