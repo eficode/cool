@@ -202,7 +202,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 			return Activity.get( fqname );
 		} else if( fqname.startsWith( "component:" ) ) {
 			return Component.get( fqname );
-		}		
+		} else if (fqname.startsWith("folder:")) {
+                        return Folder.get( fqname );
+                }		
 		
 		throw new UnknownEntityException( fqname );
 	}
