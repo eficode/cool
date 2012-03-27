@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.entities;
 import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -145,6 +146,10 @@ public class Baseline extends UCMEntity implements Diffable {
 	}
 	
 	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical, Activity[] activities, Component[] depends ) throws NothingNewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+		return create( basename, component, view, labelBehaviour, identical, Arrays.asList( activities ), Arrays.asList( depends ) );
+	}
+	
+	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical, List<Activity> activities, List<Component> depends ) throws NothingNewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		/* Remove prefixed baseline: */
 		if( basename.toLowerCase().startsWith( "baseline:" ) ) {
 			basename = basename.replaceFirst( "baseline:", "" );
@@ -188,7 +193,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		}
 
 		if( created ) {
-			return get( basename, component.getPVob(), true );
+			return get( basename, component.getPVob() );
 		} else {
 			throw new NothingNewException();
 		}
@@ -328,7 +333,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		return entity;
 	}
 
-	public static Baseline get( String name, PVob pvob, boolean trusted ) throws UnableToCreateEntityException {
+	public static Baseline get( String name, PVob pvob ) throws UnableToCreateEntityException {
 		if( !name.startsWith( "baseline:" ) ) {
 			name = "baseline:" + name;
 		}

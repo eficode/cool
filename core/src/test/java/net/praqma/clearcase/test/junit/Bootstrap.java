@@ -113,9 +113,9 @@ public class Bootstrap {
 			project = Project.create( projectName, null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Test", modelComponent, clientComponent );
 			
 			/**/
-			Baseline SystemINITIAL = Baseline.get( "_System_INITIAL", pvob, true ).load();
-			Baseline ModelINITIAL = Baseline.get( "Model_INITIAL", pvob, true ).load();
-			Baseline ClientINITIAL = Baseline.get( "Client_INITIAL", pvob, true ).load();
+			Baseline SystemINITIAL = Baseline.get( "_System_INITIAL", pvob ).load();
+			Baseline ModelINITIAL = Baseline.get( "Model_INITIAL", pvob ).load();
+			Baseline ClientINITIAL = Baseline.get( "Client_INITIAL", pvob ).load();
 			integrationStream = Stream.createIntegration( integrationName, project, SystemINITIAL, ModelINITIAL, ClientINITIAL );
 			
 			/**/

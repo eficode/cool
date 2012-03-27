@@ -129,10 +129,19 @@ public class Project extends UCMEntity {
 	 * @throws UCMEntityNotFoundException
 	 * @throws UnableToGetEntityException 
 	 */
+	
 	public static Project create( String name, String root, PVob pvob, int policy, String comment, Component... mcomps ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+		return create( name, root, pvob, policy, comment, mcomps );
+	}
+	
+	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, Component... mcomps ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+		return create( name, root, pvob, policy, comment, normal, Arrays.asList( mcomps ) );
+	}
+	
+	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, List<Component> mcomps ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		//context.createProject( name, root, pvob, policy, comment, mcomps );
 
-		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + " -modcomp ";
+		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + " -modcomp" + ( normal ? " " : " -model SIMPLE " );
 		
 		if( mcomps != null ) {
 			for( Component c : mcomps ) {

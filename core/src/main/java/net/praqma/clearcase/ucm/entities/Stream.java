@@ -115,13 +115,17 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 		return stream;
 	}
-
+	
 	public static Stream createIntegration( String name, Project project, Baseline ... baselines ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+		return createIntegration( name, project, Arrays.asList( baselines ) );
+	}
+
+	public static Stream createIntegration( String name, Project project, List<Baseline> baselines ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		//context.createIntegrationStream( name, project, baseline );
 		
 		String cmd = "mkstream -integration -in " + project;
 				
-		if( baselines.length > 0 ) {
+		if( baselines.size() > 0 ) {
 			cmd += " -baseline ";
 			for( Baseline b : baselines ) {
 				cmd += b.getNormalizedName() + ",";
@@ -361,7 +365,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 				/* There is something in the element. */
 				if( rs[i].matches( "\\S+" ) ) {
 					// bls.add( (Baseline)UCMEntity.GetEntity( rs[i], true ) );
-					bls.add( Baseline.get( rs[i], pvob, true ) );
+					bls.add( Baseline.get( rs[i], pvob ) );
 				}
 			}
 

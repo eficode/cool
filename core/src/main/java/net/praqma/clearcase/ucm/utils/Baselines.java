@@ -45,7 +45,7 @@ public class Baselines {
 
 		int c = 0;
 		for( String bl : bls_str ) {
-			bls.add( Baseline.get( bl, stream.getPVob(), true ) );
+			bls.add( Baseline.get( bl, stream.getPVob() ) );
 			c++;
 		}
 
