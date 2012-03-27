@@ -49,7 +49,8 @@ public class SnapshotView extends UCMView {
 	transient private static Logger logger = Logger.getLogger();
 
 	//protected static final String rx_view_uuid = "view_uuid:(.*)";
-	protected static final Pattern rx_view_uuid = Pattern.compile( "view_uuid:(.*)" );
+	protected static final Pattern rx_view_uuid_file = Pattern.compile( "view_uuid:(.*)" );
+	protected static final Pattern rx_view_uuid = Pattern.compile( "View uuid:(.*)" );
 	private static final Pattern rx_view_rebasing = Pattern.compile( "^\\.*Error: This view is currently being used to rebase stream \"(.+)\"\\.*$" );
 	private static final Pattern pattern_cache = Pattern.compile( "^\\s*log has been written to\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE );
 	
@@ -303,9 +304,10 @@ public class SnapshotView extends UCMView {
 	 * @return The view tag
 	 * @throws IOException 
 	 * @throws CleartoolException 
+	 * @throws ViewException 
 	 * @throws UCMException
 	 */
-	public static String viewrootIsValid( File viewroot ) throws IOException, CleartoolException {
+	public static String viewrootIsValid( File viewroot ) throws IOException, CleartoolException, ViewException {
 		logger.debug( viewroot.getAbsolutePath() );
 
 		File viewdotdatpname = new File( viewroot + File.separator + "view.dat" );
@@ -317,7 +319,7 @@ public class SnapshotView extends UCMView {
 			fr = new FileReader( viewdotdatpname );
 		} catch( FileNotFoundException e1 ) {
 			logger.warning( "\"" + viewdotdatpname + "\" not found!" );
-			throw e1;
+			throw new ViewException( "No view .dat file found", viewroot.getAbsolutePath(), Type.VIEW_DOT_DAT, e1 );
 		}
 
 		BufferedReader br = new BufferedReader( fr );
@@ -334,7 +336,7 @@ public class SnapshotView extends UCMView {
 
 		logger.debug( "FILE CONTENT=" + result.toString() );
 
-		Matcher match = rx_view_uuid.matcher( result.toString() );
+		Matcher match = rx_view_uuid_file.matcher( result.toString() );
 
 		String uuid = "";
 

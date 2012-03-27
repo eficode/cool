@@ -1,5 +1,8 @@
 package net.praqma.clearcase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.RebaseException;
@@ -17,12 +20,18 @@ public class Rebase {
 	private static Logger logger = Logger.getLogger();
 	
 	private Stream stream;
-	private Baseline baseline;
+	private List<Baseline> baselines = new ArrayList<Baseline>();
 	private SnapshotView view;
 	
-	public Rebase( Stream stream, Baseline baseline, SnapshotView view ) {
+	public Rebase( Stream stream, SnapshotView view, Baseline baseline ) {
 		this.stream = stream;
-		this.baseline = baseline;
+		this.baselines.add( baseline );
+		this.view = view;
+	}
+	
+	public Rebase( Stream stream, SnapshotView view, List<Baseline> baselines ) {
+		this.stream = stream;
+		this.baselines = baselines;
 		this.view = view;
 	}
 
@@ -30,7 +39,16 @@ public class Rebase {
 		//context.rebaseStream( view, this, baseline, complete );
 		logger.debug( "Rebasing " + view.getViewtag() );
 
-		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + view.getViewtag() + " -stream " + this + " -baseline " + baseline;
+		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + view.getViewtag() + " -stream " + stream;
+		
+		if( baselines != null && baselines.size() > 0 ) {
+			cmd += " -baseline ";
+			for( Baseline b : baselines ) {
+				cmd += b.getNormalizedName() + ",";
+			}
+			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
+		}
+		
 		try {
 			CmdResult res = Cleartool.run( cmd );
 
