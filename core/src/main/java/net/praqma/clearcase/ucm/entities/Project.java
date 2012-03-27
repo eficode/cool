@@ -114,6 +114,20 @@ public class Project extends UCMEntity {
 
 		return p;
 	}
+	
+	public static int getPolicyValue( String policy ) {
+		if( policy.equalsIgnoreCase( "POLICY_INTERPROJECT_DELIVER" ) ) {
+			return POLICY_INTERPROJECT_DELIVER;
+		} else if( policy.equalsIgnoreCase( "POLICY_CHSTREAM_UNRESTRICTED" ) ) {
+			return POLICY_CHSTREAM_UNRESTRICTED;
+		} else if( policy.equalsIgnoreCase( "POLICY_DELIVER_REQUIRE_REBASE" ) ) {
+			return POLICY_DELIVER_REQUIRE_REBASE;
+		} else if( policy.equalsIgnoreCase( "POLICY_DELIVER_NCO_DEVSTR" ) ) {
+			return POLICY_DELIVER_NCO_DEVSTR;
+		} else {
+			return 0;
+		}
+	}
 
 	/**
 	 * Create a project.

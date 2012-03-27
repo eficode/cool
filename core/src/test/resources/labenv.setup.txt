@@ -5,11 +5,11 @@
   <view tag="cc1_setupview" stgloc="-auto"/>
   <context mvfs="m:\" view="cc1_setupview" vob="cc1"/>
   
-  <component root="" vob="" -comment="" name="_System" pvob="cc1_PVOB" />
-  <component root="" vob="" -comment="" name="_Server" pvob="cc1_PVOB" />
-  <component root="" vob="" -comment="" name="_Client" pvob="cc1_PVOB" />
-  <component root="Service" -comment="" name="Service" pvob="cc1_PVOB" />
-  <component root="Model" -comment="" name="Model" pvob="cc1_PVOB" />
+  <component root="" comment="" name="_System" pvob="cc1_PVOB" />
+  <component root="" comment="" name="_Server" pvob="cc1_PVOB" />
+  <component root="" comment="" name="_Client" pvob="cc1_PVOB" />
+  <component root="Service" comment="" name="Service" pvob="cc1_PVOB" />
+  <component root="Model" comment="" name="Model" pvob="cc1_PVOB" />
   <component root="Clinetapp" comment="" name="Clientapp" pvob="cc1_PVOB" />
   
   <folder name="cc1" in="RootFolder" pvob="cc1_PVOB" />
@@ -63,6 +63,7 @@
     </dependencies>
   </baseline>
 
+<!--
 
   <project name="cc1_one" comment="" pvob="cc1_PVOB" in="cc1">
     <components>
@@ -91,7 +92,13 @@
   <project name="cc1_stable/>
     <stream name="cc1_stable_int" type="integration"/>
   </project>
+  
+  
+  -->
 </ccenv>
+
+
+<!--
 
 ##################
 
@@ -126,6 +133,8 @@ ct mkview -tag %LABSTABLEVIEW% -stream %LABSTABLEPROJ%_int@%PVOB% -stgloc -auto
 ct chstream -nc -target %LABSTABLEPROJ%_int@%PVOB% %LABPROJECT%_int@%PVOB%
 
 ct mkproj -nc -modcomp Service@%PVOB%,Model@%PVOB%,Clientapp@%PVOB% -policy POLICY_INTERPROJECT_DELIVER -in %LAB% %LAB%_hudson@%PVOB%
+
+-->
 
 
 ### CLENAUP

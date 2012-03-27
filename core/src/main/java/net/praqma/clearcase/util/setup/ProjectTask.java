@@ -27,7 +27,13 @@ public class ProjectTask extends AbstractTask {
 			components.add( Component.get( component.getAttribute( "name" ), new PVob( component.getAttribute( "pvob" ) ) ) );
 		}
 		
-		Project.create( name, in, new PVob( pvob ), 1, comment, model.length() > 0, components );
+		Element ps = getFirstElement( e, "policies" );
+		int policy = 0;
+		for( Element p : getElements( ps ) ) {
+			policy += Project.getPolicyValue( p.getTextContent() );
+		}
+		
+		Project.create( name, in, new PVob( pvob ), policy, comment, model.length() > 0, components );
 	}
 
 }
