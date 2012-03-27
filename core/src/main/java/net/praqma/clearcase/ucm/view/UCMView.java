@@ -190,15 +190,18 @@ public class UCMView extends UCM implements Serializable {
 		return viewtag;
 	}
 	
-	protected static void create( String tag, String path, boolean snapshotView, Stream stream ) throws ViewException {
+	protected static void create( String tag, String stgloc, boolean snapshotView, Stream stream ) throws ViewException {
 		logger.debug( "Creating " + tag );
-		String cmd = "mkview -tag " + tag + ( snapshotView ? " -snapshot" : "" ) + ( stream != null ? " -stream " + stream.getFullyQualifiedName() : "" ) + " -stgloc " + ( path != null ? path : "-auto" );
+
+		String cmd = "mkview -tag " + tag + ( snapshotView ? " -snapshot" : "" ) + ( stream != null ? " -stream " + stream.getFullyQualifiedName() : "" ) + " -stgloc " + ( stgloc != null ? stgloc : "-auto" );
 
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
-			throw new ViewException( "Unable to create view " + tag, path, Type.CREATION_FAILED, e );
+			throw new ViewException( "Unable to create view " + tag, stgloc, Type.CREATION_FAILED, e );
 		}
 	}
+	
+
 
 }

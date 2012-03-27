@@ -1,0 +1,140 @@
+<ccenv>
+  <vob tag="cc1_PVOB" comment="PVOB" ucmproject="true" stgloc="-auto"/>
+  <vob tag="cc1" stgloc="-auto" mounted="true"/>
+  <hlink name="AdminVOB" from="vob:cc1" to="vob:cc1_PVOB" />
+  <view tag="cc1_setupview" stgloc="-auto"/>
+  <context mvfs="m:\" view="cc1_setupview" vob="cc1"/>
+  
+  <component root="" vob="" -comment="" name="_System" pvob="cc1_PVOB" />
+  <component root="" vob="" -comment="" name="_Server" pvob="cc1_PVOB" />
+  <component root="" vob="" -comment="" name="_Client" pvob="cc1_PVOB" />
+  <component root="Service" -comment="" name="Service" pvob="cc1_PVOB" />
+  <component root="Model" -comment="" name="Model" pvob="cc1_PVOB" />
+  <component root="Clinetapp" comment="" name="Clientapp" pvob="cc1_PVOB" />
+  
+  <folder name="cc1" in="RootFolder" pvob="cc1_PVOB" />
+   
+  <project name="cc1_bootstrap" comment="" model="SIMPLE" pvob="cc1_PVOB" in="cc1">
+    <components>
+      <component="Service" pvob="cc1_PVOB" />
+      <component="Model" pvob="cc1_PVOB"  />
+      <component="Clientapp" pvob="cc1_PVOB" />
+    </components>
+    <policies>
+      <policy>POLICY_INTERPROJECT_DELIVER</policy>
+    </policies>
+  </project>
+  
+  <stream name="cc1_bootstrap_int" in="cc1_bootstrap" comment="" pvob="cc1_PVOB" type="integration">
+    <baselines>
+      <baseline name="_System_INITIAL" pvob="cc1_PVOB" />
+      <baseline name="_Server_INITIAL" pvob="cc1_PVOB" />
+      <baseline name="_Client_INITIAL" pvob="cc1_PVOB" />
+      <baseline name="Service_INITIAL" pvob="cc1_PVOB" />
+      <baseline name="Model_INITIAL" pvob="cc1_PVOB" />
+      <baseline name="Clientapp_INITIAL" pvob="cc1_PVOB" />
+    </baselines>
+  </stream>
+  
+  <view tag="cc1_bootstrap_int" stgloc="-auto">
+    <stream name="cc1_bootstrap_int" pvob="cc1_PVOB">
+  </view>
+
+  <context mvfs="m:\" view="cc1_bootstrap_int" vob="cc1"/>
+  
+  <baseline name="_Server_1.0" label="none" comment="" component="_Server" pvob="cc1_PVOB">
+    <dependencies>
+      <component name="Service" pvob="cc1_PVOB" />
+      <component name="Model" pvob="cc1_PVOB" />
+    </dependencies>
+  </baseline>
+
+  <baseline name="_Client_1.0" label="none" comment="" component="_Client" pvob="cc1_PVOB">
+    <dependencies>
+      <component name="Clientapp" pvob="cc1_PVOB" />
+      <component name="Model" pvob="cc1_PVOB" />
+    </dependencies>
+  </baseline>
+  
+  <baseline name="_System_1.0" label="full" comment="" component="_System" pvob="cc1_PVOB">
+    <dependencies>
+      <component name="_Server" pvob="cc1_PVOB" />
+      <component name="_Client" pvob="cc1_PVOB" />
+    </dependencies>
+  </baseline>
+
+
+  <project name="cc1_one" comment="" pvob="cc1_PVOB" in="cc1">
+    <components>
+      <component="Service" pvob="cc1_PVOB" />
+      <component="Model" pvob="cc1_PVOB"  />
+      <component="Clientapp" pvob="cc1_PVOB" />
+    </components>
+    <policies>
+      <policy>POLICY_INTERPROJECT_DELIVER</policy>
+    </policies>
+  </project>
+  
+    <stream name="cc1_one_int" in="cc1_one" comment="" pvob="cc1_PVOB" type="integration">
+    <baselines>
+      <baseline name="_System_1.0" pvob="cc1_PVOB" />
+    </baselines>
+  </stream>
+  
+  <view tag="cc1_one_int" stgloc="-auto">
+    <stream name="cc1_one_int" pvob="cc1_PVOB">
+  </view>  
+  
+
+    <stream name="cc1_dev1" type="child"/>
+  
+  <project name="cc1_stable/>
+    <stream name="cc1_stable_int" type="integration"/>
+  </project>
+</ccenv>
+
+##################
+
+ct mkstream -nc -in %LABPROJECT%@%PVOB%  %USERNAME%_%LABPROJECT%_dev1@%PVOB%
+ct mkview -tag %LABDEV1VIEW% -stream %USERNAME%_%LABPROJECT%_dev1@%PVOB% -stgloc -auto
+
+cd /d m:\%LABDEV1VIEW%%CVOB%
+ct mkact -nc -headline "Adding initial files into components" -in %USERNAME%_%LABPROJECT%_dev1@%PVOB% initial_files@%PVOB%
+ct setact initial_files
+
+ct co -nc Service
+cleartool mkelem -nc Service\service.txt
+echo Service line # 1 > Service\service.txt
+
+ct co -nc Model
+cleartool mkelem -nc Model\model.txt
+echo Model line # 1 > Model\model.txt
+
+ct co -nc Clientapp
+cleartool mkelem -nc Clientapp\clientapp.txt
+echo Clientapp line # 1 > Clientapp\clientapp.txt
+
+for /f %i in ('cleartool lsco -r -s') do @cleartool ci -nc %i
+
+cleartool deliver -complete -f
+
+cleartool mkbl -nc -full -view %LABPROJVIEW% Files_Added
+
+ct mkproj -nc -modcomp Service@%PVOB%,Model@%PVOB%,Clientapp@%PVOB% -policy POLICY_INTERPROJECT_DELIVER -in %LAB% %LABSTABLEPROJ%@%PVOB%
+ct mkstream -integration -in %LABSTABLEPROJ% -nc -baseline _System_1.0 %LABSTABLEPROJ%_int@%PVOB%
+ct mkview -tag %LABSTABLEVIEW% -stream %LABSTABLEPROJ%_int@%PVOB% -stgloc -auto
+ct chstream -nc -target %LABSTABLEPROJ%_int@%PVOB% %LABPROJECT%_int@%PVOB%
+
+ct mkproj -nc -modcomp Service@%PVOB%,Model@%PVOB%,Clientapp@%PVOB% -policy POLICY_INTERPROJECT_DELIVER -in %LAB% %LAB%_hudson@%PVOB%
+
+
+### CLENAUP
+cd \
+
+for /f %i in ('cleartool lsview -s %LAB%_*') do @cleartool endview -server %i && cleartool rmview -f -tag %i
+
+ct umount -all
+for /f "tokens=1,2,*" %i in ('cleartool lsvob \%LAB%* ^| sort') do @cleartool rmvob -f %j
+
+
+                                                                                                                                                                                                                                                                                                                         

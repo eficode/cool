@@ -110,7 +110,7 @@ public class BootstrapProject {
 		System.out.println("Creating integration stream");
 		
 		/* Create integration stream */
-		Baseline testInitial = Baseline.get( componentName + "_INITIAL", pvob,	true );
+		Baseline testInitial = Baseline.get( componentName + "_INITIAL", pvob );
 		Stream intStream = Stream.createIntegration( "Bootstrap_int", project, testInitial );
 		
 		/* Baselines */
