@@ -12,6 +12,7 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.exceptions.ViewException.Type;
@@ -29,11 +30,11 @@ import net.praqma.clearcase.ucm.view.SnapshotView.Components;
  */
 public class ViewUtils {
 	
-	public static SnapshotView createView( PrintStream logger, Stream stream, String loadModule, File viewroot, String viewtag ) throws IOException, ViewException, CleartoolException, UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException, UnableToLoadEntityException {
+	public static SnapshotView createView( PrintStream logger, Stream stream, String loadModule, File viewroot, String viewtag ) throws ViewException, UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException, IOException {
 		return createView( logger, stream, loadModule, viewroot, viewtag, true );
 	}
 	
-	public static SnapshotView createView( PrintStream logger, Stream stream, String loadModule, File viewroot, String viewtag, boolean update ) throws IOException, ViewException, CleartoolException, UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException, UnableToLoadEntityException {
+	public static SnapshotView createView( PrintStream logger, Stream stream, String loadModule, File viewroot, String viewtag, boolean update ) throws ViewException, UnableToInitializeEntityException, CleartoolException, IOException, UnableToLoadEntityException {
 
 		SnapshotView snapview = null;
 
@@ -97,7 +98,7 @@ public class ViewUtils {
 
 			logger.println( "[UCMView] Getting snapshotview" );
 
-			snapview = UCMView.getSnapshotView( viewroot );
+			snapview = SnapshotView.get( viewroot );
 		} else {
 			
 			/* The view does not exist, create it */
