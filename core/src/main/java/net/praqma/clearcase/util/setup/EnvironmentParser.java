@@ -28,6 +28,7 @@ public class EnvironmentParser extends XML {
 		map.put( "project", new ProjectTask() );
 		map.put( "vob", new VobTask() );
 		map.put( "stream", new StreamTask() );
+		map.put( "var", new VariableTask() );
 		map.put( "view", new ViewTask() );
 	}
 	

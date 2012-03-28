@@ -1,5 +1,5 @@
 <ccenv>
-	<var name="pvobname" value="cc2_PVOB">
+	<var name="pvobname" value="cc2_PVOB" />
   <vob tag="${pvobname}" comment="PVOB" ucmproject="true" stgloc="-auto"/>
   <vob tag="cc1" stgloc="-auto" mounted="true"/>
   <!-- <hlink name="AdminVOB" from="vob:cc1" to="vob:${pvobname}" /> -->
