@@ -21,7 +21,7 @@ public class ProjectTask extends AbstractTask {
 		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;
 		String model = e.getAttribute( "model" );
 		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
-		String in = e.getAttribute( "in" ).length() > 0 ? e.getAttribute( "in" ) : null;
+		String in = getValue( "in", e, context ).length() > 0 ? e.getAttribute( "in" ) : null;
 		
 		Element c = getFirstElement( e, "components" );
 		List<Component> components = new ArrayList<Component>();

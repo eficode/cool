@@ -16,7 +16,7 @@ public class ContextTask extends AbstractTask {
 		if( Cool.getOS().equals( OperatingSystem.WINDOWS ) ) {
 			String mvfs = e.getAttribute( "mvfs" );
 			String view = e.getAttribute( "view" );
-			String vob = e.getAttribute( "vob" );
+			String vob = getValue( "vob", e, context );
 			context.path = new File( mvfs + "/" + view + "/" + vob );
 		} else {
 			/* Not implemented */

@@ -15,7 +15,7 @@ public class VobTask extends AbstractTask {
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
 		String ucm = e.getAttribute( "ucmproject" );
-		String tag = Cool.filesep + getValue( "vob", e, context );
+		String tag = Cool.filesep + getValue( "tag", e, context );
 		String location = e.getAttribute( "stgloc" );
 		String mounted = e.getAttribute( "mounted" );
 		

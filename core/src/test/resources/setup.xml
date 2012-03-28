@@ -1,10 +1,12 @@
 <ccenv>
 	<var name="pvobname" value="cc2_PVOB" />
+	<var name="vobname" value="cc2" />
+	
   <vob tag="${pvobname}" comment="PVOB" ucmproject="true" stgloc="-auto"/>
-  <vob tag="cc1" stgloc="-auto" mounted="true"/>
+  <vob tag="${vobname}" stgloc="-auto" mounted="true"/>
   <!-- <hlink name="AdminVOB" from="vob:cc1" to="vob:${pvobname}" /> -->
   <view tag="cc1_setupview" stgloc="-auto"/>
-  <context mvfs="m:\" view="cc1_setupview" vob="cc1"/>
+  <context mvfs="m:\" view="cc1_setupview" vob="${vobname}"/>
   
   <component root="" comment="" name="_System" pvob="${pvobname}" />
   <component root="" comment="" name="_Server" pvob="${pvobname}" />
@@ -13,9 +15,9 @@
   <component root="Model" comment="" name="Model" pvob="${pvobname}" />
   <component root="Clinetapp" comment="" name="Clientapp" pvob="${pvobname}" />
   
-  <folder name="cc1" in="RootFolder" pvob="${pvobname}" />
+  <folder name="${vobname}" in="RootFolder" pvob="${pvobname}" />
    
-  <project name="cc1_bootstrap" comment="" model="SIMPLE" pvob="${pvobname}" in="cc1">
+  <project name="cc1_bootstrap" comment="" model="SIMPLE" pvob="${pvobname}" in="${vobname}">
     <components>
       <component name="Service" pvob="pvobname" />
       <component name="Model" pvob="${pvobname}"  />
@@ -41,7 +43,7 @@
     <stream name="cc1_bootstrap_int" pvob="${pvobname}" />
   </view>
 
-  <context mvfs="m:\" view="cc1_bootstrap_int" vob="cc1"/>
+  <context mvfs="m:\" view="cc1_bootstrap_int" vob="${vobname}"/>
   
   <baseline name="_Server_1.0" label="none" comment="" component="_Server" pvob="${pvobname}">
     <dependencies>
