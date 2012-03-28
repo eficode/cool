@@ -1,6 +1,8 @@
 package net.praqma.clearcase.test.junit;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -109,20 +111,25 @@ public class Bootstrap {
 			/* Rooted components */
 			modelComponent = Component.create( "Model", pvob, "Model", "Model component", basepath ).load();
 			clientComponent = Component.create( "Client", pvob, "Client", "Client component", basepath ).load();
-			
-			project = Project.create( projectName, null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Test", modelComponent, clientComponent );
+			List<Component> components = new ArrayList<Component>();
+			components.add( modelComponent );
+			components.add( clientComponent );
+			project = Project.create( projectName, null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Test", true, components );
 			
 			/**/
 			Baseline SystemINITIAL = Baseline.get( "_System_INITIAL", pvob ).load();
 			Baseline ModelINITIAL = Baseline.get( "Model_INITIAL", pvob ).load();
 			Baseline ClientINITIAL = Baseline.get( "Client_INITIAL", pvob ).load();
-			integrationStream = Stream.createIntegration( integrationName, project, SystemINITIAL, ModelINITIAL, ClientINITIAL );
+			List<Baseline> baselines = new ArrayList<Baseline>();
+			baselines.add( SystemINITIAL );
+			baselines.add( ModelINITIAL );
+			baselines.add( ClientINITIAL );
+			integrationStream = Stream.createIntegration( integrationName, project, baselines );
 			
 			/**/
 			bootstrapView = DynamicView.create( null, bootstrapViewTag, integrationStream );
 			bootstrappath = new File( prefix, bootstrapViewTag + "/" + this.pvob.getName() );
-			
-			structure = Baseline.create( "Structure", systemComponent, bootstrappath, LabelBehaviour.DEFAULT, false, null, new Component[] { modelComponent, clientComponent } );
+			structure = Baseline.create( "Structure", systemComponent, bootstrappath, LabelBehaviour.DEFAULT, false, null, components );
 			
 			return true;
 		} catch( Exception e ) {

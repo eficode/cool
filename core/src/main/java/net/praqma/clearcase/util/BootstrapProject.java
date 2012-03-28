@@ -11,6 +11,7 @@ import net.praqma.clearcase.exceptions.NothingNewException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.ucm.entities.Baseline;
@@ -19,6 +20,7 @@ import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.clearcase.ucm.view.DynamicView;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.debug.appenders.Appender;
@@ -34,7 +36,7 @@ public class BootstrapProject {
 	
 	
 
-	public static void main( String[] args ) throws ViewException, CleartoolException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, NothingNewException, UnableToGetEntityException {
+	public static void main( String[] args ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException, CleartoolException, UCMEntityNotFoundException, UnableToGetEntityException, ViewException {
 		
 		if( args.length < 2 ) {
 			System.err.println( "No path given" );
@@ -50,7 +52,7 @@ public class BootstrapProject {
                                                      Project.POLICY_DELIVER_REQUIRE_REBASE );
 	}
 	
-	public static void bootstrap( String vobname, String componentName, File viewPath, int policies ) throws ViewException, CleartoolException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, NothingNewException, UnableToGetEntityException {
+	public static void bootstrap( String vobname, String componentName, File viewPath, int policies ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException, CleartoolException, UCMEntityNotFoundException, UnableToGetEntityException, ViewException {
 		
 		System.out.println("Bootstrapping");
 		String vobtag = "\\" + vobname;
@@ -106,7 +108,7 @@ public class BootstrapProject {
 		
 		/* Create project bootstrap */
 		System.out.println("Creating bootstrap project");
-		Project project = Project.create( "Bootstrap", null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Bootstrap project", c );
+		Project project = Project.create( "Bootstrap", null, pvob, Project.POLICY_INTERPROJECT_DELIVER, "Bootstrap project", true, c );
 		System.out.println("Creating integration stream");
 		
 		/* Create integration stream */
@@ -121,16 +123,16 @@ public class BootstrapProject {
 		//Baseline.create( "Structure_initial", c, new File(viewPath, bootstrapView), false, false );
 		
 		System.out.println("Creating Structure_1_0");
-		Baseline structure = Baseline.create( "Structure_1_0", c, new File(viewPath, bootstrapView), false, true );
+		Baseline structure = Baseline.create( "Structure_1_0", c, new File(viewPath, bootstrapView), LabelBehaviour.FULL, true );
 		
 		System.out.println("Creating Mainline project");
-		Project mainlineproject = Project.create( "Mainline", null, pvob, policies, "Mainline project", c );
+		Project mainlineproject = Project.create( "Mainline", null, pvob, policies, "Mainline project", true, c );
 		
 		System.out.println("Creating Mainline integration stream");
 		Stream mainlineIntStream = Stream.createIntegration( "Mainline_int", mainlineproject, structure );
 		
 		System.out.println("Creating development project");
-		Project developmentProject = Project.create( "Development", null, pvob, policies, "Development project", c );
+		Project developmentProject = Project.create( "Development", null, pvob, policies, "Development project", true, c );
 		
 		System.out.println("Creating development integration stream");
 		Stream developmentIntStream = Stream.createIntegration( "Development_int", developmentProject, structure );

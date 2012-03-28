@@ -18,6 +18,7 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.UCMEntity.Kind;
@@ -136,7 +137,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 	/* Getters */
 
-	public static Version getUnextendedVersion( File file, File viewroot ) throws CleartoolException, IOException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException {
+	public static Version getUnextendedVersion( File file, File viewroot ) throws CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException, IOException {
 		//return context.getVersionExtension( file, viewroot );
 		
 		if( !file.exists() ) {
@@ -195,7 +196,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return this;
 	}
 	
-	public static Version create( File file, boolean mkdir, SnapshotView view ) throws CleartoolException, IOException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException {
+	public static Version create( File file, boolean mkdir, SnapshotView view ) throws CleartoolException, IOException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException, UnableToInitializeEntityException {
 
 		Version.addToSourceControl( file, mkdir, view.getViewRoot() );
 		
@@ -569,7 +570,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return sb.toString();
 	}
 	
-	public static ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws CleartoolException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws CleartoolException, UnableToInitializeEntityException {
 		//return context.getChangeset( e1, e2, merge, viewContext );
 		String cmd = "diffbl -version " + ( !merge ? "-nmerge " : "" ) + ( e2 == null ? "-pre " : "" ) + " " + e1.getFullyQualifiedName() + ( e2 != null ? e2.getFullyQualifiedName() : "" );
 
@@ -604,7 +605,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return changeset;
 	}
 	
-	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws CleartoolException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException {
+	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
 		//return context.getBaselineDiff( d1, d2, merge, viewContext );
 		String cmd = "diffbl -version -act " + ( !merge ? "-nmerge " : "" ) + ( d2 == null ? "-pre " : "" ) + d1.getFullyQualifiedName() + ( d2 != null ? " " + d2.getFullyQualifiedName() : "" );
 
@@ -634,7 +635,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 
 
-	public static Version get( String name ) throws UnableToCreateEntityException {
+	public static Version get( String name ) throws UnableToInitializeEntityException {
 		return (Version) UCMEntity.getEntity( Version.class, name );
 	}
 }

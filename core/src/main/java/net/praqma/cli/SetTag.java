@@ -6,6 +6,7 @@ import net.praqma.clearcase.exceptions.TagException.Type;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnknownEntityException;
 import net.praqma.clearcase.ucm.entities.Tag;
@@ -31,7 +32,7 @@ public class SetTag {
 		}
 	}
 
-	public static void run( String[] args ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnknownEntityException, TagException, UnableToGetEntityException {
+	public static void run( String[] args ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnknownEntityException, TagException, UnableToGetEntityException, UnableToInitializeEntityException {
 		Logger.addAppender( app );
 		Options o = new Options();
 

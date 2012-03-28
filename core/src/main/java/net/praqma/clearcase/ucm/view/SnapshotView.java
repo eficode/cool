@@ -22,6 +22,7 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToListViewsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
@@ -75,16 +76,10 @@ public class SnapshotView extends UCMView {
 
 		/**
 		 * Create load rules based on {@link Components}
+		 * @throws UnableToLoadEntityException 
 		 * 
-		 * @param view
-		 * @param components
-		 * @throws CleartoolException
-		 * @throws UnableToLoadEntityException
-		 * @throws UCMEntityNotFoundException
-		 * @throws UnableToCreateEntityException 
-		 * @throws UnableToGetEntityException 
 		 */
-		public LoadRules( SnapshotView view, Components components ) throws CleartoolException, UCMEntityNotFoundException, UnableToCreateEntityException, UnableToGetEntityException, UnableToLoadEntityException {
+		public LoadRules( SnapshotView view, Components components ) throws UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException {
 			loadRules = " -add_loadrules ";
 
 			if( components.equals( Components.ALL ) ) {
@@ -127,7 +122,7 @@ public class SnapshotView extends UCMView {
 
 	}
 
-	public SnapshotView( File viewroot ) throws CleartoolException, IOException, ViewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public SnapshotView( File viewroot ) throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
 		/* TODO Test the view root? Does it exist? Is it a directory? */
 
 		this.viewroot = viewroot;
@@ -148,15 +143,8 @@ public class SnapshotView extends UCMView {
 	 * @param viewroot
 	 * @param viewtag
 	 * @return SnapShotView
-	 * @throws CleartoolException 
-	 * @throws ViewException 
-	 * @throws IOException 
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToLoadEntityException 
-	 * @throws UnableToCreateEntityException 
-	 * @throws UnableToGetEntityException 
 	 */
-	public static SnapshotView create( Stream stream, File viewroot, String viewtag ) throws CleartoolException, ViewException, IOException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static SnapshotView create( Stream stream, File viewroot, String viewtag ) throws ViewException, UnableToInitializeEntityException, CleartoolException, IOException {
 		//context.makeSnapshotView( stream, viewroot, viewtag );
 
 		logger.debug( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
@@ -264,7 +252,7 @@ public class SnapshotView extends UCMView {
 		return this.viewroot.toString();
 	}
 
-	public Stream getStream() throws CleartoolException, IOException, ViewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public Stream getStream() throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
 		if( this.stream == null ) {
 			Stream stream = getStreamFromView( getViewRoot() ).getFirst();
 			this.stream = stream;
@@ -290,7 +278,7 @@ public class SnapshotView extends UCMView {
 		SnapshotView view = null;
 
 		if( UCMView.viewExists( viewtag ) ) {
-			view = UCMView.getSnapshotView( viewroot );
+			view = get( viewroot );
 		} else {
 			throw new ClearCaseException( "View is not valid" );
 		}
@@ -364,7 +352,7 @@ public class SnapshotView extends UCMView {
 		public Integer dirsDeleted = 0;
 	}
 
-	public Tuple<Stream, String> getStreamFromView( File viewroot ) throws CleartoolException, IOException, ViewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public Tuple<Stream, String> getStreamFromView( File viewroot ) throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
 		File wvroot = getCurrentViewRoot( viewroot );
 		String viewtag = viewrootIsValid( wvroot );
 		String streamstr = getStreamFromView( viewtag );
@@ -597,5 +585,18 @@ public class SnapshotView extends UCMView {
 		//Printer.mapPrinter( sinfo );
 
 		return sinfo;
+	}
+	
+	public static SnapshotView get( File viewroot ) throws IOException, ViewException, UnableToInitializeEntityException, CleartoolException {
+		String viewtag = getViewtag( viewroot );
+		SnapshotView view = null;
+
+		if( UCMView.viewExists( viewtag ) ) {
+			view = new SnapshotView( viewroot );
+		} else {
+			throw new ViewException( "View is not valid", viewroot.getAbsolutePath(), Type.DOES_NOT_EXIST );
+		}
+
+		return view;
 	}
 }

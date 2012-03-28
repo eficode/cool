@@ -16,6 +16,7 @@ import net.praqma.clearcase.exceptions.NothingNewException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToPromoteBaselineException;
 import net.praqma.clearcase.interfaces.Diffable;
@@ -70,11 +71,12 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * This function is automatically called when needed by other functions.
 	 * 
 	 * @throws UnableToLoadEntityException
+	 * @throws UnableToInitializeEntityException 
 	 * @throws UCMEntityNotFoundException 
 	 * @throws UnableToCreateEntityException 
 	 * @throws UnableToGetEntityException 
 	 */
-	public Baseline load() throws UnableToLoadEntityException, UnableToCreateEntityException {
+	public Baseline load() throws UnableToLoadEntityException, UnableToInitializeEntityException {
 		//logger.debug( "Loading baseline " + this );
 
 		String result = "";
@@ -119,37 +121,16 @@ public class Baseline extends UCMEntity implements Diffable {
 
 		return this;
 	}
+	
+	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException {
+		return create( basename, component, view, labelBehaviour, identical, null, null );
+	}
 
 	/**
 	 * Given a baseline basename, a component and a view, the baseline is
 	 * created.
-	 * 
-	 * @param basename
-	 *            The basename of the Baseline. Without the vob.
-	 * @param component
-	 * @param view
-	 * @param incremental
-	 * @param identical
-	 * @return Baseline
-	 * @throws NothingNewException
-	 * @throws UnableToCreateEntityException
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToLoadEntityException 
-	 * @throws UnableToGetEntityException 
 	 */
-	public static Baseline create( String basename, Component component, File view, boolean incremental, boolean identical ) throws NothingNewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return create( basename, component, view, incremental, identical, null, null );
-	}
-
-	public static Baseline create( String basename, Component component, File view, boolean incremental, boolean identical, Activity[] activities, Component[] depends ) throws NothingNewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return create( basename, component, view, LabelBehaviour.fromIncremental( incremental ), identical, activities, depends );
-	}
-	
-	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical, Activity[] activities, Component[] depends ) throws NothingNewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return create( basename, component, view, labelBehaviour, identical, Arrays.asList( activities ), Arrays.asList( depends ) );
-	}
-	
-	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical, List<Activity> activities, List<Component> depends ) throws NothingNewException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical, List<Activity> activities, List<Component> depends ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException {
 		/* Remove prefixed baseline: */
 		if( basename.toLowerCase().startsWith( "baseline:" ) ) {
 			basename = basename.replaceFirst( "baseline:", "" );
@@ -325,7 +306,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		return sb.toString();
 	}
 
-	public static Baseline get( String name ) throws UnableToCreateEntityException {
+	public static Baseline get( String name ) throws UnableToInitializeEntityException {
 		if( !name.startsWith( "baseline:" ) ) {
 			name = "baseline:" + name;
 		}
@@ -333,7 +314,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		return entity;
 	}
 
-	public static Baseline get( String name, PVob pvob ) throws UnableToCreateEntityException {
+	public static Baseline get( String name, PVob pvob ) throws UnableToInitializeEntityException {
 		if( !name.startsWith( "baseline:" ) ) {
 			name = "baseline:" + name;
 		}

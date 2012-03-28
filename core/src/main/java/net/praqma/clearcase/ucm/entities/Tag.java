@@ -16,6 +16,7 @@ import net.praqma.clearcase.exceptions.TagException.Type;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.utils.TagQuery;
 import net.praqma.util.debug.Logger;
@@ -198,17 +199,18 @@ public class Tag extends UCMEntity {
 	 * Persist the Tag. Returns the new Tag from ClearCase.
 	 * 
 	 * @return The new Tag.
+	 * @throws UnableToInitializeEntityException 
 	 * @throws TagException
 	 * @throws UCMEntityNotFoundException 
 	 * @throws UnableToLoadEntityException 
 	 * @throws UnableToCreateEntityException 
 	 * @throws UnableToGetEntityException 
 	 */
-	public Tag persist() throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public Tag persist() throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
 		return persist( this );
 	}
 
-	public static Tag persist( Tag tag ) throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Tag persist( Tag tag ) throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
 		/* Make the new tag */
 		Tag newtag = Tag.newTag( tag.getTagType(), tag.getTagID(), tag.getTagEntity(), Tag.mapToCGI( tag.GetEntries(), true ) );
 
@@ -222,7 +224,7 @@ public class Tag extends UCMEntity {
 
 	}
 
-	public static List<Tag> getTags( UCMEntity entity ) throws TagException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static List<Tag> getTags( UCMEntity entity ) throws TagException, UnableToInitializeEntityException {
 		logger.debug( entity );
 
 		String cmd = "describe -ahlink " + __TAG_NAME + " -l " + entity;
@@ -276,7 +278,7 @@ public class Tag extends UCMEntity {
 		return tags;
 	}
 
-	private static void deleteTagsWithID( String tagType, String tagID, UCMEntity entity ) throws TagException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	private static void deleteTagsWithID( String tagType, String tagID, UCMEntity entity ) throws TagException, UnableToInitializeEntityException {
 		logger.debug( tagType + tagID );
 
 		List<Tag> list = getTags( entity );
@@ -298,7 +300,7 @@ public class Tag extends UCMEntity {
 
 	}
 	
-	public static Tag getTag( UCMEntity entity, String tagType, String tagID, boolean create ) throws TagException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Tag getTag( UCMEntity entity, String tagType, String tagID, boolean create ) throws TagException, UnableToInitializeEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		logger.debug( entity.toString() );
 		List<Tag> tags = getTags( entity );
 
@@ -320,7 +322,7 @@ public class Tag extends UCMEntity {
 		}
 	}
 	
-	private static Tag newTag( UCMEntity entity, String tagType, String tagID ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	private static Tag newTag( UCMEntity entity, String tagType, String tagID ) throws UnableToInitializeEntityException {
 		Tag tag = (Tag) UCMEntity.getEntity( Tag.class, "tag@0@" + filesep + entity.getPVob().getName() );
 		// tag.SetEntry( "tagtype", tagType );
 		// tag.SetEntry( "tagid", tagID );
@@ -333,7 +335,7 @@ public class Tag extends UCMEntity {
 		return tag;
 	}
 
-	private static Tag newTag( String tagType, String tagID, UCMEntity entity, String cgi ) throws TagException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	private static Tag newTag( String tagType, String tagID, UCMEntity entity, String cgi ) throws TagException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
 		logger.debug( "ENTITY=" + entity.toString() );
 		logger.debug( "CGI FOR NEW = " + cgi );
 		// System.out.println( "CGI==="+cgi );

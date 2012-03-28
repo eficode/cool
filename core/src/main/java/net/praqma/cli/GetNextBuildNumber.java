@@ -6,6 +6,7 @@ import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
@@ -29,7 +30,7 @@ public class GetNextBuildNumber {
 		}
 	}
 
-	public static void run( String[] args ) throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException {
+	public static void run( String[] args ) throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToCreateEntityException, UnableToGetEntityException, UnableToInitializeEntityException {
 		Options o = new Options( net.praqma.cool.Version.version );
 
 		Option oproject = new Option( "project", "p", false, 1, "Retrieve the next build number given a project" );

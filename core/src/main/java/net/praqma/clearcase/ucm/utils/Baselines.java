@@ -15,6 +15,7 @@ import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Baseline;
@@ -28,7 +29,7 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 public class Baselines {
 	private static Logger logger = Logger.getLogger();
 	
-	public static List<Baseline> get( Stream stream, Component component, PromotionLevel plevel ) throws UnableToListBaselinesException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static List<Baseline> get( Stream stream, Component component, PromotionLevel plevel ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		logger.debug( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel );
 		List<String> bls_str = null;
 		
@@ -66,19 +67,19 @@ public class Baselines {
 		}
 	}
 	
-	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max ) throws UnableToListBaselinesException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		return get( component, stream, plevel, max, null, null );
 	}
 	
-	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max, Date date ) throws UnableToListBaselinesException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max, Date date ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		return get( component, stream, plevel, max, date, null );
 	}
 	
-	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max, Baseline after) throws UnableToListBaselinesException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max, Baseline after) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		return get( component, stream, plevel, max, null, after );
 	}
 	
-	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max, Date date, Baseline after ) throws UnableToListBaselinesException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max, Date date, Baseline after ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		List<Baseline> baselines = null;
 
 		baselines = Baselines.get( stream, component, plevel );

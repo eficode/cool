@@ -19,8 +19,15 @@ public class EnvironmentParser extends XML {
 	public static File context = null;
 	
 	static {
-		map.put( "pvob", new PVobTask() );
+		map.put( "baseline", new BaselineTask() );
+		map.put( "component", new ComponentTask() );
+		map.put( "context", new ContextTask() );
+		map.put( "folder", new FolderTask() );
 		map.put( "hlink", new HLinkTask() );
+		map.put( "project", new ProjectTask() );
+		map.put( "pvob", new PVobTask() );
+		map.put( "stream", new StreamTask() );
+		map.put( "view", new ViewTask() );
 	}
 	
 	public static void setContext( File context ) {

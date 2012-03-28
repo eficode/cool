@@ -9,6 +9,7 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -52,7 +53,7 @@ public class Component extends UCMEntity {
 		return this;
 	}
 
-	public static Component create( String name, PVob pvob, String root, String comment, File view ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Component create( String name, PVob pvob, String root, String comment, File view ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
 		//context.createComponent( name, pvob, root, comment, view );
 		
 		String cmd = "mkcomp" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( root != null ? " -root " + root : " -nroot" ) + " " + name + "@" + pvob;
@@ -78,7 +79,7 @@ public class Component extends UCMEntity {
 	}
 
 	
-	public static Component get( String name, PVob pvob ) throws UnableToCreateEntityException {
+	public static Component get( String name, PVob pvob ) throws UnableToInitializeEntityException {
 		if( !name.startsWith( "component:" ) ) {
 			name = "component:" + name;
 		}
@@ -86,7 +87,7 @@ public class Component extends UCMEntity {
 		return entity;
 	}
 	
-	public static Component get( String name ) throws UnableToCreateEntityException {
+	public static Component get( String name ) throws UnableToInitializeEntityException {
 		if( !name.startsWith( "component:" ) ) {
 			name = "component:" + name;
 		}

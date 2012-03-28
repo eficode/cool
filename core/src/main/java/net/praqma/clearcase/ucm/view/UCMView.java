@@ -13,6 +13,7 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.exceptions.ViewException.Type;
@@ -54,10 +55,6 @@ public class UCMView extends UCM implements Serializable {
 		this.path = path;
 		this.viewtag = viewtag;
 		this.stream = stream;
-	}
-
-	public static SnapshotView getSnapshotView(File viewroot) throws CleartoolException, ViewException, IOException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return new SnapshotView(viewroot);
 	}
 
 	public static boolean viewExists(String viewtag) {
@@ -146,7 +143,7 @@ public class UCMView extends UCM implements Serializable {
 		return this.storageLocation;
 	}
 	
-	public Stream getStream() throws CleartoolException, IOException, ViewException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public Stream getStream() throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
 		return stream;
 	}
 	

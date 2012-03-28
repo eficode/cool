@@ -120,6 +120,13 @@ public class Project extends UCMEntity {
 			return 0;
 		}
 	}
+	
+	
+	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, Component mcomps ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
+		List<Component> components = new ArrayList<Component>();
+		components.add( mcomps );
+		return create( name, root, pvob, policy, comment, normal, components );
+	}
 
 	/**
 	 * Create a project.
@@ -129,22 +136,9 @@ public class Project extends UCMEntity {
 	 * @param policy Policies as integer
 	 * @param comment If not null, the comment of the project
 	 * @param mcomps Modifiable components of the project
-	 * @return
-	 * @throws UnableToCreateEntityException
-	 * @throws UnableToLoadEntityException
-	 * @throws UCMEntityNotFoundException
-	 * @throws UnableToGetEntityException 
+	 * @return a new {@link Project}
 	 */
-	
-	public static Project create( String name, String root, PVob pvob, int policy, String comment, Component... mcomps ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return create( name, root, pvob, policy, comment, mcomps );
-	}
-	
-	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, Component... mcomps ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		return create( name, root, pvob, policy, comment, normal, Arrays.asList( mcomps ) );
-	}
-	
-	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, List<Component> mcomps ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, List<Component> mcomps ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
 		//context.createProject( name, root, pvob, policy, comment, mcomps );
 
 		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + " -modcomp" + ( normal ? " " : " -model SIMPLE " );
@@ -171,7 +165,7 @@ public class Project extends UCMEntity {
 		return get( name, pvob );
 	}
 
-	public Project load() throws UnableToLoadEntityException, UnableToCreateEntityException {
+	public Project load() throws UnableToLoadEntityException, UnableToInitializeEntityException {
 		//context.loadProject( this );
 		//String result = strategy.loadProject( project.getFullyQualifiedName() );
 		String result = "";
@@ -230,7 +224,7 @@ public class Project extends UCMEntity {
 		return retval;
 	}
 
-	public static List<Project> getProjects( PVob pvob ) throws UnableToListProjectsException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public static List<Project> getProjects( PVob pvob ) throws UnableToListProjectsException, UnableToInitializeEntityException {
 		//return context.getProjects( vob );
 		logger.debug( "Getting projects for " + pvob );
 		String cmd = "lsproject -s -invob " + pvob.toString();
@@ -257,7 +251,7 @@ public class Project extends UCMEntity {
 	}
 	
 	
-	public List<Component> getModifiableComponents() throws UnableToCreateEntityException, UCMEntityNotFoundException, CleartoolException, UnableToGetEntityException {
+	public List<Component> getModifiableComponents() throws UnableToInitializeEntityException, CleartoolException {
 		//List<String> cs = strategy.getModifiableComponents( project.getFullyQualifiedName() );
 		String[] cs;
 		String cmd = "desc -fmt %[mod_comps]p " + this;
@@ -287,7 +281,7 @@ public class Project extends UCMEntity {
 	}
 
 	
-	public static Project get( String name, PVob pvob ) throws UnableToCreateEntityException {
+	public static Project get( String name, PVob pvob ) throws UnableToInitializeEntityException {
 		if( !name.startsWith( "project:" ) ) {
 			name = "project:" + name;
 		}
@@ -295,7 +289,7 @@ public class Project extends UCMEntity {
 		return entity;
 	}
 
-	public static Project get( String name ) throws UnableToCreateEntityException {
+	public static Project get( String name ) throws UnableToInitializeEntityException {
 		if( !name.startsWith( "project:" ) ) {
 			name = "project:" + name;
 		}

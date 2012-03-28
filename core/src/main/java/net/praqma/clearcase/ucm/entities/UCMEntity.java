@@ -22,6 +22,7 @@ import net.praqma.clearcase.exceptions.UCMEntityNotInitializedException;
 import net.praqma.clearcase.exceptions.HyperlinkException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToListAttributesException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
@@ -120,8 +121,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 * Generates a UCM entity given its fully qualified name.
 	 * @return A new entity of the type given by the fully qualified name.
 	 * @throws UnableToCreateEntityException 
+	 * @throws UnableToInitializeEntityException 
 	 */
-	protected static UCMEntity getEntity( Class<? extends UCMEntity> clazz, String fqname ) throws UnableToCreateEntityException {
+	protected static UCMEntity getEntity( Class<? extends UCMEntity> clazz, String fqname ) throws UnableToInitializeEntityException {
 		
 		/* Is this needed? */
 		fqname = fqname.trim();
@@ -135,7 +137,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 			entity.fqname = fqname;
 			entity.initialize();
 		} catch( Exception e ) {
-			throw new UnableToCreateEntityException( clazz, e );
+			throw new UnableToInitializeEntityException( clazz, e );
 		}
 
 		/* Create the vob object */
@@ -166,9 +168,10 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 * @throws UnableToLoadEntityException 
 	 * @throws UCMEntityNotFoundException 
 	 * @throws UnableToCreateEntityException 
+	 * @throws UnableToInitializeEntityException 
 	 * @throws UnableToGetEntityException 
 	 */
-	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToCreateEntityException {
+	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
 		logger.debug( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
 		
@@ -191,7 +194,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return labelStatus;
 	}
 	
-	public static UCMEntity getEntity( String fqname ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnknownEntityException, UnableToGetEntityException {
+	public static UCMEntity getEntity( String fqname ) throws UnableToInitializeEntityException, UnknownEntityException {
 		if( fqname.startsWith( "baseline:" ) ) {
 			return Baseline.get( fqname );
 		} else if( fqname.startsWith( "project:" ) ) {
@@ -202,9 +205,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 			return Activity.get( fqname );
 		} else if( fqname.startsWith( "component:" ) ) {
 			return Component.get( fqname );
-		} else if (fqname.startsWith("folder:")) {
-                        return Folder.get( fqname );
-                }		
+		} else if ( fqname.startsWith( "folder:" ) ) {
+			return Folder.get( fqname );
+		}		
 		
 		throw new UnknownEntityException( fqname );
 	}
@@ -214,7 +217,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	/* Tag stuff */
 
-	public Tag getTag( String tagType, String tagID ) throws TagException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public Tag getTag( String tagType, String tagID ) throws TagException, UnableToInitializeEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		logger.debug( "Retrieving tags for " + tagType + ", " + tagID );
 		return Tag.getTag( this, tagType, tagID, true );
 	}
@@ -284,7 +287,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		}
 	}
 	
-	public List<HyperLink> getHyperlinks( String hyperlinkType, File context ) throws HyperlinkException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
+	public List<HyperLink> getHyperlinks( String hyperlinkType, File context ) throws HyperlinkException, UnableToInitializeEntityException {
 		String cmd = "describe -ahlink " + hyperlinkType + " -l " + this;
 
 		CmdResult res = null;
@@ -483,5 +486,13 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		} else {
 			return fqname.substring( idx + 1 );
 		}
+	}
+	
+	public static String getargComment( String comment ) {
+		return ( comment == null || comment.length() == 0 ? "-nc " : "-comment \"" + comment + "\"" );
+	}
+	
+	public static String getargIn( String in ) {
+		return "-in " + ( in == null ? "RootFolder" : in );
 	}
 }

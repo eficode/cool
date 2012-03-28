@@ -18,6 +18,13 @@ public class ViewException extends ClearCaseException {
 		UNKNOWN
 	}
 	
+	public ViewException( String message, String context, Type type ) {
+		super( message );
+		
+		this.context = context;
+		this.type = type;
+	}
+	
 	public ViewException( String message, String context, Type type, Exception e ) {
 		super( message, e );
 		

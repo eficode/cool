@@ -5,6 +5,7 @@ import net.praqma.clearcase.exceptions.TagException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnknownEntityException;
 import net.praqma.clearcase.ucm.entities.Tag;
@@ -28,7 +29,7 @@ public class GetTagValue {
 		}
 	}
 
-	public static void run( String[] args ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnknownEntityException, TagException, UnableToGetEntityException {
+	public static void run( String[] args ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnknownEntityException, TagException, UnableToGetEntityException, UnableToInitializeEntityException {
 		Options o = new Options();
 
 		Option oentity = new Option( "entity", "e", true, 1, "The UCM entity" );
