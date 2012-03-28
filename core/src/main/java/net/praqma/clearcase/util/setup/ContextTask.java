@@ -11,12 +11,12 @@ import org.w3c.dom.Element;
 public class ContextTask extends AbstractTask {
 
 	@Override
-	public void parse( Element e ) throws ClearCaseException {
+	public void parse( Element e, File context ) throws ClearCaseException {
 		if( Cool.getOS().equals( OperatingSystem.WINDOWS ) ) {
 			String mvfs = e.getAttribute( "mvfs" );
 			String view = e.getAttribute( "view" );
 			String vob = e.getAttribute( "vob" );
-			EnvironmentParser.setContext( new File( mvfs + "/" + view + "/" + vob ) );
+			context = new File( mvfs + "/" + view + "/" + vob );
 		} else {
 			/* Not implemented */
 		}

@@ -1,5 +1,7 @@
 package net.praqma.clearcase.util.setup;
 
+import java.io.File;
+
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -10,7 +12,7 @@ import org.w3c.dom.Element;
 public class ComponentTask extends AbstractTask {
 
 	@Override
-	public void parse( Element e ) throws ClearCaseException {
+	public void parse( Element e, File context ) throws ClearCaseException {
 		String name = e.getAttribute( "name" );
 		String root = e.getAttribute( "root" );
 		String pvob = Cool.filesep + e.getAttribute( "pvob" );
@@ -20,7 +22,7 @@ public class ComponentTask extends AbstractTask {
 			throw new ClearCaseException( "Name and root not given" );
 		}
 		
-		Component.create( name, new PVob( pvob ), root, comment, EnvironmentParser.getContext() );
+		Component.create( name, new PVob( pvob ), root, comment, context );
 	}
 
 }

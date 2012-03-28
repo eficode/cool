@@ -1,5 +1,6 @@
 package net.praqma.clearcase.util.setup;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import org.w3c.dom.NodeList;
 
 public abstract class AbstractTask {
 
-	public abstract void parse( Element e ) throws ClearCaseException;
+	public abstract void parse( Element e, File context ) throws ClearCaseException;
 	
 	public PVob getPVob( String name ) {
 		if( name.length() > 0 ) {

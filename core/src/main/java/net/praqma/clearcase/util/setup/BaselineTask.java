@@ -1,5 +1,6 @@
 package net.praqma.clearcase.util.setup;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import org.w3c.dom.Element;
 public class BaselineTask extends AbstractTask {
 
 	@Override
-	public void parse( Element e ) throws ClearCaseException {
+	public void parse( Element e, File context ) throws ClearCaseException {
 		String name = e.getAttribute( "name" );
 		String label = e.getAttribute( "label" );
 		String identical = e.getAttribute( "identical" );
@@ -28,7 +29,7 @@ public class BaselineTask extends AbstractTask {
 			components.add( Component.get( c2.getAttribute( "name" ), new PVob( c2.getAttribute( "pvob" ) ) ) );
 		}
 		
-		Baseline.create( name, component, EnvironmentParser.getContext(), LabelBehaviour.valueOf( label ), identical.length() > 0, null, components );
+		Baseline.create( name, component, context, LabelBehaviour.valueOf( label ), identical.length() > 0, null, components );
 	}
 
 }

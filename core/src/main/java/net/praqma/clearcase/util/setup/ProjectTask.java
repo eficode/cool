@@ -1,5 +1,6 @@
 package net.praqma.clearcase.util.setup;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import org.w3c.dom.Element;
 public class ProjectTask extends AbstractTask {
 
 	@Override
-	public void parse( Element e ) throws ClearCaseException {
+	public void parse( Element e, File context ) throws ClearCaseException {
 		String name = e.getAttribute( "name" );
 		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;
 		String model = e.getAttribute( "model" );

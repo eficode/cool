@@ -16,8 +16,6 @@ public class EnvironmentParser extends XML {
 	
 	private static Map<String, AbstractTask> map = new HashMap<String, AbstractTask>();
 	
-	public static File context = null;
-	
 	static {
 		map.put( "baseline", new BaselineTask() );
 		map.put( "component", new ComponentTask() );
@@ -30,14 +28,6 @@ public class EnvironmentParser extends XML {
 		map.put( "view", new ViewTask() );
 	}
 	
-	public static void setContext( File context ) {
-		EnvironmentParser.context = context;
-	}
-	
-	public static File getContext() {
-		return context;
-	}
-
 	public EnvironmentParser( File file ) throws IOException {
 		super( file );
 	}
@@ -48,10 +38,12 @@ public class EnvironmentParser extends XML {
 		
 		List<Element> elements = getElements( env );
 		
+		File context = null;
+		
 		for( Element e : elements ) {
 			String tag = e.getTagName();
 			try {
-				map.get( tag ).parse( e );
+				map.get( tag ).parse( e, context );
 			} catch( ClearCaseException e1 ) {
 				ExceptionUtils.print( e1, System.out, true );
 				return false;

@@ -1,5 +1,7 @@
 package net.praqma.clearcase.util.setup;
 
+import java.io.File;
+
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -9,7 +11,7 @@ import org.w3c.dom.Element;
 public class PVobTask extends AbstractTask {
 
 	@Override
-	public void parse( Element e ) throws ClearCaseException {
+	public void parse( Element e, File context ) throws ClearCaseException {
 		String ucm = e.getAttribute( "ucmproject" );
 		String name = Cool.filesep + e.getAttribute( "name" );
 		String location = e.getAttribute( "stgloc" );

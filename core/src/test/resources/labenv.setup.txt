@@ -1,7 +1,7 @@
 <ccenv>
   <vob tag="cc1_PVOB" comment="PVOB" ucmproject="true" stgloc="-auto"/>
   <vob tag="cc1" stgloc="-auto" mounted="true"/>
-  <hlink name="AdminVOB" from="vob:cc1" to="vob:cc1_PVOB" />
+  <!-- <hlink name="AdminVOB" from="vob:cc1" to="vob:cc1_PVOB" /> -->
   <view tag="cc1_setupview" stgloc="-auto"/>
   <context mvfs="m:\" view="cc1_setupview" vob="cc1"/>
   
