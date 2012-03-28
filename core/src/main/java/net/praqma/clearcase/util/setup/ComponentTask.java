@@ -6,23 +6,24 @@ import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
 import org.w3c.dom.Element;
 
 public class ComponentTask extends AbstractTask {
 
 	@Override
-	public void parse( Element e, File context ) throws ClearCaseException {
+	public void parse( Element e, Context context ) throws ClearCaseException {
 		String name = e.getAttribute( "name" );
 		String root = e.getAttribute( "root" );
-		String pvob = Cool.filesep + e.getAttribute( "pvob" );
+		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
 		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;
 		
 		if( name.equals( "" ) && root.equals( "" ) ) {
 			throw new ClearCaseException( "Name and root not given" );
 		}
 		
-		Component.create( name, new PVob( pvob ), root, comment, context );
+		Component.create( name, pvob, root, comment, context.path );
 	}
 
 }

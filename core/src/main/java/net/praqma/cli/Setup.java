@@ -6,14 +6,11 @@ import java.io.IOException;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.setup.EnvironmentParser;
 import net.praqma.util.debug.Logger;
-import net.praqma.util.debug.Logger.LogLevel;
-import net.praqma.util.debug.appenders.StreamAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class Setup {
 	private static Logger logger = Logger.getLogger();
-	private static StreamAppender app = new StreamAppender( System.out );
 
 	public static void main( String[] args ) throws ClearCaseException, IOException {
 
@@ -27,15 +24,6 @@ public class Setup {
 
 		o.parse( args );
 
-		app.setTemplate( "[%level]%space %message%newline" );
-		Logger.addAppender( app );
-
-		if( o.isVerbose() ) {
-			app.setMinimumLevel( LogLevel.DEBUG );
-		} else {
-			app.setMinimumLevel( LogLevel.INFO );
-		}
-
 		try {
 			o.checkOptions();
 		} catch( Exception e ) {
@@ -48,5 +36,6 @@ public class Setup {
 		File file = new File( ofile.getString() );
 		logger.verbose( "Parsing " + file.getAbsolutePath() );
 		EnvironmentParser parser = new EnvironmentParser( file );
+		parser.parse();
 	}
 }

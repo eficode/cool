@@ -9,17 +9,18 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
+import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
 import org.w3c.dom.Element;
 
 public class ProjectTask extends AbstractTask {
 
 	@Override
-	public void parse( Element e, File context ) throws ClearCaseException {
+	public void parse( Element e, Context context ) throws ClearCaseException {
 		String name = e.getAttribute( "name" );
 		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;
 		String model = e.getAttribute( "model" );
-		String pvob = Cool.filesep + e.getAttribute( "pvob" );
+		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
 		String in = e.getAttribute( "in" ).length() > 0 ? e.getAttribute( "in" ) : null;
 		
 		Element c = getFirstElement( e, "components" );
@@ -34,7 +35,7 @@ public class ProjectTask extends AbstractTask {
 			policy += Project.getPolicyValue( p.getTextContent() );
 		}
 		
-		Project.create( name, in, new PVob( pvob ), policy, comment, model.length() > 0, components );
+		Project.create( name, in, pvob, policy, comment, model.length() > 0, components );
 	}
 
 }

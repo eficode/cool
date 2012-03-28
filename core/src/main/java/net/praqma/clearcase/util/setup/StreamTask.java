@@ -11,18 +11,19 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
 import org.w3c.dom.Element;
 
 public class StreamTask extends AbstractTask {
 
 	@Override
-	public void parse( Element e, File context ) throws ClearCaseException {
+	public void parse( Element e, Context context ) throws ClearCaseException {
 		String name = e.getAttribute( "name" );
 		boolean integration = e.getAttribute( "type" ).equals( "integration" );
 		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;
 		String in = e.getAttribute( "in" ).length() > 0 ? e.getAttribute( "in" ) : null;
-		PVob pvob = getPVob(  e.getAttribute( "pvob" ) );
+		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
 		
 		Element c = getFirstElement( e, "baselines" );
 		List<Baseline> baselines = new ArrayList<Baseline>();

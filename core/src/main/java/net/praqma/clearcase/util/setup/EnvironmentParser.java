@@ -10,9 +10,12 @@ import org.w3c.dom.Element;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.ExceptionUtils;
+import net.praqma.util.debug.Logger;
 import net.praqma.util.xml.XML;
 
 public class EnvironmentParser extends XML {
+	
+	private static Logger logger = Logger.getLogger();
 	
 	private static Map<String, AbstractTask> map = new HashMap<String, AbstractTask>();
 	
@@ -23,9 +26,14 @@ public class EnvironmentParser extends XML {
 		map.put( "folder", new FolderTask() );
 		map.put( "hlink", new HLinkTask() );
 		map.put( "project", new ProjectTask() );
-		map.put( "pvob", new PVobTask() );
+		map.put( "vob", new VobTask() );
 		map.put( "stream", new StreamTask() );
 		map.put( "view", new ViewTask() );
+	}
+	
+	public class Context {
+		public File path;
+		public Map<String, String> variables = new HashMap<String, String>();
 	}
 	
 	public EnvironmentParser( File file ) throws IOException {
@@ -34,14 +42,15 @@ public class EnvironmentParser extends XML {
 	
 	public boolean parse() {
 		
-		Element env = getFirstElement( "ccenv" );
+		Element env = getRoot();
 		
 		List<Element> elements = getElements( env );
 		
-		File context = null;
+		Context context = new Context();;
 		
 		for( Element e : elements ) {
 			String tag = e.getTagName();
+			logger.verbose( "Parsing " + tag );
 			try {
 				map.get( tag ).parse( e, context );
 			} catch( ClearCaseException e1 ) {

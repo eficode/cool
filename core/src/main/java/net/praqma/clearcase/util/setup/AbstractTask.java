@@ -3,10 +3,13 @@ package net.praqma.clearcase.util.setup;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
 import org.w3c.dom.DOMError;
 import org.w3c.dom.DOMException;
@@ -16,13 +19,28 @@ import org.w3c.dom.NodeList;
 
 public abstract class AbstractTask {
 
-	public abstract void parse( Element e, File context ) throws ClearCaseException;
+	public abstract void parse( Element e, Context context ) throws ClearCaseException;
 	
 	public PVob getPVob( String name ) {
 		if( name.length() > 0 ) {
 			return new PVob( Cool.filesep + name );
 		} else {
 			return null;
+		}
+	}
+	
+	private static final Pattern rx_variable = Pattern.compile( "^\\$\\{(.*?)\\}$" );
+	
+	public String getValue( String name, Element e, Context context ) {
+		String value = e.getAttribute( name );
+		
+		Matcher m = rx_variable.matcher( value );
+		
+		/* if this is a variable */
+		if( m.find() ) {
+			return context.variables.get( m.group( 1 ) );
+		} else {
+			return value;
 		}
 	}
 	
