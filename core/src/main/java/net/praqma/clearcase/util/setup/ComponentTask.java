@@ -15,7 +15,7 @@ public class ComponentTask extends AbstractTask {
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
 		String name = e.getAttribute( "name" );
-		String root = e.getAttribute( "root" );
+		String root = e.getAttribute( "root" ) != null && e.getAttribute( "root" ).length() > 0 ? e.getAttribute( "root" ) : null;
 		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
 		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;
 		
