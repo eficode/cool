@@ -1,6 +1,5 @@
 package net.praqma.clearcase.util.setup;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
