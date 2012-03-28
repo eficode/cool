@@ -26,7 +26,8 @@ public class ProjectTask extends AbstractTask {
 		Element c = getFirstElement( e, "components" );
 		List<Component> components = new ArrayList<Component>();
 		for( Element component : getElements( c ) ) {
-			components.add( Component.get( component.getAttribute( "name" ), new PVob( component.getAttribute( "pvob" ) ) ) );
+			PVob cpvob = new PVob( Cool.filesep + getValue( "pvob", component, context ) );
+			components.add( Component.get( component.getAttribute( "name" ), cpvob ) );
 		}
 		
 		Element ps = getFirstElement( e, "policies" );

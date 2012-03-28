@@ -27,8 +27,9 @@ public class StreamTask extends AbstractTask {
 		
 		Element c = getFirstElement( e, "baselines" );
 		List<Baseline> baselines = new ArrayList<Baseline>();
-		for( Element c2 : getElements( c ) ) {
-			baselines.add( Baseline.get( c2.getAttribute( "name" ), pvob ) );
+		for( Element baseline : getElements( c ) ) {
+			PVob bpvob = new PVob( Cool.filesep + getValue( "pvob", baseline, context ) );
+			baselines.add( Baseline.get( baseline.getAttribute( "name" ), bpvob ) );
 		}
 		
 		if( integration ) {

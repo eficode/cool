@@ -1,8 +1,8 @@
 <ccenv>
-	<var name="pvobname" value="cc2_PVOB" />
-	<var name="vobname" value="cc2" />
+	<var name="pvobname" value="cc3_PVOB" />
+	<var name="vobname" value="cc3" />
 	
-  <vob tag="${pvobname}" comment="PVOB" ucmproject="true" stgloc="-auto"/>
+  <vob tag="${pvobname}" comment="PVOB" ucmproject="true" stgloc="-auto" mounted="true"/>
   <vob tag="${vobname}" stgloc="-auto" mounted="true"/>
   <!-- <hlink name="AdminVOB" from="vob:cc1" to="vob:${pvobname}" /> -->
   <view tag="cc1_setupview" stgloc="-auto"/>
