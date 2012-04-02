@@ -126,7 +126,7 @@ public class Vob extends Cool implements Serializable {
 	}
 	
 	public String getName() {
-		if( name.startsWith( "\\" )) {
+		if( name.startsWith( "\\" ) || name.startsWith( "/" ) ) {
 			return name.substring( 1 );
 		} else {
 			return name;

@@ -95,13 +95,6 @@ public class GetBaselines implements FileCallable<List<Baseline>> {
 	public List<Baseline> invoke( File workspace, VirtualChannel channel ) throws IOException, InterruptedException {
 		PrintStream out = listener.getLogger();
 		
-		//Appender app = new FileAppender( new File( workspace, "out.log" ) );
-		//Appender app = new StreamAppender( out );
-		//app.setMinimumLevel( LogLevel.DEBUG );
-		//Logger.addAppender( app );
-		
-		out.println( "Getting baselines for " + component.getNormalizedName() + " and " + stream.getNormalizedName() );
-		
 		try {
 			return Baselines.get( component, stream, plevel, max, after );
 		} catch( Exception e ) {
