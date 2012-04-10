@@ -47,7 +47,7 @@ public class EnvironmentParser extends XML {
 		
 		List<Element> elements = getElements( env );
 		
-		Context context = new Context();;
+		Context context = new Context();
 		
 		for( Element e : elements ) {
 			String tag = e.getTagName();

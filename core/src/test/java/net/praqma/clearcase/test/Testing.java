@@ -23,9 +23,13 @@ import org.junit.Test;
 
 public class Testing extends CoolTestCase {
 
+	public Testing() throws CleartoolException {
+		super();
+	}
+
 	@Test
 	public void testBasic() throws Exception {
-		bootStrap( "testProject", "test_int" );
+		bootStrap( new File( "" ) );
 		
 		File vp = new File( bootstrap.viewpath, "test01" );
 		SnapshotView view = SnapshotView.create( bootstrap.integrationStream, vp, "test01" );

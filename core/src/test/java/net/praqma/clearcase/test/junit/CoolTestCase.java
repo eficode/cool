@@ -1,6 +1,14 @@
 package net.praqma.clearcase.test.junit;
 
+import java.io.File;
+
+import net.praqma.clearcase.Cool;
+import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.ucm.view.DynamicView;
+import net.praqma.clearcase.util.SetupUtils;
+import net.praqma.clearcase.util.setup.EnvironmentParser;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.debug.Logger.LogLevel;
 import net.praqma.util.debug.appenders.ConsoleAppender;
@@ -14,6 +22,10 @@ public abstract class CoolTestCase extends TestCase {
 
 	protected static boolean rolling = true;
 	protected static boolean tearDownAsMuchAsPossible = true;
+	
+	protected PVob pvob;
+	
+	protected File viewPath;
 
 	static {
 		appender.setTemplate( "[%level]%space %message%newline" );
@@ -21,54 +33,36 @@ public abstract class CoolTestCase extends TestCase {
 		Logger.addAppender( appender );
 	}
 	
-	protected Bootstrap bootstrap;
-	
-	public CoolTestCase() {
+	public CoolTestCase() throws CleartoolException {
 		logger.verbose( "Constructor" );
-	}
-
-	public DynamicView getBaseView() {
-		return bootstrap.baseView;
+		viewPath = new File( System.getProperty( "viewpath", "views" ) );
+		this.pvob = PVob.create( Cool.filesep + System.getProperty( "pvob", "TESTING_PVOB" ), null, "Testing PVOB" );
 	}
 	
-	public boolean bootStrap( String projectName, String integrationName ) throws Exception {
-		return bootstrap.bootStrap( projectName, integrationName );
+	public void bootStrap( File file ) throws Exception {
+		EnvironmentParser parser = new EnvironmentParser( file );
+		parser.parse();
 	}
 
 	@Override
 	public void setUp() {
-		logger.debug( "Setup ClearCase" );
 
-		bootstrap = new Bootstrap();
-		bootstrap.setUp();
 	}
 
 	@Override
 	public void runTest() throws Throwable {
-		if( !bootstrap.fail ) {
-			super.runTest();
-		} else {
-			logger.fatal( "ClearCase not set up, unable to run test" );
-			throw new Exception( "ClearCase not set up, unable to run test" );
-		}
-	}
-	
-	public boolean hasFailed() {
-		return bootstrap.fail;
+
 	}
 
 	@Override
 	public void tearDown() {
 		logger.info( "Tear down ClearCase" );
-		boolean tearDownSuccess = bootstrap.tearDown();
 
-		
-		if( tearDownSuccess ) {
+		try {
+			SetupUtils.tearDown( pvob );
 			logger.info( "Tear down is successful" );
-		} else {
+		} catch( ClearCaseException e ) {
 			logger.fatal( "Tear down failed" );
 		}
-		
-		bootstrap = null;
 	}
 }
