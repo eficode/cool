@@ -142,65 +142,65 @@ public class Bootstrap {
 		logger.info( "Tear down ClearCase" );
 		boolean tearDownSuccess = true;
 
-		if( removePvob ) {
-			try {
-				/* Removing views */
-				Set<String> viewTags = UCMView.getViews().keySet();
-				for( String viewTag : viewTags ) {
-					try {
-						UCMView.getViews().get( viewTag ).end().remove();
-					} catch( ClearCaseException e ) {
-						tearDownSuccess = false;
-						e.log();
-						if( !tearDownAsMuchAsPossible ) {
-							throw e;
-						}
-					}
-				}
-				
-				/* Removing baseview */
-				/*
-				logger.verbose( "Removing base view" );
-				try {
-					baseView.remove();
-				} catch( ClearCaseException e ) {
-					e.print( appender.getOut() );
-					if( !tearDownAsMuchAsPossible ) {
-						throw e;
-					}
-				}
-				*/
-				
-				try {
-					logger.info( "Removing PVob " + pvob );
-					/* Unmount before remove */
-					pvob.unmount();
-					pvob.remove();
-				} catch( ClearCaseException e ) {
-					tearDownSuccess = false;
-					e.log();
-					if( !tearDownAsMuchAsPossible ) {
-						throw e;
-					}
-				}
-				
-				/**/
-				logger.info( "Removing " + viewpath );
-				FileUtils.deleteDirectory( viewpath );
-				
-			} catch( ClearCaseException e ) {
-				tearDownSuccess = false;
-				logger.fatal( "Failed to tear down ClearCase" );
-				e.print( System.err );
-			} catch( Exception e ) {
-				tearDownSuccess = false;
-				logger.error( "Failed to tear down: " + e.getMessage() );
-			} finally {
-				logger.debug( "Clearing views" );
-				UCMView.getViews().clear();
-			}
-			
-		}
+//		if( removePvob ) {
+//			try {
+//				/* Removing views */
+//				Set<String> viewTags = UCMView.getViews().keySet();
+//				for( String viewTag : viewTags ) {
+//					try {
+//						UCMView.getViews().get( viewTag ).end().remove();
+//					} catch( ClearCaseException e ) {
+//						tearDownSuccess = false;
+//						e.log();
+//						if( !tearDownAsMuchAsPossible ) {
+//							throw e;
+//						}
+//					}
+//				}
+//				
+//				/* Removing baseview */
+//				/*
+//				logger.verbose( "Removing base view" );
+//				try {
+//					baseView.remove();
+//				} catch( ClearCaseException e ) {
+//					e.print( appender.getOut() );
+//					if( !tearDownAsMuchAsPossible ) {
+//						throw e;
+//					}
+//				}
+//				*/
+//				
+//				try {
+//					logger.info( "Removing PVob " + pvob );
+//					/* Unmount before remove */
+//					pvob.unmount();
+//					pvob.remove();
+//				} catch( ClearCaseException e ) {
+//					tearDownSuccess = false;
+//					e.log();
+//					if( !tearDownAsMuchAsPossible ) {
+//						throw e;
+//					}
+//				}
+//				
+//				/**/
+//				logger.info( "Removing " + viewpath );
+//				FileUtils.deleteDirectory( viewpath );
+//				
+//			} catch( ClearCaseException e ) {
+//				tearDownSuccess = false;
+//				logger.fatal( "Failed to tear down ClearCase" );
+//				e.print( System.err );
+//			} catch( Exception e ) {
+//				tearDownSuccess = false;
+//				logger.error( "Failed to tear down: " + e.getMessage() );
+//			} finally {
+//				logger.debug( "Clearing views" );
+//				UCMView.getViews().clear();
+//			}
+//			
+//		}
 		
 		return tearDownSuccess;		
 	}

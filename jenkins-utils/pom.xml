@@ -8,7 +8,7 @@
 		<version>0.4.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>jenkins-cool-utils</artifactId>
+	<artifactId>cool-jenkins-utils</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>Jenkins ClearCase utilities</name>
 	<packaging>jar</packaging>

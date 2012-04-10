@@ -43,7 +43,6 @@ public class DynamicView extends UCMView {
 		//context.createView(tag, path, false, stream);
 		UCMView.create( tagTag, stgloc, false, stream );
 		DynamicView view = new DynamicView( stgloc, tagTag, stream );
-		addView( tagTag, view );
 		return view;
 	}
 

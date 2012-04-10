@@ -8,7 +8,7 @@
 		<version>0.4.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>clearcase-jenkins-test</artifactId>
+	<artifactId>cool-jenkins-test</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>ClearCase Jenkins Test</name>
 	<packaging>jar</packaging>

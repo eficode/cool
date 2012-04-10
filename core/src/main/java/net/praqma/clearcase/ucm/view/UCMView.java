@@ -88,7 +88,7 @@ public class UCMView extends UCM implements Serializable {
 	
 	public void remove() throws ViewException {
 		//context.removeView( this );
-		String cmd = "rmview -force " + ( isDynamicView() ? "-tag " + getViewtag() : getStorageLocation() );
+		String cmd = "rmview -force " + ( isDynamicView() ? "-tag " + viewtag : ( storageLocation != null ? storageLocation : "-tag " + viewtag ) );
 
 		try {
 			Cleartool.run( cmd );
@@ -135,11 +135,7 @@ public class UCMView extends UCM implements Serializable {
 		return this;
 	}
 	
-	public String getStorageLocation() throws ViewException {
-		if( this.storageLocation == null ) {
-			this.load();
-		}
-		
+	public String getStorageLocation() {
 		return this.storageLocation;
 	}
 	
@@ -165,22 +161,12 @@ public class UCMView extends UCM implements Serializable {
 		// http://publib.boulder.ibm.com/infocenter/cchelp/v7r0m0/index.jsp?topic=/com.ibm.rational.clearcase.cc_ref.doc/topics/ct_lsstream.htm
 	}
 	
-	protected static void addView( String viewTag, UCMView view ) {
-		createdViews.put( viewTag, view );
-	}
-	
 	public static UCMView getView( String viewTag ) throws ViewException {
-		if( createdViews.containsKey( viewTag ) ) {
-			return createdViews.get( viewTag );
-		} else {
-			throw new ViewException( "", null, Type.DOES_NOT_EXIST, null );
-		}
+		UCMView v = new UCMView();
+		v.viewtag = viewTag;
+		
+		return v;
 	}
-	
-	public static Map<String, UCMView> getViews() {
-		return createdViews;
-	}
-	
 	
 	
 	public String toString() {

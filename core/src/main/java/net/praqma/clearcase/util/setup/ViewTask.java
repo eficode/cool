@@ -1,7 +1,7 @@
 package net.praqma.clearcase.util.setup;
 
-import java.io.File;
-
+import net.praqma.clearcase.Cool;
+import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.DynamicView;
@@ -15,13 +15,26 @@ public class ViewTask extends AbstractTask {
 	public void parse( Element e, Context context ) throws ClearCaseException {
 		String tag = e.getAttribute( "tag" );
 		String stgloc = e.getAttribute( "stgloc" );
-		Stream stream = e.getAttribute( "stream" ).length() > 0 ? Stream.get( e.getAttribute( "stream" ) ) : null;
 		boolean snapshot = e.getAttribute( "snapshot" ).length() > 0;
 		
-		if( snapshot) {
+		Stream stream = null;
+		try {
+			Element s = getFirstElement( e, "stream" );
+			PVob pvob = new PVob( Cool.filesep + getValue( "pvob", s, context ) );
+			String name = getValue( "name", s, context );
+			stream = Stream.get( name, pvob );
+		} catch( Exception e1 ) {
+			/* No stream given */
+		}
+		
+		if( snapshot ) {
 			
 		} else {
-			DynamicView.create( stgloc, tag, stream );
+			if( DynamicView.viewExists( tag ) ) {
+				/* Do nothing */
+			} else {
+				DynamicView.create( stgloc, tag, stream );
+			}
 		}
 		
 	}

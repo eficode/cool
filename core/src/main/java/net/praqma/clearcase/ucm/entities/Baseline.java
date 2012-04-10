@@ -42,6 +42,8 @@ public class Baseline extends UCMEntity implements Diffable {
 		NOLABEL,
 		INCREMENTAL,
 		FULL,
+		full,
+		none,
 		DEFAULT;
 		
 		public String toArgument() {
@@ -52,6 +54,10 @@ public class Baseline extends UCMEntity implements Diffable {
 				return "-incremental";
 			case FULL:
 				return "-full";
+			case full:
+				return "-full";
+			case none:
+				return "-nlabel";
 			default:
 				return "";
 			}

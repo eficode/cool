@@ -169,9 +169,6 @@ public class SnapshotView extends UCMView {
 		SnapshotView view = new SnapshotView( viewroot );
 		view.setStream( stream );
 		
-		/* Store */
-		addView( viewtag, view );
-		
 		return view;
 	}
 

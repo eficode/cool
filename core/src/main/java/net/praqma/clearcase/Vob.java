@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.util.debug.Logger;
+import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 
 /**
@@ -15,24 +16,24 @@ import net.praqma.util.execute.CmdResult;
  * To get the name of vob use getName()
  * 
  * @author wolfgang
- *
+ * 
  */
 public class Vob extends Cool implements Serializable {
-	
+
 	public static final Pattern rx_vob_get_path = Pattern.compile( "^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$" );
-	
+
 	transient private static Logger logger = Logger.getLogger();
 
 	protected String name;
-	
+
 	protected boolean projectVob = false;
-	
+
 	protected String storageLocation = null;
 
-	public Vob(String name) {
+	public Vob( String name ) {
 		this.name = name;
 	}
-	
+
 	public void load() throws CleartoolException {
 		//context.loadVob(this);
 		logger.debug( "Loading vob " + this );
@@ -69,7 +70,7 @@ public class Vob extends Cool implements Serializable {
 			throw new CleartoolException( "Could not load Vob: " + this, e );
 		}
 	}
-	
+
 	public void mount() throws CleartoolException {
 		logger.debug( "Mounting vob " + this );
 
@@ -85,46 +86,42 @@ public class Vob extends Cool implements Serializable {
 			throw new CleartoolException( "Could not mount Vob " + this + ": " + e.getMessage() );
 		}
 	}
-	
+
 	public void unmount() throws CleartoolException {
 		logger.debug( "UnMounting vob " + this );
 
 		String cmd = "umount " + this;
 		try {
 			Cleartool.run( cmd );
-		} catch( Exception e ) {
-			throw new CleartoolException( "Could not unmount Vob " + this + ": " + e.getMessage() );
+		} catch( AbnormalProcessTerminationException e ) {
+			if( e.getMessage().equals( this + " is not currently mounted." ) ) {
+				return;
+			} else {
+				throw new CleartoolException( "Could not unmount Vob " + this + ": " + e.getMessage() );
+			}
 		}
 	}
-	
+
 	public void setStorageLocation( String storageLocation ) {
 		this.storageLocation = storageLocation;
 	}
-	
-	public String getStorageLocation() throws CleartoolException {
-		if( storageLocation == null ) {
-			load();
-		}
-		
+
+	public String getStorageLocation() {
 		return this.storageLocation;
 	}
-	
+
 	public void setIsProjectVob( boolean pvob ) {
 		this.projectVob = pvob;
 	}
-	
-	public boolean isProjectVob() throws CleartoolException {
-		if( storageLocation == null ) {
-			load();
-		}
-		
+
+	public boolean isProjectVob() {
 		return this.projectVob;
 	}
-	
+
 	public String toString() {
 		return name;
 	}
-	
+
 	public String getName() {
 		if( name.startsWith( "\\" ) || name.startsWith( "/" ) ) {
 			return name.substring( 1 );
@@ -132,11 +129,11 @@ public class Vob extends Cool implements Serializable {
 			return name;
 		}
 	}
-	
+
 	public static Vob create( String name, String path, String comment ) throws CleartoolException {
 		return create( name, false, path, comment );
 	}
-	
+
 	public static Vob create( String name, boolean UCMProject, String path, String comment ) throws CleartoolException {
 		//context.createVob(name, false, path, comment);
 		logger.debug( "Creating vob " + name );
@@ -148,13 +145,13 @@ public class Vob extends Cool implements Serializable {
 		} catch( Exception e ) {
 			throw new CleartoolException( "Unable to create vob " + name, e );
 		}
-		
-		Vob vob = new Vob(name);
+
+		Vob vob = new Vob( name );
 		vob.storageLocation = path;
-		
+
 		return vob;
 	}
-	
+
 	public void remove() throws CleartoolException {
 		String cmd = "rmvob -force " + getStorageLocation();
 
@@ -164,18 +161,18 @@ public class Vob extends Cool implements Serializable {
 			throw new CleartoolException( "Could not remove Vob " + this, e );
 		}
 	}
-	
+
 	public static Vob get( String vobname ) {
 		try {
-			Vob vob = new Vob(vobname);
+			Vob vob = new Vob( vobname );
 			vob.load();
 			return vob;
 		} catch( Exception e ) {
 			return null;
 		}
 	}
-	
-	public static boolean isVob( File context) {
+
+	public static boolean isVob( File context ) {
 		logger.debug( "Testing " + context );
 
 		String cmd = "lsvob \\" + context.getName();

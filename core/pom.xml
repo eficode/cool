@@ -107,6 +107,12 @@
 
 					<finalName>${project.artifactId}</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>net.praqma.cli.Main</mainClass>
+                        </manifest>
+                    </archive>
 
 				</configuration>
 				<executions>
@@ -123,7 +129,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.2</version>
+				<version>2.3.2</version>
 				<executions>
 					<execution>
 						<goals>
@@ -131,6 +137,14 @@
 						</goals>
 					</execution>
 				</executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>net.praqma.cli.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
 			</plugin>
 
 		</plugins>
