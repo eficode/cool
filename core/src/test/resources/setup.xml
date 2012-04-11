@@ -1,6 +1,6 @@
 <ccenv>
-	<var name="pvobname" value="cc5_PVOB" />
-	<var name="vobname" value="cc5" />
+	<var name="pvobname" value="cc6_PVOB" />
+	<var name="vobname" value="cc6" />
 	
   <vob tag="${pvobname}" comment="PVOB" ucmproject="true" stgloc="-auto" mounted="true"/>
   <vob tag="${vobname}" stgloc="-auto" mounted="true"/>
