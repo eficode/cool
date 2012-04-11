@@ -185,5 +185,14 @@ public class Vob extends Cool implements Serializable {
 
 		return true;
 	}
+	
+	@Override
+	public boolean equals( Object other ) {
+		if( other instanceof Vob ) {
+			return ((Vob)other).name.equals( name );
+		} else {
+			return false;
+		}
+	}
 
 }
