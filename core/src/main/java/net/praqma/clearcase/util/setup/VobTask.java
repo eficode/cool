@@ -27,6 +27,7 @@ public class VobTask extends AbstractTask {
 			} else {
 				vob = new Vob( tag );
 			}
+			vob.load();
 		}
 		
 		if( mounted.length() > 0 ) {
