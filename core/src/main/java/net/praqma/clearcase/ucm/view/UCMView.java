@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
@@ -198,6 +199,13 @@ public class UCMView extends UCM implements Serializable {
 		}
 	}
 	
-
+	@Override
+	public boolean equals( Object other ) {
+		if( other instanceof UCMView ) {
+			return ((UCMView)other).viewtag.equals( viewtag );
+		} else {
+			return false;
+		}
+	}
 
 }
