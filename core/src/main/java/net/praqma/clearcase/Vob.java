@@ -151,7 +151,12 @@ public class Vob extends Cool implements Serializable {
 			}
 		}
 
-		Vob vob = new Vob( name );
+		Vob vob = null;
+		if( UCMProject ) {
+			vob = new PVob( name );
+		} else {
+			vob = new Vob( name );
+		}
 		vob.storageLocation = path;
 
 		return vob;
