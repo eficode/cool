@@ -141,9 +141,10 @@ public class Project extends UCMEntity {
 	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, List<Component> mcomps ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
 		//context.createProject( name, root, pvob, policy, comment, mcomps );
 
-		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + " -modcomp" + ( normal ? " " : " -model SIMPLE " );
+		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + ( normal ? "" : " -model SIMPLE" );
 		
 		if( mcomps != null ) {
+			cmd += " -modcomp ";
 			for( Component c : mcomps ) {
 				cmd += c.getNormalizedName() + ",";
 			}

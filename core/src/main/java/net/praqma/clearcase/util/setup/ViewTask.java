@@ -32,6 +32,7 @@ public class ViewTask extends AbstractTask {
 		} else {
 			if( DynamicView.viewExists( tag ) ) {
 				/* Do nothing */
+				DynamicView.getView( tag ).start();
 			} else {
 				DynamicView.create( stgloc, tag, stream );
 			}

@@ -1,6 +1,7 @@
 package net.praqma.clearcase.util;
 
 import java.util.List;
+import java.util.Set;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
@@ -13,7 +14,7 @@ public class SetupUtils {
 	private static Logger logger = Logger.getLogger();
 	
 	public static void tearDown( PVob pvob ) throws CleartoolException {
-		List<UCMView> views = pvob.getViews();
+		Set<UCMView> views = pvob.getViews();
 		
 		logger.verbose( "Removing views" );
 		for( UCMView view : views ) {
@@ -26,7 +27,7 @@ public class SetupUtils {
 			}
 		}
 		
-		List<Vob> vobs = pvob.getVobs();
+		Set<Vob> vobs = pvob.getVobs();
 		
 		logger.verbose( "Removing vobs" );
 		for( Vob vob : vobs ) {
