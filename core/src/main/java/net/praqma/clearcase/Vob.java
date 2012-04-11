@@ -138,7 +138,7 @@ public class Vob extends Cool implements Serializable {
 		//context.createVob(name, false, path, comment);
 		logger.debug( "Creating vob " + name );
 
-		String cmd = "mkvob -tag " + name + ( UCMProject ? " -ucmproject" : "" ) + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -stgloc " + ( path != null ? path : "-auto" );
+		String cmd = "mkvob -tag " + name + ( UCMProject ? " -ucmproject" : "" ) + ( comment != null ? " -c \"" + comment + "\"" : " -nc" ) + " -stgloc " + ( path != null ? path : "-auto" );
 
 		try {
 			Cleartool.run( cmd );
