@@ -21,6 +21,9 @@ public class VobTask extends AbstractTask {
 		Vob vob = null;
 		try {
 			vob = Vob.create( tag, ucm, location, null );
+			if( ucm ) {
+				context.pvobs.add( (PVob) vob );
+			}
 		} catch( EntityAlreadyExistsException e1 ) {
 			System.out.println( "VOB: " + tag );
 			if( ucm ) {
