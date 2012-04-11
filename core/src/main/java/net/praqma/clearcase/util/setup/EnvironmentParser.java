@@ -63,6 +63,9 @@ public class EnvironmentParser extends XML {
 			} catch( ClearCaseException e1 ) {
 				ExceptionUtils.print( e1, System.out, true );
 				return null;
+			} catch( Exception e1 ) {
+				logger.fatal( "Failed to parse: " + e1.getMessage() );
+				return null;
 			}
 		}
 		
