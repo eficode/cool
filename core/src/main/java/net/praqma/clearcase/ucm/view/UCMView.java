@@ -207,5 +207,12 @@ public class UCMView extends UCM implements Serializable {
 			return false;
 		}
 	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 31 * hash + ( null == viewtag ? 0 : viewtag.hashCode() );
+		return hash;
+	}
 
 }

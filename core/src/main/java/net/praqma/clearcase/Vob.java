@@ -194,5 +194,12 @@ public class Vob extends Cool implements Serializable {
 			return false;
 		}
 	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 31 * hash + ( null == name ? 0 : name.hashCode() );
+		return hash;
+	}
 
 }

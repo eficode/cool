@@ -99,6 +99,8 @@ public class PVob extends Vob {
 			}
 		}
 		
+		logger.debug( "Vobs: " + vobs );
+		
 		return vobs;
 	}
 
