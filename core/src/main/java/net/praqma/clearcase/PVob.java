@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
 import net.praqma.clearcase.exceptions.UnableToRemoveEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.ucm.view.UCMView;
@@ -28,7 +29,7 @@ public class PVob extends Vob {
 		this.projectVob = true;
 	}
 
-	public static PVob create( String name, String path, String comment ) throws CleartoolException {
+	public static PVob create( String name, String path, String comment ) throws CleartoolException, EntityAlreadyExistsException {
 		Vob.create( name, true, path, comment );
 		PVob pvob = new PVob( name );
 		pvob.storageLocation = path;

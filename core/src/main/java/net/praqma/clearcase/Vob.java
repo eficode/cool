@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
@@ -130,11 +131,11 @@ public class Vob extends Cool implements Serializable {
 		}
 	}
 
-	public static Vob create( String name, String path, String comment ) throws CleartoolException {
+	public static Vob create( String name, String path, String comment ) throws CleartoolException, EntityAlreadyExistsException {
 		return create( name, false, path, comment );
 	}
 
-	public static Vob create( String name, boolean UCMProject, String path, String comment ) throws CleartoolException {
+	public static Vob create( String name, boolean UCMProject, String path, String comment ) throws CleartoolException, EntityAlreadyExistsException {
 		//context.createVob(name, false, path, comment);
 		logger.debug( "Creating vob " + name );
 
@@ -143,7 +144,11 @@ public class Vob extends Cool implements Serializable {
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
-			throw new CleartoolException( "Unable to create vob " + name, e );
+			if( e.getMessage().matches( "(?m)^.*?A VOB tag already exists for.*?$" ) ) {
+				throw new EntityAlreadyExistsException( name, e );
+			} else {
+				throw new CleartoolException( "Unable to create vob " + name, e );
+			}
 		}
 
 		Vob vob = new Vob( name );
