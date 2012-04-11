@@ -9,6 +9,7 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.ucm.view.DynamicView;
 import net.praqma.clearcase.util.SetupUtils;
 import net.praqma.clearcase.util.setup.EnvironmentParser;
+import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.debug.Logger.LogLevel;
 import net.praqma.util.debug.appenders.ConsoleAppender;
@@ -39,17 +40,17 @@ public abstract class CoolTestCase extends TestCase {
 	public CoolTestCase() {
 		logger.verbose( "Constructor" );
 		viewPath = new File( System.getProperty( "viewpath", "views" ) );
-		try {
-			this.pvob = PVob.create( Cool.filesep + System.getProperty( "pvob", "TESTING_PVOB" ), null, "Testing PVOB" );
-		} catch( CleartoolException e ) {
-			logger.fatal( "Unable to create PVOB!" );
-			failed = true;
-		}
+
 	}
 	
 	public void bootStrap( File file ) throws Exception {
 		EnvironmentParser parser = new EnvironmentParser( file );
-		parser.parse();
+		Context context = parser.parse();
+		if( context.pvobs.size() > 0 ) {
+			pvob = context.pvobs.get( 0 );
+		} else {
+			failed = true;
+		}
 	}
 	
 	public boolean hasFailed() {

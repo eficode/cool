@@ -2,12 +2,16 @@ package net.praqma.clearcase.util.setup;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.w3c.dom.Element;
 
+import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.util.debug.Logger;
@@ -35,13 +39,15 @@ public class EnvironmentParser extends XML {
 	public static class Context {
 		public File path;
 		public Map<String, String> variables = new HashMap<String, String>();
+		
+		public List<PVob> pvobs = new ArrayList<PVob>();
 	}
 	
 	public EnvironmentParser( File file ) throws IOException {
 		super( file );
 	}
 	
-	public boolean parse() {
+	public Context parse() {
 		
 		Element env = getRoot();
 		
@@ -56,11 +62,11 @@ public class EnvironmentParser extends XML {
 				map.get( tag ).parse( e, context );
 			} catch( ClearCaseException e1 ) {
 				ExceptionUtils.print( e1, System.out, true );
-				return false;
+				return null;
 			}
 		}
 		
-		return true;
+		return context;
 	}
 	
 	

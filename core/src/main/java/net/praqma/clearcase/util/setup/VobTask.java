@@ -1,7 +1,5 @@
 package net.praqma.clearcase.util.setup;
 
-import java.io.File;
-
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
@@ -14,14 +12,18 @@ public class VobTask extends AbstractTask {
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
-		String ucm = e.getAttribute( "ucmproject" );
+		boolean ucm = e.getAttribute( "ucmproject" ).length() > 0;
 		String tag = Cool.filesep + getValue( "tag", e, context );
 		String location = e.getAttribute( "stgloc" );
 		String mounted = e.getAttribute( "mounted" );
 		
-		Vob vob = Vob.create( tag, ucm.length() > 0, location, null );
+		Vob vob = Vob.create( tag, ucm, location, null );
 		if( mounted.length() > 0 ) {
 			vob.mount();
+		}
+		
+		if( ucm ) {
+			context.pvobs.add( (PVob) vob );
 		}
 	}
 
