@@ -144,7 +144,7 @@ public class Vob extends Cool implements Serializable {
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
-			if( e.getMessage().matches( "(?m)^.*?A VOB tag already exists for.*?$" ) ) {
+			if( e.getMessage().matches( "^(?s).*?A VOB tag already exists for.*?$" ) ) {
 				throw new EntityAlreadyExistsException( name, e );
 			} else {
 				throw new CleartoolException( "Unable to create vob " + name, e );
