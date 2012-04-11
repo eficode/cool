@@ -1,7 +1,9 @@
 package net.praqma.clearcase;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
@@ -48,8 +50,8 @@ public class PVob extends Vob {
 		}
 	}
 	
-	public List<UCMView> getViews() throws CleartoolException {
-		String cmd = "lsstream -fmt %[views]p -invob " + this;
+	public Set<UCMView> getViews() throws CleartoolException {
+		String cmd = "lsstream -fmt %[views]p\\n -invob " + this;
 		List<String> list = null;
 		try {
 			list = Cleartool.run( cmd ).stdoutList;
@@ -57,14 +59,16 @@ public class PVob extends Vob {
 			throw new CleartoolException( "Unable to list views", e );
 		}
 		
-		List<UCMView> views = new ArrayList<UCMView>();
+		Set<UCMView> views = new HashSet<UCMView>();
 		
 		for( String l : list ) {
-			logger.debug( "l: " + l );
-			try {
-				views.add( UCMView.getView( l ) );
-			} catch( ViewException e ) {
-				logger.warning( "Unable to get " + l + ": " + e.getMessage() );
+			if( !l.matches( "^\\s*$" ) ) {
+				logger.debug( "l: " + l );
+				try {
+					views.add( UCMView.getView( l ) );
+				} catch( ViewException e ) {
+					logger.warning( "Unable to get " + l + ": " + e.getMessage() );
+				}
 			}
 		}
 		
@@ -73,8 +77,8 @@ public class PVob extends Vob {
 	
 	public static final Pattern rx_find_vob = Pattern.compile( "" );
 	
-	public List<Vob> getVobs() throws CleartoolException {
-		String cmd = "lscomp -fmt %[root_dir]p -invob " + this;
+	public Set<Vob> getVobs() throws CleartoolException {
+		String cmd = "lscomp -fmt %[root_dir]p\\n -invob " + this;
 		List<String> list = null;
 		try {
 			list = Cleartool.run( cmd ).stdoutList;
@@ -82,11 +86,17 @@ public class PVob extends Vob {
 			throw new CleartoolException( "Unable to list vobs", e );
 		}
 		
-		List<Vob> vobs = new ArrayList<Vob>();
+		Set<Vob> vobs = new HashSet<Vob>();
 		
 		for( String l : list ) {
-			String[] s = l.split( Pattern.quote( Cool.filesep ) );
-			vobs.add( Vob.get( Cool.filesep + s[1] ) );
+			if( !l.matches( "^\\s*$" ) ) {
+				String[] s = l.split( Pattern.quote( Cool.filesep ) );
+				try {
+					vobs.add( Vob.get( Cool.filesep + s[1] ) );
+				} catch( ArrayIndexOutOfBoundsException e ) {
+					logger.warning( l + " was not a VOB" );
+				}
+			}
 		}
 		
 		return vobs;
