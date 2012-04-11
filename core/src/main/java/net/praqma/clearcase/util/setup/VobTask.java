@@ -25,11 +25,13 @@ public class VobTask extends AbstractTask {
 				if( mount ) {
 					vob.mount();
 				}
+				vob.load();
 			} else {
 				Vob vob = Vob.create( tag, ucm, location, null );
 				if( mount ) {
 					vob.mount();
 				}
+				vob.load();
 			}
 		} catch( EntityAlreadyExistsException e1 ) {
 			if( ucm ) {
