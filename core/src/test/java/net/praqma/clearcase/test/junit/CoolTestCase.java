@@ -22,6 +22,9 @@ public abstract class CoolTestCase extends TestCase {
 
 	protected static boolean rolling = true;
 	protected static boolean tearDownAsMuchAsPossible = true;
+	protected boolean failed = false;
+	
+	protected File defaultSetup = new File( CoolTestCase.class.getClassLoader().getResource( "setup.xml" ).getFile() );
 	
 	protected PVob pvob;
 	
@@ -33,15 +36,24 @@ public abstract class CoolTestCase extends TestCase {
 		Logger.addAppender( appender );
 	}
 	
-	public CoolTestCase() throws CleartoolException {
+	public CoolTestCase() {
 		logger.verbose( "Constructor" );
 		viewPath = new File( System.getProperty( "viewpath", "views" ) );
-		this.pvob = PVob.create( Cool.filesep + System.getProperty( "pvob", "TESTING_PVOB" ), null, "Testing PVOB" );
+		try {
+			this.pvob = PVob.create( Cool.filesep + System.getProperty( "pvob", "TESTING_PVOB" ), null, "Testing PVOB" );
+		} catch( CleartoolException e ) {
+			logger.fatal( "Unable to create PVOB!" );
+			failed = true;
+		}
 	}
 	
 	public void bootStrap( File file ) throws Exception {
 		EnvironmentParser parser = new EnvironmentParser( file );
 		parser.parse();
+	}
+	
+	public boolean hasFailed() {
+		return failed;
 	}
 
 	@Override

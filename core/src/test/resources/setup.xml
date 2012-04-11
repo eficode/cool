@@ -66,6 +66,28 @@
     </dependencies>
   </baseline>
   
+  
+  <project name="cc1_one" comment="" pvob="${pvobname}" in="${vobname}">
+    <components>
+      <component="Service" pvob="${pvobname}" />
+      <component="Model" pvob="${pvobname}"  />
+      <component="Clientapp" pvob="${pvobname}" />
+    </components>
+    <policies>
+      <policy>POLICY_INTERPROJECT_DELIVER</policy>
+    </policies>
+  </project>
+  
+  <stream name="cc1_one_int" in="cc1_one" comment="" pvob="${pvobname}" type="integration">
+    <baselines>
+      <baseline name="_System_1.0" pvob="${pvobname}" />
+    </baselines>
+  </stream>
+  
+  <view tag="cc1_one_int" stgloc="-auto">
+    <stream name="cc1_one_int" pvob="${pvobname}">
+  </view>  
+  
 </ccenv>
 
 
