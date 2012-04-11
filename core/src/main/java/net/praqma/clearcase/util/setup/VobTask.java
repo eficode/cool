@@ -22,7 +22,11 @@ public class VobTask extends AbstractTask {
 		try {
 			vob = Vob.create( tag, ucm, location, null );
 		} catch( EntityAlreadyExistsException e1 ) {
-			vob = new Vob( tag );
+			if( ucm ) {
+				vob = new PVob( tag );
+			} else {
+				vob = new Vob( tag );
+			}
 		}
 		
 		if( mounted.length() > 0 ) {
