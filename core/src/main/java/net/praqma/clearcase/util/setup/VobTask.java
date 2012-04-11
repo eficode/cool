@@ -16,28 +16,37 @@ public class VobTask extends AbstractTask {
 		boolean ucm = e.getAttribute( "ucmproject" ).length() > 0;
 		String tag = Cool.filesep + getValue( "tag", e, context );
 		String location = e.getAttribute( "stgloc" );
-		String mounted = e.getAttribute( "mounted" );
+		boolean mount = e.getAttribute( "mounted" ).length() > 0;
 		
-		Vob vob = null;
 		try {
 			if( ucm ) {
-				vob = PVob.create( tag, ucm, location, null );
-				context.pvobs.add( (PVob) vob );
+				PVob vob = PVob.create( tag, location, null );
+				context.pvobs.add( vob );
+				if( mount ) {
+					vob.mount();
+				}
 			} else {
-				vob = Vob.create( tag, ucm, location, null );
+				Vob vob = Vob.create( tag, ucm, location, null );
+				if( mount ) {
+					vob.mount();
+				}
 			}
 		} catch( EntityAlreadyExistsException e1 ) {
 			if( ucm ) {
-				vob = new PVob( tag );
-				context.pvobs.add( (PVob) vob );
+				PVob vob = new PVob( tag );
+				context.pvobs.add( vob );
+				if( mount ) {
+					vob.mount();
+				}
+				vob.load();
 			} else {
-				vob = new Vob( tag );
+				Vob vob = new Vob( tag );
+				if( mount ) {
+					vob.mount();
+				}
+				vob.load();
 			}
-			vob.load();
-		}
-		
-		if( mounted.length() > 0 ) {
-			vob.mount();
+			
 		}
 		
 	}
