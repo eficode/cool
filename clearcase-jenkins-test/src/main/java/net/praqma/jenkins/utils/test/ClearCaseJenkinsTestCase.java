@@ -18,7 +18,6 @@ public class ClearCaseJenkinsTestCase extends HudsonTestCase {
 	
 	@Override
 	public void runTest() throws Throwable {
-		coolTest.runTest();
 		if( !coolTest.hasFailed() ) {
 			super.runTest();
 		}
