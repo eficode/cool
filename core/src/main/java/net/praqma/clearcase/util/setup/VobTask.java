@@ -24,6 +24,7 @@ public class VobTask extends AbstractTask {
 		} catch( EntityAlreadyExistsException e1 ) {
 			if( ucm ) {
 				vob = new PVob( tag );
+				context.pvobs.add( (PVob) vob );
 			} else {
 				vob = new Vob( tag );
 			}
@@ -34,9 +35,6 @@ public class VobTask extends AbstractTask {
 			vob.mount();
 		}
 		
-		if( ucm ) {
-			context.pvobs.add( (PVob) vob );
-		}
 	}
 
 }
