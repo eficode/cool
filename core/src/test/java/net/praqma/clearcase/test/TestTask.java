@@ -12,6 +12,7 @@ import org.w3c.dom.Element;
 import junit.framework.TestCase;
 
 public class TestTask extends TestCase {
+
 	@Test
 	public void testGetValueNone() {
 		XML xml = new XML( "root" );
@@ -60,11 +61,77 @@ public class TestTask extends TestCase {
 		Context context = new Context();
 		vt.parse( var, context );
 		String value = bt.getValue( "name", test, context );
-		System.out.println( "VALUE: " + value );
-		System.out.println( "VALUE: " + context.variables );
-		
-		System.out.println( "VALUE: " + xml.getXML() );
 		
 		assertEquals( "very_cool", value );
+	}
+	
+	@Test
+	public void testGetValueMultiple() throws ClearCaseException {
+		XML xml = new XML( "root" );
+		Element test = xml.addElement( "test" );
+		test.setAttribute( "name", "very_${var}_but_${var}" );
+		
+		Element var = xml.addElement( "var" );
+		var.setAttribute( "name", "var" );
+		var.setAttribute( "value", "cool" );
+		
+		VariableTask vt = new VariableTask();
+		BaselineTask bt = new BaselineTask();
+		
+		Context context = new Context();
+		vt.parse( var, context );
+		String value = bt.getValue( "name", test, context );
+		
+		assertEquals( "very_cool_but_cool", value );
+	}
+	
+	@Test
+	public void testGetValueMultipleDifferent() throws ClearCaseException {
+		XML xml = new XML( "root" );
+		Element test = xml.addElement( "test" );
+		test.setAttribute( "name", "very_${var1}_but_${var2}" );
+		
+		Element var1 = xml.addElement( "var1" );
+		var1.setAttribute( "name", "var1" );
+		var1.setAttribute( "value", "cool" );
+		
+		Element var2 = xml.addElement( "var2" );
+		var2.setAttribute( "name", "var2" );
+		var2.setAttribute( "value", "hot" );
+		
+		VariableTask vt = new VariableTask();
+		BaselineTask bt = new BaselineTask();
+		
+		Context context = new Context();
+		vt.parse( var1, context );
+		vt.parse( var2, context );
+		String value = bt.getValue( "name", test, context );
+		
+		assertEquals( "very_cool_but_hot", value );
+	}
+	
+	@Test
+	public void testGetValueAdvanced() throws ClearCaseException {
+		XML xml = new XML( "root" );
+		Element test = xml.addElement( "test" );
+		test.setAttribute( "name", "very_${var1}_but_${var2}___${var1}__${var1}--${var2}" );
+		
+		Element var1 = xml.addElement( "var1" );
+		var1.setAttribute( "name", "var1" );
+		var1.setAttribute( "value", "a very long sentence" );
+		
+		Element var2 = xml.addElement( "var2" );
+		var2.setAttribute( "name", "var2" );
+		var2.setAttribute( "value", "also a very long sentence" );
+		
+		VariableTask vt = new VariableTask();
+		BaselineTask bt = new BaselineTask();
+		
+		Context context = new Context();
+		vt.parse( var1, context );
+		vt.parse( var2, context );
+		String value = bt.getValue( "name", test, context );
+		
+		assertEquals( "very_a very long sentence_but_also a very long sentence___a very long sentence__a very long sentence--also a very long sentence", value );
 	}
 }

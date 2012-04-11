@@ -28,19 +28,19 @@ public abstract class AbstractTask {
 		}
 	}
 	
-	private static final Pattern rx_variable = Pattern.compile( "^\\$\\{(.*?)\\}$" );
+	private static final Pattern rx_variable = Pattern.compile( "(\\$\\{(.*?)\\})" );
 	
 	public String getValue( String name, Element e, Context context ) {
 		String value = e.getAttribute( name );
 		
 		Matcher m = rx_variable.matcher( value );
-		
-		/* if this is a variable */
-		if( m.find() ) {
-			return context.variables.get( m.group( 1 ) );
-		} else {
-			return value;
+
+		while( m.find() ) {
+			String var = context.variables.get( m.group( 2 ) );			
+			value = value.replace( m.group( 1 ), var );
 		}
+		
+		return value;
 	}
 	
     public Element getFirstElement( Element e, String tag ) throws DOMException {
