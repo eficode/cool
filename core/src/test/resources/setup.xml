@@ -1,6 +1,6 @@
 <ccenv>
-	<var name="pvobname" value="cc3_PVOB" />
-	<var name="vobname" value="cc3" />
+	<var name="pvobname" value="cc5_PVOB" />
+	<var name="vobname" value="cc5" />
 	
   <vob tag="${pvobname}" comment="PVOB" ucmproject="true" stgloc="-auto" mounted="true"/>
   <vob tag="${vobname}" stgloc="-auto" mounted="true"/>
@@ -19,7 +19,7 @@
    
   <project name="cc1_bootstrap" comment="" model="SIMPLE" pvob="${pvobname}" in="${vobname}">
     <components>
-      <component name="Service" pvob="pvobname" />
+      <component name="Service" pvob="${pvobname}" />
       <component name="Model" pvob="${pvobname}"  />
       <component name="Clientapp" pvob="${pvobname}" />
     </components>

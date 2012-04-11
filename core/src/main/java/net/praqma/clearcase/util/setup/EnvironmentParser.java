@@ -32,7 +32,7 @@ public class EnvironmentParser extends XML {
 		map.put( "view", new ViewTask() );
 	}
 	
-	public class Context {
+	public static class Context {
 		public File path;
 		public Map<String, String> variables = new HashMap<String, String>();
 	}
