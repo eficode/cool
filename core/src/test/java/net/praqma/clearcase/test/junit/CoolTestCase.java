@@ -40,7 +40,10 @@ public abstract class CoolTestCase extends TestCase {
 	public CoolTestCase() {
 		logger.verbose( "Constructor" );
 		viewPath = new File( System.getProperty( "viewpath", "views" ) );
-
+	}
+	
+	public void bootStrap() throws Exception {
+		bootStrap( defaultSetup );
 	}
 	
 	public void bootStrap( File file ) throws Exception {
@@ -53,6 +56,10 @@ public abstract class CoolTestCase extends TestCase {
 		} else {
 			failed = true;
 		}
+	}
+	
+	public PVob getPVob() {
+		return pvob;
 	}
 	
 	public boolean hasFailed() {
