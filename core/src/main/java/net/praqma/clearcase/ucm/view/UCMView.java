@@ -156,6 +156,19 @@ public class UCMView extends UCM implements Serializable {
 		}
 	}
 	
+	public UCMView start() throws ViewException {
+		start( viewtag );
+		return this;
+	}
+	
+	public static void start( String viewtag ) throws ViewException {
+		try {
+			Cleartool.run( "startview " + viewtag );
+		} catch( Exception e ) {
+			throw new ViewException( "Could not start view " + viewtag, null, Type.END_VIEW_FAILED, e );
+		}
+	}
+	
 	public static void getViews( Project project ) {
 		// cleartool lsstream -in project:ava2@\chw_PVOB
 		// http://publib.boulder.ibm.com/infocenter/cchelp/v7r0m0/index.jsp?topic=/com.ibm.rational.clearcase.cc_ref.doc/topics/ct_lsstream.htm
