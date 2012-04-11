@@ -1,6 +1,7 @@
 package net.praqma.clearcase.test;
 
 import net.praqma.clearcase.test.junit.CoolTestCase;
+import net.praqma.util.debug.Logger;
 
 import org.junit.Test;
 
@@ -8,10 +9,15 @@ import org.junit.Test;
 
 public class Testing extends CoolTestCase {
 
+	private static Logger logger = Logger.getLogger();
 
 	@Test
-	public void testBasic() throws Exception {
-		bootStrap( defaultSetup );
+	public void testBasic() {
+		try {
+			bootStrap( defaultSetup );
+		} catch( Exception e ) {
+			fail();
+		}
 		
 		/*
 		File vp = new File( bootstrap.viewpath, "test01" );

@@ -65,7 +65,7 @@ public abstract class CoolTestCase extends TestCase {
 
 	@Override
 	public void runTest() throws Throwable {
-
+		super.runTest();
 	}
 
 	@Override
