@@ -22,10 +22,13 @@ public class VobTask extends AbstractTask {
 		try {
 			vob = Vob.create( tag, ucm, location, null );
 		} catch( EntityAlreadyExistsException e1 ) {
+			System.out.println( "VOB: " + tag );
 			if( ucm ) {
+				System.out.println( "THIS IS A PVOB" );
 				vob = new PVob( tag );
 				context.pvobs.add( (PVob) vob );
 			} else {
+				System.out.println( "THIS IS NOT A PVOB" );
 				vob = new Vob( tag );
 			}
 			vob.load();
