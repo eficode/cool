@@ -44,6 +44,7 @@ public abstract class CoolTestCase extends TestCase {
 	}
 	
 	public void bootStrap( File file ) throws Exception {
+		logger.info( "Bootstrapping from " + file + ( file.exists() ? "" : ", which does not exist!?") );
 		EnvironmentParser parser = new EnvironmentParser( file );
 		Context context = parser.parse();
 		if( context.pvobs.size() > 0 ) {
@@ -71,11 +72,15 @@ public abstract class CoolTestCase extends TestCase {
 	public void tearDown() {
 		logger.info( "Tear down ClearCase" );
 
-		try {
-			SetupUtils.tearDown( pvob );
-			logger.info( "Tear down is successful" );
-		} catch( ClearCaseException e ) {
-			logger.fatal( "Tear down failed" );
+		if( pvob != null ) {
+			try {
+				SetupUtils.tearDown( pvob );
+				logger.info( "Tear down is successful" );
+			} catch( ClearCaseException e ) {
+				logger.fatal( "Tear down failed" );
+			}
+		} else {
+			logger.info( "PVob was null" );
 		}
 	}
 }
