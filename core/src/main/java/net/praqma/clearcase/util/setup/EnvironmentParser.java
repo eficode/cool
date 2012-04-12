@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.w3c.dom.Element;
 
@@ -24,6 +22,7 @@ public class EnvironmentParser extends XML {
 	private static Map<String, AbstractTask> map = new HashMap<String, AbstractTask>();
 	
 	static {
+		map.put( "activity", new ActivityTask() );
 		map.put( "baseline", new BaselineTask() );
 		map.put( "component", new ComponentTask() );
 		map.put( "context", new ContextTask() );

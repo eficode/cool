@@ -97,6 +97,10 @@
     <stream name="cc1_one_int" pvob="${pvobname}" />
   </view>
   
+  <context mvfs="m:\" view="cc1_one_int" vob="${vobname}"/>
+  
+  <activity comment="" headline="Adding initial files into components" in="cc1_one_int" name="initial_files" />
+  
 </ccenv>
 
 

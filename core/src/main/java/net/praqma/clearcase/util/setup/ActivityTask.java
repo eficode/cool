@@ -18,7 +18,10 @@ public class ActivityTask extends AbstractTask {
 		String headline = e.getAttribute( "headline" ).length() > 0 ? e.getAttribute( "headline" ) : null;
 		String inStr = e.getAttribute( "in" ).length() > 0 ? e.getAttribute( "in" ) : null;
 		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
-		Stream in = Stream.get( inStr, pvob );
+		Stream in = null;
+		if( inStr != null ) {
+			in = Stream.get( inStr, pvob );
+		}
 		
 		Activity.create( name, in, pvob, true, comment, headline, context.path );
 	}
