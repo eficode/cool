@@ -295,8 +295,12 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	public static void checkOut( File file, File context ) throws CleartoolException {
+		checkOut( file, context, null );
+	}
+	
+	public static void checkOut( File file, File context, String comment ) throws CleartoolException {
 		try {
-			String cmd = "checkout -nc " + file;
+			String cmd = "checkout " + ( comment != null ? " -c \"" + comment + "\" " : " -nc " ) + file;
 			Cleartool.run( cmd, context );
 		} catch( Exception e ) {
 			throw new CleartoolException( "Could not check out " + file );
