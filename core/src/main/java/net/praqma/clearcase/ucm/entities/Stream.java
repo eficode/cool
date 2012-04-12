@@ -120,7 +120,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		
 		String cmd = "mkstream -integration -in " + project;
 				
-		if( baselines.size() > 0 ) {
+		if( baselines != null && baselines.size() > 0 ) {
 			cmd += " -baseline ";
 			for( Baseline b : baselines ) {
 				cmd += b.getNormalizedName() + ",";

@@ -26,10 +26,15 @@ public class BaselineTask extends AbstractTask {
 		Component component = Component.get( e.getAttribute( "component" ), pvob );
 		
 		Element c = getFirstElement( e, "dependencies" );
-		List<Component> components = new ArrayList<Component>();
-		for( Element c2 : getElements( c ) ) {
-			PVob bpvob = new PVob( Cool.filesep + getValue( "pvob", c2, context ) );
-			components.add( Component.get( c2.getAttribute( "name" ), bpvob ) );
+		List<Component> components = null;
+		try {
+			components = new ArrayList<Component>();
+			for( Element c2 : getElements( c ) ) {
+				PVob bpvob = new PVob( Cool.filesep + getValue( "pvob", c2, context ) );
+				components.add( Component.get( c2.getAttribute( "name" ), bpvob ) );
+			}
+		} catch( Exception e1 ) {
+			/* Components not given, skipping */
 		}
 		
 		Baseline.create( name, component, context.path, LabelBehaviour.valueOf( label ), identical.length() > 0, null, components );

@@ -25,11 +25,17 @@ public class StreamTask extends AbstractTask {
 		String in = e.getAttribute( "in" ).length() > 0 ? e.getAttribute( "in" ) : null;
 		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
 		
-		Element c = getFirstElement( e, "baselines" );
-		List<Baseline> baselines = new ArrayList<Baseline>();
-		for( Element baseline : getElements( c ) ) {
-			PVob bpvob = new PVob( Cool.filesep + getValue( "pvob", baseline, context ) );
-			baselines.add( Baseline.get( baseline.getAttribute( "name" ), bpvob ) );
+		List<Baseline> baselines = null;
+		
+		try {
+			Element c = getFirstElement( e, "baselines" );
+			baselines = new ArrayList<Baseline>();
+			for( Element baseline : getElements( c ) ) {
+				PVob bpvob = new PVob( Cool.filesep + getValue( "pvob", baseline, context ) );
+				baselines.add( Baseline.get( baseline.getAttribute( "name" ), bpvob ) );
+			}
+		} catch( Exception e1 ) {
+			/* No baselines given, skipping */
 		}
 		
 		if( integration ) {

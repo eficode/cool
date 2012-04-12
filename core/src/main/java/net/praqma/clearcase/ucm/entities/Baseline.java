@@ -146,7 +146,7 @@ public class Baseline extends UCMEntity implements Diffable {
 
 		String cmd = "mkbl -nc -component " + component.getNormalizedName() + ( identical ? " -identical" : "" );
 
-		if( depends != null ) {
+		if( depends != null && depends.size() > 0 ) {
 			cmd += " -adepends_on ";
 			for( Component c : depends ) {
 				cmd += c.getNormalizedName() + ",";
