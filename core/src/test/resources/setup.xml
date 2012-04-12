@@ -109,7 +109,7 @@
   
   <content file="Model\model.h" content="#1" />
   
-  <checkin comment="" file="Model" />
+  <checkin />
   
   <baseline name="model-1" label="none" comment="" component="_Client" pvob="${pvobname}" />
   
