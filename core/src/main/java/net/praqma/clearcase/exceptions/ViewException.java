@@ -6,6 +6,7 @@ public class ViewException extends ClearCaseException {
 	private Type type;
 	
 	public enum Type {
+		ACTIVITY_FAILED,
 		REMOVE_FAILED,
 		CREATION_FAILED,
 		LOAD_FAILED,
