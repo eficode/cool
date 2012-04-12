@@ -28,11 +28,13 @@ public class EnvironmentParser extends XML {
 		map.put( "checkin", new CheckinTask() );
 		map.put( "checkout", new CheckoutTask() );
 		map.put( "component", new ComponentTask() );
+		map.put( "content", new ContentTask() );
 		map.put( "context", new ContextTask() );
 		map.put( "folder", new FolderTask() );
 		map.put( "hlink", new HLinkTask() );
 		map.put( "project", new ProjectTask() );
 		map.put( "vob", new VobTask() );
+		map.put( "setactivity", new SetActivityTask() );
 		map.put( "stream", new StreamTask() );
 		map.put( "var", new VariableTask() );
 		map.put( "view", new ViewTask() );
