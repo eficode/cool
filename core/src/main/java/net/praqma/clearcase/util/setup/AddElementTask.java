@@ -13,7 +13,7 @@ public class AddElementTask extends AbstractTask {
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
-		File file = new File( e.getAttribute( "file" ) );
+		File file = new File( context.path, e.getAttribute( "file" ) );
 		
 		if( !file.exists() ) {
 			try {
