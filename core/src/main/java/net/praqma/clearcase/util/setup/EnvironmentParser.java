@@ -23,7 +23,10 @@ public class EnvironmentParser extends XML {
 	
 	static {
 		map.put( "activity", new ActivityTask() );
+		map.put( "add", new AddElementTask() );
 		map.put( "baseline", new BaselineTask() );
+		map.put( "checkin", new CheckinTask() );
+		map.put( "checkout", new CheckoutTask() );
 		map.put( "component", new ComponentTask() );
 		map.put( "context", new ContextTask() );
 		map.put( "folder", new FolderTask() );
