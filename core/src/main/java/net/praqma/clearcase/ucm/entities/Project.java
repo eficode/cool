@@ -143,7 +143,7 @@ public class Project extends UCMEntity {
 
 		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + ( normal ? "" : " -model SIMPLE" );
 		
-		if( mcomps != null ) {
+		if( mcomps != null && mcomps.size() > 0 ) {
 			cmd += " -modcomp ";
 			for( Component c : mcomps ) {
 				cmd += c.getNormalizedName() + ",";

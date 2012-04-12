@@ -22,17 +22,26 @@ public class ProjectTask extends AbstractTask {
 		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
 		String in = getValue( "in", e, context ).length() > 0 ? getValue( "in", e, context ) : null;
 		
-		Element c = getFirstElement( e, "components" );
-		List<Component> components = new ArrayList<Component>();
-		for( Element component : getElements( c ) ) {
-			PVob cpvob = new PVob( Cool.filesep + getValue( "pvob", component, context ) );
-			components.add( Component.get( component.getAttribute( "name" ), cpvob ) );
+		List<Component> components = null;
+		try {
+			Element c = getFirstElement( e, "components" );
+			components = new ArrayList<Component>();
+			for( Element component : getElements( c ) ) {
+				PVob cpvob = new PVob( Cool.filesep + getValue( "pvob", component, context ) );
+				components.add( Component.get( component.getAttribute( "name" ), cpvob ) );
+			}
+		}  catch( Exception e1 ) {
+			/* No components given, skipping */
 		}
 		
-		Element ps = getFirstElement( e, "policies" );
 		int policy = 0;
-		for( Element p : getElements( ps ) ) {
-			policy += Project.getPolicyValue( p.getTextContent() );
+		try {
+			Element ps = getFirstElement( e, "policies" );
+			for( Element p : getElements( ps ) ) {
+				policy += Project.getPolicyValue( p.getTextContent() );
+			}
+		} catch( Exception e1 ) {
+			/* No policies given, skipping */
 		}
 		
 		Project.create( name, in, pvob, policy, comment, model.length() > 0, components );
