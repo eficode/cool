@@ -267,8 +267,12 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	public static void checkIn( File file, boolean identical, File viewContext ) throws CleartoolException {
+		checkIn( file, identical, viewContext, null );
+	}
+	
+	public static void checkIn( File file, boolean identical, File viewContext, String comment ) throws CleartoolException {
 		try {
-			String cmd = "checkin -nc " + ( identical ? "-identical " : "" ) + file;
+			String cmd = "checkin " + ( comment != null ? "-c \"" + comment + "\" " : "-nc " ) + ( identical ? "-identical " : "" ) + file;
 			Cleartool.run( cmd, viewContext, true, false );
 		} catch( Exception e ) {
 			if( e.getMessage().matches( "(?s).*By default, won't create version with data identical to predecessor.*" ) ) {
@@ -300,7 +304,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	
 	public static void checkOut( File file, File context, String comment ) throws CleartoolException {
 		try {
-			String cmd = "checkout " + ( comment != null ? " -c \"" + comment + "\" " : " -nc " ) + file;
+			String cmd = "checkout " + ( comment != null ? "-c \"" + comment + "\" " : "-nc " ) + file;
 			Cleartool.run( cmd, context );
 		} catch( Exception e ) {
 			throw new CleartoolException( "Could not check out " + file );
