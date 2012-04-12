@@ -16,11 +16,18 @@ public class ContentTask extends AbstractTask {
 		File file = new File( context.path, e.getAttribute( "file" ) );
 		String content = e.getAttribute( "content" );
 		
+		FileWriter fw = null;
 		try {
-			FileWriter fw = new FileWriter( file );
+			fw = new FileWriter( file, true );
 			fw.write( content );
 		} catch( IOException e1 ) {
 			throw new ClearCaseException( e1 );
+		} finally {
+			try {
+				fw.close();
+			} catch( IOException e1 ) {
+				e1.printStackTrace();
+			}
 		}
 		
 		
