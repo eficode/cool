@@ -70,23 +70,28 @@ public class Activity extends UCMEntity {
 	/**
 	 * Create an activity. If name is null an anonymous activity is created and the return value is null.
 	 * @param name
+	 * @param in
 	 * @param pvob
 	 * @param force
 	 * @param comment
+	 * @param headline
 	 * @param view
 	 * @return
-	 * @throws UnableToCreateEntityException 
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToGetEntityException  
-	 * @throws UnableToInitializeEntityException 
+	 * @throws UnableToCreateEntityException
+	 * @throws UCMEntityNotFoundException
+	 * @throws UnableToGetEntityException
+	 * @throws UnableToInitializeEntityException
 	 */
-	public static Activity create( String name, PVob pvob, boolean force, String comment, File view ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
-		String cmd = "mkactivity" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( force ? " -force" : "" ) + ( name != null ? " " + name + "@" + pvob : "" );
+	public static Activity create( String name, Stream in, PVob pvob, boolean force, String comment, String headline, File view ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
+		String cmd = "mkactivity" + ( comment != null ? " -c \"" + comment + "\"" : " -nc" ) + 
+									( headline != null ? " -headline \"" + headline + "\"" : "" ) +
+									( in != null ? " -in " + in.getNormalizedName() : "" ) + 
+									( force ? " -force" : "" ) + 
+									( name != null ? " " + name + "@" + pvob : "" );
 
 		try {
 			Cleartool.run( cmd, view );
 		} catch( Exception e ) {
-			//throw new UCMException( e.getMessage(), UCMType.CREATION_FAILED );
 			throw new UnableToCreateEntityException( Activity.class, e );
 		}
 		
