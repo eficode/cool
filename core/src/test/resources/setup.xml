@@ -101,6 +101,8 @@
   
   <activity comment="" headline="Adding initial files into components" in="cc1_one_int" name="initial_files" pvob="${pvobname}" />
   
+  <setactivity activity="initial_files" pvob="${pvobname}" />
+  
   <checkout comment="" file="Model" />
   
   <add file="Model\model.h" />
@@ -109,7 +111,7 @@
   
   <checkin comment="" file="Model" />
   
-  <baseline name="_Client_1.0" label="none" comment="" component="_Client" pvob="${pvobname}" />
+  <baseline name="model-1" label="none" comment="" component="_Client" pvob="${pvobname}" />
   
 </ccenv>
 
