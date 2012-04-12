@@ -111,7 +111,7 @@
   
   <checkin />
   
-  <baseline name="model-1" label="none" comment="" component="_Client" pvob="${pvobname}" />
+  <baseline name="model-1" label="none" comment="" component="Model" pvob="${pvobname}" />
   
 </ccenv>
 
