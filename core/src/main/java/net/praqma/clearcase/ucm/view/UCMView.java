@@ -18,6 +18,7 @@ import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.exceptions.ViewException.Type;
+import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCM;
@@ -196,6 +197,18 @@ public class UCMView extends UCM implements Serializable {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
 			throw new ViewException( "Unable to create view " + tag, stgloc, Type.CREATION_FAILED, e );
+		}
+	}
+	
+	public static void setActivity( Activity activity, File context, String viewtag, String comment ) throws ViewException {
+		String cmd = "setactivity " + ( comment != null ? "-c \"" + comment + "\" " : "-nc " ) +
+									  ( viewtag != null ? "-viewtag " + viewtag + " " : "" ) + 
+									  ( activity != null ? activity.getNormalizedName() : "-none" );
+
+		try {
+			Cleartool.run( cmd, context );
+		} catch( Exception e ) {
+			throw new ViewException( "Unable to set activity " + activity, context.toString(), Type.ACTIVITY_FAILED, e );
 		}
 	}
 	
