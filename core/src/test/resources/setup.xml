@@ -84,9 +84,18 @@
     </baselines>
   </stream>
   
+  <project name="jenkins" comment="" pvob="${pvobname}" in="${vobname}">
+    <policies>
+      <policy>POLICY_INTERPROJECT_DELIVER</policy>
+    </policies>
+  </project>
+  
+  <stream name="jenkins_int" in="jenkins" comment="" pvob="${pvobname}" type="integration">
+  </stream>
+  
   <view tag="cc1_one_int" stgloc="-auto">
     <stream name="cc1_one_int" pvob="${pvobname}" />
-  </view>  
+  </view>
   
 </ccenv>
 
