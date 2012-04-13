@@ -1,6 +1,5 @@
 package net.praqma.clearcase.util;
 
-import java.util.List;
 import java.util.Set;
 
 import net.praqma.clearcase.PVob;
@@ -15,6 +14,9 @@ public class SetupUtils {
 	
 	public static void tearDown( PVob pvob ) throws CleartoolException {
 		Set<UCMView> views = pvob.getViews();
+		
+		/* The pvob needs to be loaded */
+		pvob.load();
 		
 		logger.verbose( "Removing views" );
 		for( UCMView view : views ) {
