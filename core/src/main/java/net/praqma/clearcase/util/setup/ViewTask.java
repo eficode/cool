@@ -5,6 +5,7 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.DynamicView;
+import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
 import org.w3c.dom.Element;
@@ -31,11 +32,17 @@ public class ViewTask extends AbstractTask {
 			
 		} else {
 			if( DynamicView.viewExists( tag ) ) {
-				/* Do nothing */
-				DynamicView.getView( tag ).start();
-			} else {
-				DynamicView.create( stgloc, tag, stream );
+				/* Remove it! */
+				UCMView v = UCMView.getView( tag );
+				try {
+					v.end();
+				} catch( ClearCaseException e1 ) {
+					/* Not ended */
+				}
+				v.remove();
 			}
+			
+			DynamicView.create( stgloc, tag, stream );
 		}
 		
 	}
