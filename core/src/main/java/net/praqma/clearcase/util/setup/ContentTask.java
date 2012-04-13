@@ -26,7 +26,7 @@ public class ContentTask extends AbstractTask {
 			try {
 				fw.close();
 			} catch( IOException e1 ) {
-				e1.printStackTrace();
+				throw new ClearCaseException( e1 );
 			}
 		}
 		
