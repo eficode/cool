@@ -112,7 +112,7 @@
   
   <checkin />
   
-  <baseline name="model-1" label="none" comment="" component="Model" pvob="${pvobname}" />
+  <baseline name="model-1" label="full" comment="" component="Model" pvob="${pvobname}" />
   
   <!-- Second -->
   <checkout comment="" file="Clientapp" />
@@ -123,7 +123,7 @@
   
   <checkin />
   
-  <baseline name="client-1" label="none" comment="" component="Clientapp" pvob="${pvobname}" />
+  <baseline name="client-1" label="full" comment="" component="Clientapp" pvob="${pvobname}" />
   
   
   <!-- Third -->
@@ -133,7 +133,7 @@
   
   <checkin />
   
-  <baseline name="model-2" label="none" comment="" component="Model" pvob="${pvobname}" />
+  <baseline name="model-2" label="full" comment="" component="Model" pvob="${pvobname}" />
   
   
   <!-- Fourth -->
@@ -143,7 +143,7 @@
   
   <checkin />
   
-  <baseline name="model-3" label="none" comment="" component="Model" pvob="${pvobname}" />
+  <baseline name="model-3" label="full" comment="" component="Model" pvob="${pvobname}" />
 
   <!-- Fifth -->
   <checkout comment="" file="Clientapp/client.h" />
@@ -152,7 +152,7 @@
   
   <checkin />
   
-  <baseline name="client-2" label="none" comment="" component="Clientapp" pvob="${pvobname}" />
+  <baseline name="client-2" label="full" comment="" component="Clientapp" pvob="${pvobname}" />
   
 	<!-- Sixth -->
   <checkout comment="" file="Clientapp/client.h" />
@@ -161,7 +161,7 @@
   
   <checkin />
   
-  <baseline name="client-3" label="none" comment="" component="Clientapp" pvob="${pvobname}" />
+  <baseline name="client-3" label="full" comment="" component="Clientapp" pvob="${pvobname}" />
 </ccenv>
 
 
