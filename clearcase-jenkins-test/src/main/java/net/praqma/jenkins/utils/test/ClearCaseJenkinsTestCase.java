@@ -1,6 +1,8 @@
 package net.praqma.jenkins.utils.test;
 
 import net.praqma.clearcase.test.junit.CoolTestCase;
+import net.praqma.util.JarUtils;
+
 import org.jvnet.hudson.test.HudsonTestCase;
 
 public class ClearCaseJenkinsTestCase extends HudsonTestCase {
@@ -8,6 +10,10 @@ public class ClearCaseJenkinsTestCase extends HudsonTestCase {
 	
 	public CoolTestCase getCoolTestCase() {
 		return coolTest;
+	}
+	
+	public void bootStrap() {
+		//JarUtils.getInputStream( jarPath, file )
 	}
 	
 	@Override

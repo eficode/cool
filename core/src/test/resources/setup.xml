@@ -103,6 +103,7 @@
   
   <setactivity activity="initial_files" pvob="${pvobname}" />
   
+  <!-- First -->
   <checkout comment="" file="Model" />
   
   <add file="Model\model.h" />
@@ -112,6 +113,27 @@
   <checkin />
   
   <baseline name="model-1" label="none" comment="" component="Model" pvob="${pvobname}" />
+  
+  <!-- Second -->
+  <checkout comment="" file="Client" />
+  
+  <add file="Client\client.h" />
+  
+  <content file="Client\client.h" content="#1" />
+  
+  <checkin />
+  
+  <baseline name="client-1" label="none" comment="" component="Client" pvob="${pvobname}" />
+  
+  
+  <!-- Third -->
+  <checkout comment="" file="Model\model.h" />
+  
+  <content file="Model\model.h" content="#2" />
+  
+  <checkin />
+  
+  <baseline name="model-2" label="none" comment="" component="Model" pvob="${pvobname}" />
   
 </ccenv>
 

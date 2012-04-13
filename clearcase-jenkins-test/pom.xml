@@ -32,7 +32,7 @@
                     </execution>
                 </executions>
             </plugin>
-		</plugins>
+		</plugins>d
 
 	</build>
 
@@ -69,6 +69,13 @@
 			<artifactId>cool</artifactId>
 			<version>0.4.0-SNAPSHOT</version>
 		</dependency>
+		
+        <dependency>
+            <groupId>net.praqma</groupId>
+            <artifactId>praqmajutils</artifactId>
+            <version>0.1.19-SNAPSHOT</version>
+            <optional>true</optional>
+        </dependency>
 	
 		<dependency>
 			<groupId>net.praqma</groupId>
