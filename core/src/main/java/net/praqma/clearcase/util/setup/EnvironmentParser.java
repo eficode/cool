@@ -63,7 +63,11 @@ public class EnvironmentParser extends XML {
 			String tag = e.getTagName();
 			logger.verbose( "Parsing " + tag );
 			try {
-				map.get( tag ).parse( e, context );
+				if( tag != null && tag.length() > 0 ) {
+					map.get( tag ).parse( e, context );
+				} else {
+					logger.debug( "Not handling anonymous tags" );
+				}
 			} catch( ClearCaseException e1 ) {
 				ExceptionUtils.print( e1, System.out, true );
 				return null;
