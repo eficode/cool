@@ -106,9 +106,9 @@
   <!-- First -->
   <checkout comment="" file="Model" />
   
-  <add file="Model\model.h" />
+  <add file="Model/model.h" />
   
-  <content file="Model\model.h" content="#1" />
+  <content file="Model/model.h" content="#1" />
   
   <checkin />
   
@@ -117,9 +117,9 @@
   <!-- Second -->
   <checkout comment="" file="Clientapp" />
   
-  <add file="Clientapp\client.h" />
+  <add file="Clientapp/client.h" />
   
-  <content file="Clientapp\client.h" content="#1" />
+  <content file="Clientapp/client.h" content="#1" />
   
   <checkin />
   
@@ -127,9 +127,9 @@
   
   
   <!-- Third -->
-  <checkout comment="" file="Model\model.h" />
+  <checkout comment="" file="Model/model.h" />
   
-  <content file="Model\model.h" content="#2" />
+  <content file="Model/model.h" content="#2" />
   
   <checkin />
   
@@ -137,27 +137,27 @@
   
   
   <!-- Fourth -->
-  <checkout comment="" file="Model\model.h" />
+  <checkout comment="" file="Model/model.h" />
   
-  <content file="Model\model.h" content="#3" />
+  <content file="Model/model.h" content="#3" />
   
   <checkin />
   
   <baseline name="model-3" label="none" comment="" component="Model" pvob="${pvobname}" />
 
   <!-- Fifth -->
-  <checkout comment="" file="Clientapp" />
+  <checkout comment="" file="Clientapp/client.h" />
   
-  <content file="Clientapp\client.h" content="#2" />
+  <content file="Clientapp/client.h" content="#2" />
   
   <checkin />
   
   <baseline name="client-2" label="none" comment="" component="Clientapp" pvob="${pvobname}" />
   
 	<!-- Sixth -->
-  <checkout comment="" file="Clientapp" />
+  <checkout comment="" file="Clientapp/client.h" />
   
-  <content file="Clientapp\client.h" content="#3" />
+  <content file="Clientapp/client.h" content="#3" />
   
   <checkin />
   
