@@ -78,17 +78,6 @@ public abstract class CoolTestCase extends TestCase {
 
 	@Override
 	public void tearDown() {
-		logger.info( "Tear down ClearCase" );
-
-		if( pvob != null ) {
-			try {
-				SetupUtils.tearDown( pvob );
-				logger.info( "Tear down is successful" );
-			} catch( ClearCaseException e ) {
-				logger.fatal( "Tear down failed" );
-			}
-		} else {
-			logger.info( "PVob was null" );
-		}
+		/* No need for tear down, this is done prior to setup */
 	}
 }

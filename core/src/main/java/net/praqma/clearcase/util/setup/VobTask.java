@@ -5,11 +5,15 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
+import net.praqma.clearcase.util.SetupUtils;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
+import net.praqma.util.debug.Logger;
 
 import org.w3c.dom.Element;
 
 public class VobTask extends AbstractTask {
+	
+	private static Logger logger = Logger.getLogger();
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
@@ -20,6 +24,7 @@ public class VobTask extends AbstractTask {
 		
 		try {
 			if( ucm ) {
+				/* TODO Add a test attribute to the pvob */
 				PVob vob = PVob.create( tag, location, null );
 				context.pvobs.add( vob );
 				if( mount ) {
@@ -35,7 +40,15 @@ public class VobTask extends AbstractTask {
 			}
 		} catch( EntityAlreadyExistsException e1 ) {
 			if( ucm ) {
+				logger.debug( "The pvob already exists, tear it down" );
+				/* TODO Make sure this pvob has a test attribute */
+				
 				PVob vob = new PVob( tag );
+				/* Tear it down */
+				SetupUtils.tearDown( vob );
+				
+				/* TODO Add a test attribute to the pvob */
+				vob = PVob.create( tag, location, null );
 				context.pvobs.add( vob );
 				if( mount ) {
 					vob.mount();
