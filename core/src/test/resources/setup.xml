@@ -13,7 +13,7 @@
   <component root="" comment="" name="_Client" pvob="${pvobname}" />
   <component root="Service" comment="" name="Service" pvob="${pvobname}" />
   <component root="Model" comment="" name="Model" pvob="${pvobname}" />
-  <component root="Clinetapp" comment="" name="Clientapp" pvob="${pvobname}" />
+  <component root="Clientapp" comment="" name="Clientapp" pvob="${pvobname}" />
   
   <folder name="${vobname}" in="RootFolder" pvob="${pvobname}" />
    
