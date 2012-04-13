@@ -115,15 +115,15 @@
   <baseline name="model-1" label="none" comment="" component="Model" pvob="${pvobname}" />
   
   <!-- Second -->
-  <checkout comment="" file="Client" />
+  <checkout comment="" file="Clientapp" />
   
-  <add file="Client\client.h" />
+  <add file="Clientapp\client.h" />
   
-  <content file="Client\client.h" content="#1" />
+  <content file="Clientapp\client.h" content="#1" />
   
   <checkin />
   
-  <baseline name="client-1" label="none" comment="" component="Client" pvob="${pvobname}" />
+  <baseline name="client-1" label="none" comment="" component="Clientapp" pvob="${pvobname}" />
   
   
   <!-- Third -->
