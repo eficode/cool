@@ -1,7 +1,6 @@
 package net.praqma.jenkins.utils.test;
 
 import net.praqma.clearcase.test.junit.CoolTestCase;
-import net.praqma.util.JarUtils;
 
 import org.jvnet.hudson.test.HudsonTestCase;
 
