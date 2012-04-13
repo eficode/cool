@@ -50,7 +50,7 @@ public abstract class CoolTestCase extends TestCase {
 		logger.info( "Bootstrapping from " + file + ( file.exists() ? "" : ", which does not exist!?") );
 		EnvironmentParser parser = new EnvironmentParser( file );
 		Context context = parser.parse();
-		System.out.println( "CONTEXT: " + context.pvobs );
+		logger.debug( "CONTEXT PVOBS: " + context.pvobs );
 		if( context.pvobs.size() > 0 ) {
 			pvob = context.pvobs.get( 0 );
 		} else {
