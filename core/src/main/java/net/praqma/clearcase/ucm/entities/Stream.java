@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
@@ -47,6 +48,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	private Stream defaultTarget = null;
 	private boolean readOnly = true;
 	private List<Baseline> foundations = new ArrayList<Baseline>();
+	
+	private String status = null;
 
 	private Stream parent;
 
@@ -225,7 +228,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		return baselines;
 	}
 
-	public List<Stream> getChildStreams() throws UnableToInitializeEntityException {
+	public List<Stream> getChildStreams( boolean multisitePolling ) throws UnableToInitializeEntityException, CleartoolException {
 
 		List<Stream> streams = new ArrayList<Stream>();
 		try {
@@ -246,8 +249,34 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		} catch( UCMEntityNotFoundException e ) {
 			logger.debug( "The Stream has no child streams" );
 		}
+		
+		/**/
+		Iterator<Stream> it = streams.iterator();
+		String mastership = this.getMastership();
+		while( it.hasNext() ) {
+			Stream stream = it.next();
+			String childMastership = stream.getMastership();
+			logger.debug( "Child Mastership = %s" + childMastership );
+
+			if( stream.hasPostedDelivery() && !multisitePolling ) {
+				logger.debug( "Removing [" + stream.getShortname() + "] due to non-supported posted delivery" );
+				it.remove();
+			} else if( !mastership.equals( childMastership ) ) {
+				logger.debug( "Removing [" + stream.getShortname() + "] due to different mastership" );
+				it.remove();
+
+			}
+
+		}
 
 		return streams;
+	}
+	
+	public boolean hasPostedDelivery() throws CleartoolException {
+		if( status == null ) {
+			status = Deliver.getStatus( this );
+		}
+		return status.contains( "Operation posted from" );
 	}
 
 	public void setProject( Project project ) {
