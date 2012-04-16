@@ -1,7 +1,12 @@
 package net.praqma.clearcase.test;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.setup.BaselineTask;
+import net.praqma.clearcase.util.setup.EnvironmentParser;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 import net.praqma.clearcase.util.setup.VariableTask;
 import net.praqma.util.xml.XML;
@@ -133,5 +138,25 @@ public class TestTask extends TestCase {
 		String value = bt.getValue( "name", test, context );
 		
 		assertEquals( "very_a very long sentence_but_also a very long sentence___a very long sentence__a very long sentence--also a very long sentence", value );
+	}
+	
+	@Test
+	public void testPredefinedVariables() throws ClearCaseException, IOException {
+		
+		Map<String, String> variables = new HashMap<String, String>();
+
+		variables.put( "pvobname", "pvob10101" );
+		
+		XML xml = new XML( "root" );
+		Element var1 = xml.addElement( "var" );
+		var1.setAttribute( "name", "pvobname" );
+		var1.setAttribute( "value", "pvobabc" );
+		
+		EnvironmentParser p = new EnvironmentParser( xml.getXML() );
+		Context c = p.parse( variables );
+		
+		System.out.println( "C: " + c.variables );
+		
+		assertEquals( "pvob10101", c.variables.get( "pvobname" ).value );
 	}
 }

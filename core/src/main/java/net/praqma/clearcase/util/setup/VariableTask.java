@@ -12,7 +12,7 @@ public class VariableTask extends AbstractTask {
 		String name = e.getAttribute( "name" );
 		String value = e.getAttribute( "value" );
 		
-		context.variables.put( name, value );
+		context.put( name, value );
 	}
 
 }

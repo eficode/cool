@@ -36,7 +36,7 @@ public abstract class AbstractTask {
 		Matcher m = rx_variable.matcher( value );
 
 		while( m.find() ) {
-			String var = context.variables.get( m.group( 2 ) );			
+			String var = context.variables.get( m.group( 2 ) ).value;			
 			value = value.replace( m.group( 1 ), var );
 		}
 		

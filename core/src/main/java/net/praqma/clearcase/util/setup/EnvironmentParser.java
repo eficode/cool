@@ -1,11 +1,13 @@
 package net.praqma.clearcase.util.setup;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.w3c.dom.Element;
 
@@ -42,22 +44,68 @@ public class EnvironmentParser extends XML {
 	
 	public static class Context {
 		public File path;
-		public Map<String, String> variables = new HashMap<String, String>();
+		public Map<String, Value> variables = new HashMap<String, Value>();
 		
 		public List<PVob> pvobs = new ArrayList<PVob>();
+		
+		public void put( String key, String value ) {
+			if( variables.containsKey( key ) ) {
+				/* Only overwrite if not fixed */
+				if( !variables.get( key ).fixed ) {
+					variables.put( key, new Value( value ) );
+				}					
+			} else {
+				variables.put( key, new Value( value ) );
+			}
+		}
+	}
+	
+	public static class Value {
+		public String value;
+		public boolean fixed = false;
+		
+		public Value( String value ) {
+			this.value = value;
+		}
+		
+		public Value( String value, boolean fixed ) {
+			this.value = value;
+			this.fixed = fixed;
+		}
+		
+		public String toString() {
+			return value + "(" + fixed + ")";
+		}
 	}
 	
 	public EnvironmentParser( File file ) throws IOException {
 		super( file );
 	}
 	
+	public EnvironmentParser( String xml ) throws IOException {
+		super( new ByteArrayInputStream( xml.getBytes() ) );
+	}
+	
+	private void insertVariables( Context context, Map<String, String> variables ) {
+		Set<String> keys = variables.keySet();
+		for( String key : keys ) {
+			context.variables.put( key, new Value( variables.get( key ), true ) );
+		}
+	}
+	
 	public Context parse() {
+		return parse( new HashMap<String, String>() );
+	}
+	
+	public Context parse( Map<String, String> variables ) {
 		
 		Element env = getRoot();
 		
 		List<Element> elements = getElements( env );
 		
 		Context context = new Context();
+		
+		insertVariables( context, variables );
 		
 		for( Element e : elements ) {
 			String tag = e.getTagName();

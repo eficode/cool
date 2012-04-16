@@ -1,6 +1,8 @@
 package net.praqma.clearcase.test.junit;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
@@ -27,6 +29,12 @@ public abstract class CoolTestCase extends TestCase {
 	
 	protected File defaultSetup = new File( CoolTestCase.class.getClassLoader().getResource( "setup.xml" ).getFile() );
 	
+	/**
+	 * This map is used to overwrite those variables detected by the environment parser.<br><br>
+	 * The most common variables to overwrite are <b>pvobname</b> and <b>vobname</b>.
+	 */
+	protected Map<String, String> variables = new HashMap<String, String>();
+	
 	protected PVob pvob;
 	
 	protected File viewPath;
@@ -49,7 +57,7 @@ public abstract class CoolTestCase extends TestCase {
 	public void bootStrap( File file ) throws Exception {
 		logger.info( "Bootstrapping from " + file + ( file.exists() ? "" : ", which does not exist!?") );
 		EnvironmentParser parser = new EnvironmentParser( file );
-		Context context = parser.parse();
+		Context context = parser.parse( variables );
 		logger.info( "CONTEXT PVOBS: " + context.pvobs );
 		if( context.pvobs.size() > 0 ) {
 			pvob = context.pvobs.get( 0 );
