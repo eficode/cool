@@ -39,11 +39,34 @@ public class Deliver {
 		this.viewtag = viewtag;
 	}
 
-	public boolean deliverForced( Stream stream, Stream target, File viewcontext, String viewtag ) throws DeliverException {
-		return deliver( true, true, true );
+	public boolean deliverForced( Stream stream, Stream target, File viewcontext, String viewtag ) throws DeliverException, CleartoolException {
+		return deliver( true, true, true, false );
+	}
+	
+	public boolean deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException, CleartoolException {
+		try {
+			return _deliver( force, complete, abort, false );
+		} catch( DeliverException e ) {
+			if( e.getType().equals( Type.DELIVER_IN_PROGRESS ) ) { //could be a posted delivery
+				String status = getStatus( stream );
+				if( status.replace( System.getProperty( "line.separator" ), " " ).contains( "Operation posted from" ) ) {
+					try {
+						return deliver( force, complete, abort, true );
+					} catch( DeliverException e1 ) {
+						logger.warning( "Could not resume posted delivery: " + e1.getMessage() );
+						throw e1;
+					}
+				} else {
+					throw e;
+				}
+			}
+
+			/* If not a deliver in progress, throw e again */
+			throw e;
+		}
 	}
 
-	public boolean deliver( boolean force, boolean complete, boolean abort ) throws DeliverException {
+	private boolean _deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException {
 		logger.debug( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );
 
 		String result = "";
