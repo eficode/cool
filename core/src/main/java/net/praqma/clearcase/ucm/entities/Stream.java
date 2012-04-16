@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.PVob;
@@ -270,6 +272,29 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		}
 
 		return streams;
+	}
+	
+	public List<Baseline> getPostedBaselines( Component component, PromotionLevel plevel ) throws UnableToInitializeEntityException, CleartoolException {
+		List<Baseline> res = new ArrayList<Baseline>();
+
+		if( status == null ) {
+			status = Deliver.getStatus( this );
+		}
+		
+		Matcher m = Pattern.compile( ".*baseline:(\\S*).*" ).matcher( status );
+
+		if( m.find() ) {
+			logger.warning( "Posted baseline : " + m.group( 1 ) );
+
+			// should maybe also select on component
+			Baseline b = Baseline.get( m.group( 1 ) );
+			
+			if( b.getPromotionLevel( true ) == plevel ) {
+				res.add( b );
+			}
+		}
+		
+		return res;
 	}
 	
 	public boolean hasPostedDelivery() throws CleartoolException {
