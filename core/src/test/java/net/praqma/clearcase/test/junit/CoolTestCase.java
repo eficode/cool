@@ -33,7 +33,7 @@ public abstract class CoolTestCase extends TestCase {
 	 * This map is used to overwrite those variables detected by the environment parser.<br><br>
 	 * The most common variables to overwrite are <b>pvobname</b> and <b>vobname</b>.
 	 */
-	protected Map<String, String> variables = new HashMap<String, String>();
+	public Map<String, String> variables = new HashMap<String, String>();
 	
 	protected PVob pvob;
 	
