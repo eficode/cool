@@ -534,6 +534,13 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return this.mastership;
 	}
 
+	public void setMastership(String mastership) throws UCMException {
+		if( this.mastership != mastership ) {
+			this.mastership = mastership; 
+			context.setMastership( this, mastership );
+		}
+	}
+
 	/**
 	 * Returns a string representation of the entity object
 	 * 

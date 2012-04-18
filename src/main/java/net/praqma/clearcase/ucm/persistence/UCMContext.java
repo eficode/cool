@@ -45,6 +45,10 @@ public class UCMContext extends Cool {
 		return strategy.getMastership( entity.getFullyQualifiedName() );
 	}
 
+	public void setMastership( UCMEntity entity, String mastership  ) throws UCMException {
+		strategy.setMastership( entity.getFullyQualifiedName(), mastership );
+	}
+
 	public void changeOwnership( String fqname, String username, File viewContext ) throws UCMException {
 		strategy.changeOwnership( fqname, username, viewContext );
 	}

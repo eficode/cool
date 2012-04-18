@@ -78,6 +78,17 @@ public class UCMStrategyCleartool extends Cool implements UCMStrategyInterface {
 		return ms.stdoutBuffer.toString();
 	}
 
+	/**/
+	public void setMastership( String fqname, String msname ) throws UCMException {
+		String cmd = "chmaster replica:" + msname + " " + fqname;
+
+		try {
+			Cleartool.run( cmd );
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new UCMException( "Could not set mastership. ", e );
+		}
+	}
+
 	// private static final Pattern rx_versionName = Pattern.compile(
 	// "^(\\S+)\\s+([\\S\\s.^@]+)@@(.*)$" );
 	private static final Pattern rx_versionName = Pattern.compile( "^(\\S+)\\s+([\\S\\s.^@]+@@.*)$" );

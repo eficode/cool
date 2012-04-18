@@ -789,6 +789,10 @@ public class UCMStrategyXML implements UCMStrategyInterface
     }
 
     @Override
+    public void setMastership(String fqname, String msname) throws UCMException {
+        // TODO Auto-generated method stub
+    }
+    @Override
     public String getProjectFromStream(String stream) {
         // TODO Auto-generated method stub
         return null;

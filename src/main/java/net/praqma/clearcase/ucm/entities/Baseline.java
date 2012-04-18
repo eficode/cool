@@ -158,7 +158,18 @@ public class Baseline extends UCMEntity implements Diffable {
         return this.plevel;
     }
 
-    /**
+	public boolean shouldResetMastership() throws UCMException {
+	    if( !getMastership().equals(this.getStream().getOriginalMastership()) ) {
+	    	return true;
+	    }
+	    return false;
+	}
+
+	public void resetMastership() throws UCMException {
+    	this.setMastership(this.getStream().getOriginalMastership());
+	}
+
+	/**
      * Demotes the Baseline to <code>REJECTED</code>.
      */
     public Project.Plevel demote() throws UCMException {

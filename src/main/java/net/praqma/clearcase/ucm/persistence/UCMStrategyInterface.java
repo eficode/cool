@@ -32,6 +32,7 @@ interface UCMStrategyInterface
 
 	/* Common entity */
 	public String getMastership( String fqname ) throws UCMException;
+	public void setMastership( String fqname, String msname  ) throws UCMException;
 	public ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws UCMException;
 	public void getDirectoryStatus( Version version, ChangeSet2 changeset ) throws UCMException;
 	public List<String> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws UCMException;
