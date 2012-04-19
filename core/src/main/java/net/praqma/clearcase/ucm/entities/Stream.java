@@ -68,6 +68,12 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	static Stream getEntity() {
 		return new Stream();
 	}
+	
+	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline baseline ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
+		List<Baseline> baselines = new ArrayList<Baseline>();
+		baselines.add( baseline );
+		return create( parent, nstream, readonly, baselines );
+	}
 
 	/**
 	 * Create a new stream, given a parent Stream, a fully qualified name for
