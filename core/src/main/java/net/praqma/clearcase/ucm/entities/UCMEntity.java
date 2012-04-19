@@ -55,44 +55,38 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	protected static final Pattern pattern_version_fqname = Pattern.compile( "^(.+)@@(.+)$" );
 	protected static final String rx_ccdef_filename = "[\\S\\s\\\\\\/.^@]";
 	//private static final Pattern pattern_version_fqname = Pattern.compile( "^(" + rx_ccdef_filename + "+)@@(?:(" + rx_ccdef_filename + ")@@)?(" + rx_ccdef_vob + "+)$" );
-	
+
 	protected static final Pattern pattern_tag_fqname = Pattern.compile( "^tag@(\\w+)@(" + rx_ccdef_vob + "+)$" );
 	private static final Pattern pattern_hlink = Pattern.compile( "^\\s*(" + rx_ccdef_allowed + "+@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"*(.*?)\"*\\s*$" );
 	private static final Pattern pattern_hlink_type_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB \"(\\S+)\" .*" );
 	private static final String rx_entityNotFound = "cleartool: Error: \\w+ not found: \"\\S+\"\\.";
 
 	protected static final String rx_ccdef_cc_name = "[\\w\\.][\\w\\.-]*";
-	
+
 	private static final String rx_attr_find = "^\\s*\\S+\\s*=\\s*\\S*\\s*$";
 
 	transient private static ClassLoader classloader = UCMEntity.class.getClassLoader();
-	
+
 	private boolean created = false;
 
 	public enum LabelStatus {
-		UNKNOWN,
-		FULL,
-		INCREMENTAL,
-		UNLABLED
+		UNKNOWN, FULL, INCREMENTAL, UNLABLED
 	}
-	
+
 	public enum Kind {
-		UNKNOWN,
-		DIRECTORY_ELEMENT,
-		FILE_ELEMENT,
+		UNKNOWN, DIRECTORY_ELEMENT, FILE_ELEMENT,
 	}
-	
+
 	protected Kind kind = Kind.UNKNOWN;
-	
+
 	protected LabelStatus labelStatus = LabelStatus.UNKNOWN;
 
-
 	protected Map<String, String> attributes = new HashMap<String, String>();
-	
+
 	protected Date date;
-	
-	protected static transient DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd.HHmmss"); // 20060810.225810
-	
+
+	protected static transient DateFormat dateFormatter = new SimpleDateFormat( "yyyyMMdd.HHmmss" ); // 20060810.225810
+
 	transient private String comment;
 
 	/* Fields that need not to be loaded */
@@ -108,9 +102,9 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	protected boolean loaded = false;
 	private String entitySelector;
-	
+
 	public UCMEntity() {
-		
+
 	}
 
 	protected UCMEntity( String entitySelector ) {
@@ -119,12 +113,13 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	/**
 	 * Generates a UCM entity given its fully qualified name.
+	 * 
 	 * @return A new entity of the type given by the fully qualified name.
-	 * @throws UnableToCreateEntityException 
-	 * @throws UnableToInitializeEntityException 
+	 * @throws UnableToCreateEntityException
+	 * @throws UnableToInitializeEntityException
 	 */
 	protected static UCMEntity getEntity( Class<? extends UCMEntity> clazz, String fqname ) throws UnableToInitializeEntityException {
-		
+
 		/* Is this needed? */
 		fqname = fqname.trim();
 
@@ -147,8 +142,10 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	}
 
 	/**
-	 * Initialize the UCM entity. This is a base implementation, storing the short name and pvob.
-	 * @throws UCMEntityNotInitializedException 
+	 * Initialize the UCM entity. This is a base implementation, storing the
+	 * short name and pvob.
+	 * 
+	 * @throws UCMEntityNotInitializedException
 	 */
 	protected void initialize() throws UCMEntityNotInitializedException {
 		Matcher match = pattern_std_fqname.matcher( fqname );
@@ -163,21 +160,22 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	/**
 	 * Default load functionality for the entity. Every UCM entity should
 	 * implement this method itself.
-	 * @return 
 	 * 
-	 * @throws UnableToLoadEntityException 
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToCreateEntityException 
-	 * @throws UnableToInitializeEntityException 
-	 * @throws UnableToGetEntityException 
+	 * @return
+	 * 
+	 * @throws UnableToLoadEntityException
+	 * @throws UCMEntityNotFoundException
+	 * @throws UnableToCreateEntityException
+	 * @throws UnableToInitializeEntityException
+	 * @throws UnableToGetEntityException
 	 */
 	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
 		logger.debug( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
-		
+
 		return this;
 	}
-	
+
 	public LabelStatus getLabelStatusFromString( String ls ) {
 		if( ls.equalsIgnoreCase( "not labeled" ) ) {
 			return LabelStatus.UNLABLED;
@@ -189,11 +187,11 @@ public abstract class UCMEntity extends UCM implements Serializable {
 			return LabelStatus.UNKNOWN;
 		}
 	}
-	
+
 	public LabelStatus getLabelStatus() {
 		return labelStatus;
 	}
-	
+
 	public static UCMEntity getEntity( String fqname ) throws UnableToInitializeEntityException, UnknownEntityException {
 		if( fqname.startsWith( "baseline:" ) ) {
 			return Baseline.get( fqname );
@@ -205,15 +203,14 @@ public abstract class UCMEntity extends UCM implements Serializable {
 			return Activity.get( fqname );
 		} else if( fqname.startsWith( "component:" ) ) {
 			return Component.get( fqname );
-		} else if ( fqname.startsWith( "folder:" ) ) {
+		} else if( fqname.startsWith( "folder:" ) ) {
 			return Folder.get( fqname );
-		}		
-		
+		}
+
 		throw new UnknownEntityException( fqname );
 	}
 
 	/* Syntactic static helper methods for retrieving entity objects */
-
 
 	/* Tag stuff */
 
@@ -252,15 +249,15 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 		return atts;
 	}
-	
+
 	public Map<String, String> getAttributes() throws UnableToListAttributesException {
 		return UCMEntity.getAttributes( this, null );
 	}
-	
+
 	public Map<String, String> getAttributes( File context ) throws UnableToListAttributesException {
 		return UCMEntity.getAttributes( this, context );
 	}
-	
+
 	public String getAttribute( String key ) throws UnableToListAttributesException {
 		Map<String, String> atts = getAttributes( this, null );
 		if( atts.containsKey( key ) ) {
@@ -286,7 +283,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 			throw new UnableToSetAttributeException( this, attribute, value, context, e );
 		}
 	}
-	
+
 	public List<HyperLink> getHyperlinks( String hyperlinkType, File context ) throws HyperlinkException, UnableToInitializeEntityException {
 		String cmd = "describe -ahlink " + hyperlinkType + " -l " + this;
 
@@ -299,7 +296,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 				//UCMException ucme = new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e, UCMType.UNKNOWN_HLINK_TYPE );
 				//ucme.addInformation(  "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -nc " + match.group( 1 ) + "@" + match.group( 2 ) );
 				HyperlinkException ex = new HyperlinkException( this, context, match.group( 1 ), e );
-				ex.addInformation(  "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -nc " + match.group( 1 ) + "@" + match.group( 2 ) );
+				ex.addInformation( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -nc " + match.group( 1 ) + "@" + match.group( 2 ) );
 				throw ex;
 			} else {
 				HyperlinkException ex = new HyperlinkException( this, context, hyperlinkType, e );
@@ -318,8 +315,8 @@ public abstract class UCMEntity extends UCM implements Serializable {
 				Matcher match = pattern_hlink.matcher( list.get( i ) );
 				if( match.find() ) {
 					//hlinks.add( new Tuple<String, String>( match.group( 1 ).trim(), match.group( 2 ).trim() ) );
-					
-					HyperLink h = HyperLink.getHyperLink(  match.group( 1 ).trim(), match.group( 2 ).trim() );
+
+					HyperLink h = HyperLink.getHyperLink( match.group( 1 ).trim(), match.group( 2 ).trim() );
 
 					hlinks.add( h );
 				}
@@ -347,9 +344,23 @@ public abstract class UCMEntity extends UCM implements Serializable {
 		return this.shortname;
 	}
 
-
 	public PVob getPVob() {
 		return pvob;
+	}
+
+	public void setMastership( String mastership ) throws CleartoolException {
+		if( this.mastership != mastership ) {
+			this.mastership = mastership;
+
+			String cmd = "chmaster replica:" + mastership + " " + fqname;
+
+			try {
+				Cleartool.run( cmd );
+			} catch( AbnormalProcessTerminationException e ) {
+				throw new CleartoolException( "Could not set mastership. ", e );
+			}
+
+		}
 	}
 
 	public String getMastership() throws CleartoolException {
@@ -376,7 +387,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	 * 
 	 * @return A String
 	 * @throws UCMException
-	 * @throws UnableToLoadEntityException 
+	 * @throws UnableToLoadEntityException
 	 */
 	public String stringify() {
 		StringBuffer sb = new StringBuffer();
@@ -412,15 +423,15 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	public Date getDate() {
 		return date;
 	}
-	
+
 	public void setComment( String comment ) {
 		this.comment = comment;
 	}
-	
+
 	public String getComment() {
 		return comment;
 	}
-	
+
 	public Kind getKind() {
 		return kind;
 	}
@@ -428,7 +439,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	public void setKind( Kind kind ) {
 		this.kind = kind;
 	}
-	
+
 	public boolean equals( UCMEntity entity ) {
 		return entity.getFullyQualifiedName().equals( this.getFullyQualifiedName() );
 	}
@@ -436,11 +447,11 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	public String getEntitySelector() {
 		return this.entitySelector;
 	}
-	
+
 	public void changeOwnership( String username, File viewContext ) throws UnknownVobException, UnknownUserException, UCMEntityNotFoundException, CleartoolException {
 		UCMEntity.changeOwnership( this, username, viewContext );
 	}
-	
+
 	public static void changeOwnership( UCMEntity entity, String username, File viewContext ) throws UnknownVobException, UnknownUserException, UCMEntityNotFoundException, CleartoolException {
 		String cmd = "protect -chown " + username + " \"" + entity + "\"";
 
@@ -466,7 +477,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 			throw new CleartoolException( "Unable to change ownership of " + entity + " to " + username, e );
 		}
 	}
-	
+
 	public boolean isLoaded() {
 		return this.loaded;
 	}
@@ -478,7 +489,7 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	public void setCreated( boolean created ) {
 		this.created = created;
 	}
-	
+
 	public String getNormalizedName() {
 		int idx = fqname.indexOf( ':' );
 		if( idx < 0 ) {
@@ -487,11 +498,11 @@ public abstract class UCMEntity extends UCM implements Serializable {
 			return fqname.substring( idx + 1 );
 		}
 	}
-	
+
 	public static String getargComment( String comment ) {
 		return ( comment == null || comment.length() == 0 ? "-nc " : "-comment \"" + comment + "\"" );
 	}
-	
+
 	public static String getargIn( String in ) {
 		return "-in " + ( in == null ? "RootFolder" : in );
 	}
