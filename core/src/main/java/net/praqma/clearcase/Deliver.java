@@ -65,6 +65,17 @@ public class Deliver {
 			throw e;
 		}
 	}
+	
+	public Deliver complete() throws DeliverException {
+		String cmd = "deliver -complete";
+		
+		try {
+			Cleartool.run( cmd, context );
+			return this;
+		} catch( Exception e ) {
+			throw new DeliverException( this, Type.UNABLE_TO_COMPLETE, e );
+		}
+	}
 
 	private boolean _deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException {
 		logger.debug( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );

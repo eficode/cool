@@ -9,6 +9,7 @@ public class DeliverException extends ClearCaseException {
 		MERGE_ERROR,
 		INTERPROJECT_DELIVER_DENIED,
 		DELIVER_IN_PROGRESS,
+		UNABLE_TO_COMPLETE,
 		UNKNOWN
 	}
 	
