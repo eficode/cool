@@ -264,7 +264,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 		while( it.hasNext() ) {
 			Stream stream = it.next();
 			String childMastership = stream.getMastership();
-			logger.debug( "Child Mastership = %s" + childMastership );
+			logger.debug( "Child Mastership = " + childMastership );
 
 			if( stream.hasPostedDelivery() && !multisitePolling ) {
 				logger.debug( "Removing [" + stream.getShortname() + "] due to non-supported posted delivery" );
@@ -287,7 +287,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 			status = Deliver.getStatus( this );
 		}
 		
-		Matcher m = Pattern.compile( ".*baseline:(\\S*).*" ).matcher( status );
+		Matcher m = Pattern.compile( ".*baseline:(\\S*).*" ).matcher( Deliver.getStatus( this ) );
 
 		if( m.find() ) {
 			logger.warning( "Posted baseline : " + m.group( 1 ) );
@@ -304,10 +304,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	}
 	
 	public boolean hasPostedDelivery() throws CleartoolException {
-		if( status == null ) {
-			status = Deliver.getStatus( this );
-		}
-		return status.contains( "Operation posted from" );
+		return Deliver.getStatus( this ).contains( "Operation posted from" );
 	}
 
 	public void setProject( Project project ) {
@@ -561,6 +558,15 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 	public Stream getParent() {
 		return parent;
+	}
+	
+	public String getOriginalMastership() throws CleartoolException {
+		Matcher m = Pattern.compile( ".*Operation posted from replica \"(\\w*)\".*" ).matcher( Deliver.getStatus( this ) );
+		if( m.find() ) {
+			logger.warning( "Posted from replica : " + m.group( 1 ) );
+			return m.group( 1 );
+		}
+		return this.getMastership();
 	}
 
 	public String stringify() {
