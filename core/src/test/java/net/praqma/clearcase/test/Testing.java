@@ -16,7 +16,7 @@ public class Testing extends CoolTestCase {
 		
 		String uniqueTestVobName = "cool" + uniqueTimeStamp;
 		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
 		
 		try {
 			bootStrap( defaultSetup );
