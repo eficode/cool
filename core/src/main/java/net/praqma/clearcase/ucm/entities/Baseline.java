@@ -12,6 +12,7 @@ import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.NothingNewException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
@@ -290,6 +291,17 @@ public class Baseline extends UCMEntity implements Diffable {
 	public Stream getStream() {
 		return this.stream;
 	}
+	
+	public boolean shouldResetMastership() throws ClearCaseException {
+		if( !getMastership().equals( this.getStream().getOriginalMastership() ) ) {
+			return true;
+		}
+		return false;
+	}
+
+	public void resetMastership() throws ClearCaseException {
+		this.setMastership( this.getStream().getOriginalMastership() );
+	} 
 
 	public String stringify() {
 		StringBuffer sb = new StringBuffer();
