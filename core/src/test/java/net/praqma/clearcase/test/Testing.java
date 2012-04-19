@@ -13,6 +13,11 @@ public class Testing extends CoolTestCase {
 
 	@Test
 	public void testBasic() {
+		
+		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+		variables.put( "vobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName );
+		
 		try {
 			bootStrap( defaultSetup );
 		} catch( Exception e ) {

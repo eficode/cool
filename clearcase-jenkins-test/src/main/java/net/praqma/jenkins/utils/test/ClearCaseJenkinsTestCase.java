@@ -7,8 +7,6 @@ import org.jvnet.hudson.test.HudsonTestCase;
 public class ClearCaseJenkinsTestCase extends HudsonTestCase {
 	public CoolTestCase coolTest = new ConcreteCoolTestCase();
 	
-	public String uniqueTimeStamp = "" + System.currentTimeMillis() / 60000;
-	
 	public CoolTestCase getCoolTestCase() {
 		return coolTest;
 	}

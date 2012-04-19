@@ -8,6 +8,11 @@ public class TestStream extends CoolTestCase {
 
 	@Test
 	public void testFoundationBaselines() throws Exception {
+		
+		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+		variables.put( "vobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName );
+		
 		bootStrap( defaultSetup );
 		
 		/*

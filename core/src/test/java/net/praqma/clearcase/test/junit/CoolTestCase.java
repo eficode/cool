@@ -29,6 +29,8 @@ public abstract class CoolTestCase extends TestCase {
 	
 	protected File defaultSetup = new File( CoolTestCase.class.getClassLoader().getResource( "setup.xml" ).getFile() );
 	
+	public String uniqueTimeStamp = "" + System.currentTimeMillis() / 60000;
+	
 	/**
 	 * This map is used to overwrite those variables detected by the environment parser.<br><br>
 	 * The most common variables to overwrite are <b>pvobname</b> and <b>vobname</b>.
