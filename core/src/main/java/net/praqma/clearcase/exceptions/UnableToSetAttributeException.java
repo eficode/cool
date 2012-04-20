@@ -2,19 +2,20 @@ package net.praqma.clearcase.exceptions;
 
 import java.io.File;
 
+import net.praqma.clearcase.ClearCase;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 
 public class UnableToSetAttributeException extends ClearCaseException {
 
-	private UCMEntity entity;
+	private ClearCase entity;
 	private File context;
 	private String key;
 	private String value;
 	
-	public UnableToSetAttributeException( UCMEntity entity, String key, String value, File context, Exception e ) {
+	public UnableToSetAttributeException( ClearCase clearCase, String key, String value, File context, Exception e ) {
 		super( e );
 		
-		this.entity = entity;
+		this.entity = clearCase;
 		this.context = context;
 		this.key = key;
 		this.value = value;
@@ -28,7 +29,7 @@ public class UnableToSetAttributeException extends ClearCaseException {
 		return value;
 	}
 
-	public UCMEntity getEntity() {
+	public ClearCase getEntity() {
 		return entity;
 	}
 

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 

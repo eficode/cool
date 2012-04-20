@@ -19,7 +19,7 @@ import net.praqma.util.execute.CmdResult;
  * @author wolfgang
  * 
  */
-public class Vob extends Cool implements Serializable {
+public class Vob extends ClearCase implements Serializable {
 
 	public static final Pattern rx_vob_get_path = Pattern.compile( "^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$" );
 

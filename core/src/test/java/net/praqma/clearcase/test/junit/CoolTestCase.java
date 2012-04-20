@@ -8,6 +8,7 @@ import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
 import net.praqma.clearcase.ucm.view.DynamicView;
 import net.praqma.clearcase.util.SetupUtils;
 import net.praqma.clearcase.util.setup.EnvironmentParser;
@@ -63,6 +64,9 @@ public abstract class CoolTestCase extends TestCase {
 		logger.info( "CONTEXT PVOBS: " + context.pvobs );
 		if( context.pvobs.size() > 0 ) {
 			pvob = context.pvobs.get( 0 );
+			
+			/* Set a test attribute */
+			pvob.setAttribute( "test-vob", "initial" );
 		} else {
 			failed = true;
 		}
@@ -78,7 +82,7 @@ public abstract class CoolTestCase extends TestCase {
 
 	@Override
 	public void setUp() {
-
+		
 	}
 
 	@Override
@@ -89,5 +93,13 @@ public abstract class CoolTestCase extends TestCase {
 	@Override
 	public void tearDown() {
 		/* No need for tear down, this is done prior to setup */
+		if( pvob != null ) {
+			try {
+				pvob.setAttribute( "test-vob", "done" );
+			} catch( UnableToSetAttributeException e ) {
+				logger.error( "Unable to set attribute: " + e.getMessage() );
+				e.log();
+			}
+		}
 	}
 }

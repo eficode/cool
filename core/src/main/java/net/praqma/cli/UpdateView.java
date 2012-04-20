@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.ucm.entities.UCM;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.SnapshotView.Components;
 import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules;

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.ClearCase;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.cleartool.Cleartool;
@@ -41,7 +42,7 @@ import net.praqma.util.structure.Tuple;
  * @author wolfgang
  * 
  */
-public abstract class UCMEntity extends UCM implements Serializable {
+public abstract class UCMEntity extends ClearCase implements Serializable {
 
 	transient private static Logger logger = Logger.getLogger();
 
@@ -63,8 +64,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 
 	protected static final String rx_ccdef_cc_name = "[\\w\\.][\\w\\.-]*";
 
-	private static final String rx_attr_find = "^\\s*\\S+\\s*=\\s*\\S*\\s*$";
-
 	transient private static ClassLoader classloader = UCMEntity.class.getClassLoader();
 
 	private boolean created = false;
@@ -80,8 +79,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	protected Kind kind = Kind.UNKNOWN;
 
 	protected LabelStatus labelStatus = LabelStatus.UNKNOWN;
-
-	protected Map<String, String> attributes = new HashMap<String, String>();
 
 	protected Date date;
 
@@ -217,71 +214,6 @@ public abstract class UCMEntity extends UCM implements Serializable {
 	public Tag getTag( String tagType, String tagID ) throws TagException, UnableToInitializeEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
 		logger.debug( "Retrieving tags for " + tagType + ", " + tagID );
 		return Tag.getTag( this, tagType, tagID, true );
-	}
-
-	/**
-	 * Retrieve the attributes for an entity, executed from the current working
-	 * directory
-	 * 
-	 * @return A Map of key, value pairs of the attributes
-	 * @throws UnableToListAttributesException
-	 */
-	public static Map<String, String> getAttributes( UCMEntity entity, File context ) throws UnableToListAttributesException {
-		String cmd = "describe -aattr -all " + entity;
-
-		CmdResult res = null;
-		try {
-			res = Cleartool.run( cmd, context );
-		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( "Could not find attributes on " + fqname + ". Recieved: " + e.getMessage(), e.getMessage() );
-			throw new UnableToListAttributesException( entity, context, e );
-		}
-
-		Map<String, String> atts = new HashMap<String, String>();
-
-		for( String s : res.stdoutList ) {
-			/* A valid attribute */
-			if( s.matches( rx_attr_find ) ) {
-				String[] data = s.split( "=" );
-				atts.put( data[0].trim(), data[1].trim() );
-			}
-		}
-
-		return atts;
-	}
-
-	public Map<String, String> getAttributes() throws UnableToListAttributesException {
-		return UCMEntity.getAttributes( this, null );
-	}
-
-	public Map<String, String> getAttributes( File context ) throws UnableToListAttributesException {
-		return UCMEntity.getAttributes( this, context );
-	}
-
-	public String getAttribute( String key ) throws UnableToListAttributesException {
-		Map<String, String> atts = getAttributes( this, null );
-		if( atts.containsKey( key ) ) {
-			return atts.get( key );
-		} else {
-			return null;
-		}
-	}
-
-	public void setAttribute( String attribute, String value ) throws UnableToSetAttributeException {
-		setAttribute( attribute, value, null );
-	}
-
-	public void setAttribute( String attribute, String value, File context ) throws UnableToSetAttributeException {
-		//context.setAttribute( this, attribute, value );
-		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + this );
-
-		String cmd = "mkattr -replace " + attribute + " " + value + " " + this;
-		try {
-			Cleartool.run( cmd, context );
-		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( "Could not create the attribute " + attribute, e.getMessage() );
-			throw new UnableToSetAttributeException( this, attribute, value, context, e );
-		}
 	}
 
 	public List<HyperLink> getHyperlinks( String hyperlinkType, File context ) throws HyperlinkException, UnableToInitializeEntityException {
