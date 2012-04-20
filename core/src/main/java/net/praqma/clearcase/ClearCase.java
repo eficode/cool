@@ -71,9 +71,9 @@ public abstract class ClearCase extends Cool {
 
 	public void setAttribute( String attribute, String value, File context ) throws UnableToSetAttributeException {
 		//context.setAttribute( this, attribute, value );
-		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + this );
+		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + this.getFullyQualifiedName() );
 
-		String cmd = "mkattr -replace " + attribute + " " + value + " " + this;
+		String cmd = "mkattr -replace " + attribute + " " + value + " " + this.getFullyQualifiedName();
 		try {
 			Cleartool.run( cmd, context );
 		} catch( AbnormalProcessTerminationException e ) {
@@ -81,5 +81,7 @@ public abstract class ClearCase extends Cool {
 			throw new UnableToSetAttributeException( this, attribute, value, context, e );
 		}
 	}
+	
+	public abstract String getFullyQualifiedName();
 
 }

@@ -228,4 +228,9 @@ public class UCMView extends ClearCase implements Serializable {
 		return hash;
 	}
 
+	@Override
+	public String getFullyQualifiedName() {
+		return viewtag;
+	}
+
 }

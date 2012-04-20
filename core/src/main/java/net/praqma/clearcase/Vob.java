@@ -207,4 +207,9 @@ public class Vob extends ClearCase implements Serializable {
 		return hash;
 	}
 
+	@Override
+	public String getFullyQualifiedName() {
+		return "vob:" + this;
+	}
+
 }
