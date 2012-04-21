@@ -91,7 +91,7 @@ public abstract class ClearCase extends Cool {
 	 * @throws CleartoolException
 	 */
 	public static void createSimpleAttributeType( String name, PVob pvob, boolean replace ) throws UnableToCreateAttributeException {
-		String cmd = "mkattype " + ( replace ? "-replace " : "" ) + name + "@" + pvob;
+		String cmd = "mkattype -nc " + ( replace ? "-replace " : "" ) + name + "@" + pvob;
 		
 		try {
 			Cleartool.run( cmd );
