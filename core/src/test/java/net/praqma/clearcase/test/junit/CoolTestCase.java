@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.praqma.clearcase.ClearCase;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -64,7 +65,7 @@ public abstract class CoolTestCase extends TestCase {
 		logger.info( "CONTEXT PVOBS: " + context.pvobs );
 		if( context.pvobs.size() > 0 ) {
 			pvob = context.pvobs.get( 0 );
-			
+			ClearCase.createSimpleAttributeType( "test-vob", pvob, true );
 			/* Set a test attribute */
 			pvob.setAttribute( "test-vob", "initial" );
 		} else {
