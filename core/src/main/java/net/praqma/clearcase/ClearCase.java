@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.UnableToCreateAttributeException;
 import net.praqma.clearcase.exceptions.UnableToListAttributesException;
 import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
 import net.praqma.util.debug.Logger;
@@ -79,6 +80,23 @@ public abstract class ClearCase extends Cool {
 		} catch( AbnormalProcessTerminationException e ) {
 			//throw new UCMException( "Could not create the attribute " + attribute, e.getMessage() );
 			throw new UnableToSetAttributeException( this, attribute, value, context, e );
+		}
+	}
+	
+	/**
+	 * Create an attribute with no possibility of specifying type or range.
+	 * @param name Name of the type
+	 * @param pvob The PVob
+	 * @param replace
+	 * @throws CleartoolException
+	 */
+	public static void createSimpleAttributeType( String name, PVob pvob, boolean replace ) throws UnableToCreateAttributeException {
+		String cmd = "mkattype " + ( replace ? "-replace " : "" ) + name + "@" + pvob;
+		
+		try {
+			Cleartool.run( cmd );
+		} catch( Exception e ) {
+			throw new UnableToCreateAttributeException( "Unable to create attribute type", e );
 		}
 	}
 	
