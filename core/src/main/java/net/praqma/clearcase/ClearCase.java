@@ -91,12 +91,22 @@ public abstract class ClearCase extends Cool {
 	 * @throws CleartoolException
 	 */
 	public static void createSimpleAttributeType( String name, PVob pvob, boolean replace ) throws UnableToCreateAttributeException {
-		String cmd = "mkattype -nc " + ( replace ? "-replace " : "" ) + name + "@" + pvob;
+		String cmd = "mkattype -nc " + name + "@" + pvob;
 		
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
-			throw new UnableToCreateAttributeException( "Unable to create attribute type", e );
+			if( replace ) {
+				cmd = "mkattype -nc " + ( replace ? "-replace " : "" ) + name + "@" + pvob;
+				try {
+					Cleartool.run( cmd );
+				} catch( Exception e2 ) {
+					throw new UnableToCreateAttributeException( "Unable to create attribute type", e );
+				}
+				
+			} else {
+				throw new UnableToCreateAttributeException( "Unable to create attribute type", e );
+			}
 		}
 	}
 	
