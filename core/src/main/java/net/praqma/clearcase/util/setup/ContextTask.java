@@ -15,7 +15,7 @@ public class ContextTask extends AbstractTask {
 	public void parse( Element e, Context context ) throws ClearCaseException {
 		if( Cool.getOS().equals( OperatingSystem.WINDOWS ) ) {
 			String mvfs = e.getAttribute( "mvfs" );
-			String view = e.getAttribute( "view" );
+			String view = getValue( "view", e, context );
 			String vob = getValue( "vob", e, context );
 			context.path = new File( mvfs + "/" + view + "/" + vob );
 		} else {
