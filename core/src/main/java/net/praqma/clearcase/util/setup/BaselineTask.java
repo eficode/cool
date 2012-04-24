@@ -17,7 +17,7 @@ public class BaselineTask extends AbstractTask {
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
-		String name = e.getAttribute( "name" );
+		String name = getValue( "name", e, context );
 		String label = e.getAttribute( "label" );
 		String identical = e.getAttribute( "identical" );
 		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;

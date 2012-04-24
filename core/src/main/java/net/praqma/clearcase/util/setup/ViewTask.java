@@ -14,7 +14,7 @@ public class ViewTask extends AbstractTask {
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
-		String tag = e.getAttribute( "tag" );
+		String tag = getValue( "tag", e, context );
 		String stgloc = e.getAttribute( "stgloc" );
 		boolean snapshot = e.getAttribute( "snapshot" ).length() > 0;
 		
