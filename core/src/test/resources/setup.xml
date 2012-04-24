@@ -5,8 +5,8 @@
   <vob tag="${pvobname}" comment="PVOB" ucmproject="true" stgloc="-auto" mounted="true"/>
   <vob tag="${vobname}" stgloc="-auto" mounted="true"/>
   <!-- <hlink name="AdminVOB" from="vob:cc1" to="vob:${pvobname}" /> -->
-  <view tag="cc1_setupview" stgloc="-auto"/>
-  <context mvfs="m:\" view="cc1_setupview" vob="${vobname}"/>
+  <view tag="${vobname}_setupview" stgloc="-auto"/>
+  <context mvfs="m:\" view="${vobname}_setupview" vob="${vobname}"/>
   
   <component root="" comment="" name="_System" pvob="${pvobname}" />
   <component root="" comment="" name="_Server" pvob="${pvobname}" />
@@ -39,11 +39,11 @@
     </baselines>
   </stream>
   
-  <view tag="cc1_bootstrap_int" stgloc="-auto">
-    <stream name="cc1_bootstrap_int" pvob="${pvobname}" />
+  <view tag="${vobname}_bootstrap_int" stgloc="-auto">
+    <stream name="${vobname}_bootstrap_int" pvob="${pvobname}" />
   </view>
 
-  <context mvfs="m:\" view="cc1_bootstrap_int" vob="${vobname}"/>
+  <context mvfs="m:\" view="${vobname}_bootstrap_int" vob="${vobname}"/>
   
   <baseline name="_Server_1.0" label="none" comment="" component="_Server" pvob="${pvobname}">
     <dependencies>
@@ -93,11 +93,11 @@
   <stream name="jenkins_int" in="jenkins" comment="" pvob="${pvobname}" type="integration">
   </stream>
   
-  <view tag="cc1_one_int" stgloc="-auto">
-    <stream name="cc1_one_int" pvob="${pvobname}" />
+  <view tag="${vobname}_one_int" stgloc="-auto">
+    <stream name="${vobname}_one_int" pvob="${pvobname}" />
   </view>
   
-  <context mvfs="m:\" view="cc1_one_int" vob="${vobname}"/>
+  <context mvfs="m:\" view="${vobname}_one_int" vob="${vobname}"/>
   
   <activity comment="" headline="Adding initial files into components" in="cc1_one_int" name="initial_files" pvob="${pvobname}" />
   
