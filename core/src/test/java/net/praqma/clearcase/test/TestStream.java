@@ -20,7 +20,7 @@ public class TestStream extends CoolTestCase {
 		
 		System.out.println( "Foundation baselines:" + stream.getFoundationBaselines() );
 		
-		assertEquals( "baseline:_System_1.0", stream.getFoundationBaselines().get( 0 ) );
+		assertEquals( "_System_1.0", stream.getFoundationBaselines().get( 0 ).getShortname() );
 
 		assertTrue( true );
 	}

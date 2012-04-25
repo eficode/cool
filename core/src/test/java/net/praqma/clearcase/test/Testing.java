@@ -39,9 +39,9 @@ public class Testing extends CoolTestCase {
 		List<Baseline> baselines = Baselines.get( stream, comp, PromotionLevel.INITIAL );
 		System.out.println( "Baselines:" + baselines );
 		
-		assertEquals( "baseline:model-1", baselines.get( 0 ).getShortname() );
-		assertEquals( "baseline:model-2", baselines.get( 0 ).getShortname() );
-		assertEquals( "baseline:model-2", baselines.get( 0 ).getShortname() );
+		assertEquals( "model-1", baselines.get( 0 ).getShortname() );
+		assertEquals( "model-2", baselines.get( 1 ).getShortname() );
+		assertEquals( "model-3", baselines.get( 2 ).getShortname() );
 		
 		assertTrue( true );
 	}
