@@ -31,6 +31,10 @@ public abstract class AbstractTask {
 	private static final Pattern rx_variable = Pattern.compile( "(\\$\\{(.*?)\\})" );
 	
 	public String getValue( String name, Element e, Context context ) {
+		return getValue( name, e, context, "" );
+	}
+	
+	public String getValue( String name, Element e, Context context, String def ) {
 		String value = e.getAttribute( name );
 		
 		Matcher m = rx_variable.matcher( value );
@@ -40,7 +44,7 @@ public abstract class AbstractTask {
 			value = value.replace( m.group( 1 ), var );
 		}
 		
-		return value;
+		return value.length() > 0 ? value : def;
 	}
 	
 	public String getComment( Element e, Context context) {
