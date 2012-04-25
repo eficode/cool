@@ -19,6 +19,8 @@ public class TestStream extends CoolTestCase {
 		Stream stream = Stream.get( uniqueTestVobName + "_one_int", getPVob() ).load();
 		
 		System.out.println( "Foundation baselines:" + stream.getFoundationBaselines() );
+		
+		assertEquals( "baseline:_System_1.0", stream.getFoundationBaselines().get( 0 ) );
 
 		assertTrue( true );
 	}

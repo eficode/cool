@@ -2,6 +2,7 @@ package net.praqma.clearcase.test;
 
 import java.util.List;
 
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.test.junit.CoolTestCase;
 import net.praqma.clearcase.ucm.entities.Baseline;
@@ -37,6 +38,10 @@ public class Testing extends CoolTestCase {
 		
 		List<Baseline> baselines = Baselines.get( stream, comp, PromotionLevel.INITIAL );
 		System.out.println( "Baselines:" + baselines );
+		
+		assertEquals( "baseline:model-1", baselines.get( 0 ).getShortname() );
+		assertEquals( "baseline:model-2", baselines.get( 0 ).getShortname() );
+		assertEquals( "baseline:model-2", baselines.get( 0 ).getShortname() );
 		
 		assertTrue( true );
 	}
