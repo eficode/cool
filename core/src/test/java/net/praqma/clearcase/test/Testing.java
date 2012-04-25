@@ -1,6 +1,14 @@
 package net.praqma.clearcase.test;
 
+import java.util.List;
+
+import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.test.junit.CoolTestCase;
+import net.praqma.clearcase.ucm.entities.Baseline;
+import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
+import net.praqma.clearcase.ucm.utils.Baselines;
 import net.praqma.util.debug.Logger;
 
 import org.junit.Test;
@@ -12,7 +20,7 @@ public class Testing extends CoolTestCase {
 	private static Logger logger = Logger.getLogger();
 
 	@Test
-	public void testBasic() {
+	public void testBasic() throws ClearCaseException {
 		
 		String uniqueTestVobName = "cool" + uniqueTimeStamp;
 		variables.put( "vobname", uniqueTestVobName );
@@ -24,12 +32,12 @@ public class Testing extends CoolTestCase {
 			fail();
 		}
 		
-		/*
-		File vp = new File( bootstrap.viewpath, "test01" );
-		SnapshotView view = SnapshotView.create( bootstrap.integrationStream, vp, "test01" );
-		view.Update( false, false, false, false, new LoadRules( view, Components.ALL ) );
-		*/
-
+		Stream stream = Stream.get( uniqueTestVobName + "_one_int", getPVob() ).load();
+		Component comp = Component.get( "Model", getPVob() );
+		
+		List<Baseline> baselines = Baselines.get( stream, comp, PromotionLevel.INITIAL );
+		System.out.println( "Baselines:" + baselines );
+		
 		assertTrue( true );
 	}
 

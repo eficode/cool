@@ -3,6 +3,7 @@ package net.praqma.clearcase.test;
 import org.junit.Test;
 
 import net.praqma.clearcase.test.junit.CoolTestCase;
+import net.praqma.clearcase.ucm.entities.Stream;
 
 public class TestStream extends CoolTestCase {
 
@@ -15,10 +16,9 @@ public class TestStream extends CoolTestCase {
 		
 		bootStrap( defaultSetup );
 		
-		/*
-		bootstrap.integrationStream.load();
-		System.out.println( "Foundation baselines:" + bootstrap.integrationStream.getFoundationBaselines() );
-	*/
+		Stream stream = Stream.get( uniqueTestVobName + "_one_int", getPVob() ).load();
+		
+		System.out.println( "Foundation baselines:" + stream.getFoundationBaselines() );
 
 		assertTrue( true );
 	}
