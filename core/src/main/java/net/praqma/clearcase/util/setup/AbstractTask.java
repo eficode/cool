@@ -43,6 +43,11 @@ public abstract class AbstractTask {
 		return value;
 	}
 	
+	public String getComment( Element e, Context context) {
+		String comment = getValue( "comment", e, context );
+		return comment.length() > 0 ? comment : null;
+	}
+	
     public Element getFirstElement( Element e, String tag ) throws DOMException {
         NodeList list = e.getChildNodes();
 

@@ -16,9 +16,9 @@ public class ProjectTask extends AbstractTask {
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
-		String name = e.getAttribute( "name" );
-		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;
-		String model = e.getAttribute( "model" );
+		String name = getValue( "name", e, context );
+		String comment = getComment( e, context );
+		String model = getValue( "model", e, context );
 		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
 		String in = getValue( "in", e, context ).length() > 0 ? getValue( "in", e, context ) : null;
 		

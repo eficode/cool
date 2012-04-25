@@ -17,7 +17,7 @@
   
   <folder name="${vobname}" in="RootFolder" pvob="${pvobname}" />
    
-  <project name="cc1_bootstrap" comment="" model="SIMPLE" pvob="${pvobname}" in="${vobname}">
+  <project name="${vobname}_bootstrap" comment="" model="SIMPLE" pvob="${pvobname}" in="${vobname}">
     <components>
       <component name="Service" pvob="${pvobname}" />
       <component name="Model" pvob="${pvobname}"  />
