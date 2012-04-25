@@ -74,7 +74,7 @@ public abstract class ClearCase extends Cool {
 	public void setAttribute( String attribute, String value, boolean replace, File context ) throws UnableToSetAttributeException {
 
 		if( Cool.getOS().equals( OperatingSystem.WINDOWS )) {
-			value = "\\\\\"" + value + "\\\\\"";
+			value = "\\\"" + value + "\\\"";
 		} else {
 			value = "\"'" + value + "'\"";
 		}
