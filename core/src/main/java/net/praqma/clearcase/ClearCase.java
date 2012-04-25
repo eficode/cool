@@ -11,6 +11,7 @@ import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
+import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
 public abstract class ClearCase extends Cool {
 	
@@ -71,7 +72,13 @@ public abstract class ClearCase extends Cool {
 	}
 
 	public void setAttribute( String attribute, String value, boolean replace, File context ) throws UnableToSetAttributeException {
-		//context.setAttribute( this, attribute, value );
+
+		if( Cool.getOS().equals( OperatingSystem.WINDOWS )) {
+			value = "\\\\\"" + value + "\\\\\"";
+		} else {
+			value = "\"'" + value + "'\"";
+		}
+		
 		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + this.getFullyQualifiedName() );
 
 		String cmd = "mkattr -nc " + attribute + " " + value + " " + this.getFullyQualifiedName();
