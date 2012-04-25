@@ -87,7 +87,7 @@ public abstract class ClearCase extends Cool {
 		} catch( AbnormalProcessTerminationException e ) {
 
 			if( replace ) {
-				cmd = "mkattr -nc -replace " + attribute + " " + value + " " + this.getFullyQualifiedName();
+				cmd = "mkattr -replace -nc " + attribute + " " + value + " " + this.getFullyQualifiedName();
 				try {
 					Cleartool.run( cmd, context );
 				} catch( AbnormalProcessTerminationException e2 ) {
