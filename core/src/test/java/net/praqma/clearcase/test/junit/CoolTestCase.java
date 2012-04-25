@@ -67,7 +67,7 @@ public abstract class CoolTestCase extends TestCase {
 			pvob = context.pvobs.get( 0 );
 			ClearCase.createSimpleAttributeType( "test-vob", pvob, true );
 			/* Set a test attribute */
-			pvob.setAttribute( "test-vob", "initial" );
+			pvob.setAttribute( "test-vob", "initial", true );
 		} else {
 			failed = true;
 		}
@@ -96,7 +96,7 @@ public abstract class CoolTestCase extends TestCase {
 		/* No need for tear down, this is done prior to setup */
 		if( pvob != null ) {
 			try {
-				pvob.setAttribute( "test-vob", "done" );
+				pvob.setAttribute( "test-vob", "done", true );
 			} catch( UnableToSetAttributeException e ) {
 				logger.error( "Unable to set attribute: " + e.getMessage() );
 				e.log();

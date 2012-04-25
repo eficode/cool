@@ -66,19 +66,22 @@ public abstract class ClearCase extends Cool {
 		}
 	}
 
-	public void setAttribute( String attribute, String value ) throws UnableToSetAttributeException {
-		setAttribute( attribute, value, null );
+	public void setAttribute( String attribute, String value, boolean replace ) throws UnableToSetAttributeException {
+		setAttribute( attribute, value, replace, null );
 	}
 
-	public void setAttribute( String attribute, String value, File context ) throws UnableToSetAttributeException {
+	public void setAttribute( String attribute, String value, boolean replace, File context ) throws UnableToSetAttributeException {
 		//context.setAttribute( this, attribute, value );
 		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + this.getFullyQualifiedName() );
 
-		String cmd = "mkattr -replace " + attribute + " " + value + " " + this.getFullyQualifiedName();
+		String cmd = "mkattr -nc " + attribute + " " + value + " " + this.getFullyQualifiedName();
 		try {
 			Cleartool.run( cmd, context );
 		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( "Could not create the attribute " + attribute, e.getMessage() );
+
+			if( replace ) {
+				cmd = "mkattr -nc -replace " + attribute + " " + value + " " + this.getFullyQualifiedName();
+			}
 			throw new UnableToSetAttributeException( this, attribute, value, context, e );
 		}
 	}
@@ -91,13 +94,13 @@ public abstract class ClearCase extends Cool {
 	 * @throws CleartoolException
 	 */
 	public static void createSimpleAttributeType( String name, PVob pvob, boolean replace ) throws UnableToCreateAttributeException {
-		String cmd = "mkattype -nc " + name + "@" + pvob;
+		String cmd = "mkattype -vtype string -nc " + name + "@" + pvob;
 		
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
 			if( replace ) {
-				cmd = "mkattype -nc " + ( replace ? "-replace " : "" ) + name + "@" + pvob;
+				cmd = "mkattype -replace -vtype string -nc " + name + "@" + pvob;
 				try {
 					Cleartool.run( cmd );
 				} catch( Exception e2 ) {

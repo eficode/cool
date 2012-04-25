@@ -198,7 +198,7 @@ public class BuildNumber extends Cool {
 		Integer sequence = Integer.parseInt( catts.get( __BUILD_NUMBER_SEQUENCE ) );
 		sequence++;
 
-		c.setAttribute( __BUILD_NUMBER_SEQUENCE, sequence.toString() );
+		c.setAttribute( __BUILD_NUMBER_SEQUENCE, sequence.toString(), true );
 
 		return sequence;
 	}
