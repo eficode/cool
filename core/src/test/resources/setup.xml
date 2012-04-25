@@ -28,7 +28,7 @@
     </policies>
   </project>
   
-  <stream name="cc1_bootstrap_int" in="cc1_bootstrap" comment="" pvob="${pvobname}" type="integration">
+  <stream name="${pvobname}_bootstrap_int" in="${pvobname}_bootstrap" comment="" pvob="${pvobname}" type="integration">
     <baselines>
       <baseline name="_System_INITIAL" pvob="${pvobname}" />
       <baseline name="_Server_INITIAL" pvob="${pvobname}" />
@@ -67,7 +67,7 @@
   </baseline>
   
   
-  <project name="cc1_one" comment="" pvob="${pvobname}" in="${vobname}">
+  <project name="${vobname}_one" comment="" pvob="${pvobname}" in="${vobname}">
     <components>
       <component name="Service" pvob="${pvobname}" />
       <component name="Model" pvob="${pvobname}" />
@@ -78,7 +78,7 @@
     </policies>
   </project>
   
-  <stream name="cc1_one_int" in="cc1_one" comment="" pvob="${pvobname}" type="integration">
+  <stream name="${vobname}_one_int" in="${vobname}_one" comment="" pvob="${pvobname}" type="integration">
     <baselines>
       <baseline name="_System_1.0" pvob="${pvobname}" />
     </baselines>
@@ -99,7 +99,7 @@
   
   <context mvfs="m:\" view="${vobname}_one_int" vob="${vobname}"/>
   
-  <activity comment="" headline="Adding initial files into components" in="cc1_one_int" name="initial_files" pvob="${pvobname}" />
+  <activity comment="" headline="Adding initial files into components" in="${pvobname}_one_int" name="initial_files" pvob="${pvobname}" />
   
   <setactivity activity="initial_files" pvob="${pvobname}" />
   
