@@ -8,7 +8,6 @@ import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
@@ -19,10 +18,10 @@ public class StreamTask extends AbstractTask {
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
-		String name = e.getAttribute( "name" );
+		String name = getValue( "name", e, context );
 		boolean integration = e.getAttribute( "type" ).equals( "integration" );
-		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;
-		String in = e.getAttribute( "in" ).length() > 0 ? e.getAttribute( "in" ) : null;
+		String comment = getComment( e, context );
+		String in = getValue( "in", e, context, null );
 		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
 		
 		List<Baseline> baselines = null;
