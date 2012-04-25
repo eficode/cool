@@ -28,7 +28,7 @@
     </policies>
   </project>
   
-  <stream name="${pvobname}_bootstrap_int" in="${pvobname}_bootstrap" comment="" pvob="${pvobname}" type="integration">
+  <stream name="${vobname}_bootstrap_int" in="${vobname}_bootstrap" comment="" pvob="${pvobname}" type="integration">
     <baselines>
       <baseline name="_System_INITIAL" pvob="${pvobname}" />
       <baseline name="_Server_INITIAL" pvob="${pvobname}" />
@@ -99,7 +99,7 @@
   
   <context mvfs="m:\" view="${vobname}_one_int" vob="${vobname}"/>
   
-  <activity comment="" headline="Adding initial files into components" in="${pvobname}_one_int" name="initial_files" pvob="${pvobname}" />
+  <activity comment="" headline="Adding initial files into components" in="${vobname}_one_int" name="initial_files" pvob="${pvobname}" />
   
   <setactivity activity="initial_files" pvob="${pvobname}" />
   
