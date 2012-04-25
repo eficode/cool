@@ -81,13 +81,13 @@ public abstract class ClearCase extends Cool {
 		
 		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + this.getFullyQualifiedName() );
 
-		String cmd = "mkattr -nc " + attribute + " " + value + " " + this.getFullyQualifiedName();
+		String cmd = "mkattr " + attribute + " " + value + " " + this.getFullyQualifiedName();
 		try {
 			Cleartool.run( cmd, context );
 		} catch( AbnormalProcessTerminationException e ) {
 
 			if( replace ) {
-				cmd = "mkattr -replace -nc " + attribute + " " + value + " " + this.getFullyQualifiedName();
+				cmd = "mkattr -replace " + attribute + " " + value + " " + this.getFullyQualifiedName();
 				try {
 					Cleartool.run( cmd, context );
 				} catch( AbnormalProcessTerminationException e2 ) {
