@@ -155,7 +155,7 @@ public class SnapshotView extends UCMView {
 		//this.generate( stream );
 		stream.generate();
 
-		String cmd = "mkview -snap -tag " + viewtag + " -stream " + stream + " \"" + viewroot.getAbsolutePath() + "\"";
+		String cmd = "mkview -snapshot -stgloc -auto -tag " + viewtag + " -stream " + stream + " \"" + viewroot.getAbsolutePath() + "\"";
 
 		try {
 			Cleartool.run( cmd );
