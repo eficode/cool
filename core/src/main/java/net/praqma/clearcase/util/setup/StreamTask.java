@@ -1,6 +1,5 @@
 package net.praqma.clearcase.util.setup;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +22,11 @@ public class StreamTask extends AbstractTask {
 		String comment = getComment( e, context );
 		String in = getValue( "in", e, context, null );
 		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
+		boolean readonly = getValue( "readonly", e, context ).length() > 0;
+		
+		if( in == null ) {
+			throw new ClearCaseException( "StreamTask: In can not be null" );
+		}
 		
 		List<Baseline> baselines = null;
 		
@@ -40,7 +44,7 @@ public class StreamTask extends AbstractTask {
 		if( integration ) {
 			Stream.createIntegration( name, Project.get( in, pvob ), baselines );
 		} else {
-			
+			Stream.create( Stream.get( in, pvob ), name, readonly, baselines );
 		}
 	}
 

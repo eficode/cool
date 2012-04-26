@@ -7,10 +7,11 @@ import java.util.List;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
+import net.praqma.clearcase.interfaces.StreamContainable;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
-public class Project extends UCMEntity {
+public class Project extends UCMEntity implements StreamContainable {
 
 	private static Logger logger = Logger.getLogger();
 

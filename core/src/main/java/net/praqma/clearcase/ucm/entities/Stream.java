@@ -24,6 +24,7 @@ import net.praqma.clearcase.exceptions.UnableToListProjectsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToRemoveEntityException;
 import net.praqma.clearcase.interfaces.Diffable;
+import net.praqma.clearcase.interfaces.StreamContainable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.utils.Baselines;
 import net.praqma.clearcase.ucm.view.SnapshotView;
@@ -38,7 +39,7 @@ import net.praqma.util.execute.CmdResult;
  * @author wolfgang
  * 
  */
-public class Stream extends UCMEntity implements Diffable, Serializable {
+public class Stream extends UCMEntity implements Diffable, Serializable, StreamContainable {
 
 	private static final String rx_stream_load = "\\s*Error: stream not found\\s*";
 
@@ -87,7 +88,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 	 *            Whether the new Stream is read only or not
 	 * @return A new Stream given the parameters
 	 */
-		public static Stream create( Stream parent, String nstream, boolean readonly, List<Baseline> baselines ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
+		public static Stream create( StreamContainable parent, String nstream, boolean readonly, List<Baseline> baselines ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
 		logger.debug( "Creating stream " + nstream + " as child of " + parent );
 
 		String cmd = "mkstream -in " + parent;
@@ -113,8 +114,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable {
 
 		stream.setCreated( true );
 
-		if( parent != null ) {
-			stream.setParent( parent );
+		if( parent != null && parent instanceof Stream ) {
+			stream.setParent( (Stream)parent );
 		}
 
 		return stream;
