@@ -101,6 +101,13 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		}
 		
 		cmd += ( readonly ? " -readonly" : "" );
+		
+		try {
+			UCMEntity.getNamePart( nstream );
+		} catch( CleartoolException e1 ) {
+			nstream = "stream:" + nstream + "@" + parent.getPVob();
+		}
+		
 		cmd += " " + nstream;
 		
 		try {
@@ -139,8 +146,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
 		}
+		
+		try {
+			UCMEntity.getNamePart( name );
+		} catch( CleartoolException e1 ) {
+			name = "stream:" + name + "@" + project.getPVob();
+		}
 				
-		cmd += " " + name + "@" + project.getPVob();
+		cmd += " " + name;
 
 		try {
 			Cleartool.run( cmd );
