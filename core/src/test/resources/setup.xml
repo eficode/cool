@@ -93,13 +93,20 @@
   <stream name="jenkins_int" in="jenkins" comment="" pvob="${pvobname}" type="integration">
   </stream>
   
-  <view tag="${vobname}_one_int" stgloc="-auto">
-    <stream name="${vobname}_one_int" pvob="${pvobname}" />
+  <stream name="${vobname}_one_dev" in="${vobname}_one_int" comment="" pvob="${pvobname}">
+    <baselines>
+      <baseline name="_System_1.0" pvob="${pvobname}" />
+    </baselines>
+  </stream>
+  
+  
+  <view tag="${vobname}_one_dev" stgloc="-auto">
+    <stream name="${vobname}_one_dev" pvob="${pvobname}" />
   </view>
   
-  <context mvfs="m:\" view="${vobname}_one_int" vob="${vobname}"/>
+  <context mvfs="m:\" view="${vobname}_one_dev" vob="${vobname}"/>
   
-  <activity comment="" headline="Adding initial files into components" in="${vobname}_one_int" name="initial_files" pvob="${pvobname}" />
+  <activity comment="" headline="Adding initial files into components" in="${vobname}_one_dev" name="initial_files" pvob="${pvobname}" />
   
   <setactivity activity="initial_files" pvob="${pvobname}" />
   
@@ -162,6 +169,7 @@
   <checkin />
   
   <baseline name="client-3" label="full" comment="" component="Clientapp" pvob="${pvobname}" />
+  
 </ccenv>
 
 
