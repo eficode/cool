@@ -19,6 +19,7 @@ public class DeliverException extends ClearCaseException {
 	public DeliverException( Deliver deliver, Type type, Exception e ) {
 		super( e );
 		this.deliver = deliver;
+		this.type = type;
 	}
 
 	public Type getType() {
