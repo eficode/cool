@@ -33,7 +33,7 @@ public class Testing extends CoolTestCase {
 			fail();
 		}
 		
-		Stream stream = Stream.get( uniqueTestVobName + "_one_dev", getPVob() ).load();
+		Stream stream = Stream.get( uniqueTestVobName + "_one_int", getPVob() ).load();
 		Component comp = Component.get( "Model", getPVob() );
 		
 		List<Baseline> baselines = Baselines.get( stream, comp, PromotionLevel.INITIAL );
