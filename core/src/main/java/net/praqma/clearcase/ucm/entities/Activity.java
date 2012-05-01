@@ -18,7 +18,8 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Activity extends UCMEntity {
 	
-	private final static Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
+	//private final static Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
+	private final static Pattern pattern_activity = Pattern.compile( "^[<>-]{2}\\s*(\\S+)\\s*.*$" );
 	
 	private static Logger logger = Logger.getLogger();
 	
