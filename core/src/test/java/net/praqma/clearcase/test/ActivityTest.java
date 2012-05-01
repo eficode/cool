@@ -18,6 +18,6 @@ public class ActivityTest extends TestCase {
 	public void testParser() throws IOException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
 		List<String> acts = IO.streamToStrings( ActivityTest.class.getClassLoader().getResourceAsStream( "activity.txt" ) );
 		
-		System.out.println( Activity.parseActivityStrings( acts, 0 ) );
+		//System.out.println( Activity.parseActivityStrings( acts, 0 ) );
 	}
 }
