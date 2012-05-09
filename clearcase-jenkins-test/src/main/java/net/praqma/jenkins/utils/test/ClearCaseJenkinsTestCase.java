@@ -1,5 +1,6 @@
 package net.praqma.jenkins.utils.test;
 
+import java.io.IOException;
 import net.praqma.clearcase.test.junit.CoolTestCase;
 
 import org.apache.commons.io.FileUtils;
@@ -36,7 +37,12 @@ public class ClearCaseJenkinsTestCase extends HudsonTestCase {
 			super.tearDown();
 		} catch( Exception e ) {
 			System.out.println( "PATH: " + super.jenkins.getRootDir() );
-			FileUtils.deleteDirectory( super.jenkins.getRootDir() );
+			//FileUtils.deleteDirectory( super.jenkins.getRootDir() );
+            try {
+                FileUtils.forceDelete(super.jenkins.getRootDir());
+            } catch (IOException ioex) {
+                System.out.println("Failed to forcibly remove temp directory!");
+            }
 		}
 	}
 }
