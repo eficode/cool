@@ -221,12 +221,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UnableToInitializeEntityException, UnableToListBaselinesException, NoSingleTopComponentException {
-		//return context.getBaselines( this, getSingleTopComponent(), plevel, pvob );
 		return Baselines.get( this, getSingleTopComponent(), plevel );
 	}
 
 	public List<Baseline> getBaselines( Component component, PromotionLevel plevel ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
-		//return context.getBaselines( this, component, plevel, pvob );
 		return Baselines.get( this, component, plevel );
 	}
 
@@ -249,6 +247,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 		return baselines;
 	}
+
+
 
 	public List<Stream> getChildStreams( boolean multisitePolling ) throws UnableToInitializeEntityException, CleartoolException {
 
@@ -294,31 +294,40 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return streams;
 	}
 	
-	public List<Baseline> getPostedBaselines( Component component, PromotionLevel plevel ) throws UnableToInitializeEntityException, CleartoolException {
+	public List<Baseline> getPostedBaselines( Component component, PromotionLevel plevel ) throws UnableToInitializeEntityException {
 		List<Baseline> res = new ArrayList<Baseline>();
 
-		if( status == null ) {
-			status = Deliver.getStatus( this );
-		}
-		
-		Matcher m = Pattern.compile( ".*baseline:(\\S*).*" ).matcher( Deliver.getStatus( this ) );
-
-		if( m.find() ) {
-			logger.warning( "Posted baseline : " + m.group( 1 ) );
-
-			// should maybe also select on component
-			Baseline b = Baseline.get( m.group( 1 ) );
-			
-			if( b.getPromotionLevel( true ) == plevel ) {
-				res.add( b );
+		try {
+			if( status == null ) {
+				status = Deliver.getStatus( this );
 			}
+			
+			Matcher m = Pattern.compile( ".*baseline:(\\S*).*" ).matcher( Deliver.getStatus( this ) );
+	
+			if( m.find() ) {
+				logger.warning( "Posted baseline : " + m.group( 1 ) );
+	
+				Baseline b = Baseline.get( m.group( 1 ) );
+				
+				if( b.getPromotionLevel( true ) == plevel ) {
+					res.addAll( b.getPostedBaselinesFor(component) );
+				}
+			}
+		} catch( Exception e ) {
+			throw new UnableToInitializeEntityException( Baseline.class, e );
 		}
 		
 		return res;
 	}
 	
-	public boolean hasPostedDelivery() throws CleartoolException {
-		return Deliver.getStatus( this ).contains( "Operation posted from" );
+	public boolean hasPostedDelivery() throws UnableToInitializeEntityException {
+		logger.debug( "hasPostedDelivery" );
+		try {
+			logger.debug( "Status: " + Deliver.getStatus( this ) );
+			return Deliver.getStatus( this ).contains( "Operation posted from" );
+		} catch( Exception e ) {
+			throw new UnableToInitializeEntityException( Stream.class, e );
+		}
 	}
 
 	public void setProject( Project project ) {

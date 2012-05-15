@@ -18,6 +18,7 @@ import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
+import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToPromoteBaselineException;
 import net.praqma.clearcase.interfaces.Diffable;
@@ -339,4 +340,35 @@ public class Baseline extends UCMEntity implements Diffable {
 		Baseline entity = (Baseline) UCMEntity.getEntity( Baseline.class, name + "@" + pvob );
 		return entity;
 	}
+	public List<Baseline> getPostedBaselinesFor(Component component) throws UnableToInitializeEntityException, UnableToListBaselinesException {
+		logger.debug( "Getting posted baselines for " + this.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() );
+		List<String> bls_str = null;
+		
+		String cmd = "des -fmt %X[member_of_closure]p " + this.getFullyQualifiedName();
+				//"lsbl -s -component " + component + " -stream " + stream + ( plevel != null ? " -level " + plevel.toString() : "" );
+		try {
+			bls_str = Cleartool.run( cmd ).stdoutList;
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new UnableToListBaselinesException(getStream(), component, getPromotionLevel(true), e );
+		}
+
+		logger.debug( "I got " + bls_str.size() + " baselines." );
+		List<Baseline> bls = new ArrayList<Baseline>();
+
+		int c = 0;
+		for( String bl : bls_str ) {
+			logger.debug( "Baseline string " + bl );
+			logger.debug( "Stream " + getStream().getFullyQualifiedName() );
+			Baseline b = Baseline.get( bl, getStream().getPVob() );
+			logger.debug( "Baseline " + b.getFullyQualifiedName() + " component " + b.getComponent().getFullyQualifiedName() );
+			logger.debug( "Component " + component.getFullyQualifiedName());
+			logger.debug( "Baseline component " + b.getComponent().getFullyQualifiedName());
+			if( b.getComponent().equals(component) ) 
+				bls.add( b );
+			c++;
+		}
+
+		return bls;
+	}
+
 }

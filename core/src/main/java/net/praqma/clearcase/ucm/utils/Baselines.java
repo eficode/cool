@@ -29,7 +29,23 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 public class Baselines {
 	private static Logger logger = Logger.getLogger();
 	
-	public static List<Baseline> get( Stream stream, Component component, PromotionLevel plevel ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
+	public static List<Baseline> get( Stream stream, Component component, PromotionLevel plevel, boolean multisitePolling ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
+		logger.debug( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel + " and multisitepolling " +  multisitePolling);
+		List<Baseline> baselines = null;
+		
+		if(stream.hasPostedDelivery()) {
+			if(multisitePolling)
+				baselines = stream.getPostedBaselines(component, plevel);
+			else
+				baselines = new ArrayList<Baseline>();
+		}
+		else
+			baselines = Baselines.get( stream, component, plevel );
+
+		return baselines;
+	}
+
+	public static List<Baseline> get( Stream stream, Component component, PromotionLevel plevel) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		logger.debug( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel );
 		List<String> bls_str = null;
 		
