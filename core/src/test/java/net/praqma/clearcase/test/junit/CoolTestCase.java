@@ -94,13 +94,13 @@ public abstract class CoolTestCase extends TestCase {
 	@Override
 	public void tearDown() {
 		/* No need for tear down, this is done prior to setup */
-		if( pvob != null ) {
-			try {
-				pvob.setAttribute( "test-vob", "done", true );
-			} catch( UnableToSetAttributeException e ) {
-				logger.error( "Unable to set attribute: " + e.getMessage() );
-				e.log();
-			}
-		}
+//		if( pvob != null ) {
+//			try {
+//				pvob.setAttribute( "test-vob", "done", true );
+//			} catch( UnableToSetAttributeException e ) {
+//				logger.error( "Unable to set attribute: " + e.getMessage() );
+//				e.log();
+//			}
+//		}
 	}
 }
