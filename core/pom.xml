@@ -66,7 +66,7 @@
                         <version>2.12</version>
                         <configuration>
                             <includes>
-                                <include>net/praqma/clearcase.test/*.java</include>
+                                <include>net/praqma/clearcase/test/*.java</include>
                             </includes>
                         </configuration>
                     </plugin>
