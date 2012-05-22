@@ -41,7 +41,7 @@ public class TestStream extends CoolTestCase {
 		
 		Stream nstream = Stream.create( parent, "new-stream", false, new ArrayList<Baseline>() );
 		
-		assertNull( nstream );
+		assertNotNull( nstream );
 	}
 
 }
