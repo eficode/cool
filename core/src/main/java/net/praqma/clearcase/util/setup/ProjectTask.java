@@ -44,7 +44,7 @@ public class ProjectTask extends AbstractTask {
 			/* No policies given, skipping */
 		}
 		
-		Project.create( name, in, pvob, policy, comment, model.length() == 0, components );
+		context.projects.add( Project.create( name, in, pvob, policy, comment, model.length() == 0, components ) );
 	}
 
 }

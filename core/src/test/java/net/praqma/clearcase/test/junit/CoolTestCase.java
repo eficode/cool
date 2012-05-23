@@ -24,6 +24,11 @@ public abstract class CoolTestCase extends TestCase {
 
 	protected static Logger logger = Logger.getLogger();
 	protected static ConsoleAppender appender = new ConsoleAppender();
+	
+	/**
+	 * This variable is null until bootStrap is called.
+	 */
+	public Context context;
 
 	protected static boolean rolling = true;
 	protected static boolean tearDownAsMuchAsPossible = true;
@@ -61,7 +66,7 @@ public abstract class CoolTestCase extends TestCase {
 	public void bootStrap( File file ) throws Exception {
 		logger.info( "Bootstrapping from " + file + ( file.exists() ? "" : ", which does not exist!?") );
 		EnvironmentParser parser = new EnvironmentParser( file );
-		Context context = parser.parse( variables );
+		context = parser.parse( variables );
 		logger.info( "CONTEXT PVOBS: " + context.pvobs );
 		if( context.pvobs.size() > 0 ) {
 			pvob = context.pvobs.get( 0 );

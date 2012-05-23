@@ -13,6 +13,10 @@ import org.w3c.dom.Element;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.ucm.entities.Baseline;
+import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Project;
+import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.xml.XML;
@@ -47,6 +51,16 @@ public class EnvironmentParser extends XML {
 		public Map<String, Value> variables = new HashMap<String, Value>();
 		
 		public List<PVob> pvobs = new ArrayList<PVob>();
+		
+		/* Streams */
+		public List<Stream> streams = new ArrayList<Stream>();
+		public List<Stream> integrationStreams = new ArrayList<Stream>();
+		
+		public List<Project> projects = new ArrayList<Project>();
+		
+		public List<Component> components = new ArrayList<Component>();
+		
+		public List<Baseline> baselines = new ArrayList<Baseline>();
 		
 		public void put( String key, String value ) {
 			if( variables.containsKey( key ) ) {

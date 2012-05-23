@@ -23,7 +23,7 @@ public class ComponentTask extends AbstractTask {
 			throw new ClearCaseException( "Name and root not given" );
 		}
 		
-		Component.create( name, pvob, root, comment, context.path );
+		context.components.add( Component.create( name, pvob, root, comment, context.path ) );
 	}
 
 }

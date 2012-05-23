@@ -42,9 +42,9 @@ public class StreamTask extends AbstractTask {
 		}
 		
 		if( integration ) {
-			Stream.createIntegration( name, Project.get( in, pvob ), baselines );
+			context.integrationStreams.add( Stream.createIntegration( name, Project.get( in, pvob ), baselines ) );			
 		} else {
-			Stream.create( Stream.get( in, pvob ), name + "@" + pvob, readonly, baselines );
+			context.streams.add( Stream.create( Stream.get( in, pvob ), name + "@" + pvob, readonly, baselines ) );
 		}
 	}
 
