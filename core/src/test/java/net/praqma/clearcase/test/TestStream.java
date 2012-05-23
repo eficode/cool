@@ -1,6 +1,7 @@
 package net.praqma.clearcase.test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -42,6 +43,42 @@ public class TestStream extends CoolTestCase {
 		Stream nstream = Stream.create( parent, "new-stream", false, new ArrayList<Baseline>() );
 		
 		assertNotNull( nstream );
+		assertEquals( "stream:new-stream@" + getPVob(), nstream.getFullyQualifiedName() );
+	}
+	
+	@Test
+	public void testCreateIntegrationStream() throws Exception {
+		
+		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+		variables.put( "vobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
+		
+		bootStrap( defaultSetup );
+		
+		Stream istream = Stream.createIntegration( "test-int", context.projects.get( 0 ), context.baselines.get( 0 ) );
+		
+		assertNotNull( istream );
+		assertEquals( "stream:test-intm@" + getPVob(), istream.getFullyQualifiedName() );
+		
+		istream.load();
+		
+		assertEquals( istream.getFoundationBaseline(), context.baselines.get( 0 ) );
+	}
+	
+	@Test
+	public void testGetChildStreamsNoMultisite() throws Exception {
+		
+		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+		variables.put( "vobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
+		
+		bootStrap( defaultSetup );
+		
+		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
+		
+		List<Stream> childs = istream.getChildStreams( false );
+		
+		assertEquals( 1, childs.size() );		
 	}
 
 }

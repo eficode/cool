@@ -14,6 +14,7 @@ import org.w3c.dom.Element;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Baseline;
+import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.util.debug.Logger;
@@ -53,6 +54,8 @@ public class EnvironmentParser extends XML {
 		/* Streams */
 		public List<Stream> streams = new ArrayList<Stream>();
 		public List<Stream> integrationStreams = new ArrayList<Stream>();
+		
+		public List<Project> projects = new ArrayList<Project>();
 		
 		public List<Baseline> baselines = new ArrayList<Baseline>();
 		
