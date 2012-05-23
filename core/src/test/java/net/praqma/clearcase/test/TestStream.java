@@ -63,7 +63,7 @@ public class TestStream extends CoolTestCase {
 		Stream istream = Stream.createIntegration( "test-int", project, context.baselines.get( 0 ) );
 		
 		assertNotNull( istream );
-		assertEquals( "stream:test-intm@" + getPVob(), istream.getFullyQualifiedName() );
+		assertEquals( "stream:test-int@" + getPVob(), istream.getFullyQualifiedName() );
 		
 		istream.load();
 		
