@@ -44,14 +44,16 @@ public class Deliver {
 	}
 	
 	public boolean deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException, CleartoolException {
+		logger.debug( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );
 		try {
 			return _deliver( force, complete, abort, false );
 		} catch( DeliverException e ) {
 			if( e.getType().equals( Type.DELIVER_IN_PROGRESS ) ) { //could be a posted delivery
 				String status = getStatus( stream );
 				if( status.replace( System.getProperty( "line.separator" ), " " ).contains( "Operation posted from" ) ) {
+					logger.debug( "Posted delivery" );
 					try {
-						return deliver( force, complete, abort, true );
+						return _deliver( force, complete, abort, true );
 					} catch( DeliverException e1 ) {
 						logger.warning( "Could not resume posted delivery: " + e1.getMessage() );
 						throw e1;
@@ -68,6 +70,10 @@ public class Deliver {
 	
 	public Deliver complete() throws DeliverException {
 		String cmd = "deliver -complete";
+		cmd += ( baseline != null ? " -baseline " + baseline : "" );
+		cmd += ( stream != null ? " -stream " + stream : "" );
+		cmd += ( target != null ? " -target " + target : "" );
+		cmd += ( viewtag != null ? " -to " + viewtag : "" );
 		
 		try {
 			Cleartool.run( cmd, context );
@@ -78,14 +84,15 @@ public class Deliver {
 	}
 
 	private boolean _deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException {
-		logger.debug( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );
-
 		String result = "";
 
-		String cmd = "deliver" + ( force ? " -force" : "" ) + ( complete ? " -complete" : "" ) + ( abort ? " -abort" : "" );
-		cmd += ( baseline != null ? " -baseline " + baseline : "" );
+		String cmd = "deliver" + ( force ? " -force" : "" ) + ( complete ? " -complete" : "" ) + ( abort ? " -abort" : "" ) + ( resume ? " -resume" : "" );
+
+		if(!resume)
+			cmd += ( baseline != null ? " -baseline " + baseline : "" );
 		cmd += ( stream != null ? " -stream " + stream : "" );
-		cmd += ( target != null ? " -target " + target : "" );
+		if(!resume)
+			cmd += ( target != null ? " -target " + target : "" );
 		cmd += ( viewtag != null ? " -to " + viewtag : "" );
 
 		try {
