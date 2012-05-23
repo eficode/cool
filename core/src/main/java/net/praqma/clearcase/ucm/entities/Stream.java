@@ -459,20 +459,26 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		
 		//List<String> bs = strategy.getLatestBaselines( stream.getFullyQualifiedName() );
 		String cmd = "desc -fmt %[latest_bls]Xp " + this;
+		String[] t = null;
 		try {
-			String[] t = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
-			List<Baseline> bls = new ArrayList<Baseline>();
-			for( String s : t ) {
-				if( s.matches( "\\S+" ) ) {
-					bls.add( Baseline.get( s.trim() ) );
-				}
-			}
-
-			return bls;
+			t = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
 		} catch( AbnormalProcessTerminationException e ) {
 			//throw new UCMException( "Unable to get latest baseline from " + stream + ": " + e.getMessage() );
 			throw new CleartoolException( "Unable to get latest baselines from " + this, e );
 		}
+		
+		List<Baseline> bls = new ArrayList<Baseline>();
+		for( String s : t ) {
+			if( s.matches( "\\S+" ) ) {
+				try {
+					bls.add( Baseline.get( s.trim() ) );
+				} catch( Exception e ) {
+					logger.warning( "Unable to add " + s + ": " + e.getMessage() );
+				}
+			}
+		}
+
+		return bls;
 	}
 
 	public Component getSingleTopComponent() throws NoSingleTopComponentException, UnableToInitializeEntityException {
