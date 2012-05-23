@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import net.praqma.clearcase.test.junit.CoolTestCase;
 import net.praqma.clearcase.ucm.entities.Baseline;
+import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 
@@ -56,7 +58,9 @@ public class TestStream extends CoolTestCase {
 		
 		bootStrap( defaultSetup );
 		
-		Stream istream = Stream.createIntegration( "test-int", context.projects.get( 0 ), context.baselines.get( 0 ) );
+		Project project = Project.create( "test-project", null, getPVob(), 0, null, true, new ArrayList<Component>() );
+		
+		Stream istream = Stream.createIntegration( "test-int", project, context.baselines.get( 0 ) );
 		
 		assertNotNull( istream );
 		assertEquals( "stream:test-intm@" + getPVob(), istream.getFullyQualifiedName() );
