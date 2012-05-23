@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import net.praqma.clearcase.test.junit.CoolTestCase;
 import net.praqma.clearcase.ucm.entities.Baseline;
+import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 
 public class TestStream extends CoolTestCase {
@@ -80,5 +81,21 @@ public class TestStream extends CoolTestCase {
 		
 		assertEquals( 1, childs.size() );		
 	}
+	
+	@Test
+	public void testGetPostedDelivery() throws Exception {
+		
+		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+		variables.put( "vobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
+		
+		bootStrap( defaultSetup );
+		
+		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
+		
+		List<Baseline> baselines = istream.getPostedBaselines( context.components.get( 0 ), PromotionLevel.INITIAL );
+		
+		assertEquals( 0, baselines.size() );
+	}	
 
 }
