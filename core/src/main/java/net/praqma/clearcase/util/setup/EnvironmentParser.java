@@ -59,7 +59,7 @@ public class EnvironmentParser extends XML {
 		
 		public List<Project> projects = new ArrayList<Project>();
 		
-		public List<Component> components = new ArrayList<Component>();
+		public Map<String, Component> components = new HashMap<String, Component>();
 		
 		public List<Baseline> baselines = new ArrayList<Baseline>();
 		

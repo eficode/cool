@@ -206,7 +206,7 @@ public class TestStream extends CoolTestCase {
 		
 		System.out.println( "PATH: " + path );
 		
-		addNewContent( context.components.get( 0 ), path, "test.txt" );
+		addNewContent( context.components.get( "Model" ), path, "test.txt" );
 	}
 
 }
