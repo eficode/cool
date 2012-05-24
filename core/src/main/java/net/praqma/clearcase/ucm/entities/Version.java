@@ -429,6 +429,23 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			throw new CleartoolException( "Could not uncheck out", e );
 		}
 	}
+	
+	public static void recursiveCheckin( File path ) {
+		try {
+			List<File> files = Version.getUncheckedIn( path );
+			for( File f : files ) {
+				logger.debug( "Checking in " + f );
+				try {
+					Version.checkIn( f, false, path );
+				} catch( CleartoolException e1 ) {
+					logger.debug( "Unable to checkin " + f );
+					/* No op */
+				}
+			}
+		} catch( CleartoolException e1 ) {
+			logger.error( e1.getMessage() );				
+		}
+	}
 
 	public void setView( SnapshotView view ) {
 		this.view = view;

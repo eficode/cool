@@ -42,7 +42,7 @@ public class ViewTask extends AbstractTask {
 				v.remove();
 			}
 			
-			DynamicView.create( stgloc, tag, stream );
+			context.views.put( tag, DynamicView.create( stgloc, tag, stream ) );
 		}
 		
 	}

@@ -17,6 +17,7 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.xml.XML;
@@ -61,6 +62,8 @@ public class EnvironmentParser extends XML {
 		public List<Component> components = new ArrayList<Component>();
 		
 		public List<Baseline> baselines = new ArrayList<Baseline>();
+		
+		public Map<String, UCMView> views = new HashMap<String, UCMView>();
 		
 		public void put( String key, String value ) {
 			if( variables.containsKey( key ) ) {

@@ -365,14 +365,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return streams;
 	}
 
-	public boolean equals( Stream other ) {
-		if( this.fqname.equals( other.getFullyQualifiedName() ) ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	/**
 	 * Determines whether a Stream exists, given a fully qualified name
 	 * 

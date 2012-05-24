@@ -1,5 +1,6 @@
 package net.praqma.clearcase.test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,6 +101,105 @@ public class TestStream extends CoolTestCase {
 		List<Baseline> baselines = istream.getPostedBaselines( context.components.get( 0 ), PromotionLevel.INITIAL );
 		
 		assertEquals( 0, baselines.size() );
-	}	
+	}
+	
+	
+	@Test
+	public void testHasPostedDelivery() throws Exception {
+		
+		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+		variables.put( "vobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
+		
+		bootStrap( defaultSetup );
+		
+		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
+		
+		boolean has = istream.hasPostedDelivery();
+		
+		assertFalse( has );
+	}
+	
+	@Test
+	public void testGetSiblingStream() throws Exception {
+		
+		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+		variables.put( "vobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
+		
+		bootStrap( defaultSetup );
+		
+		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
+		
+		List<Stream> siblings = istream.getSiblingStreams();
+		
+		System.out.println( "SIBLINGS: " + siblings );
+		
+		assertEquals( 1, siblings.size() );
+	}
+	
+	@Test
+	public void testStreamExists() throws Exception {
+		
+		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+		variables.put( "vobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
+		
+		bootStrap( defaultSetup );
+		
+		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
+		
+		assertTrue( istream.exists() );		
+	}
+	
+	@Test
+	public void testGetRecommendedBaselines() throws Exception {
+		
+		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+		variables.put( "vobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
+		
+		bootStrap( defaultSetup );
+		
+		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
+		
+		List<Baseline> baselines = istream.getRecommendedBaselines();
+		
+		System.out.println( "RECOMMENDED BASELINES: " + baselines );
+		
+		assertEquals( 1, baselines.size() );
+	}
+	
+	@Test
+	public void testGenerate() throws Exception {
+		
+		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+		variables.put( "vobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
+		
+		bootStrap( defaultSetup );
+		
+		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
+		
+		istream.generate();
+	}
+	
+	@Test
+	public void testRecommendBaseline() throws Exception {
+		
+		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+		variables.put( "vobname", uniqueTestVobName );
+		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
+		
+		bootStrap( defaultSetup );
+		
+		String viewtag = uniqueTestVobName + "_one_int";
+		System.out.println( "VIEW: " + context.views.get( viewtag ) );
+		File path = new File( context.views.get( viewtag ).getPath() );
+		
+		System.out.println( "PATH: " + path );
+		
+		addNewContent( context.components.get( 0 ), path, "test.txt" );
+	}
 
 }

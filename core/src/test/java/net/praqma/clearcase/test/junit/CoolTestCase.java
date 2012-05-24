@@ -1,6 +1,8 @@
 package net.praqma.clearcase.test.junit;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +12,8 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
+import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.view.DynamicView;
 import net.praqma.clearcase.util.SetupUtils;
 import net.praqma.clearcase.util.setup.EnvironmentParser;
@@ -75,6 +79,39 @@ public abstract class CoolTestCase extends TestCase {
 			pvob.setAttribute( "test-vob", "initial", true );
 		} else {
 			failed = true;
+		}
+	}
+	
+	public void addNewContent( Component component, File viewpath, String filename ) throws ClearCaseException {
+		Version.checkOut( new File( component.getShortname() ), viewpath );
+		File file = new File( new File( viewpath, component.getShortname() ), filename );
+		
+		if( !file.exists() ) {
+			try {
+				file.createNewFile();
+			} catch( IOException e1 ) {
+				throw new ClearCaseException( e1 );
+			}
+		}
+		
+		Version.addToSourceControl( file, file.isDirectory(), viewpath );
+		writeContent( file, "blaha" );
+		Version.recursiveCheckin( viewpath );
+	}
+	
+	public void writeContent( File file, String content ) throws ClearCaseException {
+		FileWriter fw = null;
+		try {
+			fw = new FileWriter( file, true );
+			fw.write( content );
+		} catch( IOException e1 ) {
+			throw new ClearCaseException( e1 );
+		} finally {
+			try {
+				fw.close();
+			} catch( IOException e1 ) {
+				throw new ClearCaseException( e1 );
+			}
 		}
 	}
 	
