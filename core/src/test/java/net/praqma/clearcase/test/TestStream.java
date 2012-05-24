@@ -129,9 +129,15 @@ public class TestStream extends CoolTestCase {
 		
 		bootStrap( defaultSetup );
 		
-		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
+		Project project1 = Project.create( "test-project1", null, getPVob(), 0, null, true, new ArrayList<Component>() );
+		Stream istream1 = Stream.createIntegration( "test-int1", project1, context.baselines.get( 0 ) );
 		
-		List<Stream> siblings = istream.getSiblingStreams();
+		Project project2 = Project.create( "test-project2", null, getPVob(), 0, null, true, new ArrayList<Component>() );
+		Stream istream2 = Stream.createIntegration( "test-int2", project2, context.baselines.get( 0 ) );
+		
+		istream1.setDefaultTarget( istream2 );
+		
+		List<Stream> siblings = istream2.getSiblingStreams();
 		
 		System.out.println( "SIBLINGS: " + siblings );
 		
