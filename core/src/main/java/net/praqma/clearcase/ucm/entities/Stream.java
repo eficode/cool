@@ -334,8 +334,16 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		this.project = project;
 	}
 
-	public void setDefaultTarget( Stream stream ) {
-		this.defaultTarget = stream;
+	public void setDefaultTarget( Stream stream ) throws CleartoolException {
+		
+		String cmd = "chstream -target " + stream;
+		
+		try {
+			Cleartool.run( cmd );
+			this.defaultTarget = stream;
+		} catch( Exception e ) {
+			throw new CleartoolException( "Unable to change default target to " + stream.getNormalizedName(), e );
+		}
 	}
 
 	/**
