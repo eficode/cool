@@ -358,6 +358,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 		for( Project p : projects ) {
 			try {
+				p.load();
 				logger.debug( "Checking " + p );
 				logger.debug( "INT: " + p.getIntegrationStream() );
 				logger.debug( "TGT: " + p.getIntegrationStream().getDefaultTarget() );
@@ -366,6 +367,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 				}
 			} catch( Exception e ) {
 				/* Just move on! */
+				logger.warning( "Could not check project " + p + ": " + e.getMessage() );
 			}
 		}
 
