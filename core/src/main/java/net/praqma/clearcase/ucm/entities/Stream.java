@@ -358,7 +358,9 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 		for( Project p : projects ) {
 			try {
-				logger.debug( p + " = " + p.getIntegrationStream().getDefaultTarget() );
+				logger.debug( "Checking " + p );
+				logger.debug( "INT: " + p.getIntegrationStream() );
+				logger.debug( "TGT: " + p.getIntegrationStream().getDefaultTarget() );
 				if( p.getIntegrationStream().getDefaultTarget() != null && this.equals( p.getIntegrationStream().getDefaultTarget() ) ) {
 					streams.add( p.getIntegrationStream() );
 				}
