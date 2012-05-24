@@ -336,7 +336,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 	public void setDefaultTarget( Stream stream ) throws CleartoolException {
 		
-		String cmd = "chstream -target " + stream;
+		String cmd = "chstream -target " + stream + " " + this;
 		
 		try {
 			Cleartool.run( cmd );
