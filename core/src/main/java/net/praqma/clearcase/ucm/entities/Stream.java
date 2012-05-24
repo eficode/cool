@@ -459,24 +459,26 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		
 		//List<String> bs = strategy.getLatestBaselines( stream.getFullyQualifiedName() );
 		String cmd = "desc -fmt %[latest_bls]Xp " + this;
-		String[] t = null;
+		List<String> lines;
 		try {
-			t = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
+			lines = Cleartool.run( cmd, null, false ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
 			//throw new UCMException( "Unable to get latest baseline from " + stream + ": " + e.getMessage() );
 			throw new CleartoolException( "Unable to get latest baselines from " + this, e );
 		}
 		
 		List<Baseline> bls = new ArrayList<Baseline>();
-		for( String s : t ) {
-			if( s.matches( "\\S+" ) ) {
+		for( String line : lines ) {
+			for( String s : line.split( " " ) ) {
 				try {
 					bls.add( Baseline.get( s.trim() ) );
 				} catch( Exception e ) {
-					logger.warning( "Unable to add " + s + ": " + e.getMessage() );
+					/* Unable to add, no op */
 				}
 			}
 		}
+		
+		logger.debug( "The list is " + bls );
 
 		return bls;
 	}

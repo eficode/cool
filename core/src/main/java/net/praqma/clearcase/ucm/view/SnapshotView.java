@@ -419,7 +419,7 @@ public class SnapshotView extends UCMView {
 
 		String cmd = "setcs -stream";
 		try {
-			Cleartool.run( cmd, view.getViewRoot() );
+			Cleartool.run( cmd, view.getViewRoot(), false );
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to set cs stream: " + view.getViewRoot() , e );
 		}

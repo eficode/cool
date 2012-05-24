@@ -372,8 +372,13 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 		this.kind = kind;
 	}
 
-	public boolean equals( UCMEntity entity ) {
-		return entity.getFullyQualifiedName().equals( this.getFullyQualifiedName() );
+	@Override
+	public boolean equals( Object other ) {
+		if( other instanceof UCMEntity ) {
+			return ((UCMEntity)other).getFullyQualifiedName().equals( this.getFullyQualifiedName() );
+		} else {
+			return false;
+		}
 	}
 
 	public String getEntitySelector() {

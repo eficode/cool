@@ -46,7 +46,7 @@ public class Deliver {
 	public boolean deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException, CleartoolException {
 		logger.debug( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );
 		try {
-			return _deliver( force, complete, abort, false );
+			return _deliver( force, complete, abort, resume );
 		} catch( DeliverException e ) {
 			if( e.getType().equals( Type.DELIVER_IN_PROGRESS ) ) { //could be a posted delivery
 				String status = getStatus( stream );
@@ -70,10 +70,11 @@ public class Deliver {
 	
 	public Deliver complete() throws DeliverException {
 		String cmd = "deliver -complete";
-		cmd += ( baseline != null ? " -baseline " + baseline : "" );
-		cmd += ( stream != null ? " -stream " + stream : "" );
-		cmd += ( target != null ? " -target " + target : "" );
+		//cmd += ( baseline != null ? " -baseline " + baseline : "" );
+		//cmd += ( stream != null ? " -stream " + stream : "" );
+		//cmd += ( target != null ? " -target " + target : "" );
 		cmd += ( viewtag != null ? " -to " + viewtag : "" );
+		cmd += " -f";
 		
 		try {
 			Cleartool.run( cmd, context );
