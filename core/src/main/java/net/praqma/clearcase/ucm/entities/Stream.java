@@ -356,10 +356,9 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		List<Project> projects = Project.getProjects( this.getPVob() );
 		List<Stream> streams = new ArrayList<Stream>();
 
-		logger.debug( projects );
-
 		for( Project p : projects ) {
 			try {
+				logger.debug( p + " = " + p.getIntegrationStream().getDefaultTarget() );
 				if( p.getIntegrationStream().getDefaultTarget() != null && this.equals( p.getIntegrationStream().getDefaultTarget() ) ) {
 					streams.add( p.getIntegrationStream() );
 				}
