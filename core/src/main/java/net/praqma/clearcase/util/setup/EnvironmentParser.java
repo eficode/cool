@@ -51,17 +51,17 @@ public class EnvironmentParser extends XML {
 		public File path;
 		public Map<String, Value> variables = new HashMap<String, Value>();
 		
-		public List<PVob> pvobs = new ArrayList<PVob>();
+		public Map<String, PVob> pvobs = new HashMap<String, PVob>();
 		
 		/* Streams */
-		public List<Stream> streams = new ArrayList<Stream>();
-		public List<Stream> integrationStreams = new ArrayList<Stream>();
+		public Map<String, Stream> streams = new HashMap<String, Stream>();
+		public Map<String, Stream> integrationStreams = new HashMap<String, Stream>();
 		
-		public List<Project> projects = new ArrayList<Project>();
+		public Map<String, Project> projects = new HashMap<String, Project>();
 		
 		public Map<String, Component> components = new HashMap<String, Component>();
 		
-		public List<Baseline> baselines = new ArrayList<Baseline>();
+		public Map<String, Baseline> baselines = new HashMap<String, Baseline>();
 		
 		public Map<String, UCMView> views = new HashMap<String, UCMView>();
 		

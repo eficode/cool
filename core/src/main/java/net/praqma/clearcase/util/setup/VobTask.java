@@ -26,7 +26,7 @@ public class VobTask extends AbstractTask {
 			if( ucm ) {
 				/* TODO Add a test attribute to the pvob */
 				PVob vob = PVob.create( tag, location, null );
-				context.pvobs.add( vob );
+				context.pvobs.put( tag, vob );
 				if( mount ) {
 					vob.mount();
 				}
@@ -49,7 +49,7 @@ public class VobTask extends AbstractTask {
 				
 				/* TODO Add a test attribute to the pvob */
 				vob = PVob.create( tag, location, null );
-				context.pvobs.add( vob );
+				context.pvobs.put( tag, vob );
 				if( mount ) {
 					vob.mount();
 				}

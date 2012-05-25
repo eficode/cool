@@ -36,7 +36,7 @@ public class BaselineTask extends AbstractTask {
 			/* Components not given, skipping */
 		}
 		
-		context.baselines.add( Baseline.create( name, component, context.path, LabelBehaviour.valueOf( label ), identical.length() > 0, null, components ) );
+		context.baselines.put( name, Baseline.create( name, component, context.path, LabelBehaviour.valueOf( label ), identical.length() > 0, null, components ) );
 	}
 
 }

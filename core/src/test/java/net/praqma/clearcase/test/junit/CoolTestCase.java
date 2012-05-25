@@ -77,7 +77,13 @@ public abstract class CoolTestCase extends TestCase {
 		context = parser.parse( variables );
 		logger.info( "CONTEXT PVOBS: " + context.pvobs );
 		if( context.pvobs.size() > 0 ) {
-			pvob = context.pvobs.get( 0 );
+			
+			/* There should be only one pvob defined, get it */
+			for( String key : context.pvobs.keySet() ) {
+				pvob = context.pvobs.get( key );
+				break;
+			}
+			
 			ClearCase.createSimpleAttributeType( "test-vob", pvob, true );
 			/* Set a test attribute */
 			pvob.setAttribute( "test-vob", "initial", true );
