@@ -8,6 +8,7 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.debug.Logger;
+import net.praqma.util.execute.CommandLine;
 
 public class SetupUtils {
 	private static Logger logger = Logger.getLogger();
@@ -45,5 +46,9 @@ public class SetupUtils {
 		logger.verbose( "Removing pvob" );
 		pvob.unmount();
 		pvob.remove();
+		
+		/* For Jens' sake */
+		logger.debug( "Checking views: " + CommandLine.getInstance().run( "rgy_check -views" ) );
+		logger.debug( "Checking vobs: " + CommandLine.getInstance().run( "rgy_check -vobs" ) );
 	}
 }
