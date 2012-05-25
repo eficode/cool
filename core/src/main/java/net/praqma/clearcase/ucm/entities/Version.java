@@ -307,7 +307,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			String cmd = "checkout " + ( comment != null ? "-c \"" + comment + "\" " : "-nc " ) + file;
 			Cleartool.run( cmd, context );
 		} catch( Exception e ) {
-			throw new CleartoolException( "Could not check out " + file );
+			throw new CleartoolException( "Could not check out " + file, e );
 		}
 	}
 	

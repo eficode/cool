@@ -49,6 +49,9 @@ public class EnvironmentParser extends XML {
 	
 	public static class Context {
 		public File path;
+		
+		public String mvfs;
+		
 		public Map<String, Value> variables = new HashMap<String, Value>();
 		
 		public Map<String, PVob> pvobs = new HashMap<String, PVob>();

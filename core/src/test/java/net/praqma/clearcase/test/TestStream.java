@@ -150,7 +150,8 @@ public class TestStream extends CoolTestCase {
 		
 		String viewtag = uniqueTestVobName + "_one_int";
 		System.out.println( "VIEW: " + context.views.get( viewtag ) );
-		File path = new File( context.views.get( viewtag ).getPath() );
+		//File path = new File( context.views.get( viewtag ).getPath() );
+		File path = new File( context.mvfs + "/" + uniqueTestVobName + "_one_int/" + uniqueTestVobName );
 		
 		System.out.println( "PATH: " + path );
 		

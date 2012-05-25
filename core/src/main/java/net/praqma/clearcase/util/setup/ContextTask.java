@@ -18,6 +18,8 @@ public class ContextTask extends AbstractTask {
 			String view = getValue( "view", e, context );
 			String vob = getValue( "vob", e, context );
 			context.path = new File( mvfs + "/" + view + "/" + vob );
+			
+			context.mvfs = mvfs;
 		} else {
 			/* Not implemented */
 		}
