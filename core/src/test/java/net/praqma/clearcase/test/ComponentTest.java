@@ -23,7 +23,7 @@ public class ComponentTest extends CoolTestCase {
 	
 	@BeforeClass
 	public static void startup() throws Exception {
-		//uniqueTestVobName = "cool" + getUniqueTimestamp();
+		uniqueTestVobName = "cool" + getUniqueTimestamp();
 		variables.put( "vobname", uniqueTestVobName );
 		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
 		
