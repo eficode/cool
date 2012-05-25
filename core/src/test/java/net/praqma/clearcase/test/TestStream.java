@@ -7,12 +7,14 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.test.junit.CoolTestCase;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.util.ExceptionUtils;
 
 public class TestStream extends CoolTestCase {
 	
@@ -42,7 +44,7 @@ public class TestStream extends CoolTestCase {
 	@Test
 	public void testCreateStream() throws Exception {
 		
-		Stream parent = context.streams.get( 0 );
+		Stream parent = context.streams.get( uniqueTestVobName + "_one_dev" );
 		
 		Stream nstream = Stream.create( parent, "new-stream", false, new ArrayList<Baseline>() );
 		
@@ -55,7 +57,7 @@ public class TestStream extends CoolTestCase {
 		
 		Project project = Project.create( "test-project", null, getPVob(), 0, null, true, new ArrayList<Component>() );
 		
-		Stream istream = Stream.createIntegration( "test-int", project, context.baselines.get( 0 ) );
+		Stream istream = Stream.createIntegration( "test-int", project, context.baselines.get( "_System_1.0" ) );
 		
 		assertNotNull( istream );
 		assertEquals( "stream:test-int@" + getPVob(), istream.getFullyQualifiedName() );
@@ -100,11 +102,11 @@ public class TestStream extends CoolTestCase {
 	public void testGetSiblingStream() throws Exception {
 		
 		Project project1 = Project.create( "test-project1", null, getPVob(), 0, null, true, new ArrayList<Component>() );
-		Stream istream1 = Stream.createIntegration( "test-int1", project1, context.baselines.get( 0 ) );
+		Stream istream1 = Stream.createIntegration( "test-int1", project1, context.baselines.get( "_System_1.0" ) );
 		project1.setStream( istream1 );
 		
 		Project project2 = Project.create( "test-project2", null, getPVob(), 0, null, true, new ArrayList<Component>() );
-		Stream istream2 = Stream.createIntegration( "test-int2", project2, context.baselines.get( 0 ) );
+		Stream istream2 = Stream.createIntegration( "test-int2", project2, context.baselines.get( "_System_1.0" ) );
 		
 		istream1.setDefaultTarget( istream2 );
 		
@@ -152,7 +154,11 @@ public class TestStream extends CoolTestCase {
 		
 		System.out.println( "PATH: " + path );
 		
-		addNewContent( context.components.get( "Model" ), path, "test.txt" );
+		try {
+			addNewContent( context.components.get( "Model" ), path, "test.txt" );
+		} catch( ClearCaseException e ) {
+			ExceptionUtils.print( e, System.out, true );
+		}
 	}
 
 }
