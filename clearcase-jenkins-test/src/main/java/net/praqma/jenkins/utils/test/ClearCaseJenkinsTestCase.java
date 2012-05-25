@@ -19,7 +19,6 @@ public class ClearCaseJenkinsTestCase extends HudsonTestCase {
 	
 	@Override
 	protected void setUp() throws Exception {
-		coolTest.setUp();
 		super.setUp();
 	}
 	
@@ -32,7 +31,6 @@ public class ClearCaseJenkinsTestCase extends HudsonTestCase {
 	
 	@Override
 	public void tearDown() throws Exception {
-		coolTest.tearDown();
 		try {
 			super.tearDown();
 		} catch( Exception e ) {
