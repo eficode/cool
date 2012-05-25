@@ -1,5 +1,7 @@
 package net.praqma.clearcase.test;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;

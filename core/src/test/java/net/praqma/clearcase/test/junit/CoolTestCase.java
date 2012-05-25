@@ -24,7 +24,7 @@ import net.praqma.util.debug.appenders.ConsoleAppender;
 
 import junit.framework.TestCase;
 
-public abstract class CoolTestCase extends TestCase {
+public abstract class CoolTestCase {
 
 	protected static Logger logger = Logger.getLogger();
 	protected static ConsoleAppender appender = new ConsoleAppender();
@@ -131,28 +131,5 @@ public abstract class CoolTestCase extends TestCase {
 	
 	public boolean hasFailed() {
 		return failed;
-	}
-
-	@Override
-	public void setUp() {
-		
-	}
-
-	@Override
-	public void runTest() throws Throwable {
-		super.runTest();
-	}
-
-	@Override
-	public void tearDown() {
-		/* No need for tear down, this is done prior to setup */
-//		if( pvob != null ) {
-//			try {
-//				pvob.setAttribute( "test-vob", "done", true );
-//			} catch( UnableToSetAttributeException e ) {
-//				logger.error( "Unable to set attribute: " + e.getMessage() );
-//				e.log();
-//			}
-//		}
 	}
 }
