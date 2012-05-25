@@ -14,6 +14,7 @@ import net.praqma.clearcase.test.junit.CoolTestCase;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
+import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.util.ExceptionUtils;
@@ -169,6 +170,8 @@ public class TestStream extends CoolTestCase {
 		//File path = new File( context.views.get( viewtag ).getPath() );
 		File path = new File( context.mvfs + "/" + uniqueTestVobName + "_one_int/" + uniqueTestVobName );
 		
+		Stream stream = Stream.get( uniqueTestVobName + "_one_int", pvob );
+		
 		System.out.println( "PATH: " + path );
 		
 		try {
@@ -176,6 +179,10 @@ public class TestStream extends CoolTestCase {
 		} catch( ClearCaseException e ) {
 			ExceptionUtils.print( e, System.out, true );
 		}
+		
+		Baseline rb = Baseline.create( "recommend-baseline", context.components.get( "_System" ), path, LabelBehaviour.FULL, false );
+		
+		stream.recommendBaseline( rb );
 	}
 
 }
