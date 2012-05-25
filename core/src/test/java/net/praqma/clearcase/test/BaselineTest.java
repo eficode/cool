@@ -47,7 +47,7 @@ public class BaselineTest extends CoolTestCase {
 
 	@Test
 	public void testLoadAndPromotionLevel() throws Exception {
-		Baseline bl = context.baselines.get( "client-3" ).load();
+		Baseline bl = context.baselines.get( "model-3" ).load();
 		
 		assertNotNull( bl );
 		assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
@@ -73,7 +73,7 @@ public class BaselineTest extends CoolTestCase {
 	
 	@Test
 	public void testPromote() throws Exception {
-		Baseline bl = context.baselines.get( "client-3" ).load();
+		Baseline bl = context.baselines.get( "model-3" ).load();
 		
 		assertNotNull( bl );
 		assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
@@ -83,7 +83,7 @@ public class BaselineTest extends CoolTestCase {
 	
 	@Test
 	public void testDemote() throws Exception {
-		Baseline bl = context.baselines.get( "client-2" ).load();
+		Baseline bl = context.baselines.get( "model-2" ).load();
 		
 		assertNotNull( bl );
 		assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
@@ -93,7 +93,7 @@ public class BaselineTest extends CoolTestCase {
 	
 	@Test
 	public void testSetPromotionLevel() throws Exception {
-		Baseline bl = context.baselines.get( "client-1" ).load();
+		Baseline bl = context.baselines.get( "model-1" ).load();
 		
 		assertNotNull( bl );
 		assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
@@ -103,14 +103,14 @@ public class BaselineTest extends CoolTestCase {
 	
 	@Test
 	public void testGetStream() throws Exception {
-		Baseline bl = context.baselines.get( "client-1" ).load();
+		Baseline bl = context.baselines.get( "model-1" ).load();
 		
 		assertEquals( context.streams.get( uniqueTestVobName + "_one_int" ), bl.getStream() );
 	}
 	
 	@Test
 	public void testGetComponent() throws Exception {
-		Baseline bl = context.baselines.get( "client-1" ).load();
+		Baseline bl = context.baselines.get( "model-1" ).load();
 		
 		assertEquals( context.components.get( "Clientapp" ), bl.getComponent() );
 	}
