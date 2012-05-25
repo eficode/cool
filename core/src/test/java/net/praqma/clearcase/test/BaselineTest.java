@@ -107,12 +107,12 @@ public class BaselineTest extends CoolTestCase {
 	public void testGetStream() throws Exception {
 		Baseline bl = context.baselines.get( "model-1" ).load();
 		
-		assertEquals( context.streams.get( uniqueTestVobName + "_one_int" ), bl.getStream() );
+		assertEquals( context.integrationStreams.get( uniqueTestVobName + "_one_int" ), bl.getStream() );
 	}
 	
 	@Test
 	public void testGetComponent() throws Exception {
-		Baseline bl = context.baselines.get( "model-1" ).load();
+		Baseline bl = context.baselines.get( "client-1" ).load();
 		
 		assertEquals( context.components.get( "Clientapp" ), bl.getComponent() );
 	}

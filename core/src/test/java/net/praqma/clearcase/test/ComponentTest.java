@@ -61,7 +61,7 @@ public class ComponentTest extends CoolTestCase {
 	public void testGetRootDir() throws Exception {
 		Component model = context.components.get( "Model" );
 		
-		assertEquals( "Model", model.getRootDir() );
+		assertEquals( new File( uniqueTestVobName + "/" + "Model" ).getName(), model.getRootDir() );
 	}
 	
 	@Test
