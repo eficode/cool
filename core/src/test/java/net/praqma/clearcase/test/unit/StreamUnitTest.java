@@ -10,6 +10,7 @@ import net.praqma.util.debug.appenders.Appender;
 import net.praqma.util.debug.appenders.ConsoleAppender;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -30,7 +31,7 @@ public class StreamUnitTest extends TestCase {
 	}
 	
 	@Test
-	public void testStreamExists() throws UnableToInitializeEntityException {
+	public void blaStreamExists() throws UnableToInitializeEntityException {
 		Stream stream = Stream.get( "stream@\\pvob" );
 		
 		PowerMockito.mockStatic( Cleartool.class );
@@ -40,7 +41,7 @@ public class StreamUnitTest extends TestCase {
 	}
 	
 	@Test
-	public void testStreamNotExists() throws UnableToInitializeEntityException {
+	public void blaStreamNotExists() throws UnableToInitializeEntityException {
 		Stream stream = Stream.get( "stream@\\pvob" );
 		
 		PowerMockito.mockStatic( Cleartool.class );

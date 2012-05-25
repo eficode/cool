@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.praqma.clearcase.test.junit.CoolTestCase;
@@ -14,15 +15,20 @@ import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 
 public class TestStream extends CoolTestCase {
-
-	@Test
-	public void testFoundationBaselines() throws Exception {
-		
-		String uniqueTestVobName = "cool" + uniqueTimeStamp;
+	
+	private static String uniqueTestVobName;
+	
+	@BeforeClass
+	public static void startup() throws Exception {
+		String uniqueTestVobName = "cool" + getUniqueTimestamp();
 		variables.put( "vobname", uniqueTestVobName );
 		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
 		
 		bootStrap( defaultSetup );
+	}
+
+	@Test
+	public void testFoundationBaselines() throws Exception {
 		
 		Stream stream = Stream.get( uniqueTestVobName + "_one_int", getPVob() ).load();
 		
@@ -36,12 +42,6 @@ public class TestStream extends CoolTestCase {
 	@Test
 	public void testCreateStream() throws Exception {
 		
-		String uniqueTestVobName = "cool" + uniqueTimeStamp;
-		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
-		
-		bootStrap( defaultSetup );
-		
 		Stream parent = context.streams.get( 0 );
 		
 		Stream nstream = Stream.create( parent, "new-stream", false, new ArrayList<Baseline>() );
@@ -52,12 +52,6 @@ public class TestStream extends CoolTestCase {
 	
 	@Test
 	public void testCreateIntegrationStream() throws Exception {
-		
-		String uniqueTestVobName = "cool" + uniqueTimeStamp;
-		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
-		
-		bootStrap( defaultSetup );
 		
 		Project project = Project.create( "test-project", null, getPVob(), 0, null, true, new ArrayList<Component>() );
 		
@@ -74,12 +68,6 @@ public class TestStream extends CoolTestCase {
 	@Test
 	public void testGetChildStreamsNoMultisite() throws Exception {
 		
-		String uniqueTestVobName = "cool" + uniqueTimeStamp;
-		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
-		
-		bootStrap( defaultSetup );
-		
 		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
 		
 		List<Stream> childs = istream.getChildStreams( false );
@@ -89,12 +77,6 @@ public class TestStream extends CoolTestCase {
 	
 	@Test
 	public void testGetPostedDelivery() throws Exception {
-		
-		String uniqueTestVobName = "cool" + uniqueTimeStamp;
-		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
-		
-		bootStrap( defaultSetup );
 		
 		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
 		
@@ -107,12 +89,6 @@ public class TestStream extends CoolTestCase {
 	@Test
 	public void testHasPostedDelivery() throws Exception {
 		
-		String uniqueTestVobName = "cool" + uniqueTimeStamp;
-		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
-		
-		bootStrap( defaultSetup );
-		
 		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
 		
 		boolean has = istream.hasPostedDelivery();
@@ -122,12 +98,6 @@ public class TestStream extends CoolTestCase {
 	
 	@Test
 	public void testGetSiblingStream() throws Exception {
-		
-		String uniqueTestVobName = "cool" + uniqueTimeStamp;
-		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
-		
-		bootStrap( defaultSetup );
 		
 		Project project1 = Project.create( "test-project1", null, getPVob(), 0, null, true, new ArrayList<Component>() );
 		Stream istream1 = Stream.createIntegration( "test-int1", project1, context.baselines.get( 0 ) );
@@ -148,12 +118,6 @@ public class TestStream extends CoolTestCase {
 	@Test
 	public void testStreamExists() throws Exception {
 		
-		String uniqueTestVobName = "cool" + uniqueTimeStamp;
-		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
-		
-		bootStrap( defaultSetup );
-		
 		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
 		
 		assertTrue( istream.exists() );		
@@ -161,12 +125,6 @@ public class TestStream extends CoolTestCase {
 	
 	@Test
 	public void testGetRecommendedBaselines() throws Exception {
-		
-		String uniqueTestVobName = "cool" + uniqueTimeStamp;
-		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
-		
-		bootStrap( defaultSetup );
 		
 		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
 		
@@ -180,12 +138,6 @@ public class TestStream extends CoolTestCase {
 	@Test
 	public void testGenerate() throws Exception {
 		
-		String uniqueTestVobName = "cool" + uniqueTimeStamp;
-		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
-		
-		bootStrap( defaultSetup );
-		
 		Stream istream = Stream.get( uniqueTestVobName + "_one_int", getPVob() );
 		
 		istream.generate();
@@ -193,12 +145,6 @@ public class TestStream extends CoolTestCase {
 	
 	@Test
 	public void testRecommendBaseline() throws Exception {
-		
-		String uniqueTestVobName = "cool" + uniqueTimeStamp;
-		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
-		
-		bootStrap( defaultSetup );
 		
 		String viewtag = uniqueTestVobName + "_one_int";
 		System.out.println( "VIEW: " + context.views.get( viewtag ) );

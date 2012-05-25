@@ -32,23 +32,23 @@ public abstract class CoolTestCase extends TestCase {
 	/**
 	 * This variable is null until bootStrap is called.
 	 */
-	public Context context;
+	public static Context context;
 
 	protected static boolean rolling = true;
 	protected static boolean tearDownAsMuchAsPossible = true;
-	protected boolean failed = false;
+	protected static boolean failed = false;
 	
-	protected File defaultSetup = new File( CoolTestCase.class.getClassLoader().getResource( "setup.xml" ).getFile() );
+	protected static File defaultSetup = new File( CoolTestCase.class.getClassLoader().getResource( "setup.xml" ).getFile() );
 	
-	public String uniqueTimeStamp = "" + System.currentTimeMillis() / 60000;
+	public String uniqueTimeStamp = "" + getUniqueTimestamp();
 	
 	/**
 	 * This map is used to overwrite those variables detected by the environment parser.<br><br>
 	 * The most common variables to overwrite are <b>pvobname</b> and <b>vobname</b>.
 	 */
-	public Map<String, String> variables = new HashMap<String, String>();
+	public static Map<String, String> variables = new HashMap<String, String>();
 	
-	protected PVob pvob;
+	protected static PVob pvob;
 	
 	protected File viewPath;
 
@@ -67,7 +67,11 @@ public abstract class CoolTestCase extends TestCase {
 		bootStrap( defaultSetup );
 	}
 	
-	public void bootStrap( File file ) throws Exception {
+	public static long getUniqueTimestamp() {
+		return System.currentTimeMillis() / 60000;
+	}
+	
+	public static void bootStrap( File file ) throws Exception {
 		logger.info( "Bootstrapping from " + file + ( file.exists() ? "" : ", which does not exist!?") );
 		EnvironmentParser parser = new EnvironmentParser( file );
 		context = parser.parse( variables );
