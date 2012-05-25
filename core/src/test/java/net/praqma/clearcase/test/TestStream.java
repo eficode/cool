@@ -64,7 +64,7 @@ public class TestStream extends CoolTestCase {
 		
 		istream.load();
 		
-		assertEquals( istream.getFoundationBaseline(), context.baselines.get( 0 ) );
+		assertEquals( istream.getFoundationBaseline(), context.baselines.get( "_System_1.0" ) );
 	}
 	
 	@Test
