@@ -29,7 +29,7 @@ public class BaselineTest extends CoolTestCase {
 		
 		bootStrap( defaultSetup );
 		
-		System.out.println( "BASELINES: " + context.baselines );
+		System.out.println( "---------BASELINES: " + context.baselines );
 	}
 	
 	@AfterClass
