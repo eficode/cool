@@ -200,8 +200,7 @@ public class TestStream extends CoolTestCase {
 		
 		System.out.println( "Latest baselines: " + latest );
 		
-		assertEquals( 1, latest.size() );
-		assertEquals( context.baselines.get( "_System_2.0" ), latest.get( 0 ) );
+		assertEquals( 6, latest.size() );
 	}
 
 }

@@ -28,6 +28,8 @@ public class BaselineTest extends CoolTestCase {
 		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
 		
 		bootStrap( defaultSetup );
+		
+		System.out.println( "BASELINES: " + context.baselines );
 	}
 	
 	@AfterClass
