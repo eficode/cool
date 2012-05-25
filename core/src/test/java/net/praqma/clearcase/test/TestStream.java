@@ -16,11 +16,11 @@ import net.praqma.clearcase.ucm.entities.Stream;
 
 public class TestStream extends CoolTestCase {
 	
-	private static String uniqueTestVobName;
+	private static String uniqueTestVobName = "cool" + getUniqueTimestamp();
 	
 	@BeforeClass
 	public static void startup() throws Exception {
-		uniqueTestVobName = "cool" + getUniqueTimestamp();
+		//uniqueTestVobName = "cool" + getUniqueTimestamp();
 		variables.put( "vobname", uniqueTestVobName );
 		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
 		
