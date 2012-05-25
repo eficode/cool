@@ -4,10 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.test.junit.CoolTestCase;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
@@ -15,6 +17,7 @@ import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.util.ExceptionUtils;
+import net.praqma.clearcase.util.SetupUtils;
 
 public class TestStream extends CoolTestCase {
 	
@@ -27,6 +30,19 @@ public class TestStream extends CoolTestCase {
 		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
 		
 		bootStrap( defaultSetup );
+	}
+	
+	@AfterClass
+	public static void end() throws CleartoolException {
+		if( pvob != null ) {
+			try {
+				SetupUtils.tearDown( pvob );
+			} catch( CleartoolException e ) {
+				ExceptionUtils.print( e, System.out, true );
+			}
+		} else {
+			/* Not possible to tear down */
+		}
 	}
 
 	@Test
