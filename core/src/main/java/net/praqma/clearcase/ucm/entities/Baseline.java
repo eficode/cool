@@ -340,6 +340,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		Baseline entity = (Baseline) UCMEntity.getEntity( Baseline.class, name + "@" + pvob );
 		return entity;
 	}
+	
 	public List<Baseline> getPostedBaselinesFor(Component component) throws UnableToInitializeEntityException, UnableToListBaselinesException, UnableToLoadEntityException {
 		logger.debug( "Getting posted baselines for " + this.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() );
 		List<String> bls_str = null;
