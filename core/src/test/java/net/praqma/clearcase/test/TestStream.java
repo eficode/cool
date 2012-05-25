@@ -184,5 +184,24 @@ public class TestStream extends CoolTestCase {
 		
 		stream.recommendBaseline( rb );
 	}
+	
+	
+	@Test
+	public void testLatestBaselines() throws Exception {
+		
+		String viewtag = uniqueTestVobName + "_one_int";
+		System.out.println( "VIEW: " + context.views.get( viewtag ) );
+		//File path = new File( context.views.get( viewtag ).getPath() );
+		File path = new File( context.mvfs + "/" + uniqueTestVobName + "_one_int/" + uniqueTestVobName );
+		
+		Stream stream = Stream.get( uniqueTestVobName + "_one_int", pvob );
+		
+		List<Baseline> latest = stream.getLatestBaselines();
+		
+		System.out.println( "Latest baselines: " + latest );
+		
+		assertEquals( 1, latest.size() );
+		assertEquals( context.baselines.get( "_System_2.0" ), latest.get( 0 ) );
+	}
 
 }
