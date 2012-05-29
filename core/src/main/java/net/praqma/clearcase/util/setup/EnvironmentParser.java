@@ -113,11 +113,11 @@ public class EnvironmentParser extends XML {
 		}
 	}
 	
-	public Context parse() {
+	public Context parse() throws Exception {
 		return parse( new HashMap<String, String>() );
 	}
 	
-	public Context parse( Map<String, String> variables ) {
+	public Context parse( Map<String, String> variables ) throws Exception {
 		
 		Element env = getRoot();
 		
@@ -138,10 +138,10 @@ public class EnvironmentParser extends XML {
 				}
 			} catch( ClearCaseException e1 ) {
 				ExceptionUtils.print( e1, System.out, true );
-				return null;
+				throw e1;
 			} catch( Exception e1 ) {
 				logger.fatal( "Failed to parse: " + e1.getMessage() );
-				return null;
+				throw e1;
 			}
 		}
 		

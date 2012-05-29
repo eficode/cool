@@ -12,12 +12,19 @@ import net.praqma.util.option.Options;
 public class Setup extends CLI {
 	private static Logger logger = Logger.getLogger();
 	
-	public static void main( String[] args ) throws ClearCaseException, IOException {
+	public static void main( String[] args ) throws ClearCaseException, IOException, Exception {
 		Setup s = new Setup();
-		s.perform( args );
+        try 
+        {
+            s.perform( args );
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
 	}
 
-	public void perform( String[] args ) throws ClearCaseException, IOException {
+	public void perform( String[] args ) throws ClearCaseException, IOException, Exception {
 
 		Options o = new Options( "1.0.0" );
 
@@ -41,6 +48,13 @@ public class Setup extends CLI {
 		File file = new File( ofile.getString() );
 		logger.verbose( "Parsing " + file.getAbsolutePath() );
 		EnvironmentParser parser = new EnvironmentParser( file );
-		parser.parse();
+		try 
+        {
+            parser.parse();
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
 	}
 }

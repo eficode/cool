@@ -141,7 +141,7 @@ public class TestTask extends TestCase {
 	}
 	
 	@Test
-	public void testPredefinedVariables() throws ClearCaseException, IOException {
+	public void testPredefinedVariables() throws ClearCaseException, IOException, Exception {
 		
 		Map<String, String> variables = new HashMap<String, String>();
 
@@ -153,10 +153,18 @@ public class TestTask extends TestCase {
 		var1.setAttribute( "value", "pvobabc" );
 		
 		EnvironmentParser p = new EnvironmentParser( xml.getXML() );
-		Context c = p.parse( variables );
+        try
+        {
+            Context c = p.parse( variables );
+            		
+            System.out.println( "C: " + c.variables );
 		
-		System.out.println( "C: " + c.variables );
-		
-		assertEquals( "pvob10101", c.variables.get( "pvobname" ).value );
+    		assertEquals( "pvob10101", c.variables.get( "pvobname" ).value );
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
 	}
 }
