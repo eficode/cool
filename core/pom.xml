@@ -19,16 +19,11 @@
 	</properties>
 
 	<distributionManagement>
-		<snapshotRepository>
-			<id>ubuntu</id>
-			<name>ubuntu-snapshots</name>
-			<url>http://217.116.243.220:8081/artifactory/libs-snapshot-local</url>
-		</snapshotRepository>
-		<repository>
-			<id>ubuntu</id>
-			<name>ubuntu-releases</name>
-			<url>http://217.116.243.220:8081/artifactory/libs-release-local</url>
-		</repository>
+        <repository>
+	    <id>praqma</id>
+	    <name>praqma</name>
+	    <url>scpexe://10.10.1.25:/var/www/repo/maven</url>
+	  </repository>
 	</distributionManagement>
 
 	<profiles>
