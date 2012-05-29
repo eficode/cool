@@ -14,14 +14,7 @@ public class Setup extends CLI {
 	
 	public static void main( String[] args ) throws ClearCaseException, IOException, Exception {
 		Setup s = new Setup();
-        try 
-        {
-            s.perform( args );
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
+        s.perform( args );
 	}
 
 	public void perform( String[] args ) throws ClearCaseException, IOException, Exception {
@@ -48,13 +41,6 @@ public class Setup extends CLI {
 		File file = new File( ofile.getString() );
 		logger.verbose( "Parsing " + file.getAbsolutePath() );
 		EnvironmentParser parser = new EnvironmentParser( file );
-		try 
-        {
-            parser.parse();
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
+		parser.parse();
 	}
 }

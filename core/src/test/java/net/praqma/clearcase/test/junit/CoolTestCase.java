@@ -72,33 +72,30 @@ public abstract class CoolTestCase {
 	}
 	
 	public static void bootStrap( File file ) throws Exception {
-		logger.info( "Bootstrapping from " + file + ( file.exists() ? "" : ", which does not exist!?") );
-        try
-        {
-		EnvironmentParser parser = new EnvironmentParser( file );
-		context = parser.parse( variables );
-		logger.info( "CONTEXT PVOBS: " + context.pvobs );
-		if( context.pvobs.size() > 0 ) {
-			
-			/* There should be only one pvob defined, get it */
-			for( String key : context.pvobs.keySet() ) {
-				pvob = context.pvobs.get( key );
-				break;
+		logger.info( "Bootstrapping from " + file + ( file.exists() ? "" : ", which does not exist!?" ) );
+		try {
+			EnvironmentParser parser = new EnvironmentParser( file );
+			context = parser.parse( variables );
+			logger.info( "CONTEXT PVOBS: " + context.pvobs );
+			if( context.pvobs.size() > 0 ) {
+
+				/* There should be only one pvob defined, get it */
+				for( String key : context.pvobs.keySet() ) {
+					pvob = context.pvobs.get( key );
+					break;
+				}
+
+				ClearCase.createSimpleAttributeType( "test-vob", pvob, true );
+				/* Set a test attribute */
+				pvob.setAttribute( "test-vob", "initial", true );
+			} else {
+				failed = true;
 			}
-			
-			ClearCase.createSimpleAttributeType( "test-vob", pvob, true );
-			/* Set a test attribute */
-			pvob.setAttribute( "test-vob", "initial", true );
-		} else {
-			failed = true;
+		} catch( Exception ex ) {
+			// this. and classname not callable
+			logger.info( "net.praqma.clearcase.test.junit.CoolTestCase.java:" + " caught exception: " + ex );
+			throw ex;
 		}
-        }
-        catch (Exception ex)
-        {
-            // this. and classname not callable
-            logger.info(  "net.praqma.clearcase.test.junit.CoolTestCase.java:" + " caught exception: " + ex );
-            throw ex;
-        }
 	}
 	
 	public void addNewContent( Component component, File viewpath, String filename ) throws ClearCaseException {

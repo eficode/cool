@@ -153,18 +153,10 @@ public class TestTask extends TestCase {
 		var1.setAttribute( "value", "pvobabc" );
 		
 		EnvironmentParser p = new EnvironmentParser( xml.getXML() );
-        try
-        {
-            Context c = p.parse( variables );
+		Context c = p.parse( variables );
             		
-            System.out.println( "C: " + c.variables );
+		System.out.println( "C: " + c.variables );
 		
-    		assertEquals( "pvob10101", c.variables.get( "pvobname" ).value );
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
-
+		assertEquals( "pvob10101", c.variables.get( "pvobname" ).value );
 	}
 }
