@@ -4,6 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UCMEntityNotInitializedException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
@@ -28,7 +30,16 @@ public class HyperLink extends UCMEntity {
 	}
 
 	public static void create( String type, UCMEntity entity, String key, String value ) {
-
+	}
+	
+	public static void createType( String typeName, PVob pvob, String comment ) throws CleartoolException {
+		String cmd = "mkhltype -global " + ( comment != null ? "-c \"" + comment + "\"" : "" ) + typeName + "@" + pvob;
+		
+		try {
+			Cleartool.run( cmd );
+		} catch( Exception e ) {
+			throw new CleartoolException( "Could not create the hyperlink type " + typeName, e );
+		}
 	}
 
 	@Override
