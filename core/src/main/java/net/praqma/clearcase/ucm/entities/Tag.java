@@ -264,6 +264,7 @@ public class Tag extends UCMEntity {
 				
 				Matcher match = pattern_tags.matcher( list.get( i ) );
 				if( match.find() ) {
+					logger.debug( "Found match" );
 					// tags.add( new Tuple<String, String>( match.group( 1 ),
 					// match.group( 2 ) ) );
 					//tags.add( new String[] { match.group( 1 ), match.group( 2 ) } );
@@ -305,9 +306,10 @@ public class Tag extends UCMEntity {
 		List<Tag> tags = getTags( entity );
 
 		for( Tag t : tags ) {
-
+			logger.debug( "Current: " + t );
 			/* Is it the correct tag? Return it! */
 			if( t.getTagType().equals( tagType ) && t.getTagID().equals( tagID ) ) {
+				logger.debug( "This is it!" );
 				t.setTagEntity( entity );
 				return t;
 			}
@@ -439,5 +441,9 @@ public class Tag extends UCMEntity {
 		}
 
 		return sb.toString();
+	}
+	
+	public String toString() {
+		return tagID + "::" + tagType;
 	}
 }
