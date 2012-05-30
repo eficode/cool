@@ -29,7 +29,8 @@ public class Tag extends UCMEntity {
 	public static final String __TAG_NAME = "tag";
 	private static final Pattern pattern_hlink_type_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB \"(\\S+)\" .*" );
 	private static final Pattern pattern_remove_verbose_tag = Pattern.compile( "^.*?\"(.*)\".*?$" );
-	private static final Pattern pattern_tags = Pattern.compile( "^\\s*(tag@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"(.*?)\"\\s*$" );
+	//private static final Pattern pattern_tags = Pattern.compile( "^\\s*(" + __TAG_NAME + "@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"(.*?)\"\\s*$" );
+	private static final Pattern pattern_tags = Pattern.compile( "^\\s*(.*?)\\s*->\\s*\"(.*?)\"\\s*$" );
 
 	transient private static Logger logger = Logger.getLogger();
 
@@ -264,7 +265,6 @@ public class Tag extends UCMEntity {
 				
 				Matcher match = pattern_tags.matcher( list.get( i ) );
 				if( match.find() ) {
-					logger.debug( "Found match" );
 					// tags.add( new Tuple<String, String>( match.group( 1 ),
 					// match.group( 2 ) ) );
 					//tags.add( new String[] { match.group( 1 ), match.group( 2 ) } );
@@ -444,6 +444,6 @@ public class Tag extends UCMEntity {
 	}
 	
 	public String toString() {
-		return tagID + "::" + tagType;
+		return tagType + "::" + tagID;
 	}
 }
