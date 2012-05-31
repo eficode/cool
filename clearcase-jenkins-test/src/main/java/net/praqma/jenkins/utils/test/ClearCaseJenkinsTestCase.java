@@ -9,11 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.praqma.clearcase.test.junit.CoolTestCase;
+import net.praqma.util.debug.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.jvnet.hudson.test.HudsonTestCase;
 
 public class ClearCaseJenkinsTestCase extends HudsonTestCase {
+	
+	private static Logger logger = Logger.getLogger();
+	
 	public CoolTestCase coolTest = new ConcreteCoolTestCase();
 	
 	public CoolTestCase getCoolTestCase() {
@@ -49,7 +53,8 @@ public class ClearCaseJenkinsTestCase extends HudsonTestCase {
 	@Override
 	public void tearDown() throws Exception {
 		try {
-			super.tearDown();
+			logger.info( "Skipping teardown" );
+			//super.tearDown();
 		} catch( Exception e ) {
 			System.out.println( "PATH: " + super.jenkins.getRootDir() );
 			//FileUtils.deleteDirectory( super.jenkins.getRootDir() );
