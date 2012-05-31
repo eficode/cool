@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>net.praqma</groupId>
 		<artifactId>coolness</artifactId>
-		<version>0.4.2</version>
+		<version>0.4.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>cool-jenkins-test</artifactId>
-	<version>0.1.1</version>
+	<version>0.1.2-SNAPSHOT</version>
 	<name>ClearCase Jenkins Test</name>
 	<packaging>jar</packaging>
 
@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>net.praqma</groupId>
 			<artifactId>cool</artifactId>
-			<version>0.4.2</version>
+			<version>0.4.3-SNAPSHOT</version>
 		</dependency>
 		
         <dependency>
@@ -79,7 +79,7 @@
 		<dependency>
 			<groupId>net.praqma</groupId>
 			<artifactId>cool</artifactId>
-			<version>0.4.2</version>
+			<version>0.4.3-SNAPSHOT</version>
 			<type>test-jar</type>
 		</dependency>
 	
