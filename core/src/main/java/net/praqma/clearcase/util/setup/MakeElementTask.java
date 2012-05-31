@@ -16,9 +16,11 @@ public class MakeElementTask extends AbstractTask {
 		File file = new File( e.getAttribute( "file" ) );
 		String comment = getComment( e, context );
 		
-		if( !file.exists() ) {
+		File newfile = new File( context.path, e.getAttribute( "file" ) );
+		
+		if( !newfile.exists() ) {
 			try {
-				file.createNewFile();
+				newfile.createNewFile();
 			} catch( IOException e1 ) {
 				throw new ClearCaseException( e1 );
 			}
