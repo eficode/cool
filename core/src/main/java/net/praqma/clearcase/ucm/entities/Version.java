@@ -242,9 +242,9 @@ public class Version extends UCMEntity implements Comparable<Version> {
 				/* Determine whether the File is a file or a directory */
 				String cmd = "";
 				if( mkdir ) {
-					cmd = "mkdir " + file;
+					cmd = "mkdir -nc " + file;
 				} else {
-					cmd = "mkelem " + file;
+					cmd = "mkelem -nc " + file;
 				}
 				Cleartool.run( cmd, view );
 			} catch( Exception e ) {
