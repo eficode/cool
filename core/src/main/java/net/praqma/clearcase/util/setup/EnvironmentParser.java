@@ -45,6 +45,9 @@ public class EnvironmentParser extends XML {
 		map.put( "stream", new StreamTask() );
 		map.put( "var", new VariableTask() );
 		map.put( "view", new ViewTask() );
+		
+		map.put( "mkelem", new MakeElementTask() );
+		map.put( "mkdir", new MakeDirectoryTask() );
 	}
 	
 	public static class Context {

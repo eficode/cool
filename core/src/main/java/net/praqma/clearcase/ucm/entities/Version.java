@@ -206,6 +206,26 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return version;
 	}
 	
+	public static void makeElement( File file, File view, String comment ) throws CleartoolException {
+		String cmd = "mkelem " + ( comment != null ? "-c \"" + comment + "\" " : "" ) + file;
+		
+		try {
+			Cleartool.run( cmd, view );
+		} catch( Exception e ) {
+			throw new CleartoolException( "Unable to make element " + file, e );
+		}
+	}
+	
+	public static void makeDirectory( File directory, File view, String comment ) throws CleartoolException {
+		String cmd = "mkdir " + ( comment != null ? "-c \"" + comment + "\" " : "" ) + directory;
+		
+		try {
+			Cleartool.run( cmd, view );
+		} catch( Exception e ) {
+			throw new CleartoolException( "Unable to make directory " + directory, e );
+		}
+	}
+	
 	public static void addToSourceControl( File file, boolean mkdir, File view ) throws CleartoolException {
 			/* Check existence */
 			List<File> files = new ArrayList<File>();

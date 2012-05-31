@@ -47,7 +47,7 @@ public abstract class AbstractTask {
 		return value.length() > 0 ? value : def;
 	}
 	
-	public String getComment( Element e, Context context) {
+	public String getComment( Element e, Context context ) {
 		String comment = getValue( "comment", e, context );
 		return comment.length() > 0 ? comment : null;
 	}

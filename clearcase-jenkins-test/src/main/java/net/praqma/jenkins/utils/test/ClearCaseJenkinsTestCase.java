@@ -53,8 +53,8 @@ public class ClearCaseJenkinsTestCase extends HudsonTestCase {
 	@Override
 	public void tearDown() throws Exception {
 		try {
-			logger.info( "Skipping teardown" );
-			//super.tearDown();
+			//logger.info( "Skipping teardown" );
+			super.tearDown();
 		} catch( Exception e ) {
 			System.out.println( "PATH: " + super.jenkins.getRootDir() );
 			//FileUtils.deleteDirectory( super.jenkins.getRootDir() );
