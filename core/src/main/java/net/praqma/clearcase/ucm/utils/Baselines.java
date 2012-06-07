@@ -143,7 +143,9 @@ public class Baselines {
 
 		/* Sort by date - first is oldest, last is newest */
 		Collections.sort( baselines, new AscendingDateSort() );
-
+        for (Baseline b : baselines)
+            logger.debug( "Baselines: " + b.stringify() );
+        
 		/* Get from a specific baseline */
 		if( after != null ) {
 			Iterator<Baseline> itAfter = baselines.iterator();
