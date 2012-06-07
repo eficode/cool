@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>net.praqma</groupId>
 		<artifactId>coolness</artifactId>
-		<version>0.4.2-SNAPSHOT</version>
+		<version>0.4.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>cool-jenkins-utils</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.2-SNAPSHOT</version>
 	<name>Jenkins ClearCase utilities</name>
 	<packaging>jar</packaging>
 
@@ -53,7 +53,7 @@
         <dependency>
             <groupId>net.praqma</groupId>
             <artifactId>cool</artifactId>
-            <version>0.4.2-SNAPSHOT</version>
+            <version>0.4.3-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
