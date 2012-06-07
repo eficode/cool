@@ -97,8 +97,19 @@ public class Baselines {
 	
 	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max, Date date, Baseline after ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		List<Baseline> baselines = null;
+		
+		/* Printing info for debug */
+		logger.debug( " --- Get baselines information --- " );
+		logger.debug( "Component: " + component.getNormalizedName() );
+		logger.debug( "Stream   : " + stream.getNormalizedName() );
+		logger.debug( "Level    : " + plevel );
+		logger.debug( "Max      : " + max );
+		logger.debug( "Date     : " + date );
+		logger.debug( "Baseline : " + ( after != null ? after.getNormalizedName() : "N/A" ) );
 
 		baselines = Baselines.get( stream, component, plevel );
+		logger.debug( " --- Bare retrieval --- " );
+		logger.debug( "Baselines: " + baselines );
 
 		/* Prune */
 		int pruned = 0;
@@ -122,9 +133,13 @@ public class Baselines {
 				/* Just continue */
 			}
 		}
+		
 		if( pruned > 0 ) {
 			logger.verbose( "[ClearCase] Pruned " + pruned + " baselines" );
 		}
+		
+		logger.debug( " --- Pruned for delivers + loads --- " );
+		logger.debug( "Baselines: " + baselines );
 
 		/* Sort by date - first is oldest, last is newest */
 		Collections.sort( baselines, new AscendingDateSort() );
@@ -144,7 +159,10 @@ public class Baselines {
 					itAfter.remove();
 				}
 			}
-		} 
+			
+			logger.debug( " --- Pruned before baseline --- " );
+			logger.debug( "Baselines: " + baselines );
+		}
 		
 		/* Prune from a specified date */
 		if( date != null ) {
@@ -159,6 +177,8 @@ public class Baselines {
 					break;
 				}
 			}
+			logger.debug( " --- Pruned before date --- " );
+			logger.debug( "Baselines: " + baselines );
 		} else {
 			/* No modifier */
 		}
