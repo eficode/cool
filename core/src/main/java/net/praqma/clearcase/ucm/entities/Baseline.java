@@ -98,6 +98,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		}
 
 		String[] rs = result.split( UCMEntity.delim );
+        logger.debug("Result:" + result);
 
 		/* Component . component:GENI_Source@\bbComponent */
 		String c = ( rs[1].matches( "^component:.*$" ) ? "" : "component:" ) + ( rs[1].matches( ".*@" + PVob.rx_format + "$" ) ? rs[1] : rs[1] + "@" + this.pvob );
@@ -114,6 +115,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		this.plevel = Project.getPlevelFromString( rs[3] );
 		this.user = rs[4];
 		try {
+            logger.debug("Result[5]:" + rs[5]);
 			this.date = dateFormatter.parse( rs[5] );
 		} catch( ParseException e ) {
 			logger.debug( "Unable to parse date: " + e.getMessage() );
