@@ -60,6 +60,8 @@ public abstract class Cleartool extends Cool {
 				throw new NoLicenseServerException( "No license server available", e );
 			} else if( e.getMessage().contains( "FLEXnet Licensing error:-18,147" )) {
 				throw new NoLicensesException( "No licenses available", e );
+			} else if( e.getMessage().contains( "There are no valid licenses in the NT registry for ClearCase" )) {
+				throw new NoLicensesException( "No licenses available", e );
 			} else {
 				throw e;
 			}
@@ -97,7 +99,14 @@ FLEXnet Licensing error:-18,147
 For further information, refer to the FLEXnet Licensing documentation,
 available at "www.flexerasoftware.com".
 cleartool: Error: You do not have a license to run ClearCase.
- */ 
+ *
+ *
+ * No licenses
+ *
+ *
+cleartool: Error: There are no valid licenses in the NT registry for ClearCase.
+cleartool: Error: You do not have a license to run ClearCase.
+*/ 
 
 
 
