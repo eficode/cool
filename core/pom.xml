@@ -239,7 +239,7 @@
 		<dependency>
 			<groupId>net.praqma</groupId>
 			<artifactId>praqmajutils</artifactId>
-			<version>0.1.21-SNAPSHOT</version>
+			<version>0.1.21</version>
 			<optional>true</optional>
 		</dependency>
 		
