@@ -17,14 +17,6 @@
 		<powermock.version>1.4.12</powermock.version>
 	</properties>
 
-	<distributionManagement>
-        <repository>
-	    <id>praqma</id>
-	    <name>praqma</name>
-	    <url>scpexe://10.10.1.25:/var/www/repo/maven</url>
-	  </repository>
-	</distributionManagement>
-
 	<profiles>
 	
         <profile>
@@ -228,14 +220,6 @@
 
 	</build>
 
-
-	<repositories>
-		<repository>
-			<id>ubuntu</id>
-			<name>ubuntu-releases</name>
-			<url>http://217.116.243.220:8081/artifactory/repo</url>
-		</repository>
-	</repositories>
 
 
 	<dependencies>
