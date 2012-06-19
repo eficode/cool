@@ -33,19 +33,19 @@ public abstract class Cleartool extends Cool {
 	}
 
 	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException {
-		return _run( "cleartool " + cmd, null, true, false );
+		return _run( cmd, null, true, false );
 	}
 
 	public static CmdResult run( String cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException {
-		return _run( "cleartool " + cmd, dir, true, false );
+		return _run( cmd, dir, true, false );
 	}
 
 	public static CmdResult run( String cmd, File dir, boolean merge ) throws CommandLineException, AbnormalProcessTerminationException {
-		return _run( "cleartool " + cmd, dir, merge, false );
+		return _run( cmd, dir, merge, false );
 	}
 	
 	public static CmdResult run( String cmd, File dir, boolean merge, boolean ignore ) throws CommandLineException, AbnormalProcessTerminationException {
-		return _run( "cleartool " + cmd, dir, merge, ignore );
+		return _run( cmd, dir, merge, ignore );
 	}
 	
 	private static CmdResult _run( String cmd, File dir, boolean merge, boolean ignore ) throws CommandLineException, AbnormalProcessTerminationException {
