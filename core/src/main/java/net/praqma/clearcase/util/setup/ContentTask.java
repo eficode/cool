@@ -14,7 +14,7 @@ public class ContentTask extends AbstractTask {
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
 		File file = new File( context.path, e.getAttribute( "file" ) );
-		String content = e.getAttribute( "content" );
+		String content = getValue( "content", e, context, "" );
 		
 		FileWriter fw = null;
 		try {
@@ -25,7 +25,7 @@ public class ContentTask extends AbstractTask {
 		} finally {
 			try {
 				fw.close();
-			} catch( IOException e1 ) {
+			} catch( Exception e1 ) {
 				throw new ClearCaseException( e1 );
 			}
 		}
