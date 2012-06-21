@@ -3,6 +3,7 @@ package net.praqma.clearcase.util.setup;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -141,14 +145,42 @@ public class EnvironmentParser extends XML {
 				}
 			} catch( ClearCaseException e1 ) {
 				ExceptionUtils.print( e1, System.out, true );
+				print( e, System.out );
 				throw e1;
 			} catch( Exception e1 ) {
 				logger.fatal( "Failed to parse: " + e1.getMessage() );
+				print( e, System.out );
 				throw e1;
 			}
 		}
 		
 		return context;
+	}
+	
+	private void print( Element e, PrintStream out ) {
+		out.println( "Name: " + e.getTagName() );
+		
+		NamedNodeMap map = e.getAttributes();
+
+		out.println( "Attributes:" );
+		for( int i = 0 ; i < map.getLength() ; ++i ) {
+			out.println( "[" + map.item( i ) + "]" );
+		}
+		
+		if( e.getTextContent() != null && e.getTextContent().length() > 0 ) {
+			out.println( "Content: " + e.getTextContent() );
+		} else {
+			out.println( "Content: [Empty]" );
+		}
+		
+		NodeList childs = e.getChildNodes();
+		
+		out.println( "Child nodes:" );
+		for( int i = 0 ; i < childs.getLength() ; ++i ) {
+			if( childs.item( i ).getNodeType() == Element.ELEMENT_NODE ) {
+				print( (Element)childs.item( i ), out );
+			}
+		}
 	}
 	
 	
