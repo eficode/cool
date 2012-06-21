@@ -1,6 +1,7 @@
 package net.praqma.clearcase.util.setup;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -14,6 +15,7 @@ public class AddElementTask extends AbstractTask {
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
 		File file = new File( context.path, e.getAttribute( "file" ) );
+		String content = getValue( "content", e, context, null );
 		
 		if( !file.exists() ) {
 			try {
@@ -23,7 +25,23 @@ public class AddElementTask extends AbstractTask {
 			}
 		}
 		
-		Version.addToSourceControl( file, file.isDirectory(), context.path );
+		if( content != null ) {
+			FileWriter fw = null;
+			try {
+				fw = new FileWriter( file, true );
+				fw.write( content );
+			} catch( IOException e1 ) {
+				throw new ClearCaseException( e1 );
+			} finally {
+				try {
+					fw.close();
+				} catch( IOException e1 ) {
+					throw new ClearCaseException( e1 );
+				}
+			}
+		}
+		
+		Version.addToSourceControl( file, context.path, null, true );
 	}
 
 }
