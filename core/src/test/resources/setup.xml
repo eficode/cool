@@ -145,7 +145,7 @@
   
   <content file="Clientapp/client.h" content="#2" />
   
-  <checkin file="Model/client.h" />
+  <checkin file="Clientapp/client.h" />
   
   <baseline name="client-2" label="full" comment="" component="Clientapp" pvob="${pvobname}" />
   
@@ -154,7 +154,7 @@
   
   <content file="Clientapp/client.h" content="#3" />
   
-  <checkin file="Model/client.h" />
+  <checkin file="Clientapp/client.h" />
   
   <baseline name="client-3" label="full" comment="" component="Clientapp" pvob="${pvobname}" />
   
