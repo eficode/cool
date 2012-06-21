@@ -164,7 +164,7 @@ public class EnvironmentParser extends XML {
 
 		out.println( "Attributes:" );
 		for( int i = 0 ; i < map.getLength() ; ++i ) {
-			out.println( "[" + map.item( i ) + "]" );
+			out.println( " * [" + i + "] " + map.item( i ).getNodeName() + " = " + map.item( i ).getNodeValue() );
 		}
 		
 		if( e.getTextContent() != null && e.getTextContent().length() > 0 ) {
@@ -176,10 +176,14 @@ public class EnvironmentParser extends XML {
 		NodeList childs = e.getChildNodes();
 		
 		out.println( "Child nodes:" );
-		for( int i = 0 ; i < childs.getLength() ; ++i ) {
-			if( childs.item( i ).getNodeType() == Element.ELEMENT_NODE ) {
-				print( (Element)childs.item( i ), out );
+		if( childs.getLength() > 0 ) {
+			for( int i = 0 ; i < childs.getLength() ; ++i ) {
+				if( childs.item( i ).getNodeType() == Element.ELEMENT_NODE ) {
+					print( (Element)childs.item( i ), out );
+				}
 			}
+		} else {
+			out.println( "[Empty]" );
 		}
 	}
 	
