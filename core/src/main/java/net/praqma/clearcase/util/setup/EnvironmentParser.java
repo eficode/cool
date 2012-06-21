@@ -175,16 +175,18 @@ public class EnvironmentParser extends XML {
 		
 		NodeList childs = e.getChildNodes();
 		
-		out.println( "Child nodes:" );
 		if( childs.getLength() > 0 ) {
+			out.println( "Child nodes:" );
 			for( int i = 0 ; i < childs.getLength() ; ++i ) {
 				if( childs.item( i ).getNodeType() == Element.ELEMENT_NODE ) {
 					print( (Element)childs.item( i ), out );
 				}
 			}
 		} else {
-			out.println( "[Empty]" );
+			out.println( "Child nodes: [Empty]" );
 		}
+		
+		out.println( "" );
 	}
 	
 	
