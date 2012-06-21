@@ -251,7 +251,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	 */
 	public static void addToSourceControl( File file, File viewContext, String comment, boolean checkIn ) throws CleartoolException {
 		String cmd = "mkelem -mkpath ";
-		cmd += comment != null ? "-comment \"" + comment + "\" " : " ";
+		cmd += comment != null ? "-comment \"" + comment + "\" " : "-nc ";
 		cmd += checkIn ? "-ci " : " ";
 		cmd += file;
 		
