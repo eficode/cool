@@ -110,6 +110,11 @@ public abstract class CoolTestCase {
 	public void addNewElement( Component component, File viewpath, String filename ) throws ClearCaseException {
 		File file = new File( new File( viewpath, component.getShortname() ), filename );
 		
+		logger.debug( "FILE IS " + viewpath );
+		logger.debug( "FILE IS " + component );
+		logger.debug( "FILE IS " + filename );
+		logger.debug( "FILE IS " + file );
+		
 		if( !file.exists() ) {
 			try {
 				file.createNewFile();

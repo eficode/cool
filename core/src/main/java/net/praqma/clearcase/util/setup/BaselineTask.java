@@ -5,14 +5,12 @@ import java.util.List;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
-import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 import net.praqma.util.debug.Logger;
-import net.praqma.util.execute.CmdResult;
 
 import org.w3c.dom.Element;
 
@@ -39,14 +37,6 @@ public class BaselineTask extends AbstractTask {
 			}
 		} catch( Exception e1 ) {
 			/* Components not given, skipping */
-		}
-		
-		/* For debugging purposes */
-		try {
-			CmdResult result = Cleartool.run( "lsco -r", context.path );
-			logger.debug( "RESULT\\n" + result.stdoutBuffer );
-		} catch( Exception ex ) {
-			logger.warning( ex.getMessage() );
 		}
 		
 		context.baselines.put( name, Baseline.create( name, component, context.path, LabelBehaviour.valueOf( label ), identical.length() > 0, null, components ) );

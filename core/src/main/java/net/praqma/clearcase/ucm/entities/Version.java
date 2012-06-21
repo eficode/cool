@@ -723,4 +723,13 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	public static Version get( String name ) throws UnableToInitializeEntityException {
 		return (Version) UCMEntity.getEntity( Version.class, name );
 	}
+	
+	public static void printCheckouts( File viewContext ) {
+		try {
+			CmdResult result = Cleartool.run( "lsco -r", viewContext );
+			logger.debug( "RESULT\\n" + result.stdoutBuffer );
+		} catch( Exception ex ) {
+			logger.warning( ex.getMessage() );
+		}
+	}
 }
