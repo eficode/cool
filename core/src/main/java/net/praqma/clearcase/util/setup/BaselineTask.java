@@ -12,6 +12,7 @@ import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 import net.praqma.util.debug.Logger;
+import net.praqma.util.execute.CmdResult;
 
 import org.w3c.dom.Element;
 
@@ -42,7 +43,8 @@ public class BaselineTask extends AbstractTask {
 		
 		/* For debugging purposes */
 		try {
-			Cleartool.run( "lsco", context.path );
+			CmdResult result = Cleartool.run( "lsco", context.path );
+			logger.debug( "RESULT\\n" + result.stdoutBuffer );
 		} catch( Exception ex ) {
 			logger.warning( ex.getMessage() );
 		}
