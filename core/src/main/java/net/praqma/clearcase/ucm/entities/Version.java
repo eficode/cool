@@ -2,11 +2,8 @@ package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +11,7 @@ import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
@@ -21,7 +19,6 @@ import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.interfaces.Diffable;
-import net.praqma.clearcase.ucm.entities.UCMEntity.Kind;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -46,7 +43,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	private boolean oldVersion = false;
 	private File oldFile;
 
-	private SnapshotView view = null;
+	private File view = null;
 
 	private String fullfile = null;
 	private String sfile = null;
@@ -137,7 +134,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 	/* Getters */
 
-	public static Version getUnextendedVersion( File file, File viewroot ) throws CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException, IOException {
+	public static Version getUnextendedVersion( File file, File viewroot ) throws IOException, CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
 		//return context.getVersionExtension( file, viewroot );
 		
 		if( !file.exists() ) {
@@ -206,6 +203,24 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return version;
 	}
 	
+	/**
+	 * Create a ClearCase element from a File, that will be checked in
+	 * @param file - The relative file
+	 * @param viewContext - The view root
+	 * @return
+	 * @throws ClearCaseException
+	 * @throws IOException
+	 */
+	public static Version create( File file, File viewContext ) throws ClearCaseException, IOException {
+
+		Version.addToSourceControl( file, viewContext, null, true );
+		
+		Version version = Version.getUnextendedVersion( file, viewContext );
+		version.setView( viewContext );
+		
+		return version;
+	}
+	
 	public static void makeElement( File file, File view, String comment ) throws CleartoolException {
 		String cmd = "mkelem " + ( comment != null ? "-c \"" + comment + "\" " : "" ) + file;
 		
@@ -223,6 +238,27 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			Cleartool.run( cmd, view );
 		} catch( Exception e ) {
 			throw new CleartoolException( "Unable to make directory " + directory, e );
+		}
+	}
+	
+	/**
+	 * 
+	 * @param file
+	 * @param view
+	 * @param viewContext
+	 * @param checkIn
+	 * @throws CleartoolException
+	 */
+	public static void addToSourceControl( File file, File viewContext, String comment, boolean checkIn ) throws CleartoolException {
+		String cmd = "mkelem -mkpath ";
+		cmd += comment != null ? "-comment \"" + comment + "\" " : " ";
+		cmd += checkIn ? "-ci " : " ";
+		cmd += file;
+		
+		try {
+			Cleartool.run( cmd, viewContext );
+		} catch( Exception e ) {
+			throw new CleartoolException( "Could not add " + file + " to source control", e );
 		}
 	}
 	
@@ -283,7 +319,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	
 	public void checkIn() throws CleartoolException {
 		//context.checkIn( this, false, view.getViewRoot() );
-		checkIn( file, false, view.getViewRoot() );
+		checkIn( file, false, view );
 	}
 	
 	public static void checkIn( File file, boolean identical, File viewContext ) throws CleartoolException {
@@ -307,15 +343,15 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	public void checkIn( boolean identical ) throws CleartoolException {
-		checkIn( this.getFile(), identical, view.getViewRoot() );
+		checkIn( this.getFile(), identical, view );
 	}
 	
 	public void checkInIdentical() throws CleartoolException {
-		checkIn( this.getFile(), true, view.getViewRoot() );
+		checkIn( this.getFile(), true, view );
 	}
 	
 	public void checkOut() throws CleartoolException {
-		checkOut( this.getFile(), view.getViewRoot() );
+		checkOut( this.getFile(), view );
 	}
 	
 	public static void checkOut( File file, File context ) throws CleartoolException {
@@ -332,7 +368,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	public void removeVersion() throws CleartoolException {
-		removeVersion( this.file, view.getViewRoot() );
+		removeVersion( this.file, view );
 	}
 	
 	public static void removeVersion( File file, File viewContext ) throws CleartoolException {
@@ -362,7 +398,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	public void removeName( ) throws CleartoolException {
-		removeName( this.file, view.getViewRoot() );
+		removeName( this.file, view );
 	}
 	
 	public static void removeName( File file, File context ) throws CleartoolException {
@@ -430,15 +466,15 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	public void moveFile( File destination ) throws CleartoolException {
-		moveFile( file, destination, view.getViewRoot() );
+		moveFile( file, destination, view );
 	}
 	
 	public void uncheckout() throws CleartoolException {
-		uncheckout( this.getFile(), true, view.getViewRoot() );
+		uncheckout( this.getFile(), true, view );
 	}
 	
 	public void uncheckout( boolean keep ) throws CleartoolException {
-		uncheckout( this.getFile(), keep, view.getViewRoot() );
+		uncheckout( this.getFile(), keep, view );
 	}
 	
 	public static void uncheckout( File file, boolean keep, File viewContext ) throws CleartoolException {
@@ -468,10 +504,14 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 
 	public void setView( SnapshotView view ) {
+		this.view = view.getViewRoot();
+	}
+	
+	public void setView( File view ) {
 		this.view = view;
 	}
 	
-	public SnapshotView getView() {
+	public File getView() {
 		return view;
 	}
 

@@ -102,6 +102,14 @@ public abstract class CoolTestCase {
 		Version.checkOut( new File( component.getShortname() ), viewpath );
 		File file = new File( new File( viewpath, component.getShortname() ), filename );
 		
+		writeContent( file, "blaha" );
+		
+		Version.addToSourceControl( file, viewpath, null, true );
+	}
+	
+	public void addNewElement( Component component, File viewpath, String filename ) throws ClearCaseException {
+		File file = new File( new File( viewpath, component.getShortname() ), filename );
+		
 		if( !file.exists() ) {
 			try {
 				file.createNewFile();
@@ -110,9 +118,9 @@ public abstract class CoolTestCase {
 			}
 		}
 		
-		Version.addToSourceControl( file, file.isDirectory(), viewpath );
 		writeContent( file, "blaha" );
-		Version.recursiveCheckin( viewpath );
+		
+		Version.addToSourceControl( file, viewpath, null, true );
 	}
 	
 	public void writeContent( File file, String content ) throws ClearCaseException {
