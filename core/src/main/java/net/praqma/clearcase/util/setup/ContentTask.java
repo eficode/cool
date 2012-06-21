@@ -19,23 +19,17 @@ public class ContentTask extends AbstractTask {
 		File file = new File( context.path, e.getAttribute( "file" ) );
 		String content = getValue( "content", e, context, "" );
 		
-		logger.debug( "FILE=" + file );
-		logger.debug( "CONTENT=" + content );
-		
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter( file, true );
-			logger.debug( "FW=" + fw );
 			fw.write( content );
 		} catch( IOException e1 ) {
-			logger.debug( "EX=" + e1 );
 			throw new ClearCaseException( e1 );
 		} finally {
-			logger.debug( "FINALLY" );
 			try {
 				fw.close();
 			} catch( Exception e1 ) {
-				throw new ClearCaseException( e1 );
+				//throw new ClearCaseException( e1 );
 			}
 		}
 		
