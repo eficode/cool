@@ -43,7 +43,7 @@ public class BaselineTask extends AbstractTask {
 		
 		/* For debugging purposes */
 		try {
-			CmdResult result = Cleartool.run( "lsco", context.path );
+			CmdResult result = Cleartool.run( "lsco -r", context.path );
 			logger.debug( "RESULT\\n" + result.stdoutBuffer );
 		} catch( Exception ex ) {
 			logger.warning( ex.getMessage() );
