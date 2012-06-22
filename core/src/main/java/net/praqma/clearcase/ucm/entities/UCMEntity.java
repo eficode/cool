@@ -49,7 +49,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	private static final long serialVersionUID = 1123123123L;
 
 	protected static final String rx_ccdef_allowed = "[\\w\\.-]";
-	protected static final String rx_ccdef_vob = "[\\\\\\w\\.-/]";
+	protected static final String rx_ccdef_vob = "[\\\\\\w\\./-]";
 	protected static final Pattern pattern_std_fqname = Pattern.compile( "^(\\w+):(" + rx_ccdef_allowed + "+)@(" + rx_ccdef_vob + "+)$" );
 	/* TODO Make a better character class definition for files(Version) */
 	//private static final Pattern pattern_version_fqname = Pattern.compile( "^([\\S\\s\\\\\\/.^@]+)@@(" + rx_ccdef_vob + "+)$" );
@@ -100,7 +100,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	protected boolean loaded = false;
 	private String entitySelector;
 
-	public UCMEntity() {
+	private UCMEntity() {
 
 	}
 
