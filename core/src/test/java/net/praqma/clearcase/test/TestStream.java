@@ -24,6 +24,7 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.clearcase.util.SetupUtils;
 
+@ClearCaseTest( name = "" )
 public class TestStream {
 	
 	@ClassRule

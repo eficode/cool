@@ -1,24 +1,17 @@
 package net.praqma.clearcase.test;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
 import net.praqma.clearcase.Environment;
-import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Component;
-import net.praqma.clearcase.util.ExceptionUtils;
-import net.praqma.clearcase.util.SetupUtils;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+@ClearCaseTest( name = "" )
 public class ComponentTest {
 	
 	@ClassRule

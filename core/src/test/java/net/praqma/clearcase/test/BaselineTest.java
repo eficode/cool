@@ -6,26 +6,23 @@ import java.io.File;
 
 import net.praqma.clearcase.Environment;
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.Component;
-import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.util.ExceptionUtils;
-import net.praqma.clearcase.util.SetupUtils;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+@ClearCaseTest( name = "" )
 public class BaselineTest {
 
 	@ClassRule
 	public static ClearCaseRule ccenv = new ClearCaseRule( "clearcaserule", "cool" + Environment.getUniqueTimestamp() );
 
+	public final String vn = "cc-" + Environment.getUniqueTimestamp();
+	
 	@Test
 	public void testLoadAndPromotionLevel() throws Exception {
 		Baseline bl = ccenv.context.baselines.get( "model-3" ).load();
@@ -49,7 +46,7 @@ public class BaselineTest {
 			ExceptionUtils.print( e, System.out, true );
 		}
 		
-		Baseline rb = Baseline.create( "new-baseline", ccenv.context.components.get( "_System" ), path, LabelBehaviour.FULL, false );
+		Baseline.create( "new-baseline", ccenv.context.components.get( "_System" ), path, LabelBehaviour.FULL, false );
 	}
 	
 	@Test
