@@ -1,4 +1,4 @@
-package net.praqma.clearcase.test.junit;
+package net.praqma.clearcase;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -6,25 +6,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.praqma.clearcase.ClearCase;
-import net.praqma.clearcase.Cool;
-import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Version;
-import net.praqma.clearcase.ucm.view.DynamicView;
-import net.praqma.clearcase.util.SetupUtils;
 import net.praqma.clearcase.util.setup.EnvironmentParser;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.debug.Logger.LogLevel;
 import net.praqma.util.debug.appenders.ConsoleAppender;
 
-import junit.framework.TestCase;
-
-public abstract class CoolTestCase {
+public class Environment {
 
 	protected static Logger logger = Logger.getLogger();
 	protected static ConsoleAppender appender = new ConsoleAppender();
@@ -32,13 +23,9 @@ public abstract class CoolTestCase {
 	/**
 	 * This variable is null until bootStrap is called.
 	 */
-	public static Context context;
+	public Context context;
 
-	protected static boolean rolling = true;
-	protected static boolean tearDownAsMuchAsPossible = true;
-	protected static boolean failed = false;
-	
-	protected static File defaultSetup = new File( CoolTestCase.class.getClassLoader().getResource( "setup.xml" ).getFile() );
+	protected File defaultSetup = new File( Environment.class.getClassLoader().getResource( "setup.xml" ).getFile() );
 	
 	public String uniqueTimeStamp = "" + getUniqueTimestamp();
 	
@@ -46,7 +33,7 @@ public abstract class CoolTestCase {
 	 * This map is used to overwrite those variables detected by the environment parser.<br><br>
 	 * The most common variables to overwrite are <b>pvobname</b> and <b>vobname</b>.
 	 */
-	public static Map<String, String> variables = new HashMap<String, String>();
+	public Map<String, String> variables = new HashMap<String, String>();
 	
 	protected static PVob pvob;
 	
@@ -58,20 +45,20 @@ public abstract class CoolTestCase {
 		Logger.addAppender( appender );
 	}
 	
-	public CoolTestCase() {
+	public Environment() {
 		logger.verbose( "Constructor" );
 		viewPath = new File( System.getProperty( "viewpath", "views" ) );
-	}
-	
-	public void bootStrap() throws Exception {
-		bootStrap( defaultSetup );
 	}
 	
 	public static long getUniqueTimestamp() {
 		return System.currentTimeMillis() / 60000;
 	}
+
+	public void bootStrap() throws Exception {
+		bootStrap( defaultSetup );
+	}
 	
-	public static void bootStrap( File file ) throws Exception {
+	public void bootStrap( File file ) throws Exception {
 		logger.info( "Bootstrapping from " + file + ( file.exists() ? "" : ", which does not exist!?" ) );
 		try {
 			EnvironmentParser parser = new EnvironmentParser( file );
@@ -89,7 +76,7 @@ public abstract class CoolTestCase {
 				/* Set a test attribute */
 				pvob.setAttribute( "test-vob", "initial", true );
 			} else {
-				failed = true;
+				throw new ClearCaseException( "No PVob available" );
 			}
 		} catch( Exception ex ) {
 			// this. and classname not callable
@@ -147,8 +134,5 @@ public abstract class CoolTestCase {
 	public PVob getPVob() {
 		return pvob;
 	}
-	
-	public boolean hasFailed() {
-		return failed;
-	}
+
 }

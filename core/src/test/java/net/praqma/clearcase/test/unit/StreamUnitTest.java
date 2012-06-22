@@ -1,5 +1,6 @@
 package net.praqma.clearcase.test.unit;
 
+import static org.junit.Assert.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.ucm.entities.Baseline;
@@ -22,7 +23,7 @@ import junit.framework.TestCase;
 
 @RunWith( PowerMockRunner.class )
 @PrepareForTest( { Baseline.class, Cleartool.class } )
-public class StreamUnitTest extends TestCase {
+public class StreamUnitTest {
 	
 	static {
 		Appender appender = new ConsoleAppender();

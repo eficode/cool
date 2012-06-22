@@ -5,53 +5,34 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
+import net.praqma.clearcase.Environment;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
-import net.praqma.clearcase.test.junit.CoolTestCase;
+import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.clearcase.util.SetupUtils;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
-public class ComponentTest extends CoolTestCase {
+public class ComponentTest {
 	
-	private static String uniqueTestVobName = "cool" + getUniqueTimestamp();
-	
-	@BeforeClass
-	public static void startup() throws Exception {
-		uniqueTestVobName = "cool" + getUniqueTimestamp();
-		variables.put( "vobname", uniqueTestVobName );
-		variables.put( "pvobname", uniqueTestVobName + "_PVOB" );
-		
-		bootStrap( defaultSetup );
-	}
-	
-	@AfterClass
-	public static void end() throws CleartoolException {
-		if( pvob != null ) {
-			try {
-				SetupUtils.tearDown( pvob );
-			} catch( CleartoolException e ) {
-				ExceptionUtils.print( e, System.out, true );
-			}
-		} else {
-			/* Not possible to tear down */
-		}
-	}
+	@ClassRule
+	public static ClearCaseRule ccenv = new ClearCaseRule( "clearcaserule", "cool" + Environment.getUniqueTimestamp() );
 
 	@Test
 	public void testLoad() throws Exception {
-		Component model = context.components.get( "Model" ).load();
+		Component model = ccenv.context.components.get( "Model" ).load();
 	}
 	
 	@Test
 	public void testCreate() throws Exception {
-		File view = new File( context.mvfs + "/" + uniqueTestVobName + "_one_int/" + uniqueTestVobName );
-		Component mycomp = Component.create( "new-component", pvob, "Praqma", "my comment", view );
+		File view = new File( ccenv.context.mvfs + "/" + ccenv.getVobName() + "_one_int/" + ccenv.getVobName() );
+		Component mycomp = Component.create( "new-component", ccenv.getPVob(), "Praqma", "my comment", view );
 		
 		assertNotNull( mycomp );
 		assertEquals( "new-component", mycomp.getShortname() );
@@ -59,17 +40,17 @@ public class ComponentTest extends CoolTestCase {
 	
 	@Test
 	public void testGetRootDir() throws Exception {
-		Component model = context.components.get( "Model" );
+		Component model = ccenv.context.components.get( "Model" );
 		
-		String root = new File( "/" + uniqueTestVobName + "/" + "Model" ).getPath();
-		System.out.println( "---->ROOT: " + uniqueTestVobName );
+		String root = new File( "/" + ccenv.getVobName() + "/" + "Model" ).getPath();
+		System.out.println( "---->ROOT: " + ccenv.getVobName() );
 		System.out.println( "---->ROOT: " + root );
 		assertEquals( root, model.getRootDir() );
 	}
 	
 	@Test
 	public void testGet() throws Exception {
-		Component model = Component.get( "Model@\\" + uniqueTestVobName + "_PVOB" );
+		Component model = Component.get( "Model@\\" + ccenv.getVobName() + "_PVOB" );
 		
 		assertNotNull( model );
 	}

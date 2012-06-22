@@ -1,7 +1,7 @@
 package net.praqma.jenkins.utils.test;
 
-import net.praqma.clearcase.test.junit.CoolTestCase;
+import net.praqma.clearcase.Environment;
 
-public class ConcreteCoolTestCase extends CoolTestCase {
+public class ConcreteCoolTestCase extends Environment {
 
 }

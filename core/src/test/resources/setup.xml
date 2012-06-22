@@ -15,9 +15,9 @@
   <component root="Model" comment="" name="Model" pvob="${pvobname}" />
   <component root="Clientapp" comment="" name="Clientapp" pvob="${pvobname}" />
   
-  <folder name="${vobname}" in="RootFolder" pvob="${pvobname}" />
+  <folder name="one-folder" in="RootFolder" pvob="${pvobname}" />
    
-  <project name="${vobname}_bootstrap" comment="" model="SIMPLE" pvob="${pvobname}" in="${vobname}">
+  <project name="bootstrap" comment="" model="SIMPLE" pvob="${pvobname}" in="one-folder">
     <components>
       <component name="Service" pvob="${pvobname}" />
       <component name="Model" pvob="${pvobname}"  />
@@ -28,7 +28,7 @@
     </policies>
   </project>
   
-  <stream name="${vobname}_bootstrap_int" in="${vobname}_bootstrap" comment="" pvob="${pvobname}" type="integration">
+  <stream name="bootstrap_int" in="bootstrap" comment="" pvob="${pvobname}" type="integration">
     <baselines>
       <baseline name="_System_INITIAL" pvob="${pvobname}" />
       <baseline name="_Server_INITIAL" pvob="${pvobname}" />
@@ -40,7 +40,7 @@
   </stream>
   
   <view tag="${vobname}_bootstrap_int" stgloc="-auto">
-    <stream name="${vobname}_bootstrap_int" pvob="${pvobname}" />
+    <stream name="bootstrap_int" pvob="${pvobname}" />
   </view>
 
   <context mvfs="m:\" view="${vobname}_bootstrap_int" vob="${vobname}"/>
@@ -67,7 +67,7 @@
   </baseline>
   
   
-  <project name="${vobname}_one" comment="" pvob="${pvobname}" in="${vobname}">
+  <project name="one" comment="" pvob="${pvobname}" in="one-folder">
     <components>
       <component name="Service" pvob="${pvobname}" />
       <component name="Model" pvob="${pvobname}" />
@@ -78,13 +78,13 @@
     </policies>
   </project>
   
-  <stream name="${vobname}_one_int" in="${vobname}_one" comment="" pvob="${pvobname}" type="integration">
+  <stream name="one_int" in="one" comment="" pvob="${pvobname}" type="integration">
     <baselines>
       <baseline name="_System_1.0" pvob="${pvobname}" />
     </baselines>
   </stream>
   
-  <project name="jenkins" comment="" pvob="${pvobname}" in="${vobname}">
+  <project name="jenkins" comment="" pvob="${pvobname}" in="one-folder">
     <policies>
       <policy>POLICY_INTERPROJECT_DELIVER</policy>
     </policies>
@@ -93,7 +93,7 @@
   <stream name="jenkins_int" in="jenkins" comment="" pvob="${pvobname}" type="integration">
   </stream>
   
-  <stream name="${vobname}_one_dev" in="${vobname}_one_int" comment="" pvob="${pvobname}">
+  <stream name="one_dev" in="one_int" comment="" pvob="${pvobname}">
     <baselines>
       <baseline name="_System_1.0" pvob="${pvobname}" />
     </baselines>
@@ -101,12 +101,12 @@
   
   
   <view tag="${vobname}_one_int" stgloc="-auto">
-    <stream name="${vobname}_one_int" pvob="${pvobname}" />
+    <stream name="one_int" pvob="${pvobname}" />
   </view>
   
   <context mvfs="m:\" view="${vobname}_one_int" vob="${vobname}"/>
   
-  <activity comment="" headline="Adding initial files into components" in="${vobname}_one_int" name="initial_files" pvob="${pvobname}" />
+  <activity comment="" headline="Adding initial files into components" in="one_int" name="initial_files" pvob="${pvobname}" />
   
   <setactivity activity="initial_files" pvob="${pvobname}" />
   

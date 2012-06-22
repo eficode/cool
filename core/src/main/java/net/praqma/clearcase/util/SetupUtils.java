@@ -55,10 +55,12 @@ public class SetupUtils {
 			e.printStackTrace();
 		}
 		
+		/*
 		try {
 			logger.debug( "Checking vobs: " + CommandLine.getInstance().run( "rgy_check -vobs" ).stdoutBuffer );
 		} catch( Exception e ) {
 			e.printStackTrace();
 		}
+		*/
 	}
 }

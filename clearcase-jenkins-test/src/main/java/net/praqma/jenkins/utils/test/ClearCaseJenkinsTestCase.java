@@ -8,19 +8,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.praqma.clearcase.test.junit.CoolTestCase;
+import net.praqma.clearcase.Environment;
 import net.praqma.util.debug.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.JenkinsRule;
 
-public class ClearCaseJenkinsTestCase extends HudsonTestCase {
+public class ClearCaseJenkinsTestCase extends JenkinsRule {
 	
 	private static Logger logger = Logger.getLogger();
 	
-	public CoolTestCase coolTest = new ConcreteCoolTestCase();
+	public Environment coolTest = new ConcreteCoolTestCase();
 	
-	public CoolTestCase getCoolTestCase() {
+	public Environment getCoolTestCase() {
 		return coolTest;
 	}
 
@@ -37,24 +38,11 @@ public class ClearCaseJenkinsTestCase extends HudsonTestCase {
 		return log;
 	}
 	
-	
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-	
-	@Override
-	public void runTest() throws Throwable {
-		if( !coolTest.hasFailed() ) {
-			super.runTest();
-		}
-	}
-	
-	@Override
-	public void tearDown() throws Exception {
+	public void after() {
 		try {
 			//logger.info( "Skipping teardown" );
-			super.tearDown();
+			super.after();
 		} catch( Exception e ) {
 			System.out.println( "PATH: " + super.jenkins.getRootDir() );
 			//FileUtils.deleteDirectory( super.jenkins.getRootDir() );
