@@ -6,7 +6,9 @@ import org.junit.runners.model.Statement;
 
 import net.praqma.clearcase.Environment;
 import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.test.ClearCaseTest;
+import net.praqma.clearcase.test.annotations.ClearCaseFullVobName;
+import net.praqma.clearcase.test.annotations.ClearCaseLess;
+import net.praqma.clearcase.test.annotations.ClearCaseUniqueVobName;
 import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.clearcase.util.SetupUtils;
 
@@ -17,9 +19,9 @@ public class ClearCaseRule extends Environment implements TestRule {
 	protected String name;
 	protected String vobName;
 	
-	public ClearCaseRule( String name, String vobName ) {
+	public ClearCaseRule( String name ) {
 		this.name = name;
-		this.vobName = vobName;
+		this.vobName = name + "_" + Environment.getUniqueTimestamp();
 	}
 	
 	public String getVobName() {
@@ -50,11 +52,35 @@ public class ClearCaseRule extends Environment implements TestRule {
 	@Override
 	public Statement apply( final Statement base, final Description description ) {
 		
-		if( description.getAnnotation( ClearCaseTest.class ) == null ) {
+		/* ClearCase less test, just return base */
+		if( description.getAnnotation( ClearCaseLess.class ) != null ) {
 			return base;
 		}
 		
+		String thisVobName = vobName;
+		
+		/* Test for ClearCase annotations */
+		
+		/* Set an explicit vob name */
+		if( description.getAnnotation( ClearCaseFullVobName.class ) != null ) {
+			ClearCaseFullVobName d = description.getAnnotation( ClearCaseFullVobName.class );
+			if( d.name().length() > 0 ) {
+				thisVobName = d.name();
+			}
+		}
+		
+		/* Set a unique vob name */
+		if( description.getAnnotation( ClearCaseUniqueVobName.class ) != null ) {
+			ClearCaseUniqueVobName d = description.getAnnotation( ClearCaseUniqueVobName.class );
+			if( d.name().length() > 0 ) {
+				thisVobName = vobName + "-" + d.name();
+			}
+		}
+		
+		final String theVobName = thisVobName;
+		
 		return new Statement() {
+						
 			@Override
 			public void evaluate() throws Throwable {
 				testDescription = description;
@@ -62,7 +88,7 @@ public class ClearCaseRule extends Environment implements TestRule {
 				String o = t.getName();
 				t.setName( "Executing " + testDescription.getDisplayName() );
 				System.out.println( " ===== Setting up ClearCase =====" );
-				before( vobName + description.getAnnotation( ClearCaseTest.class ).name() );
+				before( theVobName );
 				try {
 					System.out.println( " ===== Running test: " + testDescription.getDisplayName() + " =====" );
 					base.evaluate();

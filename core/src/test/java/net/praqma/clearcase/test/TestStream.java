@@ -6,14 +6,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import net.praqma.clearcase.Environment;
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
@@ -22,13 +18,11 @@ import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.util.ExceptionUtils;
-import net.praqma.clearcase.util.SetupUtils;
 
-@ClearCaseTest( name = "" )
 public class TestStream {
 	
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "clearcaserule", "cool" + Environment.getUniqueTimestamp() );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-stream" );
 
 	@Test
 	public void testFoundationBaselines() throws Exception {

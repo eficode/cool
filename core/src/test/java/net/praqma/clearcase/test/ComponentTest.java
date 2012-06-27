@@ -4,18 +4,16 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import net.praqma.clearcase.Environment;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Component;
 
 import org.junit.ClassRule;
 import org.junit.Test;
 
-@ClearCaseTest( name = "" )
 public class ComponentTest {
 	
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "clearcaserule", "cool" + Environment.getUniqueTimestamp() );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-component" );
 
 	@Test
 	public void testLoad() throws Exception {

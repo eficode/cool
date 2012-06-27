@@ -15,11 +15,10 @@ import net.praqma.clearcase.util.ExceptionUtils;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-@ClearCaseTest( name = "" )
 public class BaselineTest {
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "clearcaserule", "cool" + Environment.getUniqueTimestamp() );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-baseline" );
 
 	public final String vn = "cc-" + Environment.getUniqueTimestamp();
 	
