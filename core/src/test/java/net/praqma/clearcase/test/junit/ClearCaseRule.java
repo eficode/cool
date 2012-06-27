@@ -18,10 +18,11 @@ public class ClearCaseRule extends Environment implements TestRule {
 	
 	protected String name;
 	protected String vobName;
+	protected String vobName1;
 	
 	public ClearCaseRule( String name ) {
 		this.name = name;
-		this.vobName = name + "_" + Environment.getUniqueTimestamp();
+		this.vobName1 = name + "_" + Environment.getUniqueTimestamp();
 	}
 	
 	public String getVobName() {
@@ -57,7 +58,7 @@ public class ClearCaseRule extends Environment implements TestRule {
 			return base;
 		}
 		
-		String thisVobName = vobName;
+		String thisVobName = vobName1;
 		
 		/* Test for ClearCase annotations */
 		
@@ -73,7 +74,7 @@ public class ClearCaseRule extends Environment implements TestRule {
 		if( description.getAnnotation( ClearCaseUniqueVobName.class ) != null ) {
 			ClearCaseUniqueVobName d = description.getAnnotation( ClearCaseUniqueVobName.class );
 			if( d.name().length() > 0 ) {
-				thisVobName = vobName + "-" + d.name();
+				thisVobName = vobName1 + "-" + d.name();
 			}
 		}
 		
