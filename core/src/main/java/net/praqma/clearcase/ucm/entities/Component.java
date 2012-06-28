@@ -42,13 +42,13 @@ public class Component extends UCMEntity {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
 			if( e.getMessage().matches( rx_component_load ) ) {
-				//throw new UCMException( "The component \"" + component + "\", does not exist.", UCMType.LOAD_FAILED );
 				throw new UCMEntityNotFoundException( this, e );
 			} else {
-				//throw new UCMException( e.getMessage(), e.getMessage(), UCMType.LOAD_FAILED );
 				throw new UnableToLoadEntityException( this, e );
 			}
 		}
+		
+		this.loaded = true;
 
 		return this;
 	}
@@ -69,7 +69,6 @@ public class Component extends UCMEntity {
 	}
 
 	public String getRootDir() throws CleartoolException {
-		//return context.getRootDir( this );
 		String cmd = "desc -fmt %[root_dir]p " + this;
 		try {
 			return Cleartool.run( cmd ).stdoutBuffer.toString();

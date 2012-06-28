@@ -65,6 +65,8 @@ public class Activity extends UCMEntity {
 		
 		setUser( result );
 		
+		this.loaded = true;
+		
 		return this;
 	}
 	

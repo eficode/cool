@@ -16,7 +16,9 @@ import net.praqma.clearcase.ClearCase;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.EntityNotLoadedException;
 import net.praqma.clearcase.exceptions.TagException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UCMEntityNotInitializedException;
@@ -73,7 +75,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	}
 
 	public enum Kind {
-		UNKNOWN, DIRECTORY_ELEMENT, FILE_ELEMENT,
+		UNKNOWN, DIRECTORY_ELEMENT, FILE_ELEMENT, BRANCH, VERSION, STREAM, DERIVED_OBJECT, BRANCH_TYPE, LABEL_TYPE
 	}
 
 	protected Kind kind = Kind.UNKNOWN;
@@ -261,6 +263,14 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	/* Getters */
 
 	public String getUser() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return this.user;
 	}
 
@@ -338,6 +348,14 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	}
 
 	public Date getDate() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return date;
 	}
 
@@ -350,6 +368,14 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	}
 
 	public Kind getKind() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return kind;
 	}
 

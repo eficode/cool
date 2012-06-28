@@ -13,7 +13,9 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.EntityNotLoadedException;
 import net.praqma.clearcase.exceptions.NoSingleTopComponentException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
@@ -88,7 +90,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 *            Whether the new Stream is read only or not
 	 * @return A new Stream given the parameters
 	 */
-		public static Stream create( StreamContainable parent, String nstream, boolean readonly, List<Baseline> baselines ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
+	public static Stream create( StreamContainable parent, String nstream, boolean readonly, List<Baseline> baselines ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
 		logger.debug( "Creating stream " + nstream + " as child of " + parent );
 
 		String cmd = "mkstream -in " + parent;
@@ -135,8 +137,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 	
 	public static Stream createIntegration( String name, Project project, List<Baseline> baselines ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
-		//context.createIntegrationStream( name, project, baseline );
-		
 		String cmd = "mkstream -integration -in " + project;
 				
 		if( baselines != null && baselines.size() > 0 ) {
@@ -259,6 +259,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 
 	public List<Stream> getChildStreams( boolean multisitePolling ) throws UnableToInitializeEntityException, CleartoolException {
+		/* We need to load this, because we need the mastership */
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
 
 		List<Stream> streams = new ArrayList<Stream>();
 		try {
@@ -368,9 +376,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			try {
 				p.load();
 				p.getIntegrationStream().load();
-				logger.debug( "Checking " + p );
-				logger.debug( "INT: " + p.getIntegrationStream() );
-				logger.debug( "TGT: " + p.getIntegrationStream().getDefaultTarget() );
 				if( p.getIntegrationStream().getDefaultTarget() != null && this.equals( p.getIntegrationStream().getDefaultTarget() ) ) {
 					streams.add( p.getIntegrationStream() );
 				}
@@ -427,10 +432,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		logger.debug( "Getting recommended baselines" );
 
 		if( this.recommendedBaselines == null || force ) {
-			//this.recommendedBaselines = context.getRecommendedBaselines( this );
 			ArrayList<Baseline> bls = new ArrayList<Baseline>();
 
-			//String result = strategy.getRecommendedBaselines( stream.getFullyQualifiedName() );
 			String result = "";
 			String cmd = "desc -fmt %[rec_bls]p " + this;
 			try {
@@ -461,21 +464,16 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		try {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( "Could not recommend Baseline: " + e.getMessage(), e.getMessage() );
 			throw new CleartoolException( "Unable to recommend " + baseline, e );
 		}
 	}
 
 	public List<Baseline> getLatestBaselines() throws UnableToInitializeEntityException, CleartoolException {
-		//return context.getLatestBaselines( this );
-		
-		//List<String> bs = strategy.getLatestBaselines( stream.getFullyQualifiedName() );
 		String cmd = "desc -fmt %[latest_bls]Xp " + this;
 		List<String> lines;
 		try {
 			lines = Cleartool.run( cmd, null, false ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( "Unable to get latest baseline from " + stream + ": " + e.getMessage() );
 			throw new CleartoolException( "Unable to get latest baselines from " + this, e );
 		}
 		
@@ -504,7 +502,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		}
 
 		if( bls.size() != 1 ) {
-			//throw new Cleartool( "The Stream " + this.getShortname() + " does not have a single composite component." );
 			throw new NoSingleTopComponentException( this );
 		}
 
@@ -554,6 +551,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * @throws UCMException
 	 */
 	public Stream getDefaultTarget() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return this.defaultTarget;
 	}
 
@@ -563,6 +568,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	public boolean isReadOnly() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return readOnly;
 	}
 
@@ -588,10 +601,26 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * @throws UnableToGetEntityException
 	 */
 	public Baseline getFoundationBaseline() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return this.foundations.get( 0 );
 	}
 	
 	public List<Baseline> getFoundationBaselines() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return this.foundations;
 	}
 

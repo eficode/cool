@@ -13,6 +13,7 @@ import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.EntityNotLoadedException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
@@ -186,7 +187,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			}
 
 		} catch( Exception e ) {
-			//throw new UCMException( "Could not load Version: " + e.getMessage() );
 			throw new UnableToLoadEntityException( this, e );
 		}
 		
@@ -571,12 +571,26 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	public boolean isDirectory() throws UnableToLoadEntityException {
-		if( !loaded ) load();
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return kind.equals( Kind.DIRECTORY_ELEMENT );
 	}
 	
 	public boolean isFile() throws UnableToLoadEntityException {
-		if( !loaded ) load();
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return kind.equals( Kind.FILE_ELEMENT );
 	}
 

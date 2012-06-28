@@ -168,8 +168,6 @@ public class Project extends UCMEntity implements StreamContainable {
 	}
 
 	public Project load() throws UnableToLoadEntityException, UnableToInitializeEntityException {
-		//context.loadProject( this );
-		//String result = strategy.loadProject( project.getFullyQualifiedName() );
 		String result = "";
 
 		String cmd = "lsproj -fmt %[istream]Xp " + this;
@@ -177,13 +175,14 @@ public class Project extends UCMEntity implements StreamContainable {
 		try {
 			result = Cleartool.run( cmd ).stdoutBuffer.toString();
 		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( e );
 			throw new UnableToLoadEntityException( this, e );
 		}
 
 		logger.debug( "Result: " + result );
 
 		setStream( Stream.get( result ) );
+		
+		this.loaded = true;
 
 		return this;
 	}
@@ -193,6 +192,14 @@ public class Project extends UCMEntity implements StreamContainable {
 	}
 
 	public Stream getIntegrationStream() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return stream;
 	}
 	
@@ -227,7 +234,7 @@ public class Project extends UCMEntity implements StreamContainable {
 	}
 
 	public static List<Project> getProjects( PVob pvob ) throws UnableToListProjectsException, UnableToInitializeEntityException {
-		//return context.getProjects( vob );
+
 		logger.debug( "Getting projects for " + pvob );
 		String cmd = "lsproject -s -invob " + pvob.toString();
 
@@ -236,7 +243,6 @@ public class Project extends UCMEntity implements StreamContainable {
 		try {
 			projs = Cleartool.run( cmd ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( e.getMessage(), e.getMessage() );
 			throw new UnableToListProjectsException( pvob, e );
 		}
 
@@ -254,7 +260,6 @@ public class Project extends UCMEntity implements StreamContainable {
 	
 	
 	public List<Component> getModifiableComponents() throws UnableToInitializeEntityException, CleartoolException {
-		//List<String> cs = strategy.getModifiableComponents( project.getFullyQualifiedName() );
 		String[] cs;
 		String cmd = "desc -fmt %[mod_comps]p " + this;
 		try {
