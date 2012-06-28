@@ -16,6 +16,7 @@ public class ViewException extends ClearCaseException {
 		DOES_NOT_EXIST,
 		REBASING,
 		VIEW_DOT_DAT,
+		EMPTY,
 		UNKNOWN
 	}
 	

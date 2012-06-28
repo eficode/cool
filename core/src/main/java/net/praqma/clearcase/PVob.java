@@ -53,22 +53,24 @@ public class PVob extends Vob {
 	
 	public Set<UCMView> getViews() throws CleartoolException {
 		String cmd = "lsstream -fmt %[views]p\\n -invob " + this;
-		List<String> list = null;
+		List<String> lines = null;
 		try {
-			list = Cleartool.run( cmd ).stdoutList;
+			lines = Cleartool.run( cmd ).stdoutList;
 		} catch( Exception e ) {
 			throw new CleartoolException( "Unable to list views", e );
 		}
 		
 		Set<UCMView> views = new HashSet<UCMView>();
 		
-		for( String l : list ) {
-			if( !l.matches( "^\\s*$" ) ) {
-				logger.debug( "l: " + l );
+		for( String line : lines ) {
+			logger.debug( "Line: " + line );
+			String[] tokens = line.split( "\\s+" );
+			for( String token : tokens ) {
+				logger.debug( "Token: " + token );
 				try {
-					views.add( UCMView.getView( l ) );
+					views.add( UCMView.getView( token.trim() ) );
 				} catch( ViewException e ) {
-					logger.warning( "Unable to get " + l + ": " + e.getMessage() );
+					logger.warning( "Unable to get " + token + ": " + e.getMessage() );
 				}
 			}
 		}

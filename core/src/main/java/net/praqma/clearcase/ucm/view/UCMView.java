@@ -177,6 +177,10 @@ public class UCMView extends ClearCase implements Serializable {
 	}
 	
 	public static UCMView getView( String viewTag ) throws ViewException {
+		if( viewTag.trim().equals( "" ) ) {
+			throw new ViewException( "View tag cannot be empty", "", Type.EMPTY );
+		}
+		
 		UCMView v = new UCMView();
 		v.viewtag = viewTag;
 		
