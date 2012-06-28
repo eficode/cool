@@ -171,7 +171,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 		List<String> data = null;
 
-		String cmd = "describe -fmt %[name]p\\n%[project]Xp\\n%X[def_deliver_tgt]p\\n%[read_only]p\\n%[found_bls]Xp " + this;
+		String cmd = "describe -fmt %[name]p\\n%[project]Xp\\n%X[def_deliver_tgt]p\\n%[read_only]p\\n%[found_bls]Xp\\n%[master]p " + this;
 		try {
 			data = Cleartool.run( cmd ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
@@ -213,6 +213,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 		} catch( Exception e ) {
 			logger.warning( "Could not get the foundation baseline: " + e.getMessage() );
+		}
+		
+		/* Set mastership */
+		try {
+			String ms = data.get( 5 ).trim();
+			this.mastership = ms;
+		} catch( Exception e ) {
+			logger.warning( "Could not set mastership: " + e.getMessage() );
 		}
 
 		this.loaded = true;
