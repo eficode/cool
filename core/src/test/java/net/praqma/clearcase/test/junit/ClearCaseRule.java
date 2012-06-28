@@ -94,7 +94,7 @@ public class ClearCaseRule extends Environment implements TestRule {
 					System.out.println( " ===== Running test: " + testDescription.getDisplayName() + " =====" );
 					base.evaluate();
 				} finally {
-					System.out.println( " ===== Tearing down up ClearCase =====" );
+					System.out.println( " ===== Tearing down ClearCase =====" );
 					after();
 					testDescription = null;
 					t.setName( o );
