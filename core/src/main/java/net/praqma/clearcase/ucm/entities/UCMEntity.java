@@ -295,22 +295,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 		}
 	}
 
-	public String getMastership() throws CleartoolException {
-		if( this.mastership == null ) {
-			//this.mastership = context.getMastership( this );
-			String cmd = "describe -fmt %[master]p " + fqname;
-
-			CmdResult ms = null;
-
-			try {
-				ms = Cleartool.run( cmd );
-			} catch( AbnormalProcessTerminationException e ) {
-				throw new CleartoolException( "The mastership was undefined. ", e );
-			}
-
-			this.mastership = ms.stdoutBuffer.toString();
-		}
-
+	public String getMastership() {
 		return this.mastership;
 	}
 

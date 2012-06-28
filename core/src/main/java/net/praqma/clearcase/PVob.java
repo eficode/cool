@@ -63,10 +63,8 @@ public class PVob extends Vob {
 		Set<UCMView> views = new HashSet<UCMView>();
 		
 		for( String line : lines ) {
-			logger.debug( "Line: " + line );
 			String[] tokens = line.split( "\\s+" );
 			for( String token : tokens ) {
-				logger.debug( "Token: " + token );
 				try {
 					views.add( UCMView.getView( token.trim() ) );
 				} catch( ViewException e ) {
