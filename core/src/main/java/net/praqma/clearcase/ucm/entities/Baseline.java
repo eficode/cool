@@ -89,7 +89,7 @@ public class Baseline extends UCMEntity implements Diffable {
 
 		String result = "";
 
-		String cmd = "desc -fmt %n" + Cool.delim + "%X[component]p" + Cool.delim + "%X[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u" + Cool.delim + "%Nd" + Cool.delim + "%[label_status]p " + this;
+		String cmd = "desc -fmt %n" + Cool.delim + "%X[component]p" + Cool.delim + "%X[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u" + Cool.delim + "%Nd" + Cool.delim + "%[label_status]p" + Cool.delim + "%[master]p " + this;
 		try {
 			result = Cleartool.run( cmd ).stdoutBuffer.toString();
 		} catch( Exception e ) {
@@ -125,6 +125,9 @@ public class Baseline extends UCMEntity implements Diffable {
 		}
 
 		this.labelStatus = getLabelStatusFromString( rs[6] );
+		
+		/* mastership */
+		this.mastership = rs[7];
 
 		//logger.debug( "[BASELINE] component: " + this.component + ", stream: " + this.stream + ", plevel: " + this.plevel + ", user: " + this.user + ", date: " + this.date + ", label " + this.labelStatus );
 
