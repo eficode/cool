@@ -13,6 +13,7 @@ import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.exceptions.EntityNotLoadedException;
 import net.praqma.clearcase.exceptions.NothingNewException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
@@ -238,6 +239,13 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToGetEntityException 
 	 */
 	public Project.PromotionLevel promote() throws UnableToPromoteBaselineException {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
 
 		if( this.plevel.equals( PromotionLevel.REJECTED ) ) {
 			//throw new UCMException("Cannot promote from REJECTED");
@@ -260,6 +268,13 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToGetEntityException 
 	 */
 	public Project.PromotionLevel demote() throws UnableToPromoteBaselineException {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
 
 		this.plevel = Project.PromotionLevel.REJECTED;
 		setPromotionLevel( this.plevel );
@@ -293,10 +308,26 @@ public class Baseline extends UCMEntity implements Diffable {
 	*/
 
 	public Component getComponent() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return this.component;
 	}
 
 	public Stream getStream() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return this.stream;
 	}
 	
@@ -312,6 +343,14 @@ public class Baseline extends UCMEntity implements Diffable {
 	} 
 
 	public String stringify() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		StringBuffer sb = new StringBuffer();
 
 		try {
@@ -325,7 +364,6 @@ public class Baseline extends UCMEntity implements Diffable {
 		} catch( Exception e ) {
 
 		} finally {
-			//sb.append( super.stringify() );
 			sb.insert( 0, super.stringify() );
 		}
 
