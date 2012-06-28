@@ -116,7 +116,9 @@ public class Baseline extends UCMEntity implements Diffable {
 		this.user = rs[4];
 		try {
             logger.debug("Result[5]:" + rs[5]);
-			this.date = dateFormatter.parse( rs[5] );
+            synchronized( dateFormatter ) {
+            	this.date = dateFormatter.parse( rs[5] );
+            }
 		} catch( ParseException e ) {
 			logger.debug( "Unable to parse date: " + e.getMessage() );
 			this.date = null;
