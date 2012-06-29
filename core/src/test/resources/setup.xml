@@ -99,6 +99,9 @@
     </baselines>
   </stream>
   
+  <view tag="${vobname}_one_dev" stgloc="-auto">
+    <stream name="one_dev" pvob="${pvobname}" />
+  </view>
   
   <view tag="${vobname}_one_int" stgloc="-auto">
     <stream name="one_int" pvob="${pvobname}" />

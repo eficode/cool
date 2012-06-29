@@ -26,7 +26,7 @@ public class BaselineListTest {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-baseline" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-baselinelist" );
 	
 	@Test
 	public void basic() throws ClearCaseException {
