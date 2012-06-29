@@ -1,6 +1,5 @@
 package net.praqma.clearcase;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,7 +8,6 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
-import net.praqma.clearcase.exceptions.UnableToRemoveEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.debug.Logger;
@@ -52,13 +50,15 @@ public class PVob extends Vob {
 	}
 	
 	public Set<UCMView> getViews() throws CleartoolException {
-		String cmd = "lsstream -fmt %[views]p\\n -invob " + this;
+		String cmd = "lsstream -fmt %[views]p\\t -invob " + this;
 		List<String> lines = null;
 		try {
 			lines = Cleartool.run( cmd ).stdoutList;
 		} catch( Exception e ) {
 			throw new CleartoolException( "Unable to list views", e );
 		}
+		
+		logger.debug( "OUT IS: " + lines );
 		
 		Set<UCMView> views = new HashSet<UCMView>();
 		

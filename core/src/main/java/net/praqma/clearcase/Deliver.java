@@ -30,7 +30,23 @@ public class Deliver {
 	private Stream target;
 	private File context;
 	private String viewtag;
+	
+	public enum DeliverStatus {
+		UNKOWN, NO_DELIVER_ON_STREAM, DELIVER_IN_PROGRESS;
+		
+		public boolean busy() {
+			return !this.equals( NO_DELIVER_ON_STREAM );
+		}
+	}
 
+	/**
+	 * 
+	 * @param baseline
+	 * @param stream
+	 * @param target
+	 * @param context - View context of the target view
+	 * @param viewtag - View tag of the target view
+	 */
 	public Deliver( Baseline baseline, Stream stream, Stream target, File context, String viewtag ) {
 		this.baseline = baseline;
 		this.stream = stream;
@@ -83,6 +99,8 @@ public class Deliver {
 			throw new DeliverException( this, Type.UNABLE_TO_COMPLETE, e );
 		}
 	}
+	
+	private static final Pattern rx_rebase_in_progress = Pattern.compile( "which is currently involved in an\\s+active deliver or rebase operation", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE );
 
 	private boolean _deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException {
 		String result = "";
@@ -102,60 +120,37 @@ public class Deliver {
 			logger.warning( "Could not deliver to target " + target + ": " + e.getMessage() );
 			logger.warning( e );
 			logger.warning( "---- ENDS HERE ----" );
-
-			/* Determine cause */
-			if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "requires child development streams to rebase to recommended baselines before performing deliver operation" ) ) {
-				logger.warning( "Deliver requires rebase" );
+			
+			
+			/* Deliver already in progress */
+			if( e.getMessage().contains( "Error: Deliver operation already in progress on stream" ) ) {
+				logger.warning( "(1)Deliver already in progress" );
+				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
+			}
+			/* Rebase in progress */
+			else if( e.getMessage().matches( "(?i)(?m)(?s)^.*Unable to start a deliver operation while a rebase operation is in progress on.*$" ) ) {
+				logger.warning( "(2)Rebase in progress" );
+				throw new DeliverException( this, Type.REBASE_IN_PROGRESS, e );
+			}
+			/* Deliver requires rebase */
+			else if( e.getMessage().matches( "(?i)(?m)(?s)^.*requires child development.*streams to rebase to recommended baselines before performing deliver.*$" ) ) {
+				logger.warning( "(3)Deliver requires rebase" );
 				throw new DeliverException( this, Type.REQUIRES_REBASE, e );
-			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "cleartool: Error: Unable to perform merge" ) ) {
-				logger.warning( "Merge error" );
+			}
+			/* No interproject deliveries */
+			else if( e.getMessage().matches( "(?i)(?m)(?s)^.*does not allow deliver operations from streams in other.*$" ) ) {
+				logger.warning( "(4)Interproject deliver denied" );
+				throw new DeliverException( this, Type.INTERPROJECT_DELIVER_DENIED, e );
+			}
+			/* Merge error */
+			else if( e.getMessage().matches( "(?i)(?m)(?s)^.*Unable to perform merge.*Unable to do integration.*Unable to deliver stream.*$" ) ) {
+				logger.warning( "(5)Merge error" );
 				throw new DeliverException( this, Type.MERGE_ERROR, e );
-			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "does not allow deliver operations from streams in other" ) ) {
-				logger.warning( "Interproject deliver denied" );
-				throw new DeliverException( this, Type.INTERPROJECT_DELIVER_DENIED, e );
-			} else if( e.getMessage().replace( System.getProperty( "line.separator" ), " " ).contains( "which is currently involved in an active deliver or rebase operation.  The set activity of this view may not be changed until the operation has completed." ) ) {
-				logger.warning( "Deliver already in progress" );
-				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
-			} else if( e.getMessage().contains( "active deliver or rebase operation.  The set activity of this view may not be" ) ) {
-				logger.warning( "Deliver already in progress" );
-				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
-			}
-
-			if( e.getMessage().matches( "(?s)active deliver or rebase operation.  The set activity of this view may not be" ) ) {
-				logger.warning( "Deliver already in progress" );
-				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
-			}
-
-			Matcher m2 = rx_checkProgress.matcher( e.getMessage() );
-			if( m2.find() ) {
-				logger.warning( "Deliver already in progress" );
-				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
-			}
-
-			/**
-			 * in case there is an deliver in progres on the target stream
-			 */
-			if( e.getMessage().contains( "Deliver operation" ) ) {
-				logger.warning( "Deliver already in progress" );
-				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
-			}
-
-			/* Match for merge errors */
-			Matcher m = rx_checkMergeError.matcher( e.getMessage() );
-			if( m.find() ) {
-				logger.warning( "Merge error" );
-				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
-			}
-
-			/* Match for denied deliveries */
-			m = rx_checkDeliverDenied.matcher( e.getMessage() );
-			if( m.find() ) {
-				logger.warning( "Interproject deliver denied" );
-				throw new DeliverException( this, Type.INTERPROJECT_DELIVER_DENIED, e );
-			}
-
+			}			
 			/* If nothing applies.... */
-			throw new DeliverException( this, Type.UNKNOWN, e );
+			else {
+				throw new DeliverException( this, Type.UNKNOWN, e );
+			}
 		}
 
 
@@ -228,6 +223,10 @@ public class Deliver {
 		return Deliver.getStatus( stream );
 	}
 	
+	public DeliverStatus getDeliverStatus() throws CleartoolException {
+		return stringToStatus( Deliver.getStatus( stream ) );
+	}
+	
 	public static String getStatus( Stream stream ) throws CleartoolException {
 		try {
 			String cmd = "deliver -status -stream " + stream;
@@ -249,5 +248,15 @@ public class Deliver {
 		}
 
 		return true;
+	}
+	
+	public static DeliverStatus stringToStatus( String string ) {
+		if( string.contains( "No deliver operation in progress on stream" ) ) {
+			return DeliverStatus.NO_DELIVER_ON_STREAM;
+		} else if( string.contains( "Deliver operation in progress on stream" ) ) {
+			return DeliverStatus.DELIVER_IN_PROGRESS;
+		} else {
+			return DeliverStatus.UNKOWN;
+		}
 	}
 }

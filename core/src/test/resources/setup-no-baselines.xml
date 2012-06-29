@@ -84,15 +84,6 @@
     </baselines>
   </stream>
   
-  <project name="jenkins" comment="" pvob="${pvobname}" in="one-folder">
-    <policies>
-      <policy>POLICY_INTERPROJECT_DELIVER</policy>
-    </policies>
-  </project>
-  
-  <stream name="jenkins_int" in="jenkins" comment="" pvob="${pvobname}" type="integration">
-  </stream>
-  
   <!-- Dev stream #1 -->
   <stream name="one_dev" in="one_int" comment="" pvob="${pvobname}">
     <baselines>
@@ -104,77 +95,9 @@
     <stream name="one_dev" pvob="${pvobname}" />
   </view>
 
-  <!-- Dev stream #2 -->
-  <stream name="one_dev2" in="one_int" comment="" pvob="${pvobname}">
-    <baselines>
-      <baseline name="_System_1.0" pvob="${pvobname}" />
-    </baselines>
-  </stream>
-  
-  <view tag="${vobname}_one_dev2" stgloc="-auto">
-    <stream name="one_dev2" pvob="${pvobname}" />
-  </view>
-  
   <view tag="${vobname}_one_int" stgloc="-auto">
     <stream name="one_int" pvob="${pvobname}" />
   </view>
-  
-  <context mvfs="m:\" view="${vobname}_one_int" vob="${vobname}"/>
-  
-  <activity comment="" headline="Adding initial files into components" in="one_int" name="initial_files" pvob="${pvobname}" />
-  
-  <setactivity activity="initial_files" pvob="${pvobname}" />
-  
-  <!-- First -->
-  <add file="Model/model.h" content="#1" />
-  
-  <baseline name="model-1" label="full" comment="" component="_System" pvob="${pvobname}" />
-  
-  <!-- Second -->
-  <add file="Clientapp/client.h" content="#1" />
-  
-  <baseline name="client-1" label="full" comment="" component="_System" pvob="${pvobname}" />
-  
-  
-  <!-- Third -->
-  <checkout comment="" file="Model/model.h" />
-  
-  <content file="Model/model.h" content="#2" />
-  
-  <checkin file="Model/model.h" />
-  
-  <baseline name="model-2" label="full" comment="" component="_System" pvob="${pvobname}" />
-  
-  
-  <!-- Fourth -->
-  <checkout comment="" file="Model/model.h" />
-  
-  <content file="Model/model.h" content="#3" />
-  
-  <checkin file="Model/model.h" />
-  
-  <baseline name="model-3" label="full" comment="" component="_System" pvob="${pvobname}" />
-
-  <!-- Fifth -->
-  <checkout comment="" file="Clientapp/client.h" />
-  
-  <content file="Clientapp/client.h" content="#2" />
-  
-  <checkin file="Clientapp/client.h" />
-  
-  <baseline name="client-2" label="full" comment="" component="_System" pvob="${pvobname}" />
-  
-	<!-- Sixth -->
-  <checkout comment="" file="Clientapp/client.h" />
-  
-  <content file="Clientapp/client.h" content="#3" />
-  
-  <checkin file="Clientapp/client.h" />
-  
-  <baseline name="client-3" label="full" comment="" component="_System" pvob="${pvobname}" />
-  
-  
-  <!--  <baseline name="_System_2.0" label="full" comment="" component="_System" pvob="${pvobname}" /> -->
   
 </ccenv>
 

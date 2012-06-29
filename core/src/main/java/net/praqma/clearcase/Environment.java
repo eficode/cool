@@ -7,8 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Version;
+import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.util.setup.EnvironmentParser;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 import net.praqma.util.debug.Logger;
@@ -134,5 +137,7 @@ public class Environment {
 	public PVob getPVob() {
 		return pvob;
 	}
+	
+
 
 }

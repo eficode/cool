@@ -8,7 +8,7 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.RebaseException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
@@ -21,22 +21,21 @@ public class Rebase {
 	
 	private Stream stream;
 	private List<Baseline> baselines = new ArrayList<Baseline>();
-	private SnapshotView view;
+	private UCMView view;
 	
-	public Rebase( Stream stream, SnapshotView view, Baseline baseline ) {
+	public Rebase( Stream stream, UCMView view, Baseline baseline ) {
 		this.stream = stream;
 		this.baselines.add( baseline );
 		this.view = view;
 	}
 	
-	public Rebase( Stream stream, SnapshotView view, List<Baseline> baselines ) {
+	public Rebase( Stream stream, UCMView view, List<Baseline> baselines ) {
 		this.stream = stream;
 		this.baselines = baselines;
 		this.view = view;
 	}
 
 	public boolean rebase( boolean complete ) throws RebaseException {
-		//context.rebaseStream( view, this, baseline, complete );
 		logger.debug( "Rebasing " + view.getViewtag() );
 
 		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + view.getViewtag() + " -stream " + stream;
@@ -58,7 +57,6 @@ public class Rebase {
 				return true;
 			}
 		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( e.getMessage() );
 			throw new RebaseException( this, e );
 		}
 	}
@@ -68,7 +66,6 @@ public class Rebase {
 	}
 	
 	public static boolean isInProgress( Stream stream ) throws CleartoolException {
-		//return context.isRebasing( this );
 		String cmd = "rebase -status -stream " + stream;
 		try {
 			String result = Cleartool.run( cmd ).stdoutBuffer.toString();
@@ -78,7 +75,6 @@ public class Rebase {
 				return false;
 			}
 		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( "Unable to determine rebasing: " + e.getMessage() );
 			throw new CleartoolException( "Unable to determine progress of " + stream, e );
 		}
 	}

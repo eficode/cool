@@ -69,7 +69,7 @@ public class TestStream {
 		
 		List<Stream> childs = istream.getChildStreams( false );
 		
-		assertEquals( 1, childs.size() );		
+		assertEquals( 2, childs.size() );		
 	}
 	
 	@Test

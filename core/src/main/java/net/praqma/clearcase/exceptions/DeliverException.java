@@ -10,6 +10,7 @@ public class DeliverException extends ClearCaseException {
 		INTERPROJECT_DELIVER_DENIED,
 		DELIVER_IN_PROGRESS,
 		UNABLE_TO_COMPLETE,
+		REBASE_IN_PROGRESS,
 		UNKNOWN
 	}
 	

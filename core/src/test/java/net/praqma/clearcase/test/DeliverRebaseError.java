@@ -26,65 +26,14 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DeliverTest {
+public class DeliverRebaseError {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
 	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver" );
 	
 	@Test
-	public void basic() throws ClearCaseException {
-		File path = setActivity( "basic" );
-		Stream source = ccenv.context.streams.get( "one_dev" );
-		Stream target = ccenv.context.streams.get( "one_int" );
-		
-		String tviewtag = ccenv.getVobName() + "_one_int";
-		File tpath = new File( ccenv.context.mvfs + "/" + tviewtag + "/" + ccenv.getVobName() );
-		
-		Baseline b = getNewBaseline( path, "f.txt", "one" );
-		
-		Deliver deliver = new Deliver( b, source, target, tpath, tviewtag );
-		
-		assertTrue( deliver.deliver( true, true, true, false ) );
-		
-		String s = deliver.getStatus();
-		
-		logger.info( "STATUS: " + s );
-		
-		DeliverStatus st = deliver.getDeliverStatus();
-		
-		logger.info( "STATUS: " + st );
-		
-		assertEquals( DeliverStatus.NO_DELIVER_ON_STREAM, st );
-		assertFalse( st.busy() );
-	}
-	
-	@Test
-	public void basicSplit() throws ClearCaseException {
-		File path = setActivity( "basic-split" );
-		Stream source = ccenv.context.streams.get( "one_dev" );
-		Stream target = ccenv.context.streams.get( "one_int" );
-		
-		String tviewtag = ccenv.getVobName() + "_one_int";
-		File tpath = new File( ccenv.context.mvfs + "/" + tviewtag + "/" + ccenv.getVobName() );
-		
-		Baseline b = getNewBaseline( path, "basic-split.txt", "two" );
-		
-		Deliver deliver = new Deliver( b, source, target, tpath, tviewtag );
-		boolean d = deliver.deliver( true, false, true, false );
-		assertTrue( d );
-		
-		DeliverStatus st = deliver.getDeliverStatus();
-		assertTrue( st.busy() );
-		
-		/* Complete */
-		assertNotNull( deliver.complete() );
-		st = deliver.getDeliverStatus();
-		assertFalse( st.busy() );
-	}
-	
-	@Test
-	public void basicBusy() throws ClearCaseException {
+	public void basicRebase() throws ClearCaseException {
 		
 		Stream source = ccenv.context.streams.get( "one_dev" );
 		Stream target = ccenv.context.streams.get( "one_int" );
@@ -93,40 +42,28 @@ public class DeliverTest {
 		String tviewtag = ccenv.getVobName() + "_one_int";
 		File tpath = new File( ccenv.context.mvfs + "/" + tviewtag + "/" + ccenv.getVobName() );
 		
-		/* Set deliver one up */
-		File path = setActivity( "basic-busy1" );
-		Baseline b = getNewBaseline( path, "basic-busy1.txt", "three" );
+		String viewtag = ccenv.getVobName() + "_one_dev";
 		
-		/* Do not complete deliver */
+		Baseline latest = ccenv.context.baselines.get( "model-3" );
+
+		/* Setup deliver */
+		File path = setActivity( "basic-rebase" );
+		Baseline b = getNewBaseline( path, "basic-rebase.txt", "five" );
+		
+		/* Setup rebase */
+		Rebase rebase = new Rebase( source, new DynamicView( "", viewtag ), latest );
+		rebase.rebase( false );
+		
 		Deliver deliver = new Deliver( b, source, target, tpath, tviewtag );
-		deliver.deliver( true, false, true, false );
-		
-		DeliverStatus st = deliver.getDeliverStatus();
-		assertTrue( st.busy() );
-		
-		/* Setup deliver two */
-		File path2 = setActivity( "basic-busy2" );
-		Baseline b2 = getNewBaseline( path2, "basic-busy2.txt", "four" );
-		
-		Deliver deliver2 = new Deliver( b2, source, target, tpath, tviewtag );
 		try { 
 			deliver.deliver( true, false, true, false );
 			fail( "Deliver should fail" );
 		} catch( DeliverException e ) {
-			if( !e.getType().equals( Type.DELIVER_IN_PROGRESS ) ) {
-				fail( "Should be DELIVER IN PROGRESS" );
+			if( !e.getType().equals( Type.REBASE_IN_PROGRESS ) ) {
+				fail( "Should be REBASE IN PROGRESS" );
 			}
 		}
-		
-		DeliverStatus st2 = deliver2.getDeliverStatus();
-		assertTrue( st2.busy() );
-		
-		/* Complete */
-		assertNotNull( deliver.complete() );
-		st = deliver.getDeliverStatus();
-		assertFalse( st.busy() );
 	}
-	
 	
 	protected File setActivity( String name ) throws ClearCaseException {
 		/**/

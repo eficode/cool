@@ -1,14 +1,20 @@
 package net.praqma.clearcase.test.junit;
 
+import java.io.File;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import net.praqma.clearcase.Environment;
+import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.test.annotations.ClearCaseFullVobName;
 import net.praqma.clearcase.test.annotations.ClearCaseLess;
 import net.praqma.clearcase.test.annotations.ClearCaseUniqueVobName;
+import net.praqma.clearcase.ucm.entities.Activity;
+import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.clearcase.util.SetupUtils;
 
@@ -19,10 +25,17 @@ public class ClearCaseRule extends Environment implements TestRule {
 	protected String name;
 	protected String vobName;
 	protected String vobName1;
+	protected File setupFile;
 	
 	public ClearCaseRule( String name ) {
 		this.name = name;
 		this.vobName1 = name + "_" + Environment.getUniqueTimestamp();
+	}
+	
+	public ClearCaseRule( String name, String setupFile ) {
+		this.name = name;
+		this.vobName1 = name + "_" + Environment.getUniqueTimestamp();
+		this.setupFile = new File( Environment.class.getClassLoader().getResource( setupFile ).getFile() );
 	}
 	
 	public String getVobName() {
@@ -35,7 +48,11 @@ public class ClearCaseRule extends Environment implements TestRule {
 		
 		this.vobName = name;
 		
-		bootStrap();
+		if( setupFile != null ) {
+			bootStrap( setupFile );
+		} else {
+			bootStrap();
+		}
 	}
 
 	protected void after() {
@@ -91,7 +108,7 @@ public class ClearCaseRule extends Environment implements TestRule {
 				System.out.println( " ===== Setting up ClearCase =====" );
 				before( theVobName );
 				try {
-					System.out.println( " ===== Running test: " + testDescription.getDisplayName() + " =====" );
+					System.out.println( " ===== Running test: " + testDescription.getDisplayName() + " [" + testDescription.getMethodName() + "] =====" );
 					base.evaluate();
 				} finally {
 					System.out.println( " ===== Tearing down ClearCase =====" );
@@ -103,4 +120,22 @@ public class ClearCaseRule extends Environment implements TestRule {
 		};
 	}
 
+	
+	
+	public File getDynamicPath( String viewtag ) {
+		return new File( context.mvfs + "/" + viewtag + "/" + getVobName() );
+	}
+	
+	public File setDynamicActivity( Stream stream, String viewtag, String name ) throws ClearCaseException {
+		System.out.println( "VIEW: " + context.views.get( viewtag ) );
+		File path = new File( context.mvfs + "/" + viewtag + "/" + getVobName() );
+				
+		System.out.println( "PATH: " + path );
+		
+		Activity activity = Activity.create( name, stream, getPVob(), true, "activity for " + name, null, path );
+		UCMView.setActivity( activity, path, null, null );
+		
+		return path;
+	}
+	
 }
