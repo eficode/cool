@@ -85,6 +85,10 @@ public class EnvironmentParser extends XML {
 				variables.put( key, new Value( value ) );
 			}
 		}
+		
+		public String getMvfs() {
+			return mvfs;
+		}
 	}
 	
 	public static class Value {

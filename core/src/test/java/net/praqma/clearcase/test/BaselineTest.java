@@ -89,7 +89,7 @@ public class BaselineTest {
 	public void testGetComponent() throws Exception {
 		Baseline bl = ccenv.context.baselines.get( "client-1" ).load();
 		
-		assertEquals( ccenv.context.components.get( "Clientapp" ), bl.getComponent() );
+		assertEquals( ccenv.context.components.get( "_System" ), bl.getComponent() );
 	}
 	
 	@Test

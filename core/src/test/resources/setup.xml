@@ -4,9 +4,9 @@
 	
   <vob tag="${pvobname}" comment="PVOB" ucmproject="true" stgloc="-auto" mounted="true"/>
   <vob tag="${vobname}" stgloc="-auto" mounted="true"/>
-  <!-- <hlink name="AdminVOB" from="vob:cc1" to="vob:${pvobname}" /> -->
+
   <view tag="${vobname}_setupview" stgloc="-auto"/>
-  <context mvfs="m:\" view="${vobname}_setupview" vob="${vobname}"/>
+  <context mvfs="m:\" linux="/views" view="${vobname}_setupview" vob="${vobname}"/>
   
   <component root="" comment="" name="_System" pvob="${pvobname}" />
   <component root="" comment="" name="_Server" pvob="${pvobname}" />
@@ -113,12 +113,12 @@
   <!-- First -->
   <add file="Model/model.h" content="#1" />
   
-  <baseline name="model-1" label="full" comment="" component="Model" pvob="${pvobname}" />
+  <baseline name="model-1" label="full" comment="" component="_System" pvob="${pvobname}" />
   
   <!-- Second -->
   <add file="Clientapp/client.h" content="#1" />
   
-  <baseline name="client-1" label="full" comment="" component="Clientapp" pvob="${pvobname}" />
+  <baseline name="client-1" label="full" comment="" component="_System" pvob="${pvobname}" />
   
   
   <!-- Third -->
@@ -128,7 +128,7 @@
   
   <checkin file="Model/model.h" />
   
-  <baseline name="model-2" label="full" comment="" component="Model" pvob="${pvobname}" />
+  <baseline name="model-2" label="full" comment="" component="_System" pvob="${pvobname}" />
   
   
   <!-- Fourth -->
@@ -138,7 +138,7 @@
   
   <checkin file="Model/model.h" />
   
-  <baseline name="model-3" label="full" comment="" component="Model" pvob="${pvobname}" />
+  <baseline name="model-3" label="full" comment="" component="_System" pvob="${pvobname}" />
 
   <!-- Fifth -->
   <checkout comment="" file="Clientapp/client.h" />
@@ -147,7 +147,7 @@
   
   <checkin file="Clientapp/client.h" />
   
-  <baseline name="client-2" label="full" comment="" component="Clientapp" pvob="${pvobname}" />
+  <baseline name="client-2" label="full" comment="" component="_System" pvob="${pvobname}" />
   
 	<!-- Sixth -->
   <checkout comment="" file="Clientapp/client.h" />
@@ -156,10 +156,10 @@
   
   <checkin file="Clientapp/client.h" />
   
-  <baseline name="client-3" label="full" comment="" component="Clientapp" pvob="${pvobname}" />
+  <baseline name="client-3" label="full" comment="" component="_System" pvob="${pvobname}" />
   
   
-  <baseline name="_System_2.0" label="full" comment="" component="_System" pvob="${pvobname}" />
+  <!--  <baseline name="_System_2.0" label="full" comment="" component="_System" pvob="${pvobname}" /> -->
   
 </ccenv>
 

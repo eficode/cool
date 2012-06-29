@@ -16,7 +16,7 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
-public class Baselines2 extends ArrayList<Baseline> {
+public class BaselineList extends ArrayList<Baseline> {
 	private static Logger logger = Logger.getLogger();
 
 	private List<BaselineFilter> filters = new ArrayList<BaselineFilter>();
@@ -29,22 +29,37 @@ public class Baselines2 extends ArrayList<Baseline> {
 	private boolean multisitePolling;
 	private int limit = 0;
 	
-	protected Baselines2() {
+	public BaselineList() {
 		
 	}
 	
-	public Baselines2( Stream stream, Component component, PromotionLevel plevel ) {
+	public BaselineList( Stream stream, Component component, PromotionLevel plevel ) {
 		this( stream, component, plevel, false );
 	}
 
-	public Baselines2( Stream stream, Component component, PromotionLevel plevel, boolean multisitePolling ) {
+	public BaselineList( Stream stream, Component component, PromotionLevel plevel, boolean multisitePolling ) {
 		this.stream = stream;
 		this.component = component;
 		this.level = plevel;
 		this.multisitePolling = multisitePolling;
 	}
 	
-	public Baselines2 get() throws UnableToInitializeEntityException, UnableToListBaselinesException {
+	/**
+	 * Create a {@link BaselineList} object from a list of {@link Baseline}s
+	 * @param baselines - A list of {@link Baseline}s
+	 * @return
+	 */
+	public BaselineList( List<Baseline> baselines ) {
+		this.addAll( baselines );
+	}
+	
+	/**
+	 * Apply all the given filters and rules to this
+	 * @return
+	 * @throws UnableToInitializeEntityException
+	 * @throws UnableToListBaselinesException
+	 */
+	public BaselineList apply() throws UnableToInitializeEntityException, UnableToListBaselinesException {
 
 		/* Printing info for debug */
 		logger.debug( " --- Get baselines information --- " );
@@ -53,10 +68,13 @@ public class Baselines2 extends ArrayList<Baseline> {
 		logger.debug( "Level    : " + level );
 		logger.debug( "Limit    : " + limit );
 		logger.debug( "# filters: " + filters.size() );
+		logger.debug( "Multisite: " + multisitePolling );
 
-		if( stream.hasPostedDelivery() ) {
-			if( multisitePolling ) {
+		if( multisitePolling ) {
+			if( stream.hasPostedDelivery() ) {
 				this.addAll( stream.getPostedBaselines( component, level ) );
+			} else {
+				return this;
 			}
 		} else {
 			this.addAll( _get() );
@@ -65,12 +83,6 @@ public class Baselines2 extends ArrayList<Baseline> {
 		logger.debug( " --- Bare retrieval --- " );
 		logger.debug( "Baselines: " + this );
 
-		
-		/* Sort the baselines */
-		if( sorter != null ) {
-			Collections.sort( this, sorter );
-		}
-		
 		/* Do the filtering */
 		int pruned = 0;
 		for( BaselineFilter filter : filters ) {
@@ -100,10 +112,14 @@ public class Baselines2 extends ArrayList<Baseline> {
 			logger.verbose( "[ClearCase] Pruned " + pruned + " baselines" );
 		}
 		
+		/* Sort the baselines */
+		if( sorter != null ) {
+			Collections.sort( this, sorter );
+		}		
 		
 		/* Limit? 0 = unlimited */
 		if( limit > 0 && this.size() > 0 ) {
-			Baselines2 n = new Baselines2();
+			BaselineList n = new BaselineList();
 			n.addAll( this.subList( 0, limit ) );
 			logger.debug( "Final list of baselines: " + n );
 			return n;
@@ -113,25 +129,56 @@ public class Baselines2 extends ArrayList<Baseline> {
 		}
 	}
 	
-	public Baselines2 setLimit( int limit ) {
+	/**
+	 * Apply a single filter to the {@link BaselineList}
+	 * @param filter
+	 * @return
+	 */
+	public BaselineList applyFilter( BaselineFilter filter ) {
+		logger.debug( "Filter: " + filter.getName() );
+		filter.filter( this );
+		
+		return this;
+	}
+	
+	/**
+	 * Set a limit of how many {@link Baseline}s apply should return
+	 * @param limit
+	 * @return
+	 */
+	public BaselineList setLimit( int limit ) {
 		this.limit = limit;
 		
 		return this;
 	}
 	
-	public Baselines2 load() {
+	/**
+	 * Load the {@link Baseline}s
+	 * @return
+	 */
+	public BaselineList load() {
 		this.load = true;
 		
 		return this;
 	}
 	
-	public Baselines2 setSorter( Comparator<Baseline> sorter ) {
+	/**
+	 * Set the sorting of the {@link BaselineList}
+	 * @param sorter - A {@link Comparator} of {@link Baseline}s
+	 * @return
+	 */
+	public BaselineList setSorting( Comparator<Baseline> sorter ) {
 		this.sorter = sorter;
 		
 		return this;
 	}
 
-	public Baselines2 addFilter( BaselineFilter filter ) {
+	/**
+	 * Add a filter to apply
+	 * @param filter
+	 * @return
+	 */
+	public BaselineList addFilter( BaselineFilter filter ) {
 		this.filters.add( filter );
 		
 		return this;
@@ -159,7 +206,7 @@ public class Baselines2 extends ArrayList<Baseline> {
 		return bls;
 	}
 	
-	private static class AscendingDateSort implements Comparator<Baseline> {
+	public static class AscendingDateSort implements Comparator<Baseline> {
 
 		@Override
 		public int compare( Baseline bl1, Baseline bl2 ) {

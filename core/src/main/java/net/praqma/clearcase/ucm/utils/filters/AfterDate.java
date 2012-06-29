@@ -1,11 +1,12 @@
 package net.praqma.clearcase.ucm.utils.filters;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.utils.BaselineFilter;
-import net.praqma.clearcase.ucm.utils.Baselines2;
+import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.util.debug.Logger;
 
 public class AfterDate extends BaselineFilter {
@@ -19,8 +20,12 @@ public class AfterDate extends BaselineFilter {
 	}
 	
 	@Override
-	public int filter( Baselines2 baselines ) {
+	public int filter( BaselineList baselines ) {
 		logger.debug( "Date is " + date );
+		
+		/* Sort the baselines */
+		Collections.sort( baselines, new BaselineList.AscendingDateSort() );
+		
 		int pruned = 0;
 		Iterator<Baseline> itDate = baselines.iterator();
 		while( itDate.hasNext() ) {

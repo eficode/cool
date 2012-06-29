@@ -5,12 +5,12 @@ import java.util.Iterator;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.UCMEntity.LabelStatus;
 import net.praqma.clearcase.ucm.utils.BaselineFilter;
-import net.praqma.clearcase.ucm.utils.Baselines2;
+import net.praqma.clearcase.ucm.utils.BaselineList;
 
 public class NoLabels extends BaselineFilter {
 	
 	@Override
-	public int filter( Baselines2 baselines ) {
+	public int filter( BaselineList baselines ) {
 		int pruned = 0;
 		Iterator<Baseline> it = baselines.iterator();
 		while( it.hasNext() ) {

@@ -13,16 +13,19 @@ public class ContextTask extends AbstractTask {
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
+		String view = getValue( "view", e, context );
+		String vob = getValue( "vob", e, context );
+		String mvfs = "";
+		
 		if( Cool.getOS().equals( OperatingSystem.WINDOWS ) ) {
-			String mvfs = e.getAttribute( "mvfs" );
-			String view = getValue( "view", e, context );
-			String vob = getValue( "vob", e, context );
+			mvfs = e.getAttribute( "mvfs" );
 			context.path = new File( mvfs + "/" + view + "/" + vob );
-			
-			context.mvfs = mvfs;
 		} else {
-			/* Not implemented */
+			mvfs = e.getAttribute( "linux" );
+			context.path = new File( mvfs + "/" + view + "/" + vob );
 		}
+		
+		context.mvfs = mvfs;
 		
 	}
 
