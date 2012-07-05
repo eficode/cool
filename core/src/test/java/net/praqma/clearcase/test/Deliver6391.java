@@ -34,7 +34,7 @@ public class Deliver6391 {
 	@ClassRule
 	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-6391", "setup-6391.xml" );
 	
-	//@Test
+	@Test
 	public void deliver6391() throws ClearCaseException {
 		Stream dev = ccenv.context.streams.get( "two_dev" );
 		Stream non_modifiable_int = ccenv.context.streams.get( "two_int" );
