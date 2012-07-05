@@ -1,0 +1,136 @@
+<ccenv>
+	<var name="pvobname" value="cc12_PVOB" />
+	<var name="vobname" value="cc12" />
+	
+  <vob tag="${pvobname}" comment="PVOB" ucmproject="true" stgloc="-auto" mounted="true"/>
+  <vob tag="${vobname}" stgloc="-auto" mounted="true"/>
+
+  <view tag="${vobname}_setupview" stgloc="-auto"/>
+  <context mvfs="m:\" linux="/views" view="${vobname}_setupview" vob="${vobname}"/>
+  
+  <component root="" comment="" name="_System" pvob="${pvobname}" />
+  <component root="" comment="" name="_Server" pvob="${pvobname}" />
+  <component root="" comment="" name="_Client" pvob="${pvobname}" />
+  <component root="Service" comment="" name="Service" pvob="${pvobname}" />
+  <component root="Model" comment="" name="Model" pvob="${pvobname}" />
+  <component root="Clientapp" comment="" name="Clientapp" pvob="${pvobname}" />
+  
+  <folder name="one-folder" in="RootFolder" pvob="${pvobname}" />
+   
+  <project name="bootstrap" comment="" model="SIMPLE" pvob="${pvobname}" in="one-folder">
+    <components>
+      <component name="Service" pvob="${pvobname}" />
+      <component name="Model" pvob="${pvobname}"  />
+      <component name="Clientapp" pvob="${pvobname}" />
+    </components>
+    <policies>
+      <policy>POLICY_INTERPROJECT_DELIVER</policy>
+    </policies>
+  </project>
+  
+  <stream name="bootstrap_int" in="bootstrap" comment="" pvob="${pvobname}" type="integration">
+    <baselines>
+      <baseline name="_System_INITIAL" pvob="${pvobname}" />
+      <baseline name="_Server_INITIAL" pvob="${pvobname}" />
+      <baseline name="_Client_INITIAL" pvob="${pvobname}" />
+      <baseline name="Service_INITIAL" pvob="${pvobname}" />
+      <baseline name="Model_INITIAL" pvob="${pvobname}" />
+      <baseline name="Clientapp_INITIAL" pvob="${pvobname}" />
+    </baselines>
+  </stream>
+  
+  <view tag="${vobname}_bootstrap_int" stgloc="-auto">
+    <stream name="bootstrap_int" pvob="${pvobname}" />
+  </view>
+
+  <context mvfs="m:\" view="${vobname}_bootstrap_int" vob="${vobname}"/>
+  
+  <baseline name="_Server_1.0" label="none" comment="" component="_Server" pvob="${pvobname}">
+    <dependencies>
+      <component name="Service" pvob="${pvobname}" />
+      <component name="Model" pvob="${pvobname}" />
+    </dependencies>
+  </baseline>
+
+  <baseline name="_Client_1.0" label="none" comment="" component="_Client" pvob="${pvobname}">
+    <dependencies>
+      <component name="Clientapp" pvob="${pvobname}" />
+      <component name="Model" pvob="${pvobname}" />
+    </dependencies>
+  </baseline>
+  
+  <baseline name="_System_1.0" label="full" comment="" component="_System" pvob="${pvobname}">
+    <dependencies>
+      <component name="_Server" pvob="${pvobname}" />
+      <component name="_Client" pvob="${pvobname}" />
+    </dependencies>
+  </baseline>
+  
+  
+  <project name="one" comment="" pvob="${pvobname}" in="one-folder">
+    <components>
+      <component name="Service" pvob="${pvobname}" />
+      <component name="Model" pvob="${pvobname}" />
+      <component name="Clientapp" pvob="${pvobname}" />
+    </components>
+    <policies>
+      <policy>POLICY_INTERPROJECT_DELIVER</policy>
+    </policies>
+  </project>
+
+  <project name="two" comment="" pvob="${pvobname}" in="one-folder">
+    <components>
+      <component name="Service" pvob="${pvobname}" />
+      <component name="Clientapp" pvob="${pvobname}" />
+    </components>
+    <policies>
+      <policy>POLICY_INTERPROJECT_DELIVER</policy>
+    </policies>
+  </project>
+  
+  <stream name="one_int" in="one" comment="" pvob="${pvobname}" type="integration">
+    <baselines>
+      <baseline name="_System_1.0" pvob="${pvobname}" />
+    </baselines>
+  </stream>
+
+  <stream name="two_int" in="two" comment="" pvob="${pvobname}" type="integration">
+    <baselines>
+      <baseline name="_System_1.0" pvob="${pvobname}" />
+    </baselines>
+  </stream>
+  
+  <!-- Dev stream #1 -->
+  <stream name="two_dev" in="two_int" comment="" pvob="${pvobname}">
+    <baselines>
+      <baseline name="_System_1.0" pvob="${pvobname}" />
+    </baselines>
+  </stream>
+  
+  <view tag="${vobname}_two_dev" stgloc="-auto">
+    <stream name="two_dev" pvob="${pvobname}" />
+  </view>
+
+  <view tag="${vobname}_two_int" stgloc="-auto">
+    <stream name="two_int" pvob="${pvobname}" />
+  </view>
+
+  <view tag="${vobname}_one_int" stgloc="-auto">
+    <stream name="one_int" pvob="${pvobname}" />
+  </view>
+
+  <context mvfs="m:\" view="${vobname}_one_int" vob="${vobname}"/>
+  
+  <activity comment="" headline="Adding initial files into components" in="one_int" name="initial_files" pvob="${pvobname}" />
+  
+  <setactivity activity="initial_files" pvob="${pvobname}" />
+  
+  <!-- First -->
+  <add file="Model/model.h" content="#1" />
+  
+  <baseline name="model-1" label="full" comment="" component="Model" pvob="${pvobname}" />
+  
+  
+</ccenv>
+
+

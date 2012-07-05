@@ -132,6 +132,11 @@ public class Deliver {
 			logger.warning( "---- ENDS HERE ----" );
 			
 			
+			/* Deliver being cancelled -  */
+			if( e.getMessage().contains( "Operation is currently being canceled" ) ) {
+				logger.warning( "(1)Deliver already in progress" );
+				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
+			}
 			/* Deliver already in progress */
 			if( e.getMessage().contains( "Error: Deliver operation already in progress on stream" ) ) {
 				logger.warning( "(1)Deliver already in progress" );
