@@ -111,6 +111,10 @@
     <stream name="two_dev" pvob="${pvobname}" />
   </view>
 
+  <view tag="${vobname}_two_int" stgloc="-auto">
+    <stream name="two_int" pvob="${pvobname}" />
+  </view>
+
   <view tag="${vobname}_one_int" stgloc="-auto">
     <stream name="one_int" pvob="${pvobname}" />
   </view>
