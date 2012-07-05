@@ -130,8 +130,8 @@ public class Deliver {
 			logger.warning( "Could not deliver to target " + target + ": " );
 			logger.warning( e );			
 			
-			/* Deliver being cancelled -  */
-			if( e.getMessage().contains( "Operation is currently being canceled" ) ) {
+			/* Deliver being cancelled - Untested functionality, but must be tested for first */
+			if( e.getMessage().matches( "(?i)(?m)(?s)^.*Operation is currently being canceled.*$" ) ) {
 				logger.warning( "(0)Deliver is being cancelled" );
 				throw new DeliverException( this, Type.CANCELLING, e );
 			}
