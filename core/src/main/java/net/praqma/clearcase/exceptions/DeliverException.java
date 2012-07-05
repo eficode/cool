@@ -31,4 +31,11 @@ public class DeliverException extends ClearCaseException {
 	public Deliver getDeliver() {
 		return deliver;
 	}
+	
+	public boolean isStarted() {
+		return type.equals( Type.REQUIRES_REBASE ) || 
+			   type.equals( Type.DELIVER_IN_PROGRESS ) || 
+			   type.equals( Type.INTERPROJECT_DELIVER_DENIED ) || 
+			   type.equals( Type.REBASE_IN_PROGRESS );
+	}
 }

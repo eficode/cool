@@ -54,6 +54,10 @@ public class NoInterprojectDeliver {
 		} catch( DeliverException e ) {
 			assertEquals( Type.INTERPROJECT_DELIVER_DENIED, e.getType() );
 		}
+		
+		/* Deliver should not be started */
+		DeliverStatus status = deliver.getDeliverStatus();
+		assertFalse( status.busy() );
 	}
 	
 	

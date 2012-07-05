@@ -55,6 +55,10 @@ public class DeliverMergeError {
 		} catch( DeliverException e ) {
 			assertEquals( Type.MERGE_ERROR, e.getType() );
 		}
+		
+		/* Deliver should be started */
+		DeliverStatus status = deliver.getDeliverStatus();
+		assertTrue( status.busy() );
 	}
 	
 	
