@@ -11,6 +11,7 @@ public class DeliverException extends ClearCaseException {
 		DELIVER_IN_PROGRESS,
 		UNABLE_TO_COMPLETE,
 		REBASE_IN_PROGRESS,
+		CANCELLING,
 		UNKNOWN
 	}
 	
@@ -29,5 +30,19 @@ public class DeliverException extends ClearCaseException {
 
 	public Deliver getDeliver() {
 		return deliver;
+	}
+	
+	public boolean isStarted() {
+		return type.equals( Type.UNABLE_TO_COMPLETE ) || 
+			   type.equals( Type.MERGE_ERROR ) || 
+			   type.equals( Type.UNKNOWN );
+	}	
+	
+	public boolean isNotStarted() {
+		return type.equals( Type.REQUIRES_REBASE ) || 
+			   type.equals( Type.DELIVER_IN_PROGRESS ) || 
+			   type.equals( Type.INTERPROJECT_DELIVER_DENIED ) ||
+			   type.equals( Type.CANCELLING ) || 
+			   type.equals( Type.REBASE_IN_PROGRESS );
 	}
 }
