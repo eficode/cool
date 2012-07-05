@@ -19,9 +19,6 @@ import net.praqma.util.execute.CmdResult;
 public class Deliver {
 	private static Logger logger = Logger.getLogger();
 
-	private static final Pattern rx_checkMergeError = Pattern.compile( "An error occurred while merging file elements in the target view.*?Unable to perform merge", Pattern.DOTALL );
-	private static final Pattern rx_checkDeliverDenied = Pattern.compile( "does not allow deliver operations from streams in other", Pattern.DOTALL );
-	private static final Pattern rx_checkProgress = Pattern.compile( "which is currently involved in an.*?active deliver or rebase operation", Pattern.DOTALL );
 	private static final Pattern rx_deliver_find_baseline = Pattern.compile( "Baselines to be delivered:\\s*baseline:", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE );
 	private static final Pattern rx_deliver_find_nobaseline = Pattern.compile( "Baselines to be delivered:\\s*baseline:", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE );
 
@@ -270,5 +267,13 @@ public class Deliver {
 		} else {
 			return DeliverStatus.UNKOWN;
 		}
+	}
+	
+	public File getViewContext() {
+		return this.context;
+	}
+	
+	public String getViewtag() {
+		return this.viewtag;
 	}
 }
