@@ -33,9 +33,16 @@ public class DeliverException extends ClearCaseException {
 	}
 	
 	public boolean isStarted() {
+		return type.equals( Type.UNABLE_TO_COMPLETE ) || 
+			   type.equals( Type.MERGE_ERROR ) || 
+			   type.equals( Type.UNKNOWN );
+	}	
+	
+	public boolean isNotStarted() {
 		return type.equals( Type.REQUIRES_REBASE ) || 
 			   type.equals( Type.DELIVER_IN_PROGRESS ) || 
-			   type.equals( Type.INTERPROJECT_DELIVER_DENIED ) || 
+			   type.equals( Type.INTERPROJECT_DELIVER_DENIED ) ||
+			   type.equals( Type.CANCELLING ) || 
 			   type.equals( Type.REBASE_IN_PROGRESS );
 	}
 }

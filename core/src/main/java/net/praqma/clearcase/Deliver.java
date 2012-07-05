@@ -156,7 +156,12 @@ public class Deliver {
 			else if( e.getMessage().matches( "(?i)(?m)(?s)^.*Unable to perform merge.*Unable to do integration.*Unable to deliver stream.*$" ) ) {
 				logger.warning( "(5)Merge error" );
 				throw new DeliverException( this, Type.MERGE_ERROR, e );
-			}			
+			}
+			/* Deliver in progress */
+			else if( e.getMessage().matches( "(?i)(?m)(?s)^.*which is currently involved in an.*active deliver or rebase operation.*The set activity of this view may not be.*changed until the operation has completed.*$" ) ) {
+				logger.warning( "(6)Deliver already in progress" );
+				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
+			}
 			/* If nothing applies.... */
 			else {
 				throw new DeliverException( this, Type.UNKNOWN, e );
