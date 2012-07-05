@@ -54,6 +54,14 @@ public class Deliver {
 		this.context = context;
 		this.viewtag = viewtag;
 	}
+	
+	
+	public Deliver( Stream stream, Stream target, File context, String viewtag ) {
+		this.stream = stream;
+		this.target = target;
+		this.context = context;
+		this.viewtag = viewtag;
+	}
 
 	public boolean deliverForced( Stream stream, Stream target, File viewcontext, String viewtag ) throws DeliverException, CleartoolException {
 		return deliver( true, true, true, false );
@@ -107,11 +115,13 @@ public class Deliver {
 
 		String cmd = "deliver" + ( force ? " -force" : "" ) + ( complete ? " -complete" : "" ) + ( abort ? " -abort" : "" ) + ( resume ? " -resume" : "" );
 
-		if(!resume)
+		if( !resume ) {
 			cmd += ( baseline != null ? " -baseline " + baseline : "" );
+		}
 		cmd += ( stream != null ? " -stream " + stream : "" );
-		if(!resume)
+		if( !resume ) {
 			cmd += ( target != null ? " -target " + target : "" );
+		}
 		cmd += ( viewtag != null ? " -to " + viewtag : "" );
 
 		try {
