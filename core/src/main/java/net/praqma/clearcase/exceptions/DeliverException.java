@@ -11,6 +11,7 @@ public class DeliverException extends ClearCaseException {
 		DELIVER_IN_PROGRESS,
 		UNABLE_TO_COMPLETE,
 		REBASE_IN_PROGRESS,
+		CANCELLING,
 		UNKNOWN
 	}
 	

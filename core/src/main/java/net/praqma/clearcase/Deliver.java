@@ -127,15 +127,13 @@ public class Deliver {
 		try {
 			result = Cleartool.run( cmd, context, true ).stdoutBuffer.toString();
 		} catch( AbnormalProcessTerminationException e ) {
-			logger.warning( "Could not deliver to target " + target + ": " + e.getMessage() );
-			logger.warning( e );
-			logger.warning( "---- ENDS HERE ----" );
-			
+			logger.warning( "Could not deliver to target " + target + ": " );
+			logger.warning( e );			
 			
 			/* Deliver being cancelled -  */
 			if( e.getMessage().contains( "Operation is currently being canceled" ) ) {
-				logger.warning( "(1)Deliver already in progress" );
-				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
+				logger.warning( "(0)Deliver is being cancelled" );
+				throw new DeliverException( this, Type.CANCELLING, e );
 			}
 			/* Deliver already in progress */
 			if( e.getMessage().contains( "Error: Deliver operation already in progress on stream" ) ) {
@@ -167,7 +165,6 @@ public class Deliver {
 				throw new DeliverException( this, Type.UNKNOWN, e );
 			}
 		}
-
 
 		/* Test for baseline == true */
 		if( baseline != null ) {
