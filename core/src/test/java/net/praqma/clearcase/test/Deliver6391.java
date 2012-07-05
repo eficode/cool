@@ -32,7 +32,7 @@ public class Deliver6391 {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver", "setup-6391.xml" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-6391", "setup-6391.xml" );
 	
 	@Test
 	public void deliver6391() throws ClearCaseException {
