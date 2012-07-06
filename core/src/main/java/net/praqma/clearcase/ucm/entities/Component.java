@@ -89,6 +89,11 @@ public class Component extends UCMEntity {
 		return entity;
 	}
         
+        /**
+         * Unique hash code for object based on fully qualified nave
+         * Neccessary if adding objects to hash sets, -maps etc.
+         * @return unique hash value for object.
+         */
         @Override
         public int hashCode()
         {
