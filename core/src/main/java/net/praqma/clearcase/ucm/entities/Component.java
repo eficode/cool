@@ -5,12 +5,7 @@ import java.util.List;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
-import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToGetEntityException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
-import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
+import net.praqma.clearcase.exceptions.*;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
@@ -93,5 +88,13 @@ public class Component extends UCMEntity {
 		Component entity = (Component) UCMEntity.getEntity( Component.class, name );
 		return entity;
 	}
+        
+        @Override
+        public int hashCode()
+        {
+            // check for load not needed fqname always given
+            // FullyQualifiedName is unique in ClearCase (at least in this installation)
+            return (this.getFullyQualifiedName().hashCode());
+        }
 
 }

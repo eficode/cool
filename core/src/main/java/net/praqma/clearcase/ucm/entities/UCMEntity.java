@@ -278,6 +278,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 		this.user = user;
 	}
 
+        @Override
 	public String getFullyQualifiedName() {
 		return this.fqname;
 	}

@@ -41,6 +41,7 @@
                         <configuration>
                             <includes>
                                 <include>net/praqma/clearcase/test/unit/*.java</include>
+                                <include>net/praqma/clearcase/ucm/entities/*.java</include>
                             </includes>
                             <excludes>
                                 <exclude>net/praqma/clearcase/test/*.java</exclude>
