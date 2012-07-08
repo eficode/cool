@@ -4,13 +4,14 @@
     <parent>
         <groupId>net.praqma</groupId>
         <artifactId>coolness</artifactId>
-        <version>0.5.0-SNAPSHOT</version>
+        <version>0.5.0-buep-SNAPSHOT</version>
     </parent>
 	
     <artifactId>cool</artifactId>
     <packaging>jar</packaging>
     <name>ClearCase Oriented Open Library Core</name>
     <url>http://maven.apache.org</url>
+	<version>0.5.0-buep-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -283,7 +284,7 @@
         <dependency>
             <groupId>net.praqma</groupId>
             <artifactId>praqmajutils</artifactId>
-            <version>0.1.22-SNAPSHOT</version>
+            <version>0.1.22-buep-SNAPSHOT</version>
             <optional>true</optional>
         </dependency>
 		
