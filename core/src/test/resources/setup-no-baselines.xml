@@ -2,8 +2,8 @@
 	<var name="pvobname" value="cc12_PVOB" />
 	<var name="vobname" value="cc12" />
 	
-  <vob tag="${pvobname}" comment="PVOB" ucmproject="true" stgloc="-auto" mounted="true"/>
-  <vob tag="${vobname}" stgloc="-auto" mounted="true"/>
+  <vob tag="${pvobname}" linuxtag="/vobs/${pvobname}" comment="PVOB" ucmproject="true" stgloc="-auto" mounted="true"/>
+  <vob tag="${vobname}" linuxtag="/vobs/${vobname}" stgloc="-auto" mounted="true"/>
 
   <view tag="${vobname}_setupview" stgloc="-auto"/>
   <context mvfs="m:\" linux="/views" view="${vobname}_setupview" vob="${vobname}"/>
