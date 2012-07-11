@@ -8,6 +8,7 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
+import net.praqma.clearcase.exceptions.NotMountedException;
 import net.praqma.clearcase.exceptions.NothingNewException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
@@ -36,7 +37,7 @@ public class BootstrapProject {
 	
 	
 
-	public static void main( String[] args ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException, CleartoolException, UCMEntityNotFoundException, UnableToGetEntityException, ViewException, EntityAlreadyExistsException {
+	public static void main( String[] args ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException, CleartoolException, UCMEntityNotFoundException, UnableToGetEntityException, ViewException, EntityAlreadyExistsException, NotMountedException {
 		
 		if( args.length < 2 ) {
 			System.err.println( "No path given" );
@@ -52,7 +53,7 @@ public class BootstrapProject {
                                                      Project.POLICY_DELIVER_REQUIRE_REBASE );
 	}
 	
-	public static void bootstrap( String vobname, String componentName, File viewPath, int policies ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException, CleartoolException, UCMEntityNotFoundException, UnableToGetEntityException, ViewException, EntityAlreadyExistsException {
+	public static void bootstrap( String vobname, String componentName, File viewPath, int policies ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException, CleartoolException, UCMEntityNotFoundException, UnableToGetEntityException, ViewException, EntityAlreadyExistsException, NotMountedException {
 		
 		System.out.println("Bootstrapping");
 		String vobtag = "\\" + vobname;

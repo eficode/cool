@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
+import net.praqma.clearcase.exceptions.NotMountedException;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
@@ -80,15 +81,20 @@ public class Vob extends ClearCase implements Serializable {
 		}
 	}
 
-	public void mount() throws CleartoolException {
+	public void mount() throws NotMountedException {
 		logger.debug( "Mounting vob " + this );
 
 		String cmd = "mount " + this;
-		try {
-			/* Linux specifics */
-			if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
-				File path = new File( this.getName() );
+		
+		/* Linux specifics */
+		if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
+			File path = new File( this.getName() );
+			if( !path.mkdirs() ) {
+				throw new NotMountedException( "Could not create mount-over directory" );
 			}
+		}
+		
+		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
 			if( e.getMessage().contains( "is already mounted" ) ) {
@@ -96,7 +102,7 @@ public class Vob extends ClearCase implements Serializable {
 				return;
 			}
 
-			throw new CleartoolException( "Could not mount Vob " + this + ": " + e.getMessage() );
+			throw new NotMountedException( "Could not mount vob " + this, e );
 		}
 	}
 
