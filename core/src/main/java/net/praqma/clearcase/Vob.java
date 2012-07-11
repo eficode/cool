@@ -87,7 +87,7 @@ public class Vob extends ClearCase implements Serializable {
 		String cmd = "mount " + this;
 		
 		/* Linux specifics 
-		 * TODO we should check if the vob IS private, otherwise we should create it ourselfs */
+		 * TODO we should check if the vob IS private, otherwise we should create it ourselves */
 		if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
 			logger.debug( "Creating mount-over directory" );
 			File path = new File( this.getName() );
