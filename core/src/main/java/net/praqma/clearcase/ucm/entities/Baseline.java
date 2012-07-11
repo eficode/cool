@@ -102,10 +102,10 @@ public class Baseline extends UCMEntity implements Diffable {
         logger.debug("Result:" + result);
 
 		/* Component . component:GENI_Source@\bbComponent */
-		String c = ( rs[1].matches( "^component:.*$" ) ? "" : "component:" ) + ( rs[1].matches( ".*@" + PVob.rx_format + "$" ) ? rs[1] : rs[1] + "@" + this.pvob );
+		String c = ( rs[1].matches( "^component:.*$" ) ? "" : "component:" ) + ( rs[1].matches( ".*@" + PVob.rx_tag_format + "$" ) ? rs[1] : rs[1] + "@" + this.pvob );
 		/* Stream */
 		if( rs[2].trim().length() > 0 ) {
-			String s = ( rs[2].matches( "^stream:.*$" ) ? "" : "stream:" ) + ( rs[2].matches( ".*@" + PVob.rx_format + "$" ) ? rs[2] : rs[2] + "@" + this.pvob );
+			String s = ( rs[2].matches( "^stream:.*$" ) ? "" : "stream:" ) + ( rs[2].matches( ".*@" + PVob.rx_tag_format + "$" ) ? rs[2] : rs[2] + "@" + this.pvob );
 			this.stream = Stream.get( s );
 		} else {
 			logger.debug( "No stream set for baseline" );
