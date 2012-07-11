@@ -15,7 +15,7 @@ public class SetActivityTask extends AbstractTask {
 	public void parse( Element e, Context context ) throws ClearCaseException {
 		String astr = e.getAttribute( "activity" );
 		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;
-		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
+		PVob pvob = new PVob( getValue( "pvob", e, context ) );
 		
 		Activity activity = Activity.get( astr, pvob );
 		

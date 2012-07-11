@@ -17,7 +17,7 @@ public class ActivityTask extends AbstractTask {
 		String comment = getComment( e, context );
 		String headline = getValue( "headline", e, context, null );
 		String inStr = getValue( "in", e, context, null );
-		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
+		PVob pvob = new PVob( getValue( "pvob", e, context ) );
 		
 		Stream in = null;
 		if( inStr != null ) {

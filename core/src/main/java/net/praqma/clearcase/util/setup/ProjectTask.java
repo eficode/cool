@@ -19,7 +19,7 @@ public class ProjectTask extends AbstractTask {
 		String name = getValue( "name", e, context );
 		String comment = getComment( e, context );
 		String model = getValue( "model", e, context );
-		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
+		PVob pvob = new PVob( getValue( "pvob", e, context ) );
 		String in = getValue( "in", e, context ).length() > 0 ? getValue( "in", e, context ) : null;
 		
 		List<Component> components = null;
@@ -27,7 +27,7 @@ public class ProjectTask extends AbstractTask {
 			Element c = getFirstElement( e, "components" );
 			components = new ArrayList<Component>();
 			for( Element component : getElements( c ) ) {
-				PVob cpvob = new PVob( Cool.filesep + getValue( "pvob", component, context ) );
+				PVob cpvob = new PVob( getValue( "pvob", component, context ) );
 				components.add( Component.get( component.getAttribute( "name" ), cpvob ) );
 			}
 		}  catch( Exception e1 ) {

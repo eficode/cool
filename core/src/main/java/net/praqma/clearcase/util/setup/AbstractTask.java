@@ -24,7 +24,7 @@ public abstract class AbstractTask {
 	
 	public PVob getPVob( String name ) {
 		if( name.length() > 0 ) {
-			return new PVob( Cool.filesep + name );
+			return new PVob( name );
 		} else {
 			return null;
 		}

@@ -11,6 +11,7 @@ import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
+import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
 /**
  * Vob class represented by a fully qualified vob name, including \ or /<br>
@@ -84,6 +85,10 @@ public class Vob extends ClearCase implements Serializable {
 
 		String cmd = "mount " + this;
 		try {
+			/* Linux specifics */
+			if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
+				File path = new File( this.getName() );
+			}
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
 			if( e.getMessage().contains( "is already mounted" ) ) {
@@ -131,11 +136,7 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public String getName() {
-		if( name.startsWith( "\\" ) || name.startsWith( "/" ) ) {
-			return name.substring( 1 );
-		} else {
-			return name;
-		}
+		return name;
 	}
 
 	public static Vob create( String name, String path, String comment ) throws CleartoolException, EntityAlreadyExistsException {

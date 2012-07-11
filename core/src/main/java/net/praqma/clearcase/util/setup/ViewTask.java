@@ -21,7 +21,7 @@ public class ViewTask extends AbstractTask {
 		Stream stream = null;
 		try {
 			Element s = getFirstElement( e, "stream" );
-			PVob pvob = new PVob( Cool.filesep + getValue( "pvob", s, context ) );
+			PVob pvob = new PVob( getValue( "pvob", s, context ) );
 			String name = getValue( "name", s, context );
 			stream = Stream.get( name, pvob );
 		} catch( Exception e1 ) {

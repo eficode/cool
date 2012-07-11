@@ -325,7 +325,7 @@ public class Tag extends UCMEntity {
 	}
 	
 	private static Tag newTag( UCMEntity entity, String tagType, String tagID ) throws UnableToInitializeEntityException {
-		Tag tag = (Tag) UCMEntity.getEntity( Tag.class, "tag@0@" + filesep + entity.getPVob().getName() );
+		Tag tag = (Tag) UCMEntity.getEntity( Tag.class, "tag@0@" + entity.getPVob().getName() );
 		// tag.SetEntry( "tagtype", tagType );
 		// tag.SetEntry( "tagid", tagID );
 		String cgi = "tagtype=" + tagType + "&tagid=" + tagID;
