@@ -91,7 +91,7 @@ public class Vob extends ClearCase implements Serializable {
 		if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
 			logger.debug( "Creating mount-over directory" );
 			File path = new File( this.getName() );
-			if( !path.mkdirs() ) {
+			if( !path.exists() && !path.mkdirs() ) {
 				throw new NotMountedException( "Could not create mount-over directory" );
 			}
 		}
