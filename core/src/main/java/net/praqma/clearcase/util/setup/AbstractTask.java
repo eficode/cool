@@ -9,6 +9,8 @@ import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
+import net.praqma.util.execute.CommandLine;
+import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
 import org.w3c.dom.DOMError;
 import org.w3c.dom.DOMException;
@@ -29,6 +31,31 @@ public abstract class AbstractTask {
 	}
 	
 	private static final Pattern rx_variable = Pattern.compile( "(\\$\\{(.*?)\\})" );
+	
+	/**
+	 * Get the tag of an element. Either tag, wintag or linuxtag must be provided or else null is returned.<br/>
+	 * wintag and tag are aliases. wintag is preferred. tag is typically used without prepended backward slash.
+	 * @param e - Element tag
+	 * @param context - The context
+	 * @return The tag given the OS context or null
+	 */
+	public String getTag( Element e, Context context ) {
+		String tag = getValue( "tag", e, context, null ); /* Same as wintag */
+		String wintag = getValue( "wintag", e, context, null );
+		String lintag = getValue( "linuxtag", e, context, null );
+		
+		if( Cool.getOS().equals( OperatingSystem.WINDOWS ) ) {
+			if( wintag != null ) {
+				return wintag;
+			} else if( tag != null ) {
+				return ( tag.startsWith( "\\" ) ? tag : "\\" + tag );
+			} else {
+				return null;
+			}
+		} else {
+			return lintag;
+		}
+	}
 	
 	public String getValue( String name, Element e, Context context ) {
 		return getValue( name, e, context, "" );
