@@ -31,8 +31,15 @@ public class Vob extends ClearCase implements Serializable {
 
 	protected String storageLocation = null;
 
+	public static final String rx_tag_format = "\\S+";
+
 	public Vob( String name ) {
 		this.name = name;
+	}
+	
+
+	public static boolean isValidTag( String tag ) {
+		return tag.matches( rx_tag_format );
 	}
 
 	public void load() throws CleartoolException {

@@ -19,14 +19,12 @@ public class PVob extends Vob {
 	private String localPath;
 	private String globalPath;
 	
-	public static final String rx_format = "\\S+";
-
 	public PVob( String name ) {
 		super( name );
 
 		this.projectVob = true;
 	}
-
+	
 	public static PVob create( String name, String path, String comment ) throws CleartoolException, EntityAlreadyExistsException {
 		Vob.create( name, true, path, comment );
 		PVob pvob = new PVob( name );
