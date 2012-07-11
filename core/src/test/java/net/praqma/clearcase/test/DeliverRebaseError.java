@@ -63,6 +63,10 @@ public class DeliverRebaseError {
 				fail( "Should be REBASE IN PROGRESS" );
 			}
 		}
+		
+		/* Deliver should not be started */
+		DeliverStatus status = deliver.getDeliverStatus();
+		assertFalse( status.busy() );
 	}
 	
 	protected File setActivity( String name ) throws ClearCaseException {

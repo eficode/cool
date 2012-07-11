@@ -56,14 +56,18 @@ public class ClearCaseRule extends Environment implements TestRule {
 	}
 
 	protected void after() {
-		if( pvob != null ) {
-			try {
-				SetupUtils.tearDown( pvob );
-			} catch( CleartoolException e ) {
-				ExceptionUtils.print( e, System.out, true );
+		if( System.getProperty( "saveEnv", null ) == null ) {
+			if( pvob != null ) {
+				try {
+					SetupUtils.tearDown( pvob );
+				} catch( CleartoolException e ) {
+					ExceptionUtils.print( e, System.out, true );
+				}
+			} else {
+				/* Not possible to tear down */
 			}
 		} else {
-			/* Not possible to tear down */
+			System.out.println( " == Saving environment ==" );
 		}
 	}
 

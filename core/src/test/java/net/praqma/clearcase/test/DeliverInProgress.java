@@ -26,37 +26,48 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class NoInterprojectDeliver {
+public class DeliverInProgress {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver", "setup-no-interproject-no-baselines.xml" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-in-progress", "setup-no-baselines.xml" );
 	
 	@Test
-	public void rebaseBeforeDeliver() throws ClearCaseException {
-		Stream target = ccenv.context.streams.get( "two_int" );
-		Stream source = ccenv.context.streams.get( "one_int" );
+	public void deliverInProgress() throws ClearCaseException {
+		Stream dev1 = ccenv.context.streams.get( "one_dev" );
+		Stream dev2 = ccenv.context.streams.get( "two_dev" );
+		Stream target = ccenv.context.streams.get( "one_int" );
 		
-		/* One */
-		String viewtag = ccenv.getVobName() + "_one_int";
-		File path = ccenv.setDynamicActivity( source, viewtag, "interproject-deliver-one" );
-		Baseline b = getNewBaseline( path, "interproject-deliver.txt", "one" );
-		source.recommendBaseline( b );
+		/* Target */
+		String tviewtag = ccenv.getVobName() + "_one_int";
+		File tpath = new File( ccenv.context.mvfs + "/" + tviewtag + "/" + ccenv.getVobName() );
 		
-		/* Two */
-		String tviewtag = ccenv.getVobName() + "_two_int";
-		File tpath = ccenv.getDynamicPath( tviewtag );
-				
-		Deliver deliver = new Deliver( b, source, target, tpath, tviewtag );
+		/* Set deliver one up */
+		String d1viewtag = ccenv.getVobName() + "_one_dev";
+		File d1path = ccenv.setDynamicActivity( dev1, d1viewtag, "dip1" );
+		Baseline bl1 = getNewBaseline( d1path, "dip1.txt", "dip1" );
+		
+		/* Do not complete deliver */
+		Deliver deliver1 = new Deliver( bl1, dev1, target, tpath, tviewtag );
+		deliver1.deliver( true, false, true, false );
+		
+		/* Set deliver two up */
+		String d2viewtag = ccenv.getVobName() + "_two_dev";
+		File d2path = ccenv.setDynamicActivity( dev2, d2viewtag, "dip2" );
+		Baseline bl2 = getNewBaseline( d2path, "dip2.txt", "dip2" );
+		
+		Deliver deliver2 = new Deliver( bl2, dev2, target, tpath, tviewtag );
 		try { 
-			deliver.deliver( true, true, true, false );
+			deliver2.deliver( true, true, true, false );
 			fail( "Deliver should fail" );
 		} catch( DeliverException e ) {
-			assertEquals( Type.INTERPROJECT_DELIVER_DENIED, e.getType() );
+			if( !e.getType().equals( Type.DELIVER_IN_PROGRESS ) ) {
+				fail( "Should be DELIVER IN PROGRESS" );
+			}
 		}
 		
-		/* Deliver should not be started */
-		DeliverStatus status = deliver.getDeliverStatus();
+		/* Deliver should NOT be started */
+		DeliverStatus status = deliver2.getDeliverStatus();
 		assertFalse( status.busy() );
 	}
 	

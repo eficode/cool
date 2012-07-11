@@ -19,9 +19,6 @@ import net.praqma.util.execute.CmdResult;
 public class Deliver {
 	private static Logger logger = Logger.getLogger();
 
-	private static final Pattern rx_checkMergeError = Pattern.compile( "An error occurred while merging file elements in the target view.*?Unable to perform merge", Pattern.DOTALL );
-	private static final Pattern rx_checkDeliverDenied = Pattern.compile( "does not allow deliver operations from streams in other", Pattern.DOTALL );
-	private static final Pattern rx_checkProgress = Pattern.compile( "which is currently involved in an.*?active deliver or rebase operation", Pattern.DOTALL );
 	private static final Pattern rx_deliver_find_baseline = Pattern.compile( "Baselines to be delivered:\\s*baseline:", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE );
 	private static final Pattern rx_deliver_find_nobaseline = Pattern.compile( "Baselines to be delivered:\\s*baseline:", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE );
 
@@ -49,6 +46,14 @@ public class Deliver {
 	 */
 	public Deliver( Baseline baseline, Stream stream, Stream target, File context, String viewtag ) {
 		this.baseline = baseline;
+		this.stream = stream;
+		this.target = target;
+		this.context = context;
+		this.viewtag = viewtag;
+	}
+	
+	
+	public Deliver( Stream stream, Stream target, File context, String viewtag ) {
 		this.stream = stream;
 		this.target = target;
 		this.context = context;
@@ -107,21 +112,26 @@ public class Deliver {
 
 		String cmd = "deliver" + ( force ? " -force" : "" ) + ( complete ? " -complete" : "" ) + ( abort ? " -abort" : "" ) + ( resume ? " -resume" : "" );
 
-		if(!resume)
+		if( !resume ) {
 			cmd += ( baseline != null ? " -baseline " + baseline : "" );
+		}
 		cmd += ( stream != null ? " -stream " + stream : "" );
-		if(!resume)
+		if( !resume ) {
 			cmd += ( target != null ? " -target " + target : "" );
+		}
 		cmd += ( viewtag != null ? " -to " + viewtag : "" );
 
 		try {
 			result = Cleartool.run( cmd, context, true ).stdoutBuffer.toString();
 		} catch( AbnormalProcessTerminationException e ) {
-			logger.warning( "Could not deliver to target " + target + ": " + e.getMessage() );
-			logger.warning( e );
-			logger.warning( "---- ENDS HERE ----" );
+			logger.warning( "Could not deliver to target " + target + ": " );
+			logger.warning( e );			
 			
-			
+			/* Deliver being cancelled - Untested functionality, but must be tested for first */
+			if( e.getMessage().matches( "(?i)(?m)(?s)^.*Operation is currently being canceled.*$" ) ) {
+				logger.warning( "(0)Deliver is being cancelled" );
+				throw new DeliverException( this, Type.CANCELLING, e );
+			}
 			/* Deliver already in progress */
 			if( e.getMessage().contains( "Error: Deliver operation already in progress on stream" ) ) {
 				logger.warning( "(1)Deliver already in progress" );
@@ -146,13 +156,17 @@ public class Deliver {
 			else if( e.getMessage().matches( "(?i)(?m)(?s)^.*Unable to perform merge.*Unable to do integration.*Unable to deliver stream.*$" ) ) {
 				logger.warning( "(5)Merge error" );
 				throw new DeliverException( this, Type.MERGE_ERROR, e );
-			}			
+			}
+			/* Deliver in progress */
+			else if( e.getMessage().matches( "(?i)(?m)(?s)^.*which is currently involved in an.*active deliver or rebase operation.*The set activity of this view may not be.*changed until the operation has completed.*$" ) ) {
+				logger.warning( "(6)Deliver already in progress" );
+				throw new DeliverException( this, Type.DELIVER_IN_PROGRESS, e );
+			}
 			/* If nothing applies.... */
 			else {
 				throw new DeliverException( this, Type.UNKNOWN, e );
 			}
 		}
-
 
 		/* Test for baseline == true */
 		if( baseline != null ) {
@@ -258,5 +272,13 @@ public class Deliver {
 		} else {
 			return DeliverStatus.UNKOWN;
 		}
+	}
+	
+	public File getViewContext() {
+		return this.context;
+	}
+	
+	public String getViewtag() {
+		return this.viewtag;
 	}
 }

@@ -77,38 +77,59 @@
       <policy>POLICY_INTERPROJECT_DELIVER</policy>
     </policies>
   </project>
+
+  <project name="two" comment="" pvob="${pvobname}" in="one-folder">
+    <components>
+      <component name="Service" pvob="${pvobname}" />
+      <component name="Clientapp" pvob="${pvobname}" />
+    </components>
+    <policies>
+      <policy>POLICY_INTERPROJECT_DELIVER</policy>
+    </policies>
+  </project>
   
   <stream name="one_int" in="one" comment="" pvob="${pvobname}" type="integration">
     <baselines>
       <baseline name="_System_1.0" pvob="${pvobname}" />
     </baselines>
   </stream>
+
+  <stream name="two_int" in="two" comment="" pvob="${pvobname}" type="integration">
+    <baselines>
+      <baseline name="_System_1.0" pvob="${pvobname}" />
+    </baselines>
+  </stream>
   
   <!-- Dev stream #1 -->
-  <stream name="one_dev" in="one_int" comment="" pvob="${pvobname}">
-    <baselines>
-      <baseline name="_System_1.0" pvob="${pvobname}" />
-    </baselines>
-  </stream>
-
-  <!-- Dev stream #2 -->
-  <stream name="two_dev" in="one_int" comment="" pvob="${pvobname}">
+  <stream name="two_dev" in="two_int" comment="" pvob="${pvobname}">
     <baselines>
       <baseline name="_System_1.0" pvob="${pvobname}" />
     </baselines>
   </stream>
   
-  <view tag="${vobname}_one_dev" stgloc="-auto">
-    <stream name="one_dev" pvob="${pvobname}" />
-  </view>
-
   <view tag="${vobname}_two_dev" stgloc="-auto">
     <stream name="two_dev" pvob="${pvobname}" />
+  </view>
+
+  <view tag="${vobname}_two_int" stgloc="-auto">
+    <stream name="two_int" pvob="${pvobname}" />
   </view>
 
   <view tag="${vobname}_one_int" stgloc="-auto">
     <stream name="one_int" pvob="${pvobname}" />
   </view>
+
+  <context mvfs="m:\" view="${vobname}_one_int" vob="${vobname}"/>
+  
+  <activity comment="" headline="Adding initial files into components" in="one_int" name="initial_files" pvob="${pvobname}" />
+  
+  <setactivity activity="initial_files" pvob="${pvobname}" />
+  
+  <!-- First -->
+  <add file="Model/model.h" content="#1" />
+  
+  <baseline name="model-1" label="full" comment="" component="Model" pvob="${pvobname}" />
+  
   
 </ccenv>
 
