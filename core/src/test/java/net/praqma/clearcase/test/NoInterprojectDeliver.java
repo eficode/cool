@@ -30,7 +30,7 @@ public class NoInterprojectDeliver {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver", "setup-no-interproject-no-baselines.xml" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-inter", "setup-no-interproject-no-baselines.xml" );
 	
 	@Test
 	public void rebaseBeforeDeliver() throws ClearCaseException {

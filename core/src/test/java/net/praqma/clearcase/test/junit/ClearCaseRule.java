@@ -43,8 +43,9 @@ public class ClearCaseRule extends Environment implements TestRule {
 	}
 
 	protected void before( String name ) throws Exception {
-		variables.put( "vobname", name );
-		variables.put( "pvobname", name + "_PVOB" );
+		variables.put( "name", name );
+		//variables.put( "vobname", name );
+		//variables.put( "pvobname", name + "_PVOB" );
 		
 		this.vobName = name;
 		

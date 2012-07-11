@@ -30,7 +30,7 @@ public class DeliverTestStrict {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver", "setup-strict-no-baselines.xml" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-strict", "setup-strict-no-baselines.xml" );
 	
 	@Test
 	public void rebaseBeforeDeliver() throws ClearCaseException {

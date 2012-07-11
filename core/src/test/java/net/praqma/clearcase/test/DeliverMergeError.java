@@ -30,7 +30,7 @@ public class DeliverMergeError {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver", "setup-no-baselines.xml" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-merge", "setup-no-baselines.xml" );
 	
 	@Test
 	public void mergeError() throws ClearCaseException {

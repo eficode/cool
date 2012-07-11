@@ -30,7 +30,7 @@ public class DeliverRebaseError {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-rebase" );
 	
 	@Test
 	public void basicRebase() throws ClearCaseException {
