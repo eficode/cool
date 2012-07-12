@@ -76,9 +76,9 @@ public abstract class ClearCase extends Cool {
 		if( Cool.getOS().equals( OperatingSystem.WINDOWS )) {
 			value = "\\\"" + value + "\\\"";
 		} else {
-			value = "\"'" + value + "'\"";
+			value = "'\"" + value + "\"'";
 		}
-		
+
 		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + this.getFullyQualifiedName() );
 
 		String cmd = "mkattr " + ( replace ? "-replace " : "" ) + attribute + " " + value + " " + this.getFullyQualifiedName();
