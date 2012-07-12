@@ -67,10 +67,13 @@ public class PVob extends Vob {
 				while( m.find() ) {
 					/* Don't include root-less components */
 					if( !m.group( 1 ).equals( "" ) ) {
-						try {
-							views.add( UCMView.getView( m.group( 1 ).trim() ) );
-						} catch( ViewException e ) {
-							logger.warning( "Unable to get " + m.group( 1 ) + ": " + e.getMessage() );
+						String[] vs = m.group( 1 ).trim().split( "\\s+" );
+						for( String v : vs ) {
+							try {
+								views.add( UCMView.getView( v.trim() ) );
+							} catch( ViewException e ) {
+								logger.warning( "Unable to get " + m.group( 1 ) + ": " + e.getMessage() );
+							}
 						}
 					}
 				}
