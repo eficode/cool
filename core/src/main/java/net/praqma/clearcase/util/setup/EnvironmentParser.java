@@ -166,7 +166,7 @@ public class EnvironmentParser extends XML {
 			
 			for( Element e : elements ) {
 				String tag = e.getTagName();
-				logger.verbose( "Parsing " + tag );
+				logger.verbose( "Parsing <" + tag + ">" );
 				try {
 					if( tag != null && tag.length() > 0 ) {
 						map.get( tag ).parse( e, context );
