@@ -169,11 +169,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		logger.debug( "loading stream" );
 		//context.loadStream( this );
 
-		List<String> data = null;
+		String rawdata = "";
 
-		String cmd = "describe -fmt %[name]p\\n%[project]Xp\\n%X[def_deliver_tgt]p\\n%[read_only]p\\n%[found_bls]Xp\\n%[master]p " + this;
+		String cmd = "describe -fmt %[name]p}{%[project]Xp}{%X[def_deliver_tgt]p}{%[read_only]p}{%[found_bls]Xp}{%[master]p " + this;
 		try {
-			data = Cleartool.run( cmd ).stdoutList;
+			rawdata = Cleartool.run( cmd ).stdoutBuffer.toString();
 		} catch( AbnormalProcessTerminationException e ) {
 			if( e.getMessage().matches( rx_stream_load ) ) {
 				//throw new UCMException( "The component \"" + this + "\", does not exist.", UCMType.LOAD_FAILED );
@@ -184,22 +184,23 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 		}
 
+		String[] data = rawdata.split( "\\}\\{" );
 		logger.debug( "I got: " + data );
 
 		/* Set project */
-		setProject( Project.get( data.get( 1 ) ) );
+		setProject( Project.get( data[1] ) );
 
 		/* Set default target, if exists */
-		if( !data.get( 2 ).trim().equals( "" ) ) {
+		if( !data[2].trim().equals( "" ) ) {
 			try {
-				setDefaultTarget( Stream.get( data.get( 2 ) ) );
+				setDefaultTarget( Stream.get( data[2].trim() ) );
 			} catch( Exception e ) {
 				logger.debug( "The Stream did not have a default target." );
 			}
 		}
 
 		/* Set read only */
-		if( data.get( 3 ).length() > 0 ) {
+		if( data[3].length() > 0 ) {
 			setReadOnly( true );
 		} else {
 			setReadOnly( false );
@@ -207,7 +208,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 		/* Set foundation baseline */
 		try {
-			String[] blss = data.get( 4 ).split( "\\s+" );
+			String[] blss = data[4].split( "\\s+" );
 			for( String bls : blss ) {
 				addFoundationBaseline( Baseline.get( bls ) );
 			}
@@ -217,7 +218,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		
 		/* Set mastership */
 		try {
-			String ms = data.get( 5 ).trim();
+			String ms = data[5].trim();
 			this.mastership = ms;
 		} catch( Exception e ) {
 			logger.warning( "Could not set mastership: " + e.getMessage() );
