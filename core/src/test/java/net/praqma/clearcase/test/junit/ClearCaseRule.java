@@ -24,28 +24,30 @@ public class ClearCaseRule extends Environment implements TestRule {
 	
 	protected String name;
 	protected String vobName;
-	protected String vobName1;
+	protected String uniqueName;
 	protected File setupFile;
 	
 	public ClearCaseRule( String name ) {
 		this.name = name;
-		this.vobName1 = name + "_" + Environment.getUniqueTimestamp();
+		this.uniqueName = name + "_" + Environment.getUniqueTimestamp();
 	}
 	
 	public ClearCaseRule( String name, String setupFile ) {
 		this.name = name;
-		this.vobName1 = name + "_" + Environment.getUniqueTimestamp();
+		this.uniqueName = name + "_" + Environment.getUniqueTimestamp();
 		this.setupFile = new File( Environment.class.getClassLoader().getResource( setupFile ).getFile() );
 	}
 	
 	public String getVobName() {
 		return vobName;
 	}
+	
+	public String getUniqueName() {
+		return uniqueName;
+	}
 
 	protected void before( String name ) throws Exception {
 		variables.put( "name", name );
-		//variables.put( "vobname", name );
-		//variables.put( "pvobname", name + "_PVOB" );
 		
 		this.vobName = name;
 		
@@ -53,6 +55,10 @@ public class ClearCaseRule extends Environment implements TestRule {
 			bootStrap( setupFile );
 		} else {
 			bootStrap();
+		}
+		
+		if( context.getVariable( "vobname" ) != null ) {
+			this.vobName = context.getVariable( "vobname" );
 		}
 	}
 
@@ -80,7 +86,7 @@ public class ClearCaseRule extends Environment implements TestRule {
 			return base;
 		}
 		
-		String thisVobName = vobName1;
+		String thisVobName = uniqueName;
 		
 		/* Test for ClearCase annotations */
 		
@@ -96,7 +102,7 @@ public class ClearCaseRule extends Environment implements TestRule {
 		if( description.getAnnotation( ClearCaseUniqueVobName.class ) != null ) {
 			ClearCaseUniqueVobName d = description.getAnnotation( ClearCaseUniqueVobName.class );
 			if( d.name().length() > 0 ) {
-				thisVobName = vobName1 + "-" + d.name();
+				thisVobName = uniqueName + "-" + d.name();
 			}
 		}
 		

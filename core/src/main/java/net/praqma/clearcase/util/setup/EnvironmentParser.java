@@ -86,6 +86,14 @@ public class EnvironmentParser extends XML {
 			}
 		}
 		
+		public String getVariable( String key ) {
+			if( variables.containsKey( key ) ) {
+				return variables.get( key ).value;
+			} else {
+				return null;
+			}
+		}
+		
 		public String getMvfs() {
 			return mvfs;
 		}
