@@ -84,7 +84,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 
 	protected Date date;
 
-	protected static transient DateFormat dateFormatter = new SimpleDateFormat( "yyyyMMdd.HHmmss" ); // 20060810.225810
+	public static final transient DateFormat dateFormatter = new SimpleDateFormat( "yyyyMMdd.HHmmss" ); // 20060810.225810
 
 	transient private String comment;
 

@@ -48,12 +48,14 @@ public class SetupUtils {
 		pvob.remove();
 		
 		/* For Jens' sake */
+		/*
 		try {
 			logger.debug( "Checking views: " + CommandLine.getInstance().run( "rgy_check -views" ).stdoutBuffer );
 		} catch( Exception e ) {
-			/* Because rgy_check returns 1 if anything stranded */
+			// Because rgy_check returns 1 if anything stranded
 			e.printStackTrace();
 		}
+		*/
 		
 		/*
 		try {

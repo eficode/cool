@@ -3,6 +3,7 @@ package net.praqma.clearcase;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
@@ -19,14 +20,12 @@ public class PVob extends Vob {
 	private String localPath;
 	private String globalPath;
 	
-	public static final String rx_format = "\\S+";
-
 	public PVob( String name ) {
 		super( name );
 
 		this.projectVob = true;
 	}
-
+	
 	public static PVob create( String name, String path, String comment ) throws CleartoolException, EntityAlreadyExistsException {
 		Vob.create( name, true, path, comment );
 		PVob pvob = new PVob( name );
@@ -50,7 +49,7 @@ public class PVob extends Vob {
 	}
 	
 	public Set<UCMView> getViews() throws CleartoolException {
-		String cmd = "lsstream -fmt %[views]p\\t -invob " + this;
+		String cmd = "lsstream -fmt {%[views]p} -invob " + this;
 		List<String> lines = null;
 		try {
 			lines = Cleartool.run( cmd ).stdoutList;
@@ -62,13 +61,21 @@ public class PVob extends Vob {
 		
 		Set<UCMView> views = new HashSet<UCMView>();
 		
-		for( String line : lines ) {
-			String[] tokens = line.split( "\\s+" );
-			for( String token : tokens ) {
-				try {
-					views.add( UCMView.getView( token.trim() ) );
-				} catch( ViewException e ) {
-					logger.warning( "Unable to get " + token + ": " + e.getMessage() );
+		for( String l : lines ) {
+			if( !l.matches( "^\\s*$" ) ) {
+				Matcher m = rx_find_component.matcher( l );
+				while( m.find() ) {
+					/* Don't include root-less components */
+					if( !m.group( 1 ).equals( "" ) ) {
+						String[] vs = m.group( 1 ).trim().split( "\\s+" );
+						for( String v : vs ) {
+							try {
+								views.add( UCMView.getView( v.trim() ) );
+							} catch( ViewException e ) {
+								logger.warning( "Unable to get " + m.group( 1 ) + ": " + e.getMessage() );
+							}
+						}
+					}
 				}
 			}
 		}
@@ -76,10 +83,11 @@ public class PVob extends Vob {
 		return views;
 	}
 	
-	public static final Pattern rx_find_vob = Pattern.compile( "" );
+	public static final Pattern rx_find_component = Pattern.compile( "\\{(.*?)\\}" );
+	public static final Pattern rx_find_vob = Pattern.compile( "^(.*?)" + Cool.filesep + "[\\S&&[^"+Cool.filesep+"]]+$" );
 	
 	public Set<Vob> getVobs() throws CleartoolException {
-		String cmd = "lscomp -fmt %[root_dir]p\\n -invob " + this;
+		String cmd = "lscomp -fmt {%[root_dir]p} -invob " + this;
 		List<String> list = null;
 		try {
 			list = Cleartool.run( cmd ).stdoutList;
@@ -89,13 +97,23 @@ public class PVob extends Vob {
 		
 		Set<Vob> vobs = new HashSet<Vob>();
 		
+		logger.debug( "OUT IS: " + list );
+		
 		for( String l : list ) {
 			if( !l.matches( "^\\s*$" ) ) {
-				String[] s = l.split( Pattern.quote( Cool.filesep ) );
-				try {
-					vobs.add( Vob.get( Cool.filesep + s[1] ) );
-				} catch( ArrayIndexOutOfBoundsException e ) {
-					logger.warning( l + " was not a VOB" );
+				Matcher m = rx_find_component.matcher( l );
+				while( m.find() ) {
+					/* Don't include root-less components */
+					if( !m.group( 1 ).equals( "" ) ) {
+						Matcher mvob = PVob.rx_find_vob.matcher( m.group( 1 ) );
+						if( mvob.find() ) {
+							try {
+								vobs.add( Vob.get( mvob.group( 1 ) ) );
+							} catch( ArrayIndexOutOfBoundsException e ) {
+								logger.warning( l + " was not a VOB" );
+							}
+						}
+					}
 				}
 			}
 		}

@@ -10,7 +10,7 @@ public class VariableTask extends AbstractTask {
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
 		String name = e.getAttribute( "name" );
-		String value = e.getAttribute( "value" );
+		String value = getValue( "value", e, context );
 		
 		context.put( name, value );
 	}

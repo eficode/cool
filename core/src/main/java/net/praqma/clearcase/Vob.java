@@ -8,9 +8,11 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
+import net.praqma.clearcase.exceptions.NotMountedException;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
+import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
 /**
  * Vob class represented by a fully qualified vob name, including \ or /<br>
@@ -31,8 +33,15 @@ public class Vob extends ClearCase implements Serializable {
 
 	protected String storageLocation = null;
 
+	public static final String rx_tag_format = "\\S+";
+
 	public Vob( String name ) {
 		this.name = name;
+	}
+	
+
+	public static boolean isValidTag( String tag ) {
+		return tag.matches( rx_tag_format );
 	}
 
 	public void load() throws CleartoolException {
@@ -72,10 +81,21 @@ public class Vob extends ClearCase implements Serializable {
 		}
 	}
 
-	public void mount() throws CleartoolException {
+	public void mount() throws NotMountedException {
 		logger.debug( "Mounting vob " + this );
 
 		String cmd = "mount " + this;
+		
+		/* Linux specifics 
+		 * TODO we should check if the vob IS private, otherwise we should create it ourselves */
+		if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
+			logger.debug( "Creating mount-over directory" );
+			File path = new File( this.getName() );
+			if( !path.exists() && !path.mkdirs() ) {
+				throw new NotMountedException( "Could not create mount-over directory" );
+			}
+		}
+		
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
@@ -84,7 +104,7 @@ public class Vob extends ClearCase implements Serializable {
 				return;
 			}
 
-			throw new CleartoolException( "Could not mount Vob " + this + ": " + e.getMessage() );
+			throw new NotMountedException( "Could not mount vob " + this, e );
 		}
 	}
 
@@ -124,11 +144,7 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public String getName() {
-		if( name.startsWith( "\\" ) || name.startsWith( "/" ) ) {
-			return name.substring( 1 );
-		} else {
-			return name;
-		}
+		return name;
 	}
 
 	public static Vob create( String name, String path, String comment ) throws CleartoolException, EntityAlreadyExistsException {

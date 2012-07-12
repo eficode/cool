@@ -86,6 +86,14 @@ public class EnvironmentParser extends XML {
 			}
 		}
 		
+		public String getVariable( String key ) {
+			if( variables.containsKey( key ) ) {
+				return variables.get( key ).value;
+			} else {
+				return null;
+			}
+		}
+		
 		public String getMvfs() {
 			return mvfs;
 		}
@@ -128,33 +136,52 @@ public class EnvironmentParser extends XML {
 		return parse( new HashMap<String, String>() );
 	}
 	
+	public static final String ENVIRONMENTS_TAG = "ccenvs";
+	public static final String ENVIRONMENT_TAG = "ccenv";
+	
 	public Context parse( Map<String, String> variables ) throws Exception {
 		
-		Element env = getRoot();
+		Element rootenv = getRoot();
 		
-		List<Element> elements = getElements( env );
+		List<Element> environments = new ArrayList<Element>();
+		
+		/* There are multiple environment tags, typically for including purposes */
+		if( rootenv.getTagName().equals( ENVIRONMENTS_TAG ) ) {
+			List<Element> envs = getElements( rootenv, ENVIRONMENT_TAG );
+			environments.addAll( envs );
+		} else {
+			environments.add( rootenv );
+		}
 		
 		Context context = new Context();
 		
-		insertVariables( context, variables );
-		
-		for( Element e : elements ) {
-			String tag = e.getTagName();
-			logger.verbose( "Parsing " + tag );
-			try {
-				if( tag != null && tag.length() > 0 ) {
-					map.get( tag ).parse( e, context );
-				} else {
-					logger.debug( "Not handling anonymous tags" );
+		/* For each environment */
+		for( Element environment : environments ) {
+			String ename = environment.getAttribute( "name" );
+			logger.verbose( "Parsing environment " + ename );
+			
+			List<Element> elements = getElements( environment );
+			
+			insertVariables( context, variables );
+			
+			for( Element e : elements ) {
+				String tag = e.getTagName();
+				logger.verbose( "Parsing <" + tag + ">" );
+				try {
+					if( tag != null && tag.length() > 0 ) {
+						map.get( tag ).parse( e, context );
+					} else {
+						logger.debug( "Not handling anonymous tags" );
+					}
+				} catch( ClearCaseException e1 ) {
+					ExceptionUtils.print( e1, System.out, true );
+					print( e, System.out );
+					throw e1;
+				} catch( Exception e1 ) {
+					logger.fatal( "Failed to parse: " + e1.getMessage() );
+					print( e, System.out );
+					throw e1;
 				}
-			} catch( ClearCaseException e1 ) {
-				ExceptionUtils.print( e1, System.out, true );
-				print( e, System.out );
-				throw e1;
-			} catch( Exception e1 ) {
-				logger.fatal( "Failed to parse: " + e1.getMessage() );
-				print( e, System.out );
-				throw e1;
 			}
 		}
 		

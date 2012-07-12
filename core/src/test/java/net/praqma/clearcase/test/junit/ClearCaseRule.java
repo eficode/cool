@@ -22,36 +22,45 @@ public class ClearCaseRule extends Environment implements TestRule {
 
 	protected Description testDescription;
 	
-	protected String name;
+	protected String baseName;
 	protected String vobName;
-	protected String vobName1;
+	protected String uniqueBaseName;
+	protected String uniqueName;
 	protected File setupFile;
 	
 	public ClearCaseRule( String name ) {
-		this.name = name;
-		this.vobName1 = name + "_" + Environment.getUniqueTimestamp();
+		this.baseName = name;
+		this.uniqueBaseName = name + "_" + Environment.getUniqueTimestamp();
 	}
 	
 	public ClearCaseRule( String name, String setupFile ) {
-		this.name = name;
-		this.vobName1 = name + "_" + Environment.getUniqueTimestamp();
+		this.baseName = name;
+		this.uniqueBaseName = name + "_" + Environment.getUniqueTimestamp();
 		this.setupFile = new File( Environment.class.getClassLoader().getResource( setupFile ).getFile() );
 	}
 	
 	public String getVobName() {
 		return vobName;
 	}
+	
+	public String getUniqueName() {
+		return uniqueName;
+	}
 
 	protected void before( String name ) throws Exception {
-		variables.put( "vobname", name );
-		variables.put( "pvobname", name + "_PVOB" );
+		variables.put( "name", name );
 		
 		this.vobName = name;
+		this.uniqueName = name;
 		
 		if( setupFile != null ) {
 			bootStrap( setupFile );
 		} else {
 			bootStrap();
+		}
+		
+		if( context.getVariable( "vobname" ) != null ) {
+			this.vobName = context.getVariable( "vobname" );
 		}
 	}
 
@@ -79,15 +88,14 @@ public class ClearCaseRule extends Environment implements TestRule {
 			return base;
 		}
 		
-		String thisVobName = vobName1;
-		
 		/* Test for ClearCase annotations */
+		String uniqueName = this.uniqueBaseName;
 		
 		/* Set an explicit vob name */
 		if( description.getAnnotation( ClearCaseFullVobName.class ) != null ) {
 			ClearCaseFullVobName d = description.getAnnotation( ClearCaseFullVobName.class );
 			if( d.name().length() > 0 ) {
-				thisVobName = d.name();
+				uniqueName = d.name();
 			}
 		}
 		
@@ -95,11 +103,11 @@ public class ClearCaseRule extends Environment implements TestRule {
 		if( description.getAnnotation( ClearCaseUniqueVobName.class ) != null ) {
 			ClearCaseUniqueVobName d = description.getAnnotation( ClearCaseUniqueVobName.class );
 			if( d.name().length() > 0 ) {
-				thisVobName = vobName1 + "-" + d.name();
+				uniqueName = uniqueName + "-" + d.name();
 			}
 		}
 		
-		final String theVobName = thisVobName;
+		final String theUniqueName = uniqueName;
 		
 		return new Statement() {
 						
@@ -110,7 +118,7 @@ public class ClearCaseRule extends Environment implements TestRule {
 				String o = t.getName();
 				t.setName( "Executing " + testDescription.getDisplayName() );
 				System.out.println( " ===== Setting up ClearCase =====" );
-				before( theVobName );
+				before( theUniqueName );
 				try {
 					System.out.println( " ===== Running test: " + testDescription.getDisplayName() + " [" + testDescription.getMethodName() + "] =====" );
 					base.evaluate();

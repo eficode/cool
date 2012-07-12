@@ -32,10 +32,10 @@ public class BaselineTest {
 	
 	@Test
 	public void testCreateBaseline() throws Exception {
-		String viewtag = ccenv.getVobName() + "_one_int";
+		String viewtag = ccenv.getUniqueName() + "_one_int";
 		System.out.println( "VIEW: " + ccenv.context.views.get( viewtag ) );
 		//File path = new File( context.views.get( viewtag ).getPath() );
-		File path = new File( ccenv.context.mvfs + "/" + ccenv.getVobName() + "_one_int/" + ccenv.getVobName() );
+		File path = new File( ccenv.context.mvfs + "/" + viewtag + "/" + ccenv.getVobName() );
 		
 		System.out.println( "PATH: " + path );
 		

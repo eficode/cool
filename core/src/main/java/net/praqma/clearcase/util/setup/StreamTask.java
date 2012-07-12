@@ -21,7 +21,7 @@ public class StreamTask extends AbstractTask {
 		boolean integration = e.getAttribute( "type" ).equals( "integration" );
 		String comment = getComment( e, context );
 		String in = getValue( "in", e, context, null );
-		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
+		PVob pvob = new PVob( getValue( "pvob", e, context ) );
 		boolean readonly = getValue( "readonly", e, context ).length() > 0;
 		
 		if( in == null ) {
@@ -34,7 +34,7 @@ public class StreamTask extends AbstractTask {
 			Element c = getFirstElement( e, "baselines" );
 			baselines = new ArrayList<Baseline>();
 			for( Element baseline : getElements( c ) ) {
-				PVob bpvob = new PVob( Cool.filesep + getValue( "pvob", baseline, context ) );
+				PVob bpvob = new PVob( getValue( "pvob", baseline, context ) );
 				baselines.add( Baseline.get( baseline.getAttribute( "name" ), bpvob ) );
 			}
 		} catch( Exception e1 ) {

@@ -17,7 +17,7 @@ public class FolderTask extends AbstractTask {
 	public void parse( Element e, Context context ) throws ClearCaseException {
 		String name = getValue( "name", e, context );
 		String in = e.getAttribute( "in" );
-		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
+		PVob pvob = new PVob( getValue( "pvob", e, context ) );
 		String comment = UCMEntity.getargComment( e.getAttribute( "comment" ) );
 		
 		Folder.create( name, pvob, in, comment );

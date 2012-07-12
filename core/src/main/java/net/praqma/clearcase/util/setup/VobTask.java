@@ -1,6 +1,5 @@
 package net.praqma.clearcase.util.setup;
 
-import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -18,7 +17,8 @@ public class VobTask extends AbstractTask {
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
 		boolean ucm = e.getAttribute( "ucmproject" ).length() > 0;
-		String tag = Cool.filesep + getValue( "tag", e, context );
+		String store = getValue( "storetag", e, context, null );
+		String tag = getTag( e, context );
 		String location = e.getAttribute( "stgloc" );
 		boolean mount = e.getAttribute( "mounted" ).length() > 0;
 		
@@ -62,6 +62,11 @@ public class VobTask extends AbstractTask {
 				vob.load();
 			}
 			
+		}
+		
+		/* Store */
+		if( store != null ) {
+			context.put( store, tag );
 		}
 		
 	}

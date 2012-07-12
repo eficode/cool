@@ -30,7 +30,7 @@ public class DeliverMergeError {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver", "setup-no-baselines.xml" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-merge", "setup-no-baselines.xml" );
 	
 	@Test
 	public void mergeError() throws ClearCaseException {
@@ -38,13 +38,13 @@ public class DeliverMergeError {
 		Stream target = ccenv.context.streams.get( "one_int" );
 		
 		/* Integration */
-		String tviewtag = ccenv.getVobName() + "_one_int";
+		String tviewtag = ccenv.getUniqueName() + "_one_int";
 		File tpath = ccenv.setDynamicActivity( target, tviewtag, "strict-deliver" );
 		Baseline tb = getNewBaseline( tpath, "merge.txt", "one" );
 		target.recommendBaseline( tb );
 		
 		/* Development */
-		String viewtag = ccenv.getVobName() + "_one_dev";
+		String viewtag = ccenv.getUniqueName() + "_one_dev";
 		File path = ccenv.setDynamicActivity( source, viewtag, "strict-deliver-dev" );
 		Baseline b = getNewBaseline( path, "merge.txt", "two" );
 				

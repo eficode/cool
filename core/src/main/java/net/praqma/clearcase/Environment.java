@@ -49,7 +49,6 @@ public class Environment {
 	}
 	
 	public Environment() {
-		logger.verbose( "Constructor" );
 		viewPath = new File( System.getProperty( "viewpath", "views" ) );
 	}
 	

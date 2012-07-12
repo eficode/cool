@@ -24,7 +24,7 @@ public class BaselineTask extends AbstractTask {
 		String label = e.getAttribute( "label" );
 		String identical = e.getAttribute( "identical" );
 		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;
-		PVob pvob = new PVob( Cool.filesep + getValue( "pvob", e, context ) );
+		PVob pvob = new PVob( getValue( "pvob", e, context ) );
 		Component component = Component.get( e.getAttribute( "component" ), pvob );
 		
 		List<Component> components = null;
@@ -32,7 +32,7 @@ public class BaselineTask extends AbstractTask {
 			Element c = getFirstElement( e, "dependencies" );
 			components = new ArrayList<Component>();
 			for( Element c2 : getElements( c ) ) {
-				PVob bpvob = new PVob( Cool.filesep + getValue( "pvob", c2, context ) );
+				PVob bpvob = new PVob( getValue( "pvob", c2, context ) );
 				components.add( Component.get( c2.getAttribute( "name" ), bpvob ) );
 			}
 		} catch( Exception e1 ) {

@@ -39,11 +39,11 @@ public class DeliverInProgress {
 		Stream target = ccenv.context.streams.get( "one_int" );
 		
 		/* Target */
-		String tviewtag = ccenv.getVobName() + "_one_int";
+		String tviewtag = ccenv.getUniqueName() + "_one_int";
 		File tpath = new File( ccenv.context.mvfs + "/" + tviewtag + "/" + ccenv.getVobName() );
 		
 		/* Set deliver one up */
-		String d1viewtag = ccenv.getVobName() + "_one_dev";
+		String d1viewtag = ccenv.getUniqueName() + "_one_dev";
 		File d1path = ccenv.setDynamicActivity( dev1, d1viewtag, "dip1" );
 		Baseline bl1 = getNewBaseline( d1path, "dip1.txt", "dip1" );
 		
@@ -52,7 +52,7 @@ public class DeliverInProgress {
 		deliver1.deliver( true, false, true, false );
 		
 		/* Set deliver two up */
-		String d2viewtag = ccenv.getVobName() + "_two_dev";
+		String d2viewtag = ccenv.getUniqueName() + "_two_dev";
 		File d2path = ccenv.setDynamicActivity( dev2, d2viewtag, "dip2" );
 		Baseline bl2 = getNewBaseline( d2path, "dip2.txt", "dip2" );
 		

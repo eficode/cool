@@ -38,7 +38,7 @@ public class DeliverTest {
 		Stream source = ccenv.context.streams.get( "one_dev" );
 		Stream target = ccenv.context.streams.get( "one_int" );
 		
-		String tviewtag = ccenv.getVobName() + "_one_int";
+		String tviewtag = ccenv.getUniqueName() + "_one_int";
 		File tpath = new File( ccenv.context.mvfs + "/" + tviewtag + "/" + ccenv.getVobName() );
 		
 		Baseline b = getNewBaseline( path, "f.txt", "one" );
@@ -65,7 +65,7 @@ public class DeliverTest {
 		Stream source = ccenv.context.streams.get( "one_dev" );
 		Stream target = ccenv.context.streams.get( "one_int" );
 		
-		String tviewtag = ccenv.getVobName() + "_one_int";
+		String tviewtag = ccenv.getUniqueName() + "_one_int";
 		File tpath = new File( ccenv.context.mvfs + "/" + tviewtag + "/" + ccenv.getVobName() );
 		
 		Baseline b = getNewBaseline( path, "basic-split.txt", "two" );
@@ -90,7 +90,7 @@ public class DeliverTest {
 		Stream target = ccenv.context.streams.get( "one_int" );
 		
 		/* Target */
-		String tviewtag = ccenv.getVobName() + "_one_int";
+		String tviewtag = ccenv.getUniqueName() + "_one_int";
 		File tpath = new File( ccenv.context.mvfs + "/" + tviewtag + "/" + ccenv.getVobName() );
 		
 		/* Set deliver one up */
@@ -130,7 +130,7 @@ public class DeliverTest {
 	
 	protected File setActivity( String name ) throws ClearCaseException {
 		/**/
-		String viewtag = ccenv.getVobName() + "_one_dev";
+		String viewtag = ccenv.getUniqueName() + "_one_dev";
 		System.out.println( "VIEW: " + ccenv.context.views.get( viewtag ) );
 		File path = new File( ccenv.context.mvfs + "/" + viewtag + "/" + ccenv.getVobName() );
 				
