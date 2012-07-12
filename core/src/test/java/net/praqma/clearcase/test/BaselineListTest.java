@@ -99,7 +99,7 @@ public class BaselineListTest {
 			/* Try anyway */
 		}
 		
-		String viewtag = ccenv.getVobName() + "_one_int";
+		String viewtag = ccenv.getUniqueName() + "_one_int";
 		System.out.println( "VIEW: " + ccenv.context.views.get( viewtag ) );
 		File path = new File( ccenv.context.mvfs + "/" + ccenv.getUniqueName() + "_one_int/" + ccenv.getVobName() );
 		

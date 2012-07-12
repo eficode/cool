@@ -143,10 +143,10 @@ public class TestStream {
 	@Test
 	public void testRecommendBaseline() throws Exception {
 		
-		String viewtag = ccenv.getVobName() + "_one_int";
+		String viewtag = ccenv.getUniqueName() + "_one_int";
 		System.out.println( "VIEW: " + ccenv.context.views.get( viewtag ) );
 		//File path = new File( context.views.get( viewtag ).getPath() );
-		File path = new File( ccenv.context.mvfs + "/" + ccenv.getVobName() + "_one_int/" + ccenv.getVobName() );
+		File path = new File( ccenv.context.mvfs + "/" + ccenv.getUniqueName() + "_one_int/" + ccenv.getVobName() );
 		
 		Stream stream = Stream.get( "one_int", ccenv.getPVob() );
 		
@@ -167,7 +167,7 @@ public class TestStream {
 	@Test
 	public void testLatestBaselines() throws Exception {
 		
-		String viewtag = ccenv.getVobName() + "_one_int";
+		String viewtag = ccenv.getUniqueName() + "_one_int";
 		System.out.println( "VIEW: " + ccenv.context.views.get( viewtag ) );
 		//File path = new File( context.views.get( viewtag ).getPath() );
 		File path = new File( ccenv.context.mvfs + "/" + ccenv.getVobName() + "_one_int/" + ccenv.getVobName() );

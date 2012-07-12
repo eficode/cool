@@ -38,13 +38,13 @@ public class DeliverTestStrict {
 		Stream target = ccenv.context.streams.get( "one_int" );
 		
 		/* Integration */
-		String tviewtag = ccenv.getVobName() + "_one_int";
+		String tviewtag = ccenv.getUniqueName() + "_one_int";
 		File tpath = ccenv.setDynamicActivity( target, tviewtag, "strict-deliver" );
 		Baseline tb = getNewBaseline( tpath, "strict-deliver.txt", "one" );
 		target.recommendBaseline( tb );
 		
 		/* Development */
-		String viewtag = ccenv.getVobName() + "_one_dev";
+		String viewtag = ccenv.getUniqueName() + "_one_dev";
 		File path = ccenv.setDynamicActivity( source, viewtag, "strict-deliver-dev" );
 		Baseline b = getNewBaseline( path, "strict-deliver-dev.txt", "two" );
 				

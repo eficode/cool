@@ -41,7 +41,7 @@ public class Deliver6391 {
 		Stream modifiable_int = ccenv.context.streams.get( "one_int" );
 		
 		/* Integration */
-		String nmviewtag = ccenv.getVobName() + "_two_int";
+		String nmviewtag = ccenv.getUniqueName() + "_two_int";
 		File nmpath = ccenv.getDynamicPath( nmviewtag );
 		
 		/* Rebase dev to new baseline */
@@ -52,7 +52,7 @@ public class Deliver6391 {
 		cfg.add( client_bl );
 		cfg.add( service_bl );
 		cfg.add( model_bl );
-		String devviewtag = ccenv.getVobName() + "_two_dev";
+		String devviewtag = ccenv.getUniqueName() + "_two_dev";
 		Rebase rebase = new Rebase( dev, new UCMView( "", devviewtag ), cfg );
 		rebase.rebase( true );
 		dev.generate();

@@ -38,13 +38,13 @@ public class NoInterprojectDeliver {
 		Stream source = ccenv.context.streams.get( "one_int" );
 		
 		/* One */
-		String viewtag = ccenv.getVobName() + "_one_int";
+		String viewtag = ccenv.getUniqueName() + "_one_int";
 		File path = ccenv.setDynamicActivity( source, viewtag, "interproject-deliver-one" );
 		Baseline b = getNewBaseline( path, "interproject-deliver.txt", "one" );
 		source.recommendBaseline( b );
 		
 		/* Two */
-		String tviewtag = ccenv.getVobName() + "_two_int";
+		String tviewtag = ccenv.getUniqueName() + "_two_int";
 		File tpath = ccenv.getDynamicPath( tviewtag );
 				
 		Deliver deliver = new Deliver( b, source, target, tpath, tviewtag );

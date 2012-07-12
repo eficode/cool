@@ -39,10 +39,10 @@ public class DeliverRebaseError {
 		Stream target = ccenv.context.streams.get( "one_int" );
 		
 		/* Target */
-		String tviewtag = ccenv.getVobName() + "_one_int";
+		String tviewtag = ccenv.getUniqueName() + "_one_int";
 		File tpath = new File( ccenv.context.mvfs + "/" + tviewtag + "/" + ccenv.getVobName() );
 		
-		String viewtag = ccenv.getVobName() + "_one_dev";
+		String viewtag = ccenv.getUniqueName() + "_one_dev";
 		
 		Baseline latest = ccenv.context.baselines.get( "model-3" );
 
@@ -71,7 +71,7 @@ public class DeliverRebaseError {
 	
 	protected File setActivity( String name ) throws ClearCaseException {
 		/**/
-		String viewtag = ccenv.getVobName() + "_one_dev";
+		String viewtag = ccenv.getUniqueName() + "_one_dev";
 		System.out.println( "VIEW: " + ccenv.context.views.get( viewtag ) );
 		File path = new File( ccenv.context.mvfs + "/" + viewtag + "/" + ccenv.getVobName() );
 				

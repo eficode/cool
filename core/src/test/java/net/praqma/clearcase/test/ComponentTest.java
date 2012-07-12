@@ -22,7 +22,7 @@ public class ComponentTest {
 	
 	@Test
 	public void testCreate() throws Exception {
-		File view = new File( ccenv.context.mvfs + "/" + ccenv.getVobName() + "_one_int/" + ccenv.getVobName() );
+		File view = new File( ccenv.context.mvfs + "/" + ccenv.getUniqueName() + "_one_int/" + ccenv.getVobName() );
 		Component mycomp = Component.create( "new-component", ccenv.getPVob(), "Praqma", "my comment", view );
 		
 		assertNotNull( mycomp );
