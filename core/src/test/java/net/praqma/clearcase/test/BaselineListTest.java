@@ -92,6 +92,13 @@ public class BaselineListTest {
 		
 		logger.debug( "Date " + net.praqma.clearcase.ucm.entities.UCMEntity.dateFormatter.format( date ) );
 		
+		/* We need to make sure the baseline is created at least one second after the date */
+		try {
+			Thread.sleep( 1000 );
+		} catch( InterruptedException e1 ) {
+			/* Try anyway */
+		}
+		
 		String viewtag = ccenv.getVobName() + "_one_int";
 		System.out.println( "VIEW: " + ccenv.context.views.get( viewtag ) );
 		File path = new File( ccenv.context.mvfs + "/" + ccenv.getUniqueName() + "_one_int/" + ccenv.getVobName() );
