@@ -33,7 +33,7 @@ public class ComponentTest {
 	public void testGetRootDir() throws Exception {
 		Component model = ccenv.context.components.get( "Model" );
 		
-		String root = new File( "/" + ccenv.getVobName() + "/" + "Model" ).getPath();
+		String root = new File( ccenv.getVobName() + "/" + "Model" ).getPath();
 		System.out.println( "---->ROOT: " + ccenv.getVobName() );
 		System.out.println( "---->ROOT: " + root );
 		assertEquals( root, model.getRootDir() );
