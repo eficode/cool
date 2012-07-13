@@ -118,11 +118,11 @@ public class EnvironmentParser extends XML {
 	}
 	
 	public EnvironmentParser( File file ) throws IOException {
-		super( file );
+		super( file, true );
 	}
 	
 	public EnvironmentParser( String xml ) throws IOException {
-		super( new ByteArrayInputStream( xml.getBytes() ) );
+		super( new ByteArrayInputStream( xml.getBytes() ), true );
 	}
 	
 	private void insertVariables( Context context, Map<String, String> variables ) {
