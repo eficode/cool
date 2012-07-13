@@ -60,7 +60,7 @@ public class SnapshotView extends UCMView {
 	private final String rx_ctr_file = ".*\\.contrib";
 	private final String rx_keep_file = ".*\\.keep$";
 	
-	public static String VIEW_DOT_DAT_FILE = "view.dat";
+	public static String VIEW_DOT_DAT_FILE = ".view.dat";
 	
 	static {
 		if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
@@ -198,7 +198,7 @@ public class SnapshotView extends UCMView {
 		File viewdat = new File( dir + File.separator + VIEW_DOT_DAT_FILE );
 
 		if( viewdat.exists() ) {
-			throw new IOException( "view.dat file already exist. No need for regenrating." );
+			throw new IOException( VIEW_DOT_DAT_FILE + " file already exist. No need for regenrating." );
 		}
 
 		String cmd = "lsview -l " + viewtag;
@@ -239,14 +239,14 @@ public class SnapshotView extends UCMView {
 			fos.write( ( "ws_oid:00000000000000000000000000000000 view_uuid:" + uuid ).getBytes() );
 			fos.close();
 		} catch( IOException e ) {
-			throw new IOException( "Could not create view.dat", e );
+			throw new IOException( "Could not create " + VIEW_DOT_DAT_FILE, e );
 		}
 
 		/* TODO Too much windows.... */
 		// cmd = "attrib +h +r " + viewdat;
 		if( !viewdat.setReadOnly() ) {
-			logger.warning( "Could not set view.dat as read only" );
-			throw new IOException( "Could not set view.dat as read only" );
+			logger.warning( "Could not set " + VIEW_DOT_DAT_FILE + " as read only" );
+			throw new IOException( "Could not set " + VIEW_DOT_DAT_FILE + " as read only" );
 		}
 		// viewdat.set
 		// Command.run( cmd );
