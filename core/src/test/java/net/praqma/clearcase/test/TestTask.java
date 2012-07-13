@@ -159,4 +159,32 @@ public class TestTask extends TestCase {
 		
 		assertEquals( "pvob10101", c.variables.get( "pvobname" ).value );
 	}
+	
+	
+	@Test
+	public void testGetBoolean() throws ClearCaseException {
+		XML xml = new XML( "root" );
+		Element test = xml.addElement( "test" );
+		
+		test.setAttribute( "b1", "on" );
+		test.setAttribute( "b2", "off" );
+		test.setAttribute( "b3", "false" );
+		test.setAttribute( "b4", "other" );
+		
+		BaselineTask bt = new BaselineTask();
+		
+		Context context = new Context();
+		
+		Boolean b = bt.getBoolean( "b1", test, context, false );
+		assertTrue( b );
+		
+		Boolean b2 = bt.getBoolean( "b2", test, context, true );
+		assertFalse( b2 );
+		
+		Boolean b3 = bt.getBoolean( "b3", test, context, true );
+		assertFalse( b3 );
+		
+		Boolean b4 = bt.getBoolean( "b4", test, context, false );
+		assertTrue( b4 );
+	}
 }

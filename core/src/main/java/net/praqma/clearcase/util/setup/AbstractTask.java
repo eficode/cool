@@ -74,6 +74,37 @@ public abstract class AbstractTask {
 		return value.length() > 0 ? value : def;
 	}
 	
+	public boolean getBoolean( String name, Element e, Context context, boolean def ) {
+		String value = e.getAttribute( name );
+		
+		value = parseField( value, context );
+		
+		boolean result = def;
+		
+		if( value.length() == 0 ) {
+			result = false;
+		} else {
+			if( value.matches( "^(?i)off|false$" ) ) {
+				result = false;
+			} else {
+				result = true;
+			}
+		}
+		
+		return result;
+	}
+	
+	public String parseField( String value, Context context ) {
+		Matcher m = rx_variable.matcher( value );
+
+		while( m.find() ) {
+			String var = context.variables.get( m.group( 2 ) ).value;			
+			value = value.replace( m.group( 1 ), var );
+		}
+		
+		return value;
+	}
+	
 	public String getComment( Element e, Context context ) {
 		String comment = getValue( "comment", e, context );
 		return comment.length() > 0 ? comment : null;
