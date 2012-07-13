@@ -66,6 +66,8 @@ public class SnapshotView extends UCMView {
 		if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
 			VIEW_DOT_DAT_FILE = ".view.dat";
 		}
+		
+		System.out.println( "VIEW DOT DAT FILE: " + VIEW_DOT_DAT_FILE );
 	}
 		 
 
