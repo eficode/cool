@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.cleartool.Cleartool;
@@ -34,6 +35,7 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
+import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 import net.praqma.util.io.IO;
 import net.praqma.util.structure.Printer;
 import net.praqma.util.structure.Tuple;
@@ -57,6 +59,15 @@ public class SnapshotView extends UCMView {
 	private final String rx_co_file = ".*CHECKEDOUT$";
 	private final String rx_ctr_file = ".*\\.contrib";
 	private final String rx_keep_file = ".*\\.keep$";
+	
+	public static String VIEW_DOT_DAT_FILE = "view.dat";
+	
+	static {
+		if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
+			VIEW_DOT_DAT_FILE = ".view.dat";
+		}
+	}
+		 
 
 	private File viewroot = null;
 
@@ -182,7 +193,7 @@ public class SnapshotView extends UCMView {
 	public static void regenerateViewDotDat( File dir, String viewtag ) throws IOException, UnableToListViewsException {
 		logger.debug( dir + ", " + viewtag );
 
-		File viewdat = new File( dir + File.separator + "view.dat" );
+		File viewdat = new File( dir + File.separator + VIEW_DOT_DAT_FILE );
 
 		if( viewdat.exists() ) {
 			throw new IOException( "view.dat file already exist. No need for regenrating." );
@@ -294,7 +305,7 @@ public class SnapshotView extends UCMView {
 	public static String viewrootIsValid( File viewroot ) throws IOException, CleartoolException, ViewException {
 		logger.debug( viewroot.getAbsolutePath() );
 
-		File viewdotdatpname = new File( viewroot + File.separator + "view.dat" );
+		File viewdotdatpname = new File( viewroot + File.separator + VIEW_DOT_DAT_FILE );
 
 		logger.debug( "The view file = " + viewdotdatpname );
 
@@ -475,7 +486,7 @@ public class SnapshotView extends UCMView {
 					notVobs.add( f );
 				}
 			} else {
-				if( f.getName().equalsIgnoreCase( "view.dat" ) ) {
+				if( f.getName().equalsIgnoreCase( VIEW_DOT_DAT_FILE ) ) {
 					continue;
 				}
 				rootVPFiles.add( f );
