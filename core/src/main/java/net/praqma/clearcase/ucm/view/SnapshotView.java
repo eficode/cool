@@ -60,14 +60,12 @@ public class SnapshotView extends UCMView {
 	private final String rx_ctr_file = ".*\\.contrib";
 	private final String rx_keep_file = ".*\\.keep$";
 	
-	public static String VIEW_DOT_DAT_FILE = ".view.dat";
+	public static String VIEW_DOT_DAT_FILE = "view.dat";
 	
 	static {
 		if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
 			VIEW_DOT_DAT_FILE = ".view.dat";
 		}
-		
-		System.out.println( "VIEW DOT DAT FILE: " + VIEW_DOT_DAT_FILE );
 	}
 		 
 
