@@ -3,7 +3,7 @@
 	<groupId>net.praqma</groupId>
 	<artifactId>coolness</artifactId>
 	<packaging>pom</packaging>
-	<version>0.6.0-SNAPSHOT</version>
+	<version>0.6.0</version>
 	<name>ClearCase Oriented Open Library</name>
 	<url>http://maven.apache.org</url>
 	
