@@ -167,22 +167,22 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	
 	public Version load() throws UnableToLoadEntityException {
 		try {
-			String cmd = "describe -fmt %u\\n%Vn\\n%Xn\\n%[object_kind]p \"" + this + "\"";
-			List<String> list = Cleartool.run( cmd ).stdoutList;
+			String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + this + "\"";
+			String[] list = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\}\\{" );
 
 			/* First line, user */
-			setUser( list.get( 0 ) );
+			setUser( list[0] );
 
 			/* Second line, version name */
-			String vn = list.get( 1 );
+			String vn = list[1];
 
 			/* Third line, version extended name */
-			String ven = list.get( 2 );
+			String ven = list[2];
 			Matcher m = rx_extendedName.matcher( ven );
 
-			if( list.get( 3 ).equals( "file element" ) ) {
+			if( list[3].equals( "file element" ) ) {
 				setKind( Kind.FILE_ELEMENT );
-			} else if( list.get( 3 ).equals( "directory version" ) ) {
+			} else if( list[3].equals( "directory version" ) ) {
 				setKind( Kind.DIRECTORY_ELEMENT );
 			}
 
