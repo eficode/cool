@@ -96,12 +96,9 @@ public class SnapshotView extends UCMView {
 				logger.debug( "All components" );
 
 				List<Baseline> bls = view.stream.getLatestBaselines();
-				logger.debug( "[LATEST] " + bls );
 				for( Baseline b : bls ) {
 					String rule = b.load().getComponent().getRootDir();
-					logger.debug( "RULE(1) " + rule );
 					rule = rule.replaceFirst( "^[\\\\/]", " " );
-					logger.debug( "RULE(2) " + rule );
 					loadRules += rule;
 				}
 			} else {
@@ -111,7 +108,7 @@ public class SnapshotView extends UCMView {
 				List<Component> comps = project.getModifiableComponents();
 				for( Component c : comps ) {
 					String rule = c.getRootDir();
-					rule = rule.replaceFirst( "^\\\\", " " );
+					rule = rule.replaceFirst( "^\\\\/", " " );
 					loadRules += rule;
 				}
 			}
