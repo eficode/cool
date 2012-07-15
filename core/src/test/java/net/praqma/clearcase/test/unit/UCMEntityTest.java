@@ -5,7 +5,7 @@ import net.praqma.clearcase.ucm.entities.Component;
 
 import org.junit.Test;
 
-public class UCMEntity {
+public class UCMEntityTest {
 
 	@Test
 	public void testInitialize() throws UnableToInitializeEntityException {

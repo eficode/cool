@@ -70,7 +70,8 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 
 	private static final Pattern rx_findAddedElements = Pattern.compile( qfs + ".*?" + qfs + "(\\d+)" + qfs + "(.*?)" + qfs );
-	private static final Pattern rx_findRevision = Pattern.compile( qfs + "(\\d+)$" );
+	//private static final Pattern rx_findRevision = Pattern.compile( qfs + "(\\d+)$" );
+	private static final Pattern rx_findRevision = Pattern.compile( "^(.*?)" + qfsor + "(\\d+)$" );
 
 	@Override
 	protected void initialize() {
@@ -115,13 +116,18 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		}
 
 		this.file = new File( this.fullfile );
-		
-		Matcher r = rx_findRevision.matcher( fqname );
+		Matcher r = rx_findRevision.matcher( this.version );
 		if( r.find() ) {
-			this.revision = Integer.parseInt( r.group(1) );
+			this.revision = Integer.parseInt( r.group(2) );
 			if( this.revision == 1 ) {
 				this.status = Status.ADDED;
 			}
+			
+			/* Set the branch */
+			this.branch = r.group( 1 );
+			
+			logger.debug( "REVISION: " + revision );
+			logger.debug( "BRANCH: " + branch );
 		}
 	}
 
@@ -159,11 +165,12 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 
 	public String getVersion() throws UnableToLoadEntityException {
-		if( !loaded ) load();
-
 		return this.version;
 	}
 
+	public String getBranch() {
+		return branch;
+	}
 	
 	public Version load() throws UnableToLoadEntityException {
 		try {
@@ -705,8 +712,24 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
-		//return context.getBaselineDiff( d1, d2, merge, viewContext );
-		String cmd = "diffbl -version -act " + ( !merge ? "-nmerge " : "" ) + ( d2 == null ? "-pre " : "" ) + d1.getFullyQualifiedName() + ( d2 != null ? " " + d2.getFullyQualifiedName() : "" );
+		return getBaselineDiff( d1, d2, merge, viewContext, true );
+	}
+	
+	/**
+	 * Activity based baseline diff method
+	 * @param d1
+	 * @param d2
+	 * @param merge
+	 * @param viewContext
+	 * @param versions
+	 * @return
+	 * @throws CleartoolException
+	 * @throws UnableToLoadEntityException
+	 * @throws UCMEntityNotFoundException
+	 * @throws UnableToInitializeEntityException
+	 */
+	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext, boolean versions ) throws CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
+		String cmd = "diffbl " + ( versions ? "-versions " : "" ) + " -activities " + ( !merge ? "-nmerge " : "" ) + ( d2 == null ? "-pre " : "" ) + d1.getFullyQualifiedName() + ( d2 != null ? " " + d2.getFullyQualifiedName() : "" );
 
 		List<String> lines = null;
 		
@@ -715,6 +738,8 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Could not get difference between " + d1.getFullyQualifiedName() + " and " + d2.getFullyQualifiedName() + ": " + e.getMessage(), e );
 		}
+		
+		logger.debug( "LINES: " + lines );
 		
 		return Activity.parseActivityStrings( lines, viewContext.getAbsoluteFile().toString().length() );
 	}
@@ -745,5 +770,9 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		} catch( Exception ex ) {
 			logger.warning( ex.getMessage() );
 		}
+	}
+	
+	public static Version getVersion( String version ) throws UnableToInitializeEntityException {
+		return (Version) UCMEntity.getEntity( Version.class, version );
 	}
 }

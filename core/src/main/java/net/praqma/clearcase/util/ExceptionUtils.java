@@ -13,10 +13,11 @@ public abstract class ExceptionUtils {
 		
 		if( e instanceof ClearCaseException ) {
 			((ClearCaseException)e).print( out );
+		} else {
+			out.println( e.getMessage() );
 		}
 		
 		if( e.getCause() != null ) {
-			out.println( e.getMessage() );
 			print( e.getCause(), out, stack );
 		} else {
 			if( stack ) { 
@@ -31,10 +32,11 @@ public abstract class ExceptionUtils {
 		
 		if( e instanceof ClearCaseException ) {
 			((ClearCaseException)e).log();
+		} else {
+			logger.warning( e.getMessage() );
 		}
 		
 		if( e.getCause() != null ) {
-			logger.warning( e.getMessage() );
 			log( e.getCause(), stack );
 		} else {
 			if( stack ) { 

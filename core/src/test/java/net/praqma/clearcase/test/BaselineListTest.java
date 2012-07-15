@@ -5,7 +5,7 @@ import java.util.Date;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
-import net.praqma.clearcase.test.unit.UCMEntity;
+import net.praqma.clearcase.test.unit.UCMEntityTest;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Stream;
