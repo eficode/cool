@@ -24,7 +24,7 @@ public class PVobTest {
 		assertTrue( Vob.isValidTag( unixName1 ) );
 		assertTrue( Vob.isValidTag( unixName2 ) );
 	}
-	
+	/*
 	@Test
 	public void namingFindVob() {
 		String windowsName = "\\mypvob\\comp1";
@@ -59,4 +59,5 @@ public class PVobTest {
 			}
 		}
 	}
+	*/
 }
