@@ -510,6 +510,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	public Project getProject() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return this.project;
 	}
 	
