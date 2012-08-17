@@ -116,51 +116,70 @@ public class Project extends UCMEntity implements StreamContainable {
 
 	public static String getPolicy( int policy ) {
 		tracer.entering(Project.class.getSimpleName(), "getPolicy", policy);
-		
+
+		tracer.finest("Aquering policies...");
 		String p = "";
 		if( ( policy & POLICY_INTERPROJECT_DELIVER ) > 0 ) {
-			
 			p += "POLICY_INTERPROJECT_DELIVER,";
+
+			tracer.finest("Policy added: POLICY_INTERPROJECT_DELIVER");
 		}
 
 		if( ( policy & POLICY_CHSTREAM_UNRESTRICTED ) > 0 ) {
 			p += "POLICY_CHSTREAM_UNRESTRICTED,";
+			tracer.finest("Policy added: POLICY_CHSTREAM_UNRESTRICTED");
 		}
 
 		if( ( policy & POLICY_DELIVER_REQUIRE_REBASE ) > 0 ) {
 			p += "POLICY_DELIVER_REQUIRE_REBASE,";
+			tracer.finest("Policy added: POLICY_DELIVER_REQUIRE_REBASE");
 		}
 
 		if( ( policy & POLICY_DELIVER_NCO_DEVSTR ) > 0 ) {
 			p += "POLICY_DELIVER_NCO_DEVSTR,";
+			tracer.finest("Policy added: POLICY_DELIVER_NCO_DEVSTR");
 		}
 
 		if( p.length() > 0 ) {
 			p = p.substring( 0, ( p.length() - 1 ) );
 		}
 
+		tracer.exiting(Project.class.getSimpleName(), "getPolicy", p);
+
 		return p;
 	}
 
 	public static int getPolicyValue( String policy ) {
+		tracer.entering(Project.class.getSimpleName(), "getPolicyValue", policy);
+
+		int policyValue = 0;
+
 		if( policy.equalsIgnoreCase( "POLICY_INTERPROJECT_DELIVER" ) ) {
-			return POLICY_INTERPROJECT_DELIVER;
+			policyValue = POLICY_INTERPROJECT_DELIVER;
 		} else if( policy.equalsIgnoreCase( "POLICY_CHSTREAM_UNRESTRICTED" ) ) {
-			return POLICY_CHSTREAM_UNRESTRICTED;
+			policyValue = POLICY_CHSTREAM_UNRESTRICTED;
 		} else if( policy.equalsIgnoreCase( "POLICY_DELIVER_REQUIRE_REBASE" ) ) {
-			return POLICY_DELIVER_REQUIRE_REBASE;
+			policyValue = POLICY_DELIVER_REQUIRE_REBASE;
 		} else if( policy.equalsIgnoreCase( "POLICY_DELIVER_NCO_DEVSTR" ) ) {
-			return POLICY_DELIVER_NCO_DEVSTR;
-		} else {
-			return 0;
+			policyValue = POLICY_DELIVER_NCO_DEVSTR;
 		}
+
+		tracer.exiting(Project.class.getSimpleName(), "getPolicyValue", policyValue);
+
+		return policyValue;
 	}
 
-
 	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, Component mcomps ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
+		tracer.entering(Project.class.getSimpleName(), "create", new Object[]{name, root, pvob, policy, comment, normal, mcomps});
+
 		List<Component> components = new ArrayList<Component>();
 		components.add( mcomps );
-		return create( name, root, pvob, policy, comment, normal, components );
+
+		Project output = create( name, root, pvob, policy, comment, normal, components );
+
+		tracer.exiting(Project.class.getSimpleName(), "create", output);
+
+		return output;
 	}
 
 	/**
@@ -175,6 +194,7 @@ public class Project extends UCMEntity implements StreamContainable {
 	 */
 	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, List<Component> mcomps ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
 		//context.createProject( name, root, pvob, policy, comment, mcomps );
+		tracer.entering(Project.class.getSimpleName(), "create", new Object[]{name, root, pvob, policy, comment, normal, mcomps});
 
 		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + ( normal ? "" : " -model SIMPLE" );
 
@@ -195,13 +215,23 @@ public class Project extends UCMEntity implements StreamContainable {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
 			//throw new UCMException( "Could not create Project " + root + ": " + e.getMessage(), e, UCMType.CREATION_FAILED );
-			throw new UnableToCreateEntityException( Project.class, e );
+			UnableToCreateEntityException exception = new UnableToCreateEntityException( Project.class, e );
+			
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+			
+			throw exception;
 		}
 
-		return get( name, pvob );
+		Project output = get( name, pvob );
+		
+		tracer.exiting(Project.class.getSimpleName(), "create", output);
+		
+		return output; 
 	}
 
 	public Project load() throws UnableToLoadEntityException, UnableToInitializeEntityException {
+		tracer.entering(Project.class.getSimpleName(), "load");
+
 		String result = "";
 
 		String cmd = "lsproj -fmt %[istream]Xp " + this;
@@ -209,7 +239,11 @@ public class Project extends UCMEntity implements StreamContainable {
 		try {
 			result = Cleartool.run( cmd ).stdoutBuffer.toString();
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new UnableToLoadEntityException( this, e );
+			UnableToLoadEntityException exception = new UnableToLoadEntityException( this, e );
+			
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+
+			throw exception;
 		}
 
 		logger.debug( "Result: " + result );
@@ -218,33 +252,53 @@ public class Project extends UCMEntity implements StreamContainable {
 
 		this.loaded = true;
 
+		tracer.exiting(Project.class.getSimpleName(), "load", this);
+
 		return this;
 	}
 
 	public void setStream( Stream stream ) {
+		tracer.entering(Project.class.getSimpleName(), "setStream", stream);
+		
 		this.stream = stream;
+		
+		tracer.exiting(Project.class.getSimpleName(), "setStream");
 	}
 
 	public Stream getIntegrationStream() {
+		tracer.entering(Project.class.getSimpleName(), "getIntegrationStream");
+
 		if( !loaded ) {
 			try {
 				load();
 			} catch( ClearCaseException e ) {
-				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+				EntityNotLoadedException exception = new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+				
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+
+				throw exception;
 			}
 		}
+
+		tracer.exiting(Project.class.getSimpleName(), "getIntegrationStream");
 
 		return stream;
 	}
 
 	public List<Stream> getStreams() throws CleartoolException {
+		tracer.entering(Project.class.getSimpleName(), "getStreams");
+		
 		String cmd = "lsstream -in " + this;
 
 		List<String> list;
 		try {
 			list = Cleartool.run( cmd ).stdoutList;
 		} catch( Exception e ) {
-			throw new CleartoolException( "Unable to list streams for " + this, e );
+			CleartoolException exception = new CleartoolException( "Unable to list streams for " + this, e );
+			
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+			
+			throw exception;
 		}
 
 		List<Stream> streams = new ArrayList<Stream>();
@@ -256,19 +310,27 @@ public class Project extends UCMEntity implements StreamContainable {
 			}
 		}
 
+		tracer.exiting(Project.class.getSimpleName(), "getStreams", streams);
+		
 		return streams;
 	}
 
 	public static List<String> getPromotionLevels() {
+		tracer.entering(Project.class.getSimpleName(), "getPromotionLevels");
+		
 		List<String> retval = new ArrayList<String>();
 		for( Object o : PromotionLevel.values() ) {
 			retval.add( o.toString() );
 		}
+		
+		tracer.exiting(Project.class.getSimpleName(), "getPromotionLevels", retval);
+		
 		return retval;
 	}
 
 	public static List<Project> getProjects( PVob pvob ) throws UnableToListProjectsException, UnableToInitializeEntityException {
-
+		tracer.entering(Project.class.getSimpleName(), "getProjects", pvob);
+		
 		logger.debug( "Getting projects for " + pvob );
 		String cmd = "lsproject -s -invob " + pvob.toString();
 
@@ -277,7 +339,11 @@ public class Project extends UCMEntity implements StreamContainable {
 		try {
 			projs = Cleartool.run( cmd ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new UnableToListProjectsException( pvob, e );
+			UnableToListProjectsException exception = new UnableToListProjectsException( pvob, e );
+			
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+			
+			throw exception;
 		}
 
 		logger.debug( projs );
@@ -289,17 +355,25 @@ public class Project extends UCMEntity implements StreamContainable {
 
 		logger.debug( projects );
 
+		tracer.exiting(Project.class.getSimpleName(), "getProjects", projects);
+		
 		return projects;
 	}
 
 
 	public List<Component> getModifiableComponents() throws UnableToInitializeEntityException, CleartoolException {
+		tracer.entering(Project.class.getSimpleName(), "getModifiableComponents");
+
 		String[] cs;
 		String cmd = "desc -fmt %[mod_comps]p " + this;
 		try {
 			cs = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" );
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new CleartoolException( "Unable to modifiable components", e );
+			CleartoolException exception = new CleartoolException( "Unable to modifiable components", e );
+			
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+			
+			throw exception;
 		}
 
 		List<Component> comps = new ArrayList<Component>();
@@ -308,33 +382,53 @@ public class Project extends UCMEntity implements StreamContainable {
 			comps.add( Component.get( c, pvob ) );
 		}
 
+		tracer.exiting(Project.class.getSimpleName(), "getModifiableComponents", comps);
+
 		return comps;
 	}
 
 	public void remove() throws UnableToRemoveEntityException {
+		tracer.entering(Project.class.getSimpleName(), "remove");
+		
 		String cmd = "rmproject -force " + this;
 
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
-			throw new UnableToRemoveEntityException( this, e );
+			UnableToRemoveEntityException exception = new UnableToRemoveEntityException( this, e );
+
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+			
+			throw exception;
 		}
+		
+		tracer.exiting(Project.class.getSimpleName(), "remove");
 	}
 
 
 	public static Project get( String name, PVob pvob ) throws UnableToInitializeEntityException {
+		tracer.entering(Project.class.getSimpleName(), "get");
+		
 		if( !name.startsWith( "project:" ) ) {
 			name = "project:" + name;
 		}
 		Project entity = (Project) UCMEntity.getEntity( Project.class, name + "@" + pvob );
+		
+		tracer.exiting(Project.class.getSimpleName(), "get", entity);
+		
 		return entity;
 	}
 
 	public static Project get( String name ) throws UnableToInitializeEntityException {
+		tracer.entering(Project.class.getSimpleName(), "get", name);
+		
 		if( !name.startsWith( "project:" ) ) {
 			name = "project:" + name;
 		}
 		Project entity = (Project) UCMEntity.getEntity( Project.class, name );
+		
+		tracer.exiting(Project.class.getSimpleName(), "get", entity);
+		
 		return entity;
 	}
 
