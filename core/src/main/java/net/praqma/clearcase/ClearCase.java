@@ -93,8 +93,9 @@ public abstract class ClearCase extends Cool {
 				} catch( AbnormalProcessTerminationException e2 ) {
 					throw new UnableToSetAttributeException( this, attribute, value, context, e2 );
 				}
+			} else {
+				throw new UnableToSetAttributeException( this, attribute, value, context, e );
 			}
-			throw new UnableToSetAttributeException( this, attribute, value, context, e );
 		}
 	}
 	
