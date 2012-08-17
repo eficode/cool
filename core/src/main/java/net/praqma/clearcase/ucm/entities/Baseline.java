@@ -3,13 +3,9 @@ package net.praqma.clearcase.ucm.entities;
 import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
-import java.util.regex.Matcher;
 
 import net.praqma.clearcase.Cool;
-import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -24,9 +20,6 @@ import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToPromoteBaselineException;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
-import net.praqma.clearcase.ucm.entities.Version.Status;
-
-import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.logging.Config;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -42,7 +35,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	private Stream stream = null;
 	private ArrayList<Activity> activities = null;
 
-	private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
+	private static final java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 
 	public enum LabelBehaviour {
 		NOLABEL,
