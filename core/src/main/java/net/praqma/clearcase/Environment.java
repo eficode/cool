@@ -21,7 +21,7 @@ import net.praqma.util.debug.appenders.ConsoleAppender;
 
 public class Environment {
 
-	protected static final java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
+	private static final java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 	protected static Logger logger = Logger.getLogger();
 	protected static ConsoleAppender appender = new ConsoleAppender();
 	
