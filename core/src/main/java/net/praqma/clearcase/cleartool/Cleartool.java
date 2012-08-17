@@ -7,6 +7,7 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.CleartoolNotInstalledException;
 import net.praqma.clearcase.exceptions.NoLicenseServerException;
 import net.praqma.clearcase.exceptions.NoLicensesException;
+import net.praqma.logging.Config;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
@@ -28,40 +29,60 @@ public abstract class Cleartool extends Cool {
 	private static CommandLineInterface cli = null;
 	private static Logger logger = Logger.getLogger();
 
+	private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
+	
 	static {
 		cli = CommandLine.getInstance();
 	}
 
 	public static CmdResult run( String cmd ) throws CommandLineException, AbnormalProcessTerminationException {
+		tracer.entering(Cleartool.class.getSimpleName(), "run");
+		
 		return _run( cmd, null, true, false );
 	}
 
 	public static CmdResult run( String cmd, File dir ) throws CommandLineException, AbnormalProcessTerminationException {
+		tracer.entering(Cleartool.class.getSimpleName(), "run");
+		
 		return _run( cmd, dir, true, false );
 	}
 
 	public static CmdResult run( String cmd, File dir, boolean merge ) throws CommandLineException, AbnormalProcessTerminationException {
+		tracer.entering(Cleartool.class.getSimpleName(), "run");
+		
 		return _run( cmd, dir, merge, false );
 	}
 	
 	public static CmdResult run( String cmd, File dir, boolean merge, boolean ignore ) throws CommandLineException, AbnormalProcessTerminationException {
+		tracer.entering(Cleartool.class.getSimpleName(), "run");
+		
 		return _run( cmd, dir, merge, ignore );
 	}
 	
 	private static CmdResult _run( String cmd, File dir, boolean merge, boolean ignore ) throws CommandLineException, AbnormalProcessTerminationException {
+		tracer.entering(Cleartool.class.getSimpleName(), "run");
+		
 		try {
 			return cli.run( "cleartool " + cmd, dir, merge, ignore );
 		} catch( AbnormalProcessTerminationException e ) {
 			
 			/* Validate exit errors */
 			if( e.getMessage().contains( "cleartool: command not found" ) ) {
-				throw new CleartoolNotInstalledException( "Cleartool not installed", e );
+				CleartoolNotInstalledException exception = new CleartoolNotInstalledException( "Cleartool not installed", e );
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+				throw exception;
 			} else if( e.getMessage().contains( "FLEXnet Licensing error:-15,570" )) {
-				throw new NoLicenseServerException( "No license server available", e );
+				NoLicenseServerException exception =  new NoLicenseServerException( "No license server available", e );
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+				throw exception;
 			} else if( e.getMessage().contains( "FLEXnet Licensing error:-18,147" )) {
-				throw new NoLicensesException( "No licenses available", e );
+				NoLicensesException exception =  new NoLicensesException( "No licenses available", e );
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+				throw exception;
 			} else if( e.getMessage().contains( "There are no valid licenses in the NT registry for ClearCase" )) {
-				throw new NoLicensesException( "No licenses available", e );
+				NoLicensesException exception =  new NoLicensesException( "No licenses available", e );
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+				throw exception;
 			} else {
 				throw e;
 			}

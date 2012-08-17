@@ -27,6 +27,7 @@ import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Version.Status;
 
 import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.logging.Config;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
@@ -40,7 +41,9 @@ public class Baseline extends UCMEntity implements Diffable {
 	private Project.PromotionLevel plevel = Project.PromotionLevel.INITIAL;
 	private Stream stream = null;
 	private ArrayList<Activity> activities = null;
-	
+
+	private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
+
 	public enum LabelBehaviour {
 		NOLABEL,
 		INCREMENTAL,
@@ -48,7 +51,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		full,
 		none,
 		DEFAULT;
-		
+
 		public String toArgument() {
 			switch( this ) {
 			case NOLABEL:
@@ -65,7 +68,7 @@ public class Baseline extends UCMEntity implements Diffable {
 				return "";
 			}
 		}
-		
+
 		public static LabelBehaviour fromIncremental( boolean incremental ) {
 			return ( incremental ? INCREMENTAL : FULL );
 		}
@@ -73,6 +76,8 @@ public class Baseline extends UCMEntity implements Diffable {
 
 	Baseline() {
 		super( "baseline" );
+		tracer.entering(Baseline.class.getSimpleName(), "Baseline");
+		tracer.exiting(Baseline.class.getSimpleName(), "Baseline");
 	}
 
 	/**
@@ -86,6 +91,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToGetEntityException 
 	 */
 	public Baseline load() throws UnableToLoadEntityException, UnableToInitializeEntityException {
+		tracer.entering(Baseline.class.getSimpleName(), "load");
 		//logger.debug( "Loading baseline " + this );
 
 		String result = "";
@@ -94,12 +100,16 @@ public class Baseline extends UCMEntity implements Diffable {
 		try {
 			result = Cleartool.run( cmd ).stdoutBuffer.toString();
 		} catch( Exception e ) {
-			//throw new UCMException( "Could not load the baseline " + baseline, e.getMessage() );
-			throw new UnableToLoadEntityException( this, e );
+			UnableToLoadEntityException exception = new UnableToLoadEntityException( this, e );
+
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", e.getClass(), e.getMessage()));
+
+			throw exception;
 		}
 
 		String[] rs = result.split( UCMEntity.delim );
-        logger.debug("Result:" + result);
+		logger.debug("Result:" + result);
+		tracer.finest("Result:" + result);
 
 		/* Component . component:GENI_Source@\bbComponent */
 		String c = ( rs[1].matches( "^component:.*$" ) ? "" : "component:" ) + ( rs[1].matches( ".*@" + PVob.rx_tag_format + "$" ) ? rs[1] : rs[1] + "@" + this.pvob );
@@ -108,6 +118,7 @@ public class Baseline extends UCMEntity implements Diffable {
 			String s = ( rs[2].matches( "^stream:.*$" ) ? "" : "stream:" ) + ( rs[2].matches( ".*@" + PVob.rx_tag_format + "$" ) ? rs[2] : rs[2] + "@" + this.pvob );
 			this.stream = Stream.get( s );
 		} else {
+			tracer.finest("No stream set for baseline" );
 			logger.debug( "No stream set for baseline" );
 		}
 
@@ -116,17 +127,17 @@ public class Baseline extends UCMEntity implements Diffable {
 		this.plevel = Project.getPlevelFromString( rs[3] );
 		this.user = rs[4];
 		try {
-            logger.debug("Result[5]:" + rs[5]);
-            synchronized( dateFormatter ) {
-            	this.date = dateFormatter.parse( rs[5] );
-            }
+			logger.debug("Result[5]:" + rs[5]);
+			synchronized( dateFormatter ) {
+				this.date = dateFormatter.parse( rs[5] );
+			}
 		} catch( ParseException e ) {
 			logger.debug( "Unable to parse date: " + e.getMessage() );
 			this.date = null;
 		}
 
 		this.labelStatus = getLabelStatusFromString( rs[6] );
-		
+
 		/* mastership */
 		this.mastership = rs[7];
 
@@ -135,11 +146,19 @@ public class Baseline extends UCMEntity implements Diffable {
 		activities = new ArrayList<Activity>();
 		this.loaded = true;
 
+		tracer.exiting(Baseline.class.getSimpleName(), "load", this);		
+
 		return this;
 	}
-	
+
 	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException {
-		return create( basename, component, view, labelBehaviour, identical, null, null );
+		tracer.entering(Baseline.class.getSimpleName(), "create", new Object[]{basename, component, view, labelBehaviour, identical} );	
+
+		Baseline baseline = create( basename, component, view, labelBehaviour, identical, null, null );
+
+		tracer.exiting(Baseline.class.getSimpleName(), "create", baseline);
+
+		return baseline;
 	}
 
 	/**
@@ -147,6 +166,8 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * created.
 	 */
 	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical, List<Activity> activities, List<Component> depends ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException {
+		tracer.entering(Baseline.class.getSimpleName(), "create", new Object[]{basename, component, view, labelBehaviour, identical, activities, depends} );
+
 		/* Remove prefixed baseline: */
 		if( basename.toLowerCase().startsWith( "baseline:" ) ) {
 			basename = basename.replaceFirst( "baseline:", "" );
@@ -190,9 +211,17 @@ public class Baseline extends UCMEntity implements Diffable {
 		}
 
 		if( created ) {
-			return get( basename, component.getPVob() );
+			Baseline baseline = get( basename, component.getPVob() );
+
+			tracer.exiting(Baseline.class.getSimpleName(), "create", baseline);
+
+			return baseline;
 		} else {
-			throw new NothingNewException( "No baseline created, nothing new." );
+			NothingNewException exception = new NothingNewException( "No baseline created, nothing new." );
+
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+
+			throw exception;
 		}
 	}
 
@@ -210,13 +239,18 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToGetEntityException 
 	 */
 	public Project.PromotionLevel getPromotionLevel( boolean cached ) {
+		tracer.entering(Baseline.class.getSimpleName(), "getPromotionLevel", cached);
 
 		//TODO if !loaded return this.plevel DONE.....
 		if( cached ) {
+			tracer.exiting(Baseline.class.getSimpleName(), "getPromotionLevel", this.plevel);
+
 			return this.plevel;
 		} else {
 			/* TODO Get from clear case, uses cached value */
 			/* If different from cached, cache the new */
+			tracer.exiting(Baseline.class.getSimpleName(), "getPromotionLevel", this.plevel);
+
 			return this.plevel;
 		}
 	}
@@ -239,21 +273,34 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToGetEntityException 
 	 */
 	public Project.PromotionLevel promote() throws UnableToPromoteBaselineException {
+		tracer.entering(Baseline.class.getSimpleName(), "promote");
+
 		if( !loaded ) {
+			tracer.finest("Not loaded.");
 			try {
 				load();
 			} catch( ClearCaseException e ) {
-				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+				EntityNotLoadedException exception = new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+
+				throw exception;
 			}
 		}
 
 		if( this.plevel.equals( PromotionLevel.REJECTED ) ) {
 			//throw new UCMException("Cannot promote from REJECTED");
-			throw new UnableToPromoteBaselineException( this, PromotionLevel.REJECTED );
+			UnableToPromoteBaselineException exception = new UnableToPromoteBaselineException( this, PromotionLevel.REJECTED );
+
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+
+			throw exception;
 		}
 
 		this.plevel = Project.promoteFrom( this.plevel );
 		setPromotionLevel( this.plevel );
+
+		tracer.entering(Baseline.class.getSimpleName(), "promote", this.plevel);
 
 		return this.plevel;
 	}
@@ -268,29 +315,47 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToGetEntityException 
 	 */
 	public Project.PromotionLevel demote() throws UnableToPromoteBaselineException {
+		tracer.entering(Baseline.class.getSimpleName(), "demote");
+
 		if( !loaded ) {
 			try {
 				load();
 			} catch( ClearCaseException e ) {
-				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+				EntityNotLoadedException exception = new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+
+				throw exception;
 			}
 		}
 
 		this.plevel = Project.PromotionLevel.REJECTED;
 		setPromotionLevel( this.plevel );
 
-		return Project.PromotionLevel.REJECTED;
+		PromotionLevel output = Project.PromotionLevel.REJECTED;
+
+		tracer.exiting(Baseline.class.getSimpleName(), "demote", output);
+
+		return output;
 	}
 
 	public void setPromotionLevel( Project.PromotionLevel plevel ) throws UnableToPromoteBaselineException {
+		tracer.entering(Baseline.class.getSimpleName(), "setPromotionLevel", plevel);
+
 		this.plevel = plevel;
 
 		String cmd = "chbl -level " + plevel + " " + this;
 		try {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new UnableToPromoteBaselineException( this, this.plevel );
+			UnableToPromoteBaselineException exception = new UnableToPromoteBaselineException( this, this.plevel );
+
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+
+			throw exception;
 		}
+
+		tracer.exiting(Baseline.class.getSimpleName(), "demote", this.plevel);
 	}
 
 	/**
@@ -305,52 +370,87 @@ public class Baseline extends UCMEntity implements Diffable {
 	public BaselineDiff getDifferences( SnapshotView view ) {
 		return new BaselineDiff( view, this );
 	}
-	*/
+	 */
 
 	public Component getComponent() {
+		tracer.entering(Baseline.class.getSimpleName(), "getComponent");
+
 		if( !loaded ) {
 			try {
 				load();
 			} catch( ClearCaseException e ) {
-				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+				EntityNotLoadedException exception = new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+
+				throw exception;
 			}
 		}
-		
+
+		tracer.exiting(Baseline.class.getSimpleName(), "getComponent", this.component);
+
 		return this.component;
 	}
 
 	public Stream getStream() {
+		tracer.entering(Baseline.class.getSimpleName(), "getStream");
+
 		if( !loaded ) {
 			try {
 				load();
 			} catch( ClearCaseException e ) {
-				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+				EntityNotLoadedException exception = new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+
+				throw exception;
 			}
 		}
-		
+
+		tracer.exiting(Baseline.class.getSimpleName(), "getComponent", this.stream);
+
 		return this.stream;
 	}
-	
+
 	public boolean shouldResetMastership() throws ClearCaseException {
+		tracer.entering(Baseline.class.getSimpleName(), "shouldResetMastership");
+
+		boolean output = true;
 		if( !getMastership().equals( this.getStream().getOriginalMastership() ) ) {
-			return true;
+			tracer.exiting(Baseline.class.getSimpleName(), "shouldResetMastership", output);
+
+			return output;
 		}
-		return false;
+		output = false;
+
+		tracer.exiting(Baseline.class.getSimpleName(), "shouldResetMastership", output);
+
+		return output;
 	}
 
 	public void resetMastership() throws ClearCaseException {
+		tracer.entering(Baseline.class.getSimpleName(), "resetMastership");
+
 		this.setMastership( this.getStream().getOriginalMastership() );
+
+		tracer.exiting(Baseline.class.getSimpleName(), "resetMastership");
 	} 
 
 	public String stringify() {
+		tracer.entering(Baseline.class.getSimpleName(), "stringify");
+
 		if( !loaded ) {
 			try {
 				load();
 			} catch( ClearCaseException e ) {
-				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+				EntityNotLoadedException exception = new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+
+				throw exception;
 			}
 		}
-		
+
 		StringBuffer sb = new StringBuffer();
 
 		try {
@@ -367,35 +467,54 @@ public class Baseline extends UCMEntity implements Diffable {
 			sb.insert( 0, super.stringify() );
 		}
 
-		return sb.toString();
+		String output = sb.toString();
+
+		tracer.exiting(Baseline.class.getSimpleName(), "stringify", output);
+
+		return output;
 	}
 
 	public static Baseline get( String name ) throws UnableToInitializeEntityException {
+		tracer.entering(Baseline.class.getSimpleName(), "get", name);
+		
 		if( !name.startsWith( "baseline:" ) ) {
 			name = "baseline:" + name;
 		}
 		Baseline entity = (Baseline) UCMEntity.getEntity( Baseline.class, name );
+		
+		tracer.exiting(Baseline.class.getSimpleName(), "get", entity);
+		
 		return entity;
 	}
 
 	public static Baseline get( String name, PVob pvob ) throws UnableToInitializeEntityException {
+		tracer.entering(Baseline.class.getSimpleName(), "get", new Object[]{name, pvob});
+		
 		if( !name.startsWith( "baseline:" ) ) {
 			name = "baseline:" + name;
 		}
 		Baseline entity = (Baseline) UCMEntity.getEntity( Baseline.class, name + "@" + pvob );
+		
+		tracer.exiting(Baseline.class.getSimpleName(), "get", entity);
+		
 		return entity;
 	}
-	
+
 	public List<Baseline> getPostedBaselinesFor(Component component) throws UnableToInitializeEntityException, UnableToListBaselinesException, UnableToLoadEntityException {
+		tracer.entering(Baseline.class.getSimpleName(), "getPostedBaselinesFor", component);
 		logger.debug( "Getting posted baselines for " + this.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() );
 		List<String> bls_str = null;
-		
+
 		String cmd = "des -fmt %X[member_of_closure]p " + this.getFullyQualifiedName();
-				//"lsbl -s -component " + component + " -stream " + stream + ( plevel != null ? " -level " + plevel.toString() : "" );
+		//"lsbl -s -component " + component + " -stream " + stream + ( plevel != null ? " -level " + plevel.toString() : "" );
 		try {
 			bls_str = Cleartool.run( cmd, null, false ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new UnableToListBaselinesException(getStream(), component, getPromotionLevel(true), e );
+			UnableToListBaselinesException exception = new UnableToListBaselinesException(getStream(), component, getPromotionLevel(true), e );
+			
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+			
+			throw exception;
 		}
 
 		List<Baseline> bls = new ArrayList<Baseline>();
@@ -415,6 +534,8 @@ public class Baseline extends UCMEntity implements Diffable {
 			}
 		}
 
+		tracer.exiting(Baseline.class.getSimpleName(), "getPostedBaselinesFor", bls);
+		
 		return bls;
 	}
 
