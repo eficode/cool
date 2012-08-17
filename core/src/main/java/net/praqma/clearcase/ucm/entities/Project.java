@@ -8,12 +8,15 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.interfaces.StreamContainable;
+import net.praqma.clearcase.util.setup.ProjectTask;
+import net.praqma.logging.Config;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Project extends UCMEntity implements StreamContainable {
 
 	private static Logger logger = Logger.getLogger();
+	private static final java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 
 	/* Project specific fields */
 	private Stream stream = null;
@@ -28,6 +31,8 @@ public class Project extends UCMEntity implements StreamContainable {
 
 	Project() {
 		super( "project" );
+		tracer.entering(Project.class.getSimpleName(), "Project");
+		tracer.exiting(Project.class.getSimpleName(), "Project");
 	}
 
 	/**
@@ -37,7 +42,13 @@ public class Project extends UCMEntity implements StreamContainable {
 	 * @return A new Project Entity
 	 */
 	static Project getEntity() {
-		return new Project();
+		tracer.entering(Project.class.getSimpleName(), "getEntity");
+
+		Project output = new Project();
+
+		tracer.exiting(Project.class.getSimpleName(), "getEntity", output);
+
+		return output;
 	}
 
 	/* For now, the project implements the Plevel functionality */
@@ -53,6 +64,8 @@ public class Project extends UCMEntity implements StreamContainable {
 	 * @return A Promotion Level
 	 */
 	public static PromotionLevel getPlevelFromString( String str ) {
+		tracer.entering(Project.class.getSimpleName(), "getPlevelFromString", str);
+
 		PromotionLevel plevel = PromotionLevel.INITIAL;
 
 		try {
@@ -61,31 +74,52 @@ public class Project extends UCMEntity implements StreamContainable {
 			/* Do nothing... */
 		}
 
+		tracer.exiting(Project.class.getSimpleName(), "getEntity", plevel);
+
 		return plevel;
 	}
 
 	public static PromotionLevel promoteFrom( PromotionLevel plevel ) {
+		tracer.entering(Project.class.getSimpleName(), "promoteFrom", plevel);
+
 		switch ( plevel ) {
 		case INITIAL:
 			plevel = PromotionLevel.BUILT;
+
+			tracer.finest("Promoted to: " + plevel);
+
 			break;
 		case BUILT:
 			plevel = PromotionLevel.TESTED;
+
+			tracer.finest("Promoted to: " + plevel);
+
 			break;
 		case TESTED:
 			plevel = PromotionLevel.RELEASED;
+
+			tracer.finest("Promoted to: " + plevel);
+
 			break;
 		case RELEASED:
 			plevel = PromotionLevel.RELEASED;
+
+			tracer.finest("Promoted to: " + plevel);
+
 			break;
 		}
+
+		tracer.exiting(Project.class.getSimpleName(), "promoteFrom", plevel);
 
 		return plevel;
 	}
 
 	public static String getPolicy( int policy ) {
+		tracer.entering(Project.class.getSimpleName(), "getPolicy", policy);
+		
 		String p = "";
 		if( ( policy & POLICY_INTERPROJECT_DELIVER ) > 0 ) {
+			
 			p += "POLICY_INTERPROJECT_DELIVER,";
 		}
 
@@ -107,7 +141,7 @@ public class Project extends UCMEntity implements StreamContainable {
 
 		return p;
 	}
-	
+
 	public static int getPolicyValue( String policy ) {
 		if( policy.equalsIgnoreCase( "POLICY_INTERPROJECT_DELIVER" ) ) {
 			return POLICY_INTERPROJECT_DELIVER;
@@ -121,8 +155,8 @@ public class Project extends UCMEntity implements StreamContainable {
 			return 0;
 		}
 	}
-	
-	
+
+
 	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, Component mcomps ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
 		List<Component> components = new ArrayList<Component>();
 		components.add( mcomps );
@@ -143,7 +177,7 @@ public class Project extends UCMEntity implements StreamContainable {
 		//context.createProject( name, root, pvob, policy, comment, mcomps );
 
 		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + ( normal ? "" : " -model SIMPLE" );
-		
+
 		if( mcomps != null && mcomps.size() > 0 ) {
 			cmd += " -modcomp ";
 			for( Component c : mcomps ) {
@@ -151,7 +185,7 @@ public class Project extends UCMEntity implements StreamContainable {
 			}
 			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
 		}
-		
+
 		if( policy > 0 ) {
 			cmd += " -policy " + Project.getPolicy( policy );
 		}
@@ -181,7 +215,7 @@ public class Project extends UCMEntity implements StreamContainable {
 		logger.debug( "Result: " + result );
 
 		setStream( Stream.get( result ) );
-		
+
 		this.loaded = true;
 
 		return this;
@@ -199,20 +233,20 @@ public class Project extends UCMEntity implements StreamContainable {
 				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
 			}
 		}
-		
+
 		return stream;
 	}
-	
+
 	public List<Stream> getStreams() throws CleartoolException {
 		String cmd = "lsstream -in " + this;
-		
+
 		List<String> list;
 		try {
 			list = Cleartool.run( cmd ).stdoutList;
 		} catch( Exception e ) {
 			throw new CleartoolException( "Unable to list streams for " + this, e );
 		}
-		
+
 		List<Stream> streams = new ArrayList<Stream>();
 		for( String item : list ) {
 			try {
@@ -221,7 +255,7 @@ public class Project extends UCMEntity implements StreamContainable {
 				logger.error( "Could not get " + item );
 			}
 		}
-		
+
 		return streams;
 	}
 
@@ -257,8 +291,8 @@ public class Project extends UCMEntity implements StreamContainable {
 
 		return projects;
 	}
-	
-	
+
+
 	public List<Component> getModifiableComponents() throws UnableToInitializeEntityException, CleartoolException {
 		String[] cs;
 		String cmd = "desc -fmt %[mod_comps]p " + this;
@@ -267,7 +301,7 @@ public class Project extends UCMEntity implements StreamContainable {
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to modifiable components", e );
 		}
-		
+
 		List<Component> comps = new ArrayList<Component>();
 
 		for( String c : cs ) {
@@ -276,10 +310,10 @@ public class Project extends UCMEntity implements StreamContainable {
 
 		return comps;
 	}
-	
+
 	public void remove() throws UnableToRemoveEntityException {
 		String cmd = "rmproject -force " + this;
-		
+
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
@@ -287,7 +321,7 @@ public class Project extends UCMEntity implements StreamContainable {
 		}
 	}
 
-	
+
 	public static Project get( String name, PVob pvob ) throws UnableToInitializeEntityException {
 		if( !name.startsWith( "project:" ) ) {
 			name = "project:" + name;
