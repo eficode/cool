@@ -125,9 +125,10 @@ public abstract class ClearCase extends Cool {
 		
 		try {
 			Cleartool.run( cmd, context );
+			tracer.finest("Successfully ran Cleartool command.");
 		} catch( AbnormalProcessTerminationException e ) {
 			tracer.finest("Could not run Cleartool command.");
-			tracer.finest(String.format("Checking that we are trying to replace: %s", replace));
+			tracer.finest("Checking that the replace flag is unset."));
 
 			if( !replace ) {
 				tracer.finest("We are not trying to replace.");
@@ -141,14 +142,13 @@ public abstract class ClearCase extends Cool {
 					tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
 					throw exception;
 				}
-				tracer.finest("Successfully ran Cleartool command.");
+				tracer.finest("Successfully ran new Cleartool command.");
+			} else {
+				UnableToSetAttributeException exception = new UnableToSetAttributeException( this, attribute, value, context, e );
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+				throw exception;
 			}
-			// TODO Do we want to hit this exception even if we have run the second Cleartool command?
-			UnableToSetAttributeException exception = new UnableToSetAttributeException( this, attribute, value, context, e );
-			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
-			throw exception;
 		}
-		tracer.finest("Successfully ran Cleartool command.");
 		tracer.exiting(ClearCase.class.getSimpleName(), "setAttribute");
 	}
 	
@@ -160,23 +160,33 @@ public abstract class ClearCase extends Cool {
 	 * @throws CleartoolException
 	 */
 	public static void createSimpleAttributeType( String name, PVob pvob, boolean replace ) throws UnableToCreateAttributeException {
+		tracer.entering(ClearCase.class.getSimpleName(), "createSimpleAttributeType", new Object[]{name, pvob, replace});
 		String cmd = "mkattype -vtype string -nc " + name + "@" + pvob;
-		
+		tracer.finest(String.format("Attempting to run Cleartool command: %s", cmd));
 		try {
 			Cleartool.run( cmd );
+			tracer.finest("Successfully ran Cleartool command.");
 		} catch( Exception e ) {
+			tracer.finest("Checking that the replace flag is set.");
 			if( replace ) {
+				tracer.finest("Replace flag is set.");
 				cmd = "mkattype -replace -vtype string -nc " + name + "@" + pvob;
+				tracer.finest(String.format("Attempting to run new Cleartool command: %s", cmd));
 				try {
 					Cleartool.run( cmd );
 				} catch( Exception e2 ) {
-					throw new UnableToCreateAttributeException( "Unable to create attribute type", e );
+					UnableToCreateAttributeException exception = new UnableToCreateAttributeException( "Unable to create attribute type", e2 );
+					tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+					throw exception;
 				}
-				
+				tracer.finest("Successfully ran new Cleartool command.");
 			} else {
-				throw new UnableToCreateAttributeException( "Unable to create attribute type", e );
+				UnableToCreateAttributeException exception = new UnableToCreateAttributeException( "Unable to create attribute type", e );
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+				throw exception;
 			}
 		}
+		tracer.exiting(ClearCase.class.getSimpleName(), "createSimpleAttributeType");
 	}
 	
 	public abstract String getFullyQualifiedName();
