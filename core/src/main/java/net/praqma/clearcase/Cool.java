@@ -1,6 +1,5 @@
 package net.praqma.clearcase;
 
-import net.praqma.util.execute.CommandLine;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
 public abstract class Cool {
