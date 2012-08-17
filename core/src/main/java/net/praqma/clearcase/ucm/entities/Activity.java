@@ -13,6 +13,7 @@ import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.logging.Config;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
@@ -22,6 +23,7 @@ public class Activity extends UCMEntity {
 	private final static Pattern pattern_activity = Pattern.compile( "^[<>-]{2}\\s*(\\S+)\\s*.*$" );
 	
 	private static Logger logger = Logger.getLogger();
+	private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 	
 	/* Activity specific fields */
 	public Changeset changeset = new Changeset();
@@ -32,10 +34,17 @@ public class Activity extends UCMEntity {
 	}
 
 	public void setSpecialCase( boolean b ) {
+		tracer.entering(Activity.class.getSimpleName(), "setSpecialCase", b);
+		
 		this.specialCase = b;
+		
+		tracer.exiting(Activity.class.getSimpleName(), "setSpecialCase", b);
 	}
 
 	public boolean isSpecialCase() {
+		tracer.entering(Activity.class.getSimpleName(), "isSpecialCase");
+		tracer.exiting(Activity.class.getSimpleName(), "setSpecialCase", specialCase);
+		
 		return this.specialCase;
 	}
 
@@ -48,24 +57,34 @@ public class Activity extends UCMEntity {
 	 * @throws UCMException
 	 */
 	public Activity load() throws UnableToLoadEntityException {
+		tracer.entering(Activity.class.getSimpleName(), "load");
+		
 		String result = "";
 
+		
 		/* The special case branch */
 		if( isSpecialCase() ) {
 			result = "System";
 		} else {
 			String cmd = "describe -fmt %u " + this;
+			
 			try {
 				result = Cleartool.run( cmd ).stdoutBuffer.toString();
 			} catch( AbnormalProcessTerminationException e ) {
 				//throw new UCMException( e.getMessage(), e.getMessage() );
-				throw new UnableToLoadEntityException( this, e );
+				UnableToLoadEntityException exception = new UnableToLoadEntityException( this, e );
+				
+				tracer.severe(String.format("Exception thrown type: %s; message: %s", e.getClass(), e.getMessage()));
+				
+				throw exception;
 			}
 		}
 		
 		setUser( result );
 		
 		this.loaded = true;
+		
+		tracer.exiting(Activity.class.getSimpleName(), "load", this);
 		
 		return this;
 	}
@@ -86,6 +105,8 @@ public class Activity extends UCMEntity {
 	 * @throws UnableToInitializeEntityException
 	 */
 	public static Activity create( String name, Stream in, PVob pvob, boolean force, String comment, String headline, File view ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
+		tracer.entering(Activity.class.getSimpleName(), "create", new Object[]{name,in,pvob,force,comment,headline,view});
+		
 		String cmd = "mkactivity" + ( comment != null ? " -c \"" + comment + "\"" : " -nc" ) + 
 									( headline != null ? " -headline \"" + headline + "\"" : "" ) +
 									( in != null ? " -in " + in.getNormalizedName() : "" ) + 
@@ -95,7 +116,11 @@ public class Activity extends UCMEntity {
 		try {
 			Cleartool.run( cmd, view );
 		} catch( Exception e ) {
-			throw new UnableToCreateEntityException( Activity.class, e );
+			UnableToCreateEntityException exception = new UnableToCreateEntityException( Activity.class, e );
+			
+			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
+			
+			throw exception;
 		}
 		
 		Activity activity = null;
@@ -103,12 +128,17 @@ public class Activity extends UCMEntity {
 		if( name != null ) {
 			activity = get( name, pvob );
 		}
+		
+		tracer.exiting(Activity.class.getSimpleName(), "create", activity);
+		
 		return activity;
 	}
 	
 	
 	
 	public static List<Activity> parseActivityStrings( List<String> result, int length ) throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
+		tracer.entering(Activity.class.getSimpleName(), "parseActivityStrings", new Object[]{result, length});
+		
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		Activity current = null;
 		//System.out.println("PARSING:");
@@ -148,24 +178,35 @@ public class Activity extends UCMEntity {
 			current.changeset.versions.add( v );
 		
 		}
-
+		
+		tracer.exiting(Activity.class.getSimpleName(), "create", activities);
+		
 		return activities;
 	}
 	
 	public static Activity get( String name ) throws UnableToInitializeEntityException {
+		tracer.entering(Activity.class.getSimpleName(), "get", name);
+		
 		if( !name.startsWith( "activity:" ) ) {
 			name = "activity:" + name;
 		}
 		Activity entity = (Activity) UCMEntity.getEntity( Activity.class, name );
+		
+		tracer.exiting(Activity.class.getSimpleName(), "get", entity);
+		
 		return entity;
 	}
 
 	public static Activity get( String name, PVob pvob ) throws UnableToInitializeEntityException {
+		tracer.entering(Activity.class.getSimpleName(), "get", new Object[]{name,pvob});
+		
 		if( !name.startsWith( "activity:" ) ) {
 			name = "activity:" + name;
 		}
 		Activity entity = (Activity) UCMEntity.getEntity( Activity.class, name + "@" + pvob );
+		
+		tracer.exiting(Activity.class.getSimpleName(), "get", entity);
+		
 		return entity;
 	}
-	
 }
