@@ -33,6 +33,7 @@ import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
+import net.praqma.logging.Config;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
@@ -48,6 +49,8 @@ import net.praqma.util.structure.Tuple;
  */
 public class SnapshotView extends UCMView {
 
+	private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
+
 	transient private static Logger logger = Logger.getLogger();
 
 	//protected static final String rx_view_uuid = "view_uuid:(.*)";
@@ -55,19 +58,18 @@ public class SnapshotView extends UCMView {
 	protected static final Pattern rx_view_uuid = Pattern.compile( "View uuid:(.*)" );
 	private static final Pattern rx_view_rebasing = Pattern.compile( "^\\.*Error: This view is currently being used to rebase stream \"(.+)\"\\.*$" );
 	private static final Pattern pattern_cache = Pattern.compile( "^\\s*log has been written to\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE );
-	
+
 	private final String rx_co_file = ".*CHECKEDOUT$";
 	private final String rx_ctr_file = ".*\\.contrib";
 	private final String rx_keep_file = ".*\\.keep$";
-	
+
 	public static String VIEW_DOT_DAT_FILE = "view.dat";
-	
+
 	static {
 		if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
 			VIEW_DOT_DAT_FILE = ".view.dat";
 		}
 	}
-		 
 
 	private File viewroot = null;
 
@@ -90,8 +92,9 @@ public class SnapshotView extends UCMView {
 		 * 
 		 */
 		public LoadRules( SnapshotView view, Components components ) throws UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException {
+			tracer.entering(UpdateInfo.class.getSimpleName(), "LoadRules", new Object[]{view, components});
 			loadRules = " -add_loadrules ";
-tracer.entering(UpdateInfo.class.getSimpleName(), "LoadRules", new Object[]{view, components});
+
 
 			if( components.equals( Components.ALL ) ) {
 				logger.debug( "All components" );
@@ -113,8 +116,9 @@ tracer.entering(UpdateInfo.class.getSimpleName(), "LoadRules", new Object[]{view
 					loadRules += rule;
 				}
 			}
+			tracer.exiting(UpdateInfo.class.getSimpleName(), "LoadRules");
 		}
-tracer.exiting(UpdateInfo.class.getSimpleName(), "LoadRules");
+
 
 		/**
 		 * Create load rules based on a string
@@ -122,27 +126,26 @@ tracer.exiting(UpdateInfo.class.getSimpleName(), "LoadRules");
 		 * @param loadRules
 		 */
 		public LoadRules( String loadRules ) {
+			tracer.entering(LoadRules.class.getSimpleName(), "LoadRules", new Object[]{loadRules});
 			this.loadRules = loadRules = " -add_loadrules " + loadRules;
-tracer.entering(UpdateInfo.class.getSimpleName(), "LoadRules", new Object[]{loadRules});
+			tracer.exiting(LoadRules.class.getSimpleName(), "LoadRules");
 		}
-tracer.exiting(UpdateInfo.class.getSimpleName(), "LoadRules");
 
 		public String getLoadRules() {
+			tracer.entering(LoadRules.class.getSimpleName(), "getLoadRules");
+			tracer.exiting(LoadRules.class.getSimpleName(), "getLoadRules", loadRules);
 			return loadRules;
 		}
 	}
 
 	public SnapshotView() {
-tracer.entering(UpdateInfo.class.getSimpleName(), "getLoadRules");
-tracer.exiting(UpdateInfo.class.getSimpleName(), "getLoadRules", loadRules);
-
-tracer.entering(UpdateInfo.class.getSimpleName(), "SnapshotView");
+		tracer.entering(SnapshotView.class.getSimpleName(), "SnapshotView");
+		tracer.exiting(SnapshotView.class.getSimpleName(), "SnapshotView");
 	}
-tracer.exiting(UpdateInfo.class.getSimpleName(), "SnapshotView");
 
 	public SnapshotView( File viewroot ) throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
 		/* TODO Test the view root? Does it exist? Is it a directory? */
-tracer.entering(UpdateInfo.class.getSimpleName(), "SnapshotView", new Object[]{viewroot});
+		tracer.entering(SnapshotView.class.getSimpleName(), "SnapshotView", new Object[]{viewroot});
 
 		this.viewroot = viewroot;
 
@@ -152,8 +155,9 @@ tracer.entering(UpdateInfo.class.getSimpleName(), "SnapshotView", new Object[]{v
 		this.viewroot = viewroot;
 		this.stream = t.t1;
 		this.pvob = this.stream.getPVob();
+		tracer.exiting(SnapshotView.class.getSimpleName(), "SnapshotView");
 	}
-tracer.exiting(UpdateInfo.class.getSimpleName(), "SnapshotView");
+
 
 	/**
 	 * Create a Snapshot view given a Stream, view root and a view tag.
@@ -165,8 +169,8 @@ tracer.exiting(UpdateInfo.class.getSimpleName(), "SnapshotView");
 	 * @return SnapShotView
 	 */
 	public static SnapshotView create( Stream stream, File viewroot, String viewtag ) throws ViewException, UnableToInitializeEntityException, CleartoolException, IOException {
+		tracer.entering(SnapshotView.class.getSimpleName(), "create", new Object[]{stream, viewroot, viewtag});
 		//context.makeSnapshotView( stream, viewroot, viewtag );
-tracer.entering(UpdateInfo.class.getSimpleName(), "create", new Object[]{stream, viewroot, viewtag});
 
 		logger.debug( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
 
@@ -189,26 +193,26 @@ tracer.entering(UpdateInfo.class.getSimpleName(), "create", new Object[]{stream,
 
 		SnapshotView view = new SnapshotView( viewroot );
 		view.setStream( stream );
-		
+
+		tracer.exiting(SnapshotView.class.getSimpleName(), "create", view);
 		return view;
-tracer.exiting(UpdateInfo.class.getSimpleName(), "create", view);
 	}
 
 	public static void createEnvironment( File viewroot ) {
+		tracer.entering(SnapshotView.class.getSimpleName(), "createEnvironment", new Object[]{viewroot});
 		createEnvironment( viewroot, "" );
-tracer.entering(UpdateInfo.class.getSimpleName(), "createEnvironment", new Object[]{viewroot});
+		tracer.exiting(SnapshotView.class.getSimpleName(), "createEnvironment");
 	}
-tracer.exiting(UpdateInfo.class.getSimpleName(), "createEnvironment");
 
 	public static void createEnvironment( File viewroot, String viewtagsuffix ) {
+		tracer.entering(SnapshotView.class.getSimpleName(), "createEnvironment", new Object[]{viewroot, viewtagsuffix});
 		String viewtag = "cool_" + System.getenv( "COMPUTERNAME" ) + "_env" + viewtagsuffix;
-tracer.entering(UpdateInfo.class.getSimpleName(), "createEnvironment", new Object[]{viewroot, viewtagsuffix});
+		tracer.exiting(SnapshotView.class.getSimpleName(), "createEnvironment");
 	}
-tracer.exiting(UpdateInfo.class.getSimpleName(), "createEnvironment");
 
 	public static void regenerateViewDotDat( File dir, String viewtag ) throws IOException, UnableToListViewsException {
+		tracer.entering(SnapshotView.class.getSimpleName(), "regenerateViewDotDat", new Object[]{dir, viewtag});
 		logger.debug( dir + ", " + viewtag );
-tracer.entering(UpdateInfo.class.getSimpleName(), "regenerateViewDotDat", new Object[]{dir, viewtag});
 
 		File viewdat = new File( dir + File.separator + VIEW_DOT_DAT_FILE );
 
@@ -265,52 +269,55 @@ tracer.entering(UpdateInfo.class.getSimpleName(), "regenerateViewDotDat", new Ob
 		}
 		// viewdat.set
 		// Command.run( cmd );
+		tracer.exiting(SnapshotView.class.getSimpleName(), "regenerateViewDotDat");
 	}
-tracer.exiting(UpdateInfo.class.getSimpleName(), "regenerateViewDotDat");
 
 	public File getViewRoot() {
+		tracer.entering(SnapshotView.class.getSimpleName(), "getViewRoot");
+		tracer.exiting(SnapshotView.class.getSimpleName(), "getViewRoot", this.viewroot);
 		return this.viewroot;
-tracer.entering(UpdateInfo.class.getSimpleName(), "getViewRoot");
-tracer.exiting(UpdateInfo.class.getSimpleName(), "getViewRoot", this.viewroot);
 	}
 
 	@Override
 	public String getPath() {
+		tracer.entering(SnapshotView.class.getSimpleName(), "getPath");
+		tracer.exiting(SnapshotView.class.getSimpleName(), "getPath", this.viewroot.toString());
 		return this.viewroot.toString();
-tracer.entering(UpdateInfo.class.getSimpleName(), "getPath");
-tracer.exiting(UpdateInfo.class.getSimpleName(), "getPath", this.viewroot.toString());
 	}
 
 	public Stream getStream() throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
+		tracer.entering(SnapshotView.class.getSimpleName(), "getStream");
 		if( this.stream == null ) {
-tracer.entering(UpdateInfo.class.getSimpleName(), "getStream");
+
 			Stream stream = getStreamFromView( getViewRoot() ).getFirst();
 			this.stream = stream;
 		}
+		tracer.exiting(SnapshotView.class.getSimpleName(), "getStream", stream);
 		return stream;
-tracer.exiting(UpdateInfo.class.getSimpleName(), "getStream", stream);
 	}
 
 	private void setStream( Stream stream ) {
+		tracer.entering(SnapshotView.class.getSimpleName(), "setStream", new Object[]{stream});
 		this.stream = stream;
-tracer.entering(UpdateInfo.class.getSimpleName(), "setStream", new Object[]{stream});
+		tracer.exiting(SnapshotView.class.getSimpleName(), "setStream");
 	}
-tracer.exiting(UpdateInfo.class.getSimpleName(), "setStream");
 
 	public static String getViewtag( File context ) throws CleartoolException {
+		tracer.entering(SnapshotView.class.getSimpleName(), "getViewtag", new Object[]{context});
 		String cmd = "pwv -s";
-tracer.entering(UpdateInfo.class.getSimpleName(), "getViewtag", new Object[]{context});
 		try {
-			return Cleartool.run( cmd, context ).stdoutBuffer.toString();
-tracer.exiting(UpdateInfo.class.getSimpleName(), "getViewtag", Cleartool.run( cmd, context ).stdoutBuffer.toString());
+			String output = Cleartool.run( cmd, context ).stdoutBuffer.toString();
+			tracer.exiting(SnapshotView.class.getSimpleName(), "getViewtag", output);
+			return output; 
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to get view tag at " + context , e );
 		}
 	}
 
 	public static SnapshotView getSnapshotViewFromPath( File viewroot ) throws ClearCaseException, IOException {
+		tracer.entering(SnapshotView.class.getSimpleName(), "getSnapshotViewFromPath", new Object[]{viewroot});
 		String viewtag = getViewtag( viewroot );
-tracer.entering(UpdateInfo.class.getSimpleName(), "getSnapshotViewFromPath", new Object[]{viewroot});
+
 		SnapshotView view = null;
 
 		if( UCMView.viewExists( viewtag ) ) {
@@ -318,9 +325,8 @@ tracer.entering(UpdateInfo.class.getSimpleName(), "getSnapshotViewFromPath", new
 		} else {
 			throw new ClearCaseException( "View is not valid" );
 		}
-
+		tracer.exiting(SnapshotView.class.getSimpleName(), "getSnapshotViewFromPath", view);
 		return view;
-tracer.exiting(UpdateInfo.class.getSimpleName(), "getSnapshotViewFromPath", view);
 	}
 
 	/**
@@ -333,8 +339,8 @@ tracer.exiting(UpdateInfo.class.getSimpleName(), "getSnapshotViewFromPath", view
 	 * @throws UCMException
 	 */
 	public static String viewrootIsValid( File viewroot ) throws IOException, CleartoolException, ViewException {
+		tracer.entering(UpdateInfo.class.getSimpleName(), "viewrootIsValid", new Object[]{viewroot});
 		logger.debug( viewroot.getAbsolutePath() );
-tracer.entering(UpdateInfo.class.getSimpleName(), "viewrootIsValid", new Object[]{viewroot});
 
 		File viewdotdatpname = new File( viewroot + File.separator + VIEW_DOT_DAT_FILE );
 
@@ -377,15 +383,15 @@ tracer.entering(UpdateInfo.class.getSimpleName(), "viewrootIsValid", new Object[
 		String cmd = "lsview -s -uuid " + uuid;
 		try {
 			String viewtag = Cleartool.run( cmd ).stdoutBuffer.toString().trim();
+			tracer.exiting(UpdateInfo.class.getSimpleName(), "viewrootIsValid", viewtag);
 			return viewtag;
-tracer.exiting(UpdateInfo.class.getSimpleName(), "viewrootIsValid", viewtag);
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to list view with " + uuid, e );
 		}
 	}
 
 	public class UpdateInfo {
-private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
+
 		public Integer totalFilesToBeDeleted = 0;
 		public boolean success = false;
 		public Integer filesDeleted = 0;
@@ -393,21 +399,23 @@ private static java.util.logging.Logger tracer = java.util.logging.Logger.getLog
 	}
 
 	public Tuple<Stream, String> getStreamFromView( File viewroot ) throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
+		tracer.entering(SnapshotView.class.getSimpleName(), "getStreamFromView", new Object[]{viewroot});
 		File wvroot = getCurrentViewRoot( viewroot );
 		String viewtag = viewrootIsValid( wvroot );
 		String streamstr = getStreamFromView( viewtag );
 		Stream stream = Stream.get( streamstr );
+		tracer.exiting(SnapshotView.class.getSimpleName(), "getStreamFromView", new Tuple<Stream, String>( stream, viewtag ));
 		return new Tuple<Stream, String>( stream, viewtag );
 	}
 
 	public File getCurrentViewRoot( File viewroot ) throws ViewException {
-tracer.entering(UpdateInfo.class.getSimpleName(), "getCurrentViewRoot", new Object[]{viewroot});
+		tracer.entering(SnapshotView.class.getSimpleName(), "getCurrentViewRoot", new Object[]{viewroot});
 		logger.debug( viewroot.getAbsolutePath() );
 
 		try {
 			String wvroot = Cleartool.run( "pwv -root", viewroot ).stdoutBuffer.toString();
 
-tracer.exiting(UpdateInfo.class.getSimpleName(), "getCurrentViewRoot", new File( wvroot ));
+			tracer.exiting(SnapshotView.class.getSimpleName(), "getCurrentViewRoot", new File( wvroot ));
 			return new File( wvroot );
 		} catch( Exception e ) {
 			throw new ViewException( "Unable to get current view " + viewroot, path, Type.INFO_FAILED, e );
@@ -415,10 +423,10 @@ tracer.exiting(UpdateInfo.class.getSimpleName(), "getCurrentViewRoot", new File(
 	}
 
 	public String getStreamFromView( String viewtag ) throws ViewException {
-tracer.entering(UpdateInfo.class.getSimpleName(), "getStreamFromView", new Object[]{viewtag});
+		tracer.entering(SnapshotView.class.getSimpleName(), "getStreamFromView", new Object[]{viewtag});
 		try {
 			String fqstreamstr = Cleartool.run( "lsstream -fmt %Xn -view " + viewtag ).stdoutBuffer.toString();
-tracer.exiting(UpdateInfo.class.getSimpleName(), "getStreamFromView", fqstreamstr);
+			tracer.exiting(SnapshotView.class.getSimpleName(), "getStreamFromView", fqstreamstr);
 			return fqstreamstr;
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new ViewException( "Unable to get stream from view " + viewtag, path, Type.INFO_FAILED, e );
@@ -433,7 +441,7 @@ tracer.exiting(UpdateInfo.class.getSimpleName(), "cancel");
 	 */
 
 	public UpdateInfo Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules loadRules ) throws CleartoolException, ViewException {
-tracer.entering(UpdateInfo.class.getSimpleName(), "Update", new Object[]{swipe, generate, overwrite, excludeRoot, loadRules});
+		tracer.entering(SnapshotView.class.getSimpleName(), "Update", new Object[]{swipe, generate, overwrite, excludeRoot, loadRules});
 
 		UpdateInfo info = new UpdateInfo();
 
@@ -458,16 +466,16 @@ tracer.entering(UpdateInfo.class.getSimpleName(), "Update", new Object[]{swipe, 
 		String result = updateView( this, overwrite, loadRules.getLoadRules() );
 		logger.debug( result );
 
-tracer.exiting(UpdateInfo.class.getSimpleName(), "Update", info);
+		tracer.exiting(SnapshotView.class.getSimpleName(), "Update", info);
 		return info;
 	}
-	
+
 	private static String updateView( SnapshotView view, boolean overwrite, String loadrules ) throws CleartoolException, ViewException {
-tracer.entering(UpdateInfo.class.getSimpleName(), "updateView", new Object[]{view, overwrite, loadrules});
+		tracer.entering(SnapshotView.class.getSimpleName(), "updateView", new Object[]{view, overwrite, loadrules});
 		//String result = strategy.viewUpdate( view.getViewRoot(), overwrite, loadrules );
-		
+
 		String result = "";
-		
+
 		logger.debug( view.getViewRoot().getAbsolutePath() );
 
 		String cmd = "setcs -stream";
@@ -494,18 +502,19 @@ tracer.entering(UpdateInfo.class.getSimpleName(), "updateView", new Object[]{vie
 			}
 		}
 
-		
+
 		Matcher match = pattern_cache.matcher( result );
 		if( match.find() ) {
-tracer.exiting(UpdateInfo.class.getSimpleName(), "updateView", match.group( 1 ));
+			tracer.exiting(SnapshotView.class.getSimpleName(), "updateView", match.group( 1 ));
 			return match.group( 1 );
 		}
 
-tracer.exiting(UpdateInfo.class.getSimpleName(), "updateView", "");
+		tracer.exiting(SnapshotView.class.getSimpleName(), "updateView", "");
 		return "";
 	}
-	
+
 	public Map<String, Integer> swipe( File viewroot, boolean excludeRoot ) throws CleartoolException {
+		tracer.entering(SnapshotView.class.getSimpleName(), "swipe", new Object[]{viewroot, excludeRoot});
 		logger.debug( viewroot.toString() );
 
 		File[] files = viewroot.listFiles();
@@ -558,8 +567,6 @@ tracer.exiting(UpdateInfo.class.getSimpleName(), "updateView", "");
 			result = Cleartool.run( cmd ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to list files " + fls, e );
-tracer.exiting(UpdateInfo.class.getSimpleName(), "CleartoolException");
-tracer.entering(UpdateInfo.class.getSimpleName(), "CleartoolException", new Object[]{to, files, +, e});
 		}
 		List<File> vpFiles = new ArrayList<File>();
 
@@ -573,8 +580,6 @@ tracer.entering(UpdateInfo.class.getSimpleName(), "CleartoolException", new Obje
 			}
 
 			vpFiles.add( new File( vpFile ) );
-tracer.exiting(UpdateInfo.class.getSimpleName(), "File");
-tracer.entering(UpdateInfo.class.getSimpleName(), "File", new Object[]{)});
 		}
 
 		int total = vpFiles.size();
@@ -629,21 +634,22 @@ tracer.entering(UpdateInfo.class.getSimpleName(), "File", new Object[]{)});
 			logger.warning( "Some files were not deleted." );
 			info.put( "success", 0 );
 		}
-
+		tracer.exiting(SnapshotView.class.getSimpleName(), "swipe", info);
 		return info;
 	}
 
 
 	public Map<String, Integer> swipe( boolean excludeRoot ) throws CleartoolException {
+		tracer.entering(SnapshotView.class.getSimpleName(), "swipe", new Object[]{excludeRoot});
 		logger.debug( "Swiping " + this.getViewRoot() );
 		Map<String, Integer> sinfo = swipe( viewroot, excludeRoot );
 		//Printer.mapPrinter( sinfo );
-
+		tracer.exiting(SnapshotView.class.getSimpleName(), "swipe", sinfo);
 		return sinfo;
 	}
-	
+
 	public static SnapshotView get( File viewroot ) throws IOException, ViewException, UnableToInitializeEntityException, CleartoolException {
-tracer.entering(UpdateInfo.class.getSimpleName(), "get", new Object[]{viewroot});
+		tracer.entering(SnapshotView.class.getSimpleName(), "get", new Object[]{viewroot});
 		String viewtag = getViewtag( viewroot );
 		SnapshotView view = null;
 
@@ -653,7 +659,7 @@ tracer.entering(UpdateInfo.class.getSimpleName(), "get", new Object[]{viewroot})
 			throw new ViewException( "View is not valid", viewroot.getAbsolutePath(), Type.DOES_NOT_EXIST );
 		}
 
-tracer.exiting(UpdateInfo.class.getSimpleName(), "get", view);
+		tracer.exiting(SnapshotView.class.getSimpleName(), "get", view);
 		return view;
 	}
 }

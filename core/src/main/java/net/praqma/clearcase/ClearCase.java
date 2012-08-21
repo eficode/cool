@@ -15,13 +15,13 @@ import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
 public abstract class ClearCase extends Cool {
-	
+
 	private static final java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
-	
+
 	private static Logger logger = Logger.getLogger();
 
 	public static final String rx_attr_find = "^\\s*\\S+\\s*=\\s*\\S*\\s*$";
-	
+
 	/**
 	 * Retrieve the attributes for an entity, executed from the current working
 	 * directory
@@ -31,25 +31,25 @@ public abstract class ClearCase extends Cool {
 	 */
 	public static Map<String, String> getAttributes( ClearCase entity, File context ) throws UnableToListAttributesException {
 		tracer.entering(ClearCase.class.getSimpleName(), "getAttributes", new Object[]{entity, context});
-		
+
 		String cmd = "describe -aattr -all " + entity;
 
 		tracer.finest(String.format("Attempting to run Cleartool command: %s", cmd));
-		
+
 		CmdResult res = null;
 		try {
 			res = Cleartool.run( cmd, context );
 		} catch( AbnormalProcessTerminationException e ) {
 			//throw new UCMException( "Could not find attributes on " + fqname + ". Recieved: " + e.getMessage(), e.getMessage() );
 			UnableToListAttributesException exception = new UnableToListAttributesException( entity, context, e );
-			
+
 			tracer.severe(String.format("Exception thrown type: %s; message: %s", exception.getClass(), exception.getMessage()));
-			
+
 			throw exception;
 		}
 		tracer.finest("Successfully ran Cleartool command.");
 		tracer.finest("Parsing Cleartool output for attributes.");
-		
+
 		Map<String, String> atts = new HashMap<String, String>();
 		for( String s : res.stdoutList ) {
 			/* A valid attribute */
@@ -60,7 +60,7 @@ public abstract class ClearCase extends Cool {
 				atts.put( data[0].trim(), data[1].trim() );
 			}
 		}
-		
+
 		tracer.exiting(ClearCase.class.getSimpleName(), "getAttributes", atts);
 
 		return atts;
@@ -108,7 +108,7 @@ public abstract class ClearCase extends Cool {
 	public void setAttribute( String attribute, String value, boolean replace, File context ) throws UnableToSetAttributeException {
 		tracer.entering(ClearCase.class.getSimpleName(), "setAttribute", new Object[]{attribute, value, replace, context});
 		tracer.finest("Checking that we are on a Windows machine.");
-		
+
 		if( Cool.getOS().equals( OperatingSystem.WINDOWS )) {
 			tracer.finest("We are on a Windows machine, setting value.");
 			value = "\\\"" + value + "\\\"";
@@ -120,9 +120,9 @@ public abstract class ClearCase extends Cool {
 		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + this.getFullyQualifiedName() );
 
 		String cmd = "mkattr " + ( replace ? "-replace " : "" ) + attribute + " " + value + " " + this.getFullyQualifiedName();
-		
+
 		tracer.finest(String.format("Attempting to run Cleartool command: %s", cmd));
-		
+
 		try {
 			Cleartool.run( cmd, context );
 			tracer.finest("Successfully ran Cleartool command.");
@@ -133,7 +133,7 @@ public abstract class ClearCase extends Cool {
 			if( !replace ) {
 				tracer.finest("We are not trying to replace.");
 				cmd = "mkattr " + attribute + " " + value + " " + this.getFullyQualifiedName();
-				
+
 				tracer.finest(String.format("Attempting to run new Cleartool command: %s", cmd));
 				try {
 					Cleartool.run( cmd, context );
@@ -151,7 +151,7 @@ public abstract class ClearCase extends Cool {
 		}
 		tracer.exiting(ClearCase.class.getSimpleName(), "setAttribute");
 	}
-	
+
 	/**
 	 * Create an attribute with no possibility of specifying type or range.
 	 * @param name Name of the type
@@ -188,7 +188,7 @@ public abstract class ClearCase extends Cool {
 		}
 		tracer.exiting(ClearCase.class.getSimpleName(), "createSimpleAttributeType");
 	}
-	
+
 	public abstract String getFullyQualifiedName();
 
 }

@@ -7,25 +7,26 @@ import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
+import net.praqma.logging.Config;
 import net.praqma.util.debug.Logger;
 
 import org.w3c.dom.Element;
 
 public class CheckinTask extends AbstractTask {
-private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
-	
+	private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
+
 	private static Logger logger = Logger.getLogger();
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
-tracer.entering(CheckinTask.class.getSimpleName(), "parse", new Object[]{e, context});
+		tracer.entering(CheckinTask.class.getSimpleName(), "parse", new Object[]{e, context});
 		String filename = e.getAttribute( "file" );
 		File file = null;
 		if( filename.length() > 0 ) {
 			file = new File( filename );
 		}
 		String comment = e.getAttribute( "comment" ).length() > 0 ? e.getAttribute( "comment" ) : null;
-		
+
 		if( file != null ) {
 			Version.checkIn( file, false, context.path, comment );
 		} else {
@@ -44,7 +45,7 @@ tracer.entering(CheckinTask.class.getSimpleName(), "parse", new Object[]{e, cont
 				logger.error( e1.getMessage() );				
 			}
 		}
-tracer.exiting(CheckinTask.class.getSimpleName(), "parse");
+		tracer.exiting(CheckinTask.class.getSimpleName(), "parse");
 	}
 
 }

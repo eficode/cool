@@ -12,7 +12,7 @@ import net.praqma.logging.Config;
 import org.w3c.dom.Element;
 
 public class ViewTask extends AbstractTask {
-	
+
 	private static final java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 
 	@Override
@@ -22,7 +22,7 @@ public class ViewTask extends AbstractTask {
 		String tag = getValue( "tag", e, context );
 		String stgloc = e.getAttribute( "stgloc" );
 		boolean snapshot = e.getAttribute( "snapshot" ).length() > 0;
-		
+
 		Stream stream = null;
 		tracer.finest("Attempting to get the PVob from stream...");
 		try {
@@ -36,7 +36,7 @@ public class ViewTask extends AbstractTask {
 			tracer.finest("Could not get the Stream.");
 			/* No stream given */
 		}
-		
+
 		tracer.finest("Checking if snapshot flag is set.");
 		if( snapshot ) {
 			tracer.finest("snapshot flag is set.");
@@ -62,7 +62,7 @@ public class ViewTask extends AbstractTask {
 			context.views.put( tag, DynamicView.create( stgloc, tag, stream ) );
 		}
 		tracer.exiting(ViewTask.class.getSimpleName(), "parse");
-		
+
 	}
 
 }

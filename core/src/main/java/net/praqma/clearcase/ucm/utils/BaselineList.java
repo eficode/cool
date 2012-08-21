@@ -13,54 +13,59 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.logging.Config;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class BaselineList extends ArrayList<Baseline> {
+	private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
+
 	private static Logger logger = Logger.getLogger();
 
 	private List<BaselineFilter> filters = new ArrayList<BaselineFilter>();
 	private Comparator<Baseline> sorter;
 	private boolean load = false;
-	
+
 	private Stream stream;
 	private Component component;
 	private PromotionLevel level;
 	private boolean multisitePolling;
 	private int limit = 0;
-	
+
 	public BaselineList() {
-		
-tracer.entering(AscendingDateSort.class.getSimpleName(), "BaselineList");
+		tracer.entering(BaselineList.class.getSimpleName(), "BaselineList");
+		tracer.exiting(BaselineList.class.getSimpleName(), "BaselineList");
 	}
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "BaselineList");
-	
+
+
 	public BaselineList( Stream stream, Component component, PromotionLevel plevel ) {
 		this( stream, component, plevel, false );
-tracer.entering(AscendingDateSort.class.getSimpleName(), "BaselineList", new Object[]{stream, component, plevel});
+		tracer.entering(AscendingDateSort.class.getSimpleName(), "BaselineList", new Object[]{stream, component, plevel});
+		tracer.exiting(AscendingDateSort.class.getSimpleName(), "BaselineList");
 	}
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "BaselineList");
 
 	public BaselineList( Stream stream, Component component, PromotionLevel plevel, boolean multisitePolling ) {
+		tracer.entering(BaselineList.class.getSimpleName(), "BaselineList", new Object[]{stream, component, plevel, multisitePolling});
 		this.stream = stream;
-tracer.entering(AscendingDateSort.class.getSimpleName(), "BaselineList", new Object[]{stream, component, plevel, multisitePolling});
+
 		this.component = component;
 		this.level = plevel;
 		this.multisitePolling = multisitePolling;
+		tracer.exiting(BaselineList.class.getSimpleName(), "BaselineList");
 	}
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "BaselineList");
-	
+
 	/**
 	 * Create a {@link BaselineList} object from a list of {@link Baseline}s
 	 * @param baselines - A list of {@link Baseline}s
 	 * @return
 	 */
 	public BaselineList( List<Baseline> baselines ) {
+		tracer.entering(BaselineList.class.getSimpleName(), "BaselineList", new Object[]{baselines});
 		this.addAll( baselines );
-tracer.entering(AscendingDateSort.class.getSimpleName(), "BaselineList", new Object[]{baselines});
+		tracer.exiting(BaselineList.class.getSimpleName(), "BaselineList");
 	}
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "BaselineList");
-	
+
+
 	/**
 	 * Apply all the given filters and rules to this
 	 * @return
@@ -68,8 +73,7 @@ tracer.exiting(AscendingDateSort.class.getSimpleName(), "BaselineList");
 	 * @throws UnableToListBaselinesException
 	 */
 	public BaselineList apply() throws UnableToInitializeEntityException, UnableToListBaselinesException {
-
-tracer.entering(AscendingDateSort.class.getSimpleName(), "apply");
+		tracer.entering(BaselineList.class.getSimpleName(), "apply");
 		/* Printing info for debug */
 		logger.debug( " --- Get baselines information --- " );
 		logger.debug( "Component: " + component.getNormalizedName() );
@@ -83,8 +87,8 @@ tracer.entering(AscendingDateSort.class.getSimpleName(), "apply");
 			if( stream.hasPostedDelivery() ) {
 				this.addAll( stream.getPostedBaselines( component, level ) );
 			} else {
+				tracer.exiting(BaselineList.class.getSimpleName(), "apply", this);
 				return this;
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "apply", this);
 			}
 		} else {
 			this.addAll( _get() );
@@ -100,7 +104,7 @@ tracer.exiting(AscendingDateSort.class.getSimpleName(), "apply", this);
 			pruned += filter.filter( this );
 			logger.debug( "Baselines: " + this );
 		}
-		
+
 		/* Load em? */
 		if( load ) {
 			Iterator<Baseline> it = this.iterator();
@@ -117,80 +121,76 @@ tracer.exiting(AscendingDateSort.class.getSimpleName(), "apply", this);
 				}
 			}
 		}
-		
+
 		if( pruned > 0 ) {
 			logger.verbose( "[ClearCase] Pruned " + pruned + " baselines" );
 		}
-		
+
 		/* Sort the baselines */
 		if( sorter != null ) {
 			Collections.sort( this, sorter );
 		}		
-		
+
 		/* Limit? 0 = unlimited */
 		if( limit > 0 && this.size() > 0 ) {
 			BaselineList n = new BaselineList();
 			n.addAll( this.subList( 0, limit ) );
 			logger.debug( "Final list of baselines: " + n );
+			tracer.exiting(BaselineList.class.getSimpleName(), "apply", n);
 			return n;
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "apply", n);
 		} else {
 			logger.debug( "Final list of baselines: " + this );
+			tracer.exiting(BaselineList.class.getSimpleName(), "apply", this);
 			return this;
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "apply", this);
 		}
 	}
-	
+
 	/**
 	 * Apply a single filter to the {@link BaselineList}
 	 * @param filter
 	 * @return
 	 */
 	public BaselineList applyFilter( BaselineFilter filter ) {
+		tracer.entering(BaselineList.class.getSimpleName(), "applyFilter", new Object[]{filter});
 		logger.debug( "Filter: " + filter.getName() );
-tracer.entering(AscendingDateSort.class.getSimpleName(), "applyFilter", new Object[]{filter});
 		filter.filter( this );
-		
+		tracer.exiting(BaselineList.class.getSimpleName(), "applyFilter", this);
 		return this;
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "applyFilter", this);
 	}
-	
+
 	/**
 	 * Set a limit of how many {@link Baseline}s apply should return
 	 * @param limit
 	 * @return
 	 */
 	public BaselineList setLimit( int limit ) {
+		tracer.entering(BaselineList.class.getSimpleName(), "setLimit", new Object[]{limit});
 		this.limit = limit;
-tracer.entering(AscendingDateSort.class.getSimpleName(), "setLimit", new Object[]{limit});
-		
+		tracer.exiting(BaselineList.class.getSimpleName(), "setLimit", this);
 		return this;
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "setLimit", this);
 	}
-	
+
 	/**
 	 * Load the {@link Baseline}s
 	 * @return
 	 */
 	public BaselineList load() {
+		tracer.entering(BaselineList.class.getSimpleName(), "load");
 		this.load = true;
-tracer.entering(AscendingDateSort.class.getSimpleName(), "load");
-		
+		tracer.exiting(BaselineList.class.getSimpleName(), "load", this);
 		return this;
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "load", this);
 	}
-	
+
 	/**
 	 * Set the sorting of the {@link BaselineList}
 	 * @param sorter - A {@link Comparator} of {@link Baseline}s
 	 * @return
 	 */
 	public BaselineList setSorting( Comparator<Baseline> sorter ) {
+		tracer.entering(BaselineList.class.getSimpleName(), "setSorting", new Object[]{sorter});
 		this.sorter = sorter;
-tracer.entering(AscendingDateSort.class.getSimpleName(), "setSorting", new Object[]{sorter});
-		
+		tracer.exiting(BaselineList.class.getSimpleName(), "setSorting", this);
 		return this;
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "setSorting", this);
 	}
 
 	/**
@@ -199,24 +199,23 @@ tracer.exiting(AscendingDateSort.class.getSimpleName(), "setSorting", this);
 	 * @return
 	 */
 	public BaselineList addFilter( BaselineFilter filter ) {
+		tracer.entering(BaselineList.class.getSimpleName(), "addFilter", new Object[]{filter});
 		this.filters.add( filter );
-tracer.entering(AscendingDateSort.class.getSimpleName(), "addFilter", new Object[]{filter});
-		
+		tracer.exiting(BaselineList.class.getSimpleName(), "addFilter", this);
 		return this;
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "addFilter", this);
+
 	}
 
 	private List<Baseline> _get() throws UnableToInitializeEntityException, UnableToListBaselinesException {
+		tracer.entering(BaselineList.class.getSimpleName(), "_get");
 		List<String> bls_str = null;
-		
+
 		String cmd = "lsbl -s -component " + component + " -stream " + stream + ( level != null ? " -level " + level.toString() : "" );
 		try {
 			bls_str = Cleartool.run( cmd ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new UnableToListBaselinesException( stream, component, level, e );
 		}
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "UnableToListBaselinesException");
-tracer.entering(AscendingDateSort.class.getSimpleName(), "UnableToListBaselinesException", new Object[]{component, e});
 
 		logger.debug( "I got " + bls_str.size() + " baselines." );
 		List<Baseline> bls = new ArrayList<Baseline>();
@@ -226,27 +225,26 @@ tracer.entering(AscendingDateSort.class.getSimpleName(), "UnableToListBaselinesE
 			bls.add( Baseline.get( bl, stream.getPVob() ) );
 			c++;
 		}
-		
+		tracer.exiting(BaselineList.class.getSimpleName(), "_get", bls);
 		return bls;
 	}
-	
+
 	public static class AscendingDateSort implements Comparator<Baseline> {
-private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 
 		@Override
 		public int compare( Baseline bl1, Baseline bl2 ) {
-tracer.entering(AscendingDateSort.class.getSimpleName(), "compare", new Object[]{bl1, bl2});
+			tracer.entering(AscendingDateSort.class.getSimpleName(), "compare", new Object[]{bl1, bl2});
 			if( bl2.getDate() == null ) {
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", 1);
+				tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", 1);
 				return 1;
 			}
 			if( bl1.getDate() == null ) {
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", -1);
+				tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", -1);
 				return -1;
 			}
-tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", (int) ( ( bl1.getDate().getTime() / 1000 ) - ( bl2.getDate().getTime() / 1000 ) ));
+			tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", (int) ( ( bl1.getDate().getTime() / 1000 ) - ( bl2.getDate().getTime() / 1000 ) ));
 			return (int) ( ( bl1.getDate().getTime() / 1000 ) - ( bl2.getDate().getTime() / 1000 ) );
 		}
 	}
-	
+
 }

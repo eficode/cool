@@ -17,6 +17,7 @@ import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.entities.Version.Status;
 import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.logging.Config;
 import net.praqma.util.debug.Logger;
 
 /**
@@ -77,18 +78,19 @@ private static java.util.logging.Logger tracer = java.util.logging.Logger.getLog
 	private static final Pattern rx_baselineDiff = Pattern.compile( "^(\\S+)\\s*(.*?)\\s*(.*)\\s*$" );
 	
 	private static Logger logger = Logger.getLogger();
-	
+
 	private Baseline bl1;
 	private Baseline bl2;
-	
+
 	public Difference( Baseline bl1, Baseline bl2 ) {
-tracer.entering(Difference.class.getSimpleName(), "Difference", new Object[]{bl1, bl2});
+		tracer.entering(Difference.class.getSimpleName(), "Difference", new Object[]{bl1, bl2});
 		this.bl1 = bl1;
 		this.bl2 = bl2;
-tracer.exiting(Difference.class.getSimpleName(), "Difference");
+		tracer.exiting(Difference.class.getSimpleName(), "Difference");
 	}
 
 	public List<Version> get( boolean merge, SnapshotView view ) throws CleartoolException, UnableToInitializeEntityException, UnableToLoadEntityException {
+		tracer.entering(Difference.class.getSimpleName(), "get", new Object[]{merge, view});
 		String cmd = "diffbl -version " + ( !merge ? "-nmerge " : "" ) + ( bl1 != null ? bl1.getFullyQualifiedName() : "-pre " ) + " " + bl2.getFullyQualifiedName();
 
 		List<String> lines = null;
@@ -97,8 +99,6 @@ tracer.exiting(Difference.class.getSimpleName(), "Difference");
 			lines = Cleartool.run( cmd, view.getViewRoot() ).stdoutList;
 		} catch( Exception e ) {
 			throw new CleartoolException( "Could not retreive the differences of " + bl1 + " and " + bl2 );
-tracer.exiting(Difference.class.getSimpleName(), "CleartoolException");
-tracer.entering(Difference.class.getSimpleName(), "CleartoolException", new Object[]{not, the, of, +, +, and, +});
 		}
 
 		int length = view.getViewRoot().getAbsoluteFile().toString().length();
@@ -107,7 +107,6 @@ tracer.entering(Difference.class.getSimpleName(), "CleartoolException", new Obje
 		for( int i = 4; i < lines.size(); i++ ) {
 			Matcher m = rx_baselineDiff.matcher( lines.get( i ) );
 			if( m.find() ) {
-
 				String f = m.group( 3 ).trim();
 				logger.debug( "F: " + f );
 				Version v = (Version) Version.get( f );
@@ -116,18 +115,15 @@ tracer.entering(Difference.class.getSimpleName(), "CleartoolException", new Obje
 				if( m.group( 1 ).equals( ">>" ) ) {
 					v.setStatus( Status.ADDED );
 				} else if( m.group( 1 ).equals( "<<" ) ) {
-tracer.exiting(Difference.class.getSimpleName(), "if");
-tracer.entering(Difference.class.getSimpleName(), "if", new Object[]{1, "<<"});
 					v.setStatus( Status.DELETED );
 				} else {
 					v.setStatus( Status.CHANGED );
 				}
-
 				v.load();
 				versions.add( v );
 			}
 		}
-
+		tracer.exiting(Difference.class.getSimpleName(), "get", versions);
 		return versions;
 	}
 }
