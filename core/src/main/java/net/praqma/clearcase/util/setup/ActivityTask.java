@@ -10,9 +10,11 @@ import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 import org.w3c.dom.Element;
 
 public class ActivityTask extends AbstractTask {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
+tracer.entering(ActivityTask.class.getSimpleName(), "parse", new Object[]{e, context});
 		String name = getValue( "name", e, context );
 		String comment = getComment( e, context );
 		String headline = getValue( "headline", e, context, null );
@@ -25,6 +27,7 @@ public class ActivityTask extends AbstractTask {
 		}
 		
 		Activity.create( name, in, pvob, true, comment, headline, context.path );
+tracer.exiting(ActivityTask.class.getSimpleName(), "parse");
 	}
 
 }

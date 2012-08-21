@@ -30,6 +30,7 @@ import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.structure.Tuple;
 
 public class BuildNumber extends Cool {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 	transient private static Logger logger = Logger.getLogger();
 	
 	private final static String rx_buildnumber = "\\S+__(\\d+)_(\\d+)_(\\d+)_(\\d+)";
@@ -46,6 +47,8 @@ public class BuildNumber extends Cool {
 
 		if( !match.find() ) {
 			throw new BuildNumberException( "The given Baseline was not a valid build number" );
+tracer.exiting(BuildNumber.class.getSimpleName(), "BuildNumberException");
+tracer.entering(BuildNumber.class.getSimpleName(), "BuildNumberException", new Object[]{given, was, a, build});
 		}
 
 		String[] result = new String[4];
@@ -63,6 +66,8 @@ public class BuildNumber extends Cool {
 
 		if( !match.find() ) {
 			throw new BuildNumberException( "The given Baseline name, " + baseline + ", was not recognized as a build number." );
+tracer.exiting(BuildNumber.class.getSimpleName(), "BuildNumberException");
+tracer.entering(BuildNumber.class.getSimpleName(), "BuildNumberException", new Object[]{given, name, +, +, was, recognized, a, number."});
 		}
 
 		Tuple<Baseline, String[]> result = new Tuple<Baseline, String[]>();
@@ -81,6 +86,7 @@ public class BuildNumber extends Cool {
 	}
 
 	public static int stampFromComponent( Component component, File dir, String major, String minor, String patch, String sequence, boolean ignoreErrors ) throws HyperlinkException, UnableToInitializeEntityException, BuildNumberException, IOException {
+tracer.entering(BuildNumber.class.getSimpleName(), "stampFromComponent", new Object[]{component, dir, major, minor, patch, sequence, ignoreErrors});
 		List<HyperLink> result = component.getHyperlinks( __BUILD_NUMBER_FILE, dir );
 
 		if( result.size() == 0 ) {
@@ -102,32 +108,40 @@ public class BuildNumber extends Cool {
 			}*/
 		}
 
+tracer.exiting(BuildNumber.class.getSimpleName(), "stampFromComponent", number);
 		return number;
 	}
 
 	public static int stampIntoCode( Baseline baseline ) throws BuildNumberException, UnableToLoadEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, HyperlinkException, IOException, UnableToGetEntityException, UnableToInitializeEntityException {
+tracer.entering(BuildNumber.class.getSimpleName(), "stampIntoCode", new Object[]{baseline});
+tracer.exiting(BuildNumber.class.getSimpleName(), "stampIntoCode", stampIntoCode( baseline, null, false ));
 		return stampIntoCode( baseline, null, false );
 	}
 
 	public static int stampIntoCode( Baseline baseline, File dir ) throws BuildNumberException, HyperlinkException, UnableToInitializeEntityException, IOException {
+tracer.entering(BuildNumber.class.getSimpleName(), "stampIntoCode", new Object[]{baseline, dir});
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.getComponent();
 
 		logger.debug( "I got " + component.getFullyQualifiedName() );
 
+tracer.exiting(BuildNumber.class.getSimpleName(), "stampIntoCode", stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], false ));
 		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], false );
 	}
 
 	public static int stampIntoCode( Baseline baseline, File dir, boolean ignoreErrors ) throws BuildNumberException, HyperlinkException, UnableToInitializeEntityException, IOException  {
+tracer.entering(BuildNumber.class.getSimpleName(), "stampIntoCode", new Object[]{baseline, dir, ignoreErrors});
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.getComponent();
 
 		logger.debug( "I got " + component.getFullyQualifiedName() );
 
+tracer.exiting(BuildNumber.class.getSimpleName(), "stampIntoCode", stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], ignoreErrors ));
 		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], ignoreErrors );
 	}
 
 	public static int stampIntoCode( File file, String major, String minor, String patch, String sequence ) throws IOException {
+tracer.entering(BuildNumber.class.getSimpleName(), "stampIntoCode", new Object[]{file, major, minor, patch, sequence});
 		if( !file.exists() ) {
 			throw new IOException( "The file " + file + " does not exist." );
 		}
@@ -165,6 +179,7 @@ public class BuildNumber extends Cool {
 			System.out.println( "Stamping file " + file + ": Occurrences found" );
 		}
 
+tracer.exiting(BuildNumber.class.getSimpleName(), "stampIntoCode", number);
 		return number;
 	}
 
@@ -187,6 +202,7 @@ public class BuildNumber extends Cool {
 	 * @throws UCMException
 	 */
 	public static Integer getNextBuildSequence( Project project ) throws NoSingleTopComponentException, UnableToInitializeEntityException, UnableToListAttributesException, BuildNumberException, UnableToSetAttributeException {
+tracer.entering(BuildNumber.class.getSimpleName(), "getNextBuildSequence", new Object[]{project});
 		Component c = project.getIntegrationStream().getSingleTopComponent();
 
 		/* Get the build number sequence */
@@ -200,6 +216,7 @@ public class BuildNumber extends Cool {
 
 		c.setAttribute( __BUILD_NUMBER_SEQUENCE, sequence.toString(), true );
 
+tracer.exiting(BuildNumber.class.getSimpleName(), "getNextBuildSequence", sequence);
 		return sequence;
 	}
 
@@ -218,6 +235,7 @@ public class BuildNumber extends Cool {
 	 * @return A flag determining the attributes present
 	 */
 	public static int isValidUCMBuildNumber( Project project ) throws NoSingleTopComponentException, UnableToInitializeEntityException, UnableToListAttributesException {
+tracer.entering(BuildNumber.class.getSimpleName(), "isValidUCMBuildNumber", new Object[]{project});
 		int valid = 0;
 
 		Component c = project.getIntegrationStream().getSingleTopComponent();
@@ -240,6 +258,7 @@ public class BuildNumber extends Cool {
 			valid += 1 << 3;
 		}
 
+tracer.exiting(BuildNumber.class.getSimpleName(), "isValidUCMBuildNumber", valid);
 		return valid;
 	}
 
@@ -254,6 +273,7 @@ public class BuildNumber extends Cool {
 	 * @throws NoSingleTopComponentException 
 	 */
 	public static String getBuildNumber( Project project ) throws UnableToListAttributesException, BuildNumberException, NoSingleTopComponentException, UnableToInitializeEntityException, UnableToSetAttributeException {
+tracer.entering(BuildNumber.class.getSimpleName(), "getBuildNumber", new Object[]{project});
 		String exceptionMsg = "";
 
 		/* Get build number info */
@@ -280,6 +300,7 @@ public class BuildNumber extends Cool {
 		String minor = patts.get( __BUILD_NUMBER_MINOR );
 		String patch = patts.get( __BUILD_NUMBER_PATCH );
 
+tracer.exiting(BuildNumber.class.getSimpleName(), "getBuildNumber", "__" + major + "_" + minor + "_" + patch + "_" + sequence);
 		return "__" + major + "_" + minor + "_" + patch + "_" + sequence;
 	}
 

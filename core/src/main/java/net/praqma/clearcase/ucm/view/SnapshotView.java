@@ -91,6 +91,7 @@ public class SnapshotView extends UCMView {
 		 */
 		public LoadRules( SnapshotView view, Components components ) throws UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException {
 			loadRules = " -add_loadrules ";
+tracer.entering(UpdateInfo.class.getSimpleName(), "LoadRules", new Object[]{view, components});
 
 			if( components.equals( Components.ALL ) ) {
 				logger.debug( "All components" );
@@ -113,6 +114,7 @@ public class SnapshotView extends UCMView {
 				}
 			}
 		}
+tracer.exiting(UpdateInfo.class.getSimpleName(), "LoadRules");
 
 		/**
 		 * Create load rules based on a string
@@ -121,7 +123,9 @@ public class SnapshotView extends UCMView {
 		 */
 		public LoadRules( String loadRules ) {
 			this.loadRules = loadRules = " -add_loadrules " + loadRules;
+tracer.entering(UpdateInfo.class.getSimpleName(), "LoadRules", new Object[]{loadRules});
 		}
+tracer.exiting(UpdateInfo.class.getSimpleName(), "LoadRules");
 
 		public String getLoadRules() {
 			return loadRules;
@@ -129,11 +133,16 @@ public class SnapshotView extends UCMView {
 	}
 
 	public SnapshotView() {
+tracer.entering(UpdateInfo.class.getSimpleName(), "getLoadRules");
+tracer.exiting(UpdateInfo.class.getSimpleName(), "getLoadRules", loadRules);
 
+tracer.entering(UpdateInfo.class.getSimpleName(), "SnapshotView");
 	}
+tracer.exiting(UpdateInfo.class.getSimpleName(), "SnapshotView");
 
 	public SnapshotView( File viewroot ) throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
 		/* TODO Test the view root? Does it exist? Is it a directory? */
+tracer.entering(UpdateInfo.class.getSimpleName(), "SnapshotView", new Object[]{viewroot});
 
 		this.viewroot = viewroot;
 
@@ -144,6 +153,7 @@ public class SnapshotView extends UCMView {
 		this.stream = t.t1;
 		this.pvob = this.stream.getPVob();
 	}
+tracer.exiting(UpdateInfo.class.getSimpleName(), "SnapshotView");
 
 	/**
 	 * Create a Snapshot view given a Stream, view root and a view tag.
@@ -156,6 +166,7 @@ public class SnapshotView extends UCMView {
 	 */
 	public static SnapshotView create( Stream stream, File viewroot, String viewtag ) throws ViewException, UnableToInitializeEntityException, CleartoolException, IOException {
 		//context.makeSnapshotView( stream, viewroot, viewtag );
+tracer.entering(UpdateInfo.class.getSimpleName(), "create", new Object[]{stream, viewroot, viewtag});
 
 		logger.debug( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
 
@@ -180,18 +191,24 @@ public class SnapshotView extends UCMView {
 		view.setStream( stream );
 		
 		return view;
+tracer.exiting(UpdateInfo.class.getSimpleName(), "create", view);
 	}
 
 	public static void createEnvironment( File viewroot ) {
 		createEnvironment( viewroot, "" );
+tracer.entering(UpdateInfo.class.getSimpleName(), "createEnvironment", new Object[]{viewroot});
 	}
+tracer.exiting(UpdateInfo.class.getSimpleName(), "createEnvironment");
 
 	public static void createEnvironment( File viewroot, String viewtagsuffix ) {
 		String viewtag = "cool_" + System.getenv( "COMPUTERNAME" ) + "_env" + viewtagsuffix;
+tracer.entering(UpdateInfo.class.getSimpleName(), "createEnvironment", new Object[]{viewroot, viewtagsuffix});
 	}
+tracer.exiting(UpdateInfo.class.getSimpleName(), "createEnvironment");
 
 	public static void regenerateViewDotDat( File dir, String viewtag ) throws IOException, UnableToListViewsException {
 		logger.debug( dir + ", " + viewtag );
+tracer.entering(UpdateInfo.class.getSimpleName(), "regenerateViewDotDat", new Object[]{dir, viewtag});
 
 		File viewdat = new File( dir + File.separator + VIEW_DOT_DAT_FILE );
 
@@ -249,32 +266,43 @@ public class SnapshotView extends UCMView {
 		// viewdat.set
 		// Command.run( cmd );
 	}
+tracer.exiting(UpdateInfo.class.getSimpleName(), "regenerateViewDotDat");
 
 	public File getViewRoot() {
 		return this.viewroot;
+tracer.entering(UpdateInfo.class.getSimpleName(), "getViewRoot");
+tracer.exiting(UpdateInfo.class.getSimpleName(), "getViewRoot", this.viewroot);
 	}
 
 	@Override
 	public String getPath() {
 		return this.viewroot.toString();
+tracer.entering(UpdateInfo.class.getSimpleName(), "getPath");
+tracer.exiting(UpdateInfo.class.getSimpleName(), "getPath", this.viewroot.toString());
 	}
 
 	public Stream getStream() throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
 		if( this.stream == null ) {
+tracer.entering(UpdateInfo.class.getSimpleName(), "getStream");
 			Stream stream = getStreamFromView( getViewRoot() ).getFirst();
 			this.stream = stream;
 		}
 		return stream;
+tracer.exiting(UpdateInfo.class.getSimpleName(), "getStream", stream);
 	}
 
 	private void setStream( Stream stream ) {
 		this.stream = stream;
+tracer.entering(UpdateInfo.class.getSimpleName(), "setStream", new Object[]{stream});
 	}
+tracer.exiting(UpdateInfo.class.getSimpleName(), "setStream");
 
 	public static String getViewtag( File context ) throws CleartoolException {
 		String cmd = "pwv -s";
+tracer.entering(UpdateInfo.class.getSimpleName(), "getViewtag", new Object[]{context});
 		try {
 			return Cleartool.run( cmd, context ).stdoutBuffer.toString();
+tracer.exiting(UpdateInfo.class.getSimpleName(), "getViewtag", Cleartool.run( cmd, context ).stdoutBuffer.toString());
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to get view tag at " + context , e );
 		}
@@ -282,6 +310,7 @@ public class SnapshotView extends UCMView {
 
 	public static SnapshotView getSnapshotViewFromPath( File viewroot ) throws ClearCaseException, IOException {
 		String viewtag = getViewtag( viewroot );
+tracer.entering(UpdateInfo.class.getSimpleName(), "getSnapshotViewFromPath", new Object[]{viewroot});
 		SnapshotView view = null;
 
 		if( UCMView.viewExists( viewtag ) ) {
@@ -291,6 +320,7 @@ public class SnapshotView extends UCMView {
 		}
 
 		return view;
+tracer.exiting(UpdateInfo.class.getSimpleName(), "getSnapshotViewFromPath", view);
 	}
 
 	/**
@@ -304,6 +334,7 @@ public class SnapshotView extends UCMView {
 	 */
 	public static String viewrootIsValid( File viewroot ) throws IOException, CleartoolException, ViewException {
 		logger.debug( viewroot.getAbsolutePath() );
+tracer.entering(UpdateInfo.class.getSimpleName(), "viewrootIsValid", new Object[]{viewroot});
 
 		File viewdotdatpname = new File( viewroot + File.separator + VIEW_DOT_DAT_FILE );
 
@@ -347,12 +378,14 @@ public class SnapshotView extends UCMView {
 		try {
 			String viewtag = Cleartool.run( cmd ).stdoutBuffer.toString().trim();
 			return viewtag;
+tracer.exiting(UpdateInfo.class.getSimpleName(), "viewrootIsValid", viewtag);
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to list view with " + uuid, e );
 		}
 	}
 
 	public class UpdateInfo {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 		public Integer totalFilesToBeDeleted = 0;
 		public boolean success = false;
 		public Integer filesDeleted = 0;
@@ -368,11 +401,13 @@ public class SnapshotView extends UCMView {
 	}
 
 	public File getCurrentViewRoot( File viewroot ) throws ViewException {
+tracer.entering(UpdateInfo.class.getSimpleName(), "getCurrentViewRoot", new Object[]{viewroot});
 		logger.debug( viewroot.getAbsolutePath() );
 
 		try {
 			String wvroot = Cleartool.run( "pwv -root", viewroot ).stdoutBuffer.toString();
 
+tracer.exiting(UpdateInfo.class.getSimpleName(), "getCurrentViewRoot", new File( wvroot ));
 			return new File( wvroot );
 		} catch( Exception e ) {
 			throw new ViewException( "Unable to get current view " + viewroot, path, Type.INFO_FAILED, e );
@@ -380,8 +415,10 @@ public class SnapshotView extends UCMView {
 	}
 
 	public String getStreamFromView( String viewtag ) throws ViewException {
+tracer.entering(UpdateInfo.class.getSimpleName(), "getStreamFromView", new Object[]{viewtag});
 		try {
 			String fqstreamstr = Cleartool.run( "lsstream -fmt %Xn -view " + viewtag ).stdoutBuffer.toString();
+tracer.exiting(UpdateInfo.class.getSimpleName(), "getStreamFromView", fqstreamstr);
 			return fqstreamstr;
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new ViewException( "Unable to get stream from view " + viewtag, path, Type.INFO_FAILED, e );
@@ -390,10 +427,13 @@ public class SnapshotView extends UCMView {
 
 	/*
 	 * public void cancel() throws UCMException { context.cancelDeliver(
+tracer.entering(UpdateInfo.class.getSimpleName(), "cancel");
+tracer.exiting(UpdateInfo.class.getSimpleName(), "cancel");
 	 * viewroot, null ); }
 	 */
 
 	public UpdateInfo Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules loadRules ) throws CleartoolException, ViewException {
+tracer.entering(UpdateInfo.class.getSimpleName(), "Update", new Object[]{swipe, generate, overwrite, excludeRoot, loadRules});
 
 		UpdateInfo info = new UpdateInfo();
 
@@ -418,10 +458,12 @@ public class SnapshotView extends UCMView {
 		String result = updateView( this, overwrite, loadRules.getLoadRules() );
 		logger.debug( result );
 
+tracer.exiting(UpdateInfo.class.getSimpleName(), "Update", info);
 		return info;
 	}
 	
 	private static String updateView( SnapshotView view, boolean overwrite, String loadrules ) throws CleartoolException, ViewException {
+tracer.entering(UpdateInfo.class.getSimpleName(), "updateView", new Object[]{view, overwrite, loadrules});
 		//String result = strategy.viewUpdate( view.getViewRoot(), overwrite, loadrules );
 		
 		String result = "";
@@ -455,9 +497,11 @@ public class SnapshotView extends UCMView {
 		
 		Matcher match = pattern_cache.matcher( result );
 		if( match.find() ) {
+tracer.exiting(UpdateInfo.class.getSimpleName(), "updateView", match.group( 1 ));
 			return match.group( 1 );
 		}
 
+tracer.exiting(UpdateInfo.class.getSimpleName(), "updateView", "");
 		return "";
 	}
 	
@@ -514,6 +558,8 @@ public class SnapshotView extends UCMView {
 			result = Cleartool.run( cmd ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to list files " + fls, e );
+tracer.exiting(UpdateInfo.class.getSimpleName(), "CleartoolException");
+tracer.entering(UpdateInfo.class.getSimpleName(), "CleartoolException", new Object[]{to, files, +, e});
 		}
 		List<File> vpFiles = new ArrayList<File>();
 
@@ -527,6 +573,8 @@ public class SnapshotView extends UCMView {
 			}
 
 			vpFiles.add( new File( vpFile ) );
+tracer.exiting(UpdateInfo.class.getSimpleName(), "File");
+tracer.entering(UpdateInfo.class.getSimpleName(), "File", new Object[]{)});
 		}
 
 		int total = vpFiles.size();
@@ -595,6 +643,7 @@ public class SnapshotView extends UCMView {
 	}
 	
 	public static SnapshotView get( File viewroot ) throws IOException, ViewException, UnableToInitializeEntityException, CleartoolException {
+tracer.entering(UpdateInfo.class.getSimpleName(), "get", new Object[]{viewroot});
 		String viewtag = getViewtag( viewroot );
 		SnapshotView view = null;
 
@@ -604,6 +653,7 @@ public class SnapshotView extends UCMView {
 			throw new ViewException( "View is not valid", viewroot.getAbsolutePath(), Type.DOES_NOT_EXIST );
 		}
 
+tracer.exiting(UpdateInfo.class.getSimpleName(), "get", view);
 		return view;
 	}
 }

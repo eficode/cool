@@ -14,9 +14,11 @@ import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 import org.w3c.dom.Element;
 
 public class StreamTask extends AbstractTask {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
+tracer.entering(StreamTask.class.getSimpleName(), "parse", new Object[]{e, context});
 		String name = getValue( "name", e, context );
 		boolean integration = e.getAttribute( "type" ).equals( "integration" );
 		String comment = getComment( e, context );
@@ -48,6 +50,7 @@ public class StreamTask extends AbstractTask {
 		} else {
 			context.streams.put( name, Stream.create( Stream.get( in, pvob ), name + "@" + pvob, readonly, baselines ) );
 		}
+tracer.exiting(StreamTask.class.getSimpleName(), "parse");
 	}
 
 }

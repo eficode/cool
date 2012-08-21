@@ -19,13 +19,19 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public abstract class AbstractTask {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 
 	public abstract void parse( Element e, Context context ) throws ClearCaseException;
+tracer.exiting(AbstractTask.class.getSimpleName(), "parse");
+tracer.entering(AbstractTask.class.getSimpleName(), "parse", new Object[]{e, context});
 	
 	public PVob getPVob( String name ) {
+tracer.entering(AbstractTask.class.getSimpleName(), "getPVob", new Object[]{name});
 		if( name.length() > 0 ) {
+tracer.exiting(AbstractTask.class.getSimpleName(), "getPVob", new PVob( name ));
 			return new PVob( name );
 		} else {
+tracer.exiting(AbstractTask.class.getSimpleName(), "getPVob", null);
 			return null;
 		}
 	}
@@ -40,28 +46,36 @@ public abstract class AbstractTask {
 	 * @return The tag given the OS context or null
 	 */
 	public String getTag( Element e, Context context ) {
+tracer.entering(AbstractTask.class.getSimpleName(), "getTag", new Object[]{e, context});
 		String tag = getValue( "tag", e, context, null ); /* Same as wintag */
 		String wintag = getValue( "wintag", e, context, null );
 		String lintag = getValue( "linuxtag", e, context, null );
 		
 		if( Cool.getOS().equals( OperatingSystem.WINDOWS ) ) {
 			if( wintag != null ) {
+tracer.exiting(AbstractTask.class.getSimpleName(), "getTag", wintag);
 				return wintag;
 			} else if( tag != null ) {
+tracer.exiting(AbstractTask.class.getSimpleName(), "getTag", ( tag.startsWith( "\\" ) ? tag : "\\" + tag ));
 				return ( tag.startsWith( "\\" ) ? tag : "\\" + tag );
 			} else {
+tracer.exiting(AbstractTask.class.getSimpleName(), "getTag", null);
 				return null;
 			}
 		} else {
+tracer.exiting(AbstractTask.class.getSimpleName(), "getTag", lintag);
 			return lintag;
 		}
 	}
 	
 	public String getValue( String name, Element e, Context context ) {
+tracer.entering(AbstractTask.class.getSimpleName(), "getValue", new Object[]{name, e, context});
+tracer.exiting(AbstractTask.class.getSimpleName(), "getValue", getValue( name, e, context, "" ));
 		return getValue( name, e, context, "" );
 	}
 	
 	public String getValue( String name, Element e, Context context, String def ) {
+tracer.entering(AbstractTask.class.getSimpleName(), "getValue", new Object[]{name, e, context, def});
 		String value = e.getAttribute( name );
 		
 		Matcher m = rx_variable.matcher( value );
@@ -71,10 +85,12 @@ public abstract class AbstractTask {
 			value = value.replace( m.group( 1 ), var );
 		}
 		
+tracer.exiting(AbstractTask.class.getSimpleName(), "getValue", value.length() > 0 ? value : def);
 		return value.length() > 0 ? value : def;
 	}
 	
 	public boolean getBoolean( String name, Element e, Context context, boolean def ) {
+tracer.entering(AbstractTask.class.getSimpleName(), "getBoolean", new Object[]{name, e, context, def});
 		String value = e.getAttribute( name );
 		
 		value = parseField( value, context );
@@ -91,10 +107,12 @@ public abstract class AbstractTask {
 			}
 		}
 		
+tracer.exiting(AbstractTask.class.getSimpleName(), "getBoolean", result);
 		return result;
 	}
 	
 	public String parseField( String value, Context context ) {
+tracer.entering(AbstractTask.class.getSimpleName(), "parseField", new Object[]{value, context});
 		Matcher m = rx_variable.matcher( value );
 
 		while( m.find() ) {
@@ -102,15 +120,19 @@ public abstract class AbstractTask {
 			value = value.replace( m.group( 1 ), var );
 		}
 		
+tracer.exiting(AbstractTask.class.getSimpleName(), "parseField", value);
 		return value;
 	}
 	
 	public String getComment( Element e, Context context ) {
+tracer.entering(AbstractTask.class.getSimpleName(), "getComment", new Object[]{e, context});
 		String comment = getValue( "comment", e, context );
+tracer.exiting(AbstractTask.class.getSimpleName(), "getComment", comment.length() > 0 ? comment : null);
 		return comment.length() > 0 ? comment : null;
 	}
 	
     public Element getFirstElement( Element e, String tag ) throws DOMException {
+tracer.entering(AbstractTask.class.getSimpleName(), "getFirstElement", new Object[]{e, tag});
         NodeList list = e.getChildNodes();
 
         for( int i = 0; i < list.getLength(); i++ ) {
@@ -118,6 +140,7 @@ public abstract class AbstractTask {
 
             if( node.getNodeType() == Node.ELEMENT_NODE ) {
                 if( node.getNodeName().equals( tag ) ) {
+tracer.exiting(AbstractTask.class.getSimpleName(), "getFirstElement", (Element) node);
                     return (Element) node;
                 }
             }

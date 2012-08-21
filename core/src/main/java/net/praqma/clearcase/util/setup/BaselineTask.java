@@ -15,11 +15,13 @@ import net.praqma.util.debug.Logger;
 import org.w3c.dom.Element;
 
 public class BaselineTask extends AbstractTask {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 	
 	private static Logger logger = Logger.getLogger();
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
+tracer.entering(BaselineTask.class.getSimpleName(), "parse", new Object[]{e, context});
 		String name = getValue( "name", e, context );
 		String label = e.getAttribute( "label" );
 		String identical = e.getAttribute( "identical" );
@@ -40,6 +42,7 @@ public class BaselineTask extends AbstractTask {
 		}
 		
 		context.baselines.put( name, Baseline.create( name, component, context.path, LabelBehaviour.valueOf( label ), identical.length() > 0, null, components ) );
+tracer.exiting(BaselineTask.class.getSimpleName(), "parse");
 	}
 
 }

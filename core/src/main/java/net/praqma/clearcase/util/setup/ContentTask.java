@@ -11,11 +11,13 @@ import net.praqma.util.debug.Logger;
 import org.w3c.dom.Element;
 
 public class ContentTask extends AbstractTask {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 	
 	private static Logger logger = Logger.getLogger();
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
+tracer.entering(ContentTask.class.getSimpleName(), "parse", new Object[]{e, context});
 		File file = new File( context.path, e.getAttribute( "file" ) );
 		String content = getValue( "content", e, context, "" );
 		
@@ -34,6 +36,7 @@ public class ContentTask extends AbstractTask {
 		}
 		
 		
+tracer.exiting(ContentTask.class.getSimpleName(), "parse");
 	}
 
 }

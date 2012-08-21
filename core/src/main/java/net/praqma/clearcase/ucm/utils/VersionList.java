@@ -11,18 +11,24 @@ import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.util.debug.Logger;
 
 public class VersionList extends ArrayList<Version> {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 
 	private static Logger logger = Logger.getLogger();
 	
 	public VersionList() {
+tracer.entering(VersionList.class.getSimpleName(), "VersionList");
 		
+tracer.exiting(VersionList.class.getSimpleName(), "VersionList");
 	}
 	
 	public VersionList( List<Version> versions ) {
+tracer.entering(VersionList.class.getSimpleName(), "VersionList", new Object[]{versions});
 		this.addAll( versions );
+tracer.exiting(VersionList.class.getSimpleName(), "VersionList");
 	}
 	
 	public VersionList getLatest() {
+tracer.entering(VersionList.class.getSimpleName(), "getLatest");
 		VersionList list = new VersionList();
 		
 		Map<File, Map<String, Version>> fmap = new HashMap<File, Map<String, Version>>();
@@ -62,6 +68,7 @@ public class VersionList extends ArrayList<Version> {
 			}
 		}
 		
+tracer.exiting(VersionList.class.getSimpleName(), "getLatest", list);
 		return list;
 	}
 }

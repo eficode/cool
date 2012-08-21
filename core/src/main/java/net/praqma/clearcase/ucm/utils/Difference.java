@@ -72,6 +72,7 @@ import net.praqma.util.debug.Logger;
  *
  */
 public class Difference {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 	
 	private static final Pattern rx_baselineDiff = Pattern.compile( "^(\\S+)\\s*(.*?)\\s*(.*)\\s*$" );
 	
@@ -81,8 +82,10 @@ public class Difference {
 	private Baseline bl2;
 	
 	public Difference( Baseline bl1, Baseline bl2 ) {
+tracer.entering(Difference.class.getSimpleName(), "Difference", new Object[]{bl1, bl2});
 		this.bl1 = bl1;
 		this.bl2 = bl2;
+tracer.exiting(Difference.class.getSimpleName(), "Difference");
 	}
 
 	public List<Version> get( boolean merge, SnapshotView view ) throws CleartoolException, UnableToInitializeEntityException, UnableToLoadEntityException {
@@ -94,6 +97,8 @@ public class Difference {
 			lines = Cleartool.run( cmd, view.getViewRoot() ).stdoutList;
 		} catch( Exception e ) {
 			throw new CleartoolException( "Could not retreive the differences of " + bl1 + " and " + bl2 );
+tracer.exiting(Difference.class.getSimpleName(), "CleartoolException");
+tracer.entering(Difference.class.getSimpleName(), "CleartoolException", new Object[]{not, the, of, +, +, and, +});
 		}
 
 		int length = view.getViewRoot().getAbsoluteFile().toString().length();
@@ -111,6 +116,8 @@ public class Difference {
 				if( m.group( 1 ).equals( ">>" ) ) {
 					v.setStatus( Status.ADDED );
 				} else if( m.group( 1 ).equals( "<<" ) ) {
+tracer.exiting(Difference.class.getSimpleName(), "if");
+tracer.entering(Difference.class.getSimpleName(), "if", new Object[]{1, "<<"});
 					v.setStatus( Status.DELETED );
 				} else {
 					v.setStatus( Status.CHANGED );

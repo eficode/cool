@@ -31,18 +31,24 @@ public class BaselineList extends ArrayList<Baseline> {
 	
 	public BaselineList() {
 		
+tracer.entering(AscendingDateSort.class.getSimpleName(), "BaselineList");
 	}
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "BaselineList");
 	
 	public BaselineList( Stream stream, Component component, PromotionLevel plevel ) {
 		this( stream, component, plevel, false );
+tracer.entering(AscendingDateSort.class.getSimpleName(), "BaselineList", new Object[]{stream, component, plevel});
 	}
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "BaselineList");
 
 	public BaselineList( Stream stream, Component component, PromotionLevel plevel, boolean multisitePolling ) {
 		this.stream = stream;
+tracer.entering(AscendingDateSort.class.getSimpleName(), "BaselineList", new Object[]{stream, component, plevel, multisitePolling});
 		this.component = component;
 		this.level = plevel;
 		this.multisitePolling = multisitePolling;
 	}
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "BaselineList");
 	
 	/**
 	 * Create a {@link BaselineList} object from a list of {@link Baseline}s
@@ -51,7 +57,9 @@ public class BaselineList extends ArrayList<Baseline> {
 	 */
 	public BaselineList( List<Baseline> baselines ) {
 		this.addAll( baselines );
+tracer.entering(AscendingDateSort.class.getSimpleName(), "BaselineList", new Object[]{baselines});
 	}
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "BaselineList");
 	
 	/**
 	 * Apply all the given filters and rules to this
@@ -61,6 +69,7 @@ public class BaselineList extends ArrayList<Baseline> {
 	 */
 	public BaselineList apply() throws UnableToInitializeEntityException, UnableToListBaselinesException {
 
+tracer.entering(AscendingDateSort.class.getSimpleName(), "apply");
 		/* Printing info for debug */
 		logger.debug( " --- Get baselines information --- " );
 		logger.debug( "Component: " + component.getNormalizedName() );
@@ -75,6 +84,7 @@ public class BaselineList extends ArrayList<Baseline> {
 				this.addAll( stream.getPostedBaselines( component, level ) );
 			} else {
 				return this;
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "apply", this);
 			}
 		} else {
 			this.addAll( _get() );
@@ -123,9 +133,11 @@ public class BaselineList extends ArrayList<Baseline> {
 			n.addAll( this.subList( 0, limit ) );
 			logger.debug( "Final list of baselines: " + n );
 			return n;
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "apply", n);
 		} else {
 			logger.debug( "Final list of baselines: " + this );
 			return this;
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "apply", this);
 		}
 	}
 	
@@ -136,9 +148,11 @@ public class BaselineList extends ArrayList<Baseline> {
 	 */
 	public BaselineList applyFilter( BaselineFilter filter ) {
 		logger.debug( "Filter: " + filter.getName() );
+tracer.entering(AscendingDateSort.class.getSimpleName(), "applyFilter", new Object[]{filter});
 		filter.filter( this );
 		
 		return this;
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "applyFilter", this);
 	}
 	
 	/**
@@ -148,8 +162,10 @@ public class BaselineList extends ArrayList<Baseline> {
 	 */
 	public BaselineList setLimit( int limit ) {
 		this.limit = limit;
+tracer.entering(AscendingDateSort.class.getSimpleName(), "setLimit", new Object[]{limit});
 		
 		return this;
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "setLimit", this);
 	}
 	
 	/**
@@ -158,8 +174,10 @@ public class BaselineList extends ArrayList<Baseline> {
 	 */
 	public BaselineList load() {
 		this.load = true;
+tracer.entering(AscendingDateSort.class.getSimpleName(), "load");
 		
 		return this;
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "load", this);
 	}
 	
 	/**
@@ -169,8 +187,10 @@ public class BaselineList extends ArrayList<Baseline> {
 	 */
 	public BaselineList setSorting( Comparator<Baseline> sorter ) {
 		this.sorter = sorter;
+tracer.entering(AscendingDateSort.class.getSimpleName(), "setSorting", new Object[]{sorter});
 		
 		return this;
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "setSorting", this);
 	}
 
 	/**
@@ -180,8 +200,10 @@ public class BaselineList extends ArrayList<Baseline> {
 	 */
 	public BaselineList addFilter( BaselineFilter filter ) {
 		this.filters.add( filter );
+tracer.entering(AscendingDateSort.class.getSimpleName(), "addFilter", new Object[]{filter});
 		
 		return this;
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "addFilter", this);
 	}
 
 	private List<Baseline> _get() throws UnableToInitializeEntityException, UnableToListBaselinesException {
@@ -193,6 +215,8 @@ public class BaselineList extends ArrayList<Baseline> {
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new UnableToListBaselinesException( stream, component, level, e );
 		}
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "UnableToListBaselinesException");
+tracer.entering(AscendingDateSort.class.getSimpleName(), "UnableToListBaselinesException", new Object[]{component, e});
 
 		logger.debug( "I got " + bls_str.size() + " baselines." );
 		List<Baseline> bls = new ArrayList<Baseline>();
@@ -207,15 +231,20 @@ public class BaselineList extends ArrayList<Baseline> {
 	}
 	
 	public static class AscendingDateSort implements Comparator<Baseline> {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 
 		@Override
 		public int compare( Baseline bl1, Baseline bl2 ) {
+tracer.entering(AscendingDateSort.class.getSimpleName(), "compare", new Object[]{bl1, bl2});
 			if( bl2.getDate() == null ) {
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", 1);
 				return 1;
 			}
 			if( bl1.getDate() == null ) {
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", -1);
 				return -1;
 			}
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", (int) ( ( bl1.getDate().getTime() / 1000 ) - ( bl2.getDate().getTime() / 1000 ) ));
 			return (int) ( ( bl1.getDate().getTime() / 1000 ) - ( bl2.getDate().getTime() / 1000 ) );
 		}
 	}

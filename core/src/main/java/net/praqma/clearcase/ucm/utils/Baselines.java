@@ -55,7 +55,11 @@ public class Baselines {
 		} catch( AbnormalProcessTerminationException e ) {
 			//throw new UCMException( "Unable to get baselines: " + e.getMessage() );
 			throw new UnableToListBaselinesException( stream, component, plevel, e );
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "UCMException");
+tracer.entering(AscendingDateSort.class.getSimpleName(), "UCMException", new Object[]{to, baselines:, +});
 		}
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "UnableToListBaselinesException");
+tracer.entering(AscendingDateSort.class.getSimpleName(), "UnableToListBaselinesException", new Object[]{component, e});
 
 		logger.debug( "I got " + bls_str.size() + " baselines." );
 		List<Baseline> bls = new ArrayList<Baseline>();
@@ -70,29 +74,40 @@ public class Baselines {
 	}
 	
 	private static class AscendingDateSort implements Comparator<Baseline> {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 
 		@Override
 		public int compare( Baseline bl1, Baseline bl2 ) {
+tracer.entering(AscendingDateSort.class.getSimpleName(), "compare", new Object[]{bl1, bl2});
 			if( bl2.getDate() == null ) {
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", 1);
 				return 1;
 			}
 			if( bl1.getDate() == null ) {
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", -1);
 				return -1;
 			}
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "compare", (int) ( ( bl1.getDate().getTime() / 1000 ) - ( bl2.getDate().getTime() / 1000 ) ));
 			return (int) ( ( bl1.getDate().getTime() / 1000 ) - ( bl2.getDate().getTime() / 1000 ) );
 		}
 	}
 	
 	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		return get( component, stream, plevel, max, null, null );
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "get", get( component, stream, plevel, max, null, null ));
+tracer.entering(AscendingDateSort.class.getSimpleName(), "get", new Object[]{stream, max, null});
 	}
 	
 	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max, Date date ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		return get( component, stream, plevel, max, date, null );
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "get", get( component, stream, plevel, max, date, null ));
+tracer.entering(AscendingDateSort.class.getSimpleName(), "get", new Object[]{stream, max, null});
 	}
 	
 	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max, Baseline after) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		return get( component, stream, plevel, max, null, after );
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "get", get( component, stream, plevel, max, null, after ));
+tracer.entering(AscendingDateSort.class.getSimpleName(), "get", new Object[]{stream, max, after});
 	}
 	
 	public static List<Baseline> get( Component component, Stream stream, PromotionLevel plevel, int max, Date date, Baseline after ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
@@ -143,6 +158,8 @@ public class Baselines {
 
 		/* Sort by date - first is oldest, last is newest */
 		Collections.sort( baselines, new AscendingDateSort() );
+tracer.exiting(AscendingDateSort.class.getSimpleName(), "AscendingDateSort");
+tracer.entering(AscendingDateSort.class.getSimpleName(), "AscendingDateSort");
         for (Baseline b : baselines)
             logger.debug( "Baselines: " + b.stringify() );
         

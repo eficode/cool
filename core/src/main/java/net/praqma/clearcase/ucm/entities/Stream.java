@@ -42,6 +42,7 @@ import net.praqma.util.execute.CmdResult;
  * 
  */
 public class Stream extends UCMEntity implements Diffable, Serializable, StreamContainable {
+private static java.util.logging.Logger tracer = java.util.logging.Logger.getLogger(Config.GLOBAL_LOGGER_NAME);
 
 	private static final String rx_stream_load = "\\s*Error: stream not found\\s*";
 
@@ -59,7 +60,9 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	private Stream parent;
 
 	public Stream() {
+tracer.entering(Stream.class.getSimpleName(), "Stream");
 		super( "stream" );
+tracer.exiting(Stream.class.getSimpleName(), "Stream");
 	}
 
 	/**
@@ -69,12 +72,16 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * @return A new Stream Entity
 	 */
 	static Stream getEntity() {
+tracer.entering(Stream.class.getSimpleName(), "getEntity");
+tracer.exiting(Stream.class.getSimpleName(), "getEntity", new Stream());
 		return new Stream();
 	}
 	
 	public static Stream create( Stream parent, String nstream, boolean readonly, Baseline baseline ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
+tracer.entering(Stream.class.getSimpleName(), "create", new Object[]{parent, nstream, readonly, baseline});
 		List<Baseline> baselines = new ArrayList<Baseline>();
 		baselines.add( baseline );
+tracer.exiting(Stream.class.getSimpleName(), "create", create( parent, nstream, readonly, baselines ));
 		return create( parent, nstream, readonly, baselines );
 	}
 
@@ -91,6 +98,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * @return A new Stream given the parameters
 	 */
 	public static Stream create( StreamContainable parent, String nstream, boolean readonly, List<Baseline> baselines ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
+tracer.entering(Stream.class.getSimpleName(), "create", new Object[]{parent, nstream, readonly, baselines});
 		logger.debug( "Creating stream " + nstream + " as child of " + parent );
 
 		String cmd = "mkstream -in " + parent;
@@ -127,16 +135,20 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			stream.setParent( (Stream)parent );
 		}
 
+tracer.exiting(Stream.class.getSimpleName(), "create", stream);
 		return stream;
 	}
 		
 	public static Stream createIntegration( String name, Project project, Baseline baseline ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
+tracer.entering(Stream.class.getSimpleName(), "createIntegration", new Object[]{name, project, baseline});
 		List<Baseline> baselines = new ArrayList<Baseline>();
 		baselines.add( baseline );
+tracer.exiting(Stream.class.getSimpleName(), "createIntegration", createIntegration( name, project, baselines ));
 		return createIntegration( name, project, baselines );
 	}
 	
 	public static Stream createIntegration( String name, Project project, List<Baseline> baselines ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
+tracer.entering(Stream.class.getSimpleName(), "createIntegration", new Object[]{name, project, baselines});
 		String cmd = "mkstream -integration -in " + project;
 				
 		if( baselines != null && baselines.size() > 0 ) {
@@ -162,10 +174,12 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			throw new UnableToCreateEntityException( Stream.class, e );
 		}
 
+tracer.exiting(Stream.class.getSimpleName(), "createIntegration", Stream.get( name ));
 		return Stream.get( name );
 	}
 
 	public Stream load() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToInitializeEntityException {
+tracer.entering(Stream.class.getSimpleName(), "load");
 		logger.debug( "loading stream" );
 		//context.loadStream( this );
 
@@ -226,6 +240,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 		this.loaded = true;
 
+tracer.exiting(Stream.class.getSimpleName(), "load", this);
 		return this;
 	}
 
@@ -266,6 +281,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 				load();
 			} catch( ClearCaseException e ) {
 				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+tracer.exiting(Stream.class.getSimpleName(), "EntityNotLoadedException");
+tracer.entering(Stream.class.getSimpleName(), "EntityNotLoadedException", new Object[]{fqname, ", not, auto, e});
 			}
 		}
 
@@ -278,6 +295,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 				res = Cleartool.run( cmd );
 			} catch( AbnormalProcessTerminationException e ) {
 				throw new UCMEntityNotFoundException( this, e );
+tracer.exiting(Stream.class.getSimpleName(), "UCMEntityNotFoundException");
+tracer.entering(Stream.class.getSimpleName(), "UCMEntityNotFoundException", new Object[]{e});
 			}
 
 			String[] strms = res.stdoutBuffer.toString().split( ", " );
@@ -301,6 +320,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 				logger.debug( "Removing [" + stream.getShortname() + "] due to non-supported posted delivery" );
 				it.remove();
 			} else if( !mastership.equals( childMastership ) ) {
+tracer.exiting(Stream.class.getSimpleName(), "if");
+tracer.entering(Stream.class.getSimpleName(), "if", new Object[]{childMastership});
 				logger.debug( "Removing [" + stream.getShortname() + "] due to different mastership" );
 				it.remove();
 
@@ -332,15 +353,19 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 		} catch( Exception e ) {
 			throw new UnableToInitializeEntityException( Baseline.class, e );
+tracer.exiting(Stream.class.getSimpleName(), "UnableToInitializeEntityException");
+tracer.entering(Stream.class.getSimpleName(), "UnableToInitializeEntityException", new Object[]{e});
 		}
 		
 		return res;
 	}
 	
 	public boolean hasPostedDelivery() throws UnableToInitializeEntityException {
+tracer.entering(Stream.class.getSimpleName(), "hasPostedDelivery");
 		logger.debug( "hasPostedDelivery" );
 		try {
 			logger.debug( "Status: " + Deliver.getStatus( this ) );
+tracer.exiting(Stream.class.getSimpleName(), "hasPostedDelivery", Deliver.getStatus( this ).contains( "Operation posted from" ));
 			return Deliver.getStatus( this ).contains( "Operation posted from" );
 		} catch( Exception e ) {
 			throw new UnableToInitializeEntityException( Stream.class, e );
@@ -348,10 +373,13 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	public void setProject( Project project ) {
+tracer.entering(Stream.class.getSimpleName(), "setProject", new Object[]{project});
 		this.project = project;
+tracer.exiting(Stream.class.getSimpleName(), "setProject");
 	}
 
 	public void setDefaultTarget( Stream stream ) throws CleartoolException {
+tracer.entering(Stream.class.getSimpleName(), "setDefaultTarget", new Object[]{stream});
 		
 		String cmd = "chstream -target " + stream + " " + this;
 		
@@ -361,6 +389,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		} catch( Exception e ) {
 			throw new CleartoolException( "Unable to change default target to " + stream.getNormalizedName(), e );
 		}
+tracer.exiting(Stream.class.getSimpleName(), "setDefaultTarget");
 	}
 
 	/**
@@ -401,16 +430,21 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 *             Is thrown if the fully qualified name is not a valid name
 	 */
 	public static boolean streamExists( String fqname ) {
+tracer.entering(Stream.class.getSimpleName(), "streamExists", new Object[]{fqname});
 		String cmd = "describe " + fqname;
 		try {
 			Cleartool.run( cmd );
+tracer.exiting(Stream.class.getSimpleName(), "streamExists", true);
 			return true;
 		} catch( Exception e ) {
+tracer.exiting(Stream.class.getSimpleName(), "streamExists", false);
 			return false;
 		}
 	}
 
 	public boolean exists() {
+tracer.entering(Stream.class.getSimpleName(), "exists");
+tracer.exiting(Stream.class.getSimpleName(), "exists", streamExists( this.fqname ));
 		return streamExists( this.fqname );
 	}
 
@@ -418,15 +452,19 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 	public List<Baseline> getRecommendedBaselines() throws UnableToListBaselinesException, UnableToInitializeEntityException {
 		return getRecommendedBaselines( false );
+tracer.exiting(Stream.class.getSimpleName(), "getRecommendedBaselines", getRecommendedBaselines( false ));
+tracer.entering(Stream.class.getSimpleName(), "getRecommendedBaselines");
 	}
 
 	public void generate() throws CleartoolException {
+tracer.entering(Stream.class.getSimpleName(), "generate");
 		String cmd = "chstream -generate " + this;
 		try {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to generate " + this, e );
 		}
+tracer.exiting(Stream.class.getSimpleName(), "generate");
 	}
 
 	public List<Baseline> getRecommendedBaselines( boolean force ) throws UnableToListBaselinesException, UnableToInitializeEntityException {
@@ -441,7 +479,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 				result = Cleartool.run( cmd ).stdoutBuffer.toString();
 			} catch( AbnormalProcessTerminationException e ) {
 				//throw new UCMException( "Unable to get recommended baselines from " + stream + ": " + e.getMessage() );
+tracer.exiting(Stream.class.getSimpleName(), "UCMException");
+tracer.entering(Stream.class.getSimpleName(), "UCMException", new Object[]{to, recommended, from, +, +, ", e.getMessage()});
 				throw new UnableToListBaselinesException( this, null, null, e );
+tracer.exiting(Stream.class.getSimpleName(), "UnableToListBaselinesException");
+tracer.entering(Stream.class.getSimpleName(), "UnableToListBaselinesException", new Object[]{null, e});
 			}
 			
 			String[] rs = result.split( " " );
@@ -461,12 +503,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	public void recommendBaseline( Baseline baseline ) throws CleartoolException {
+tracer.entering(Stream.class.getSimpleName(), "recommendBaseline", new Object[]{baseline});
 		String cmd = "chstream -recommend " + baseline + " " + this;
 		try {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to recommend " + baseline, e );
 		}
+tracer.exiting(Stream.class.getSimpleName(), "recommendBaseline");
 	}
 
 	public List<Baseline> getLatestBaselines() throws UnableToInitializeEntityException, CleartoolException {
@@ -476,6 +520,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			lines = Cleartool.run( cmd, null, false ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to get latest baselines from " + this, e );
+tracer.exiting(Stream.class.getSimpleName(), "CleartoolException");
+tracer.entering(Stream.class.getSimpleName(), "CleartoolException", new Object[]{to, latest, from, +, e});
 		}
 		
 		List<Baseline> bls = new ArrayList<Baseline>();
@@ -495,6 +541,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	public Component getSingleTopComponent() throws NoSingleTopComponentException, UnableToInitializeEntityException {
+tracer.entering(Stream.class.getSimpleName(), "getSingleTopComponent");
 		List<Baseline> bls;
 		try {
 			bls = this.getRecommendedBaselines();
@@ -506,10 +553,12 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			throw new NoSingleTopComponentException( this );
 		}
 
+tracer.exiting(Stream.class.getSimpleName(), "getSingleTopComponent", bls.get( 0 ).getComponent());
 		return bls.get( 0 ).getComponent();
 	}
 
 	public Project getProject() {
+tracer.entering(Stream.class.getSimpleName(), "getProject");
 		if( !loaded ) {
 			try {
 				load();
@@ -518,6 +567,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 		}
 		
+tracer.exiting(Stream.class.getSimpleName(), "getProject", this.project);
 		return this.project;
 	}
 	
@@ -530,6 +580,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			
 		} catch( Exception e ) {
 			throw new CleartoolException( "Unable to list views for " + this, e );
+tracer.exiting(Stream.class.getSimpleName(), "CleartoolException");
+tracer.entering(Stream.class.getSimpleName(), "CleartoolException", new Object[]{to, views, ", this});
 		}
 		
 		for( String view : views ) {
@@ -540,6 +592,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 	
 	public void remove() throws UnableToRemoveEntityException {
+tracer.entering(Stream.class.getSimpleName(), "remove");
 		String cmd = "rmstream -force " + this;
 		
 		try {
@@ -547,6 +600,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		} catch( Exception e ) {
 			throw new UnableToRemoveEntityException( this, e );
 		}
+tracer.exiting(Stream.class.getSimpleName(), "remove");
 	}
 
 	/**
@@ -560,6 +614,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * @throws UCMException
 	 */
 	public Stream getDefaultTarget() {
+tracer.entering(Stream.class.getSimpleName(), "getDefaultTarget");
 		if( !loaded ) {
 			try {
 				load();
@@ -568,15 +623,19 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 		}
 		
+tracer.exiting(Stream.class.getSimpleName(), "getDefaultTarget", this.defaultTarget);
 		return this.defaultTarget;
 	}
 
 
 	public void setReadOnly( boolean readOnly ) {
+tracer.entering(Stream.class.getSimpleName(), "setReadOnly", new Object[]{readOnly});
 		this.readOnly = readOnly;
+tracer.exiting(Stream.class.getSimpleName(), "setReadOnly");
 	}
 
 	public boolean isReadOnly() {
+tracer.entering(Stream.class.getSimpleName(), "isReadOnly");
 		if( !loaded ) {
 			try {
 				load();
@@ -585,6 +644,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 		}
 		
+tracer.exiting(Stream.class.getSimpleName(), "isReadOnly", readOnly);
 		return readOnly;
 	}
 
@@ -593,12 +653,16 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * @param baseline
 	 */
 	public void setFoundationBaseline( Baseline baseline ) {
+tracer.entering(Stream.class.getSimpleName(), "setFoundationBaseline", new Object[]{baseline});
 		this.foundations.clear();
 		this.foundations.add( baseline );
+tracer.exiting(Stream.class.getSimpleName(), "setFoundationBaseline");
 	}
 	
 	public void addFoundationBaseline( Baseline baseline ) {
+tracer.entering(Stream.class.getSimpleName(), "addFoundationBaseline", new Object[]{baseline});
 		this.foundations.add( baseline );
+tracer.exiting(Stream.class.getSimpleName(), "addFoundationBaseline");
 	}
 
 	/**
@@ -610,6 +674,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * @throws UnableToGetEntityException
 	 */
 	public Baseline getFoundationBaseline() {
+tracer.entering(Stream.class.getSimpleName(), "getFoundationBaseline");
 		if( !loaded ) {
 			try {
 				load();
@@ -618,6 +683,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 		}
 		
+tracer.exiting(Stream.class.getSimpleName(), "getFoundationBaseline", this.foundations.get( 0 ));
 		return this.foundations.get( 0 );
 	}
 	
@@ -627,6 +693,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 				load();
 			} catch( ClearCaseException e ) {
 				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+tracer.exiting(Stream.class.getSimpleName(), "EntityNotLoadedException");
+tracer.entering(Stream.class.getSimpleName(), "EntityNotLoadedException", new Object[]{fqname, ", not, auto, e});
 			}
 		}
 		
@@ -634,23 +702,31 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	public void setParent( Stream parent ) {
+tracer.entering(Stream.class.getSimpleName(), "setParent", new Object[]{parent});
 		this.parent = parent;
+tracer.exiting(Stream.class.getSimpleName(), "setParent");
 	}
 
 	public Stream getParent() {
+tracer.entering(Stream.class.getSimpleName(), "getParent");
+tracer.exiting(Stream.class.getSimpleName(), "getParent", parent);
 		return parent;
 	}
 	
 	public String getOriginalMastership() throws CleartoolException {
+tracer.entering(Stream.class.getSimpleName(), "getOriginalMastership");
 		Matcher m = Pattern.compile( ".*Operation posted from replica \"(\\w*)\".*" ).matcher( Deliver.getStatus( this ) );
 		if( m.find() ) {
 			logger.warning( "Posted from replica : " + m.group( 1 ) );
+tracer.exiting(Stream.class.getSimpleName(), "getOriginalMastership", m.group( 1 ));
 			return m.group( 1 );
 		}
+tracer.exiting(Stream.class.getSimpleName(), "getOriginalMastership", this.getMastership());
 		return this.getMastership();
 	}
 
 	public String stringify() {
+tracer.entering(Stream.class.getSimpleName(), "stringify");
 		StringBuffer sb = new StringBuffer();
 		try {
 			if( !this.loaded ) load();
@@ -670,22 +746,27 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			sb.insert( 0, super.stringify() );
 		}
 
+tracer.exiting(Stream.class.getSimpleName(), "stringify", sb.toString());
 		return sb.toString();
 	}
 
 	public static Stream get( String name ) throws UnableToInitializeEntityException {
+tracer.entering(Stream.class.getSimpleName(), "get", new Object[]{name});
 		if( !name.startsWith( "stream:" ) ) {
 			name = "stream:" + name;
 		}
 		Stream entity = (Stream) UCMEntity.getEntity( Stream.class, name );
+tracer.exiting(Stream.class.getSimpleName(), "get", entity);
 		return entity;
 	}
 
 	public static Stream get( String name, PVob pvob ) throws UnableToInitializeEntityException {
+tracer.entering(Stream.class.getSimpleName(), "get", new Object[]{name, pvob});
 		if( !name.startsWith( "stream:" ) ) {
 			name = "stream:" + name;
 		}
 		Stream entity = (Stream) UCMEntity.getEntity( Stream.class, name + "@" + pvob );
+tracer.exiting(Stream.class.getSimpleName(), "get", entity);
 		return entity;
 	}
 
