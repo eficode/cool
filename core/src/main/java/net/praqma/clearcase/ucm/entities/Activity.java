@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.exceptions.EntityNotLoadedException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
@@ -157,6 +159,14 @@ public class Activity extends UCMEntity {
 	}
 	
 	public String getHeadline() {
+		if( !loaded ) {
+			try {
+				load();
+			} catch( ClearCaseException e ) {
+				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+			}
+		}
+		
 		return headline;
 	}
 	
