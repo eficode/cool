@@ -1,6 +1,5 @@
 package net.praqma.clearcase.util.setup;
 
-import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Activity;
@@ -24,7 +23,7 @@ public class ActivityTask extends AbstractTask {
 			in = Stream.get( inStr, pvob );
 		}
 		
-		Activity.create( name, in, pvob, true, comment, headline, context.path );
+		context.activities.put( name, Activity.create( name, in, pvob, true, comment, headline, context.path ) );
 	}
 
 }

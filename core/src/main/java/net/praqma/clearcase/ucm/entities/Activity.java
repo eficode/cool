@@ -26,6 +26,8 @@ public class Activity extends UCMEntity {
 	/* Activity specific fields */
 	public Changeset changeset = new Changeset();
 	private boolean specialCase = false;
+	
+	private String headline = "";
 
 	Activity() {
 		super( "activity" );
@@ -48,24 +50,25 @@ public class Activity extends UCMEntity {
 	 * @throws UCMException
 	 */
 	public Activity load() throws UnableToLoadEntityException {
-		String result = "";
+		List<String> result = null;
 
 		/* The special case branch */
 		if( isSpecialCase() ) {
-			result = "System";
+			result = new ArrayList<String>();
+			result.add( "System" );
+			result.add( "" );
 		} else {
-			String cmd = "describe -fmt %u " + this;
+			String cmd = "describe -fmt %u\\n%[headline]p " + this;
 			try {
-				result = Cleartool.run( cmd ).stdoutBuffer.toString();
+				result = Cleartool.run( cmd ).stdoutList;
 			} catch( AbnormalProcessTerminationException e ) {
 				//throw new UCMException( e.getMessage(), e.getMessage() );
 				throw new UnableToLoadEntityException( this, e );
 			}
 		}
 		
-		setUser( result );
-		
-		this.loaded = true;
+		setUser( result.get( 0 ) );
+		headline = result.get( 1 );
 		
 		return this;
 	}
@@ -103,6 +106,11 @@ public class Activity extends UCMEntity {
 		if( name != null ) {
 			activity = get( name, pvob );
 		}
+		
+		if( headline != null ) {
+			activity.headline = headline;
+		}
+		
 		return activity;
 	}
 	
@@ -150,6 +158,10 @@ public class Activity extends UCMEntity {
 		}
 
 		return activities;
+	}
+	
+	public String getHeadline() {
+		return headline;
 	}
 	
 	public static Activity get( String name ) throws UnableToInitializeEntityException {
