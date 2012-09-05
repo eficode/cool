@@ -2,7 +2,6 @@ package net.praqma.clearcase.test;
 
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Activity;
-import net.praqma.util.debug.Logger;
 
 import org.junit.Rule;
 import org.junit.Test;

@@ -107,10 +107,6 @@ public class Activity extends UCMEntity {
 			activity = get( name, pvob );
 		}
 		
-		if( headline != null ) {
-			activity.headline = headline;
-		}
-		
 		return activity;
 	}
 	
