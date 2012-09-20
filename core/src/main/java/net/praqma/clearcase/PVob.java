@@ -3,6 +3,7 @@ package net.praqma.clearcase;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,11 +12,10 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.util.debug.Logger;
 
 public class PVob extends Vob {
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( PVob.class.getName() );
 
 	private String localPath;
 	private String globalPath;
@@ -57,7 +57,7 @@ public class PVob extends Vob {
 			throw new CleartoolException( "Unable to list views", e );
 		}
 		
-		logger.debug( "OUT IS: " + lines );
+		logger.fine( "OUT IS: " + lines );
 		
 		Set<UCMView> views = new HashSet<UCMView>();
 		
@@ -97,7 +97,7 @@ public class PVob extends Vob {
 		
 		Set<Vob> vobs = new HashSet<Vob>();
 		
-		logger.debug( "OUT IS: " + list );
+		logger.fine( "OUT IS: " + list );
 		
 		for( String l : list ) {
 			if( !l.matches( "^\\s*$" ) ) {
@@ -118,7 +118,7 @@ public class PVob extends Vob {
 			}
 		}
 		
-		logger.debug( "Vobs: " + vobs );
+		logger.fine( "Vobs: " + vobs );
 		
 		return vobs;
 	}

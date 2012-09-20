@@ -3,11 +3,9 @@ package net.praqma.clearcase.cleartool;
 import java.io.File;
 
 import net.praqma.clearcase.*;
-import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.CleartoolNotInstalledException;
 import net.praqma.clearcase.exceptions.NoLicenseServerException;
 import net.praqma.clearcase.exceptions.NoLicensesException;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLine;
@@ -26,7 +24,6 @@ import net.praqma.util.execute.CommandLineInterface;
 public abstract class Cleartool extends Cool {
 
 	private static CommandLineInterface cli = null;
-	private static Logger logger = Logger.getLogger();
 
 	static {
 		cli = CommandLine.getInstance();

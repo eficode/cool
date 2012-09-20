@@ -1,21 +1,18 @@
 package net.praqma.cli;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.Site;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.util.debug.Logger;
-import net.praqma.util.debug.Logger.LogLevel;
-import net.praqma.util.debug.appenders.StreamAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class RemoveAllViews {
-	private static Logger logger = Logger.getLogger();
-	private static StreamAppender app = new StreamAppender( System.out );
+	private static Logger logger = Logger.getLogger( RemoveAllViews.class.getName() );
 
 	public static void main( String[] args ) throws CleartoolException {
 
@@ -29,19 +26,10 @@ public class RemoveAllViews {
 
 		o.parse( args );
 
-		app.setTemplate( "[%level]%space %message%newline" );
-		Logger.addAppender( app );
-
-		if( o.isVerbose() ) {
-			app.setMinimumLevel( LogLevel.DEBUG );
-		} else {
-			app.setMinimumLevel( LogLevel.INFO );
-		}
-
 		try {
 			o.checkOptions();
 		} catch( Exception e ) {
-			logger.error( "Incorrect option: " + e.getMessage() );
+			logger.severe( "Incorrect option: " + e.getMessage() );
 			o.display();
 			System.exit( 1 );
 		}

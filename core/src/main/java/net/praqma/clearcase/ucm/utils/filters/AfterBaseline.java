@@ -2,15 +2,15 @@ package net.praqma.clearcase.ucm.utils.filters;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.utils.BaselineFilter;
 import net.praqma.clearcase.ucm.utils.BaselineList;
-import net.praqma.util.debug.Logger;
 
 public class AfterBaseline extends BaselineFilter {
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( AfterBaseline.class.getName() );
 
 	private Baseline after;
 	
@@ -28,7 +28,7 @@ public class AfterBaseline extends BaselineFilter {
 		Iterator<Baseline> itAfter = baselines.iterator();
 		while( itAfter.hasNext() ) {
 			Baseline baseline = itAfter.next();
-			logger.debug( "Removing " + baseline.getNormalizedName() );
+			logger.fine( "Removing " + baseline.getNormalizedName() );
 			if( baseline.equals( after ) ) {
 				/* We found the baseline we were looking for */
 				/* Let's remove this too */

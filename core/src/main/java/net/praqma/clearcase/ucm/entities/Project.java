@@ -2,18 +2,18 @@ package net.praqma.clearcase.ucm.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
+
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.interfaces.StreamContainable;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Project extends UCMEntity implements StreamContainable {
 
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( Project.class.getName() );
 
 	/* Project specific fields */
 	private Stream stream = null;
@@ -178,7 +178,7 @@ public class Project extends UCMEntity implements StreamContainable {
 			throw new UnableToLoadEntityException( this, e );
 		}
 
-		logger.debug( "Result: " + result );
+		logger.fine( "Result: " + result );
 
 		setStream( Stream.get( result ) );
 		
@@ -218,7 +218,7 @@ public class Project extends UCMEntity implements StreamContainable {
 			try {
 				streams.add( Stream.get( item ) );
 			} catch( ClearCaseException e ) {
-				logger.error( "Could not get " + item );
+				logger.severe( "Could not get " + item );
 			}
 		}
 		
@@ -235,7 +235,7 @@ public class Project extends UCMEntity implements StreamContainable {
 
 	public static List<Project> getProjects( PVob pvob ) throws UnableToListProjectsException, UnableToInitializeEntityException {
 
-		logger.debug( "Getting projects for " + pvob );
+		logger.fine( "Getting projects for " + pvob );
 		String cmd = "lsproject -s -invob " + pvob.toString();
 
 		List<String> projs = null;
@@ -246,14 +246,14 @@ public class Project extends UCMEntity implements StreamContainable {
 			throw new UnableToListProjectsException( pvob, e );
 		}
 
-		logger.debug( projs );
+		logger.fine( projs.toString() );
 
 		List<Project> projects = new ArrayList<Project>();
 		for( String p : projs ) {
 			projects.add( Project.get( p + "@" + pvob ) );
 		}
 
-		logger.debug( projects );
+		logger.fine( projects.toString() );
 
 		return projects;
 	}

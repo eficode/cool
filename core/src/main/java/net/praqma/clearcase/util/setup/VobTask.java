@@ -6,13 +6,14 @@ import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
 import net.praqma.clearcase.util.SetupUtils;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
-import net.praqma.util.debug.Logger;
 
 import org.w3c.dom.Element;
 
+import java.util.logging.Logger;
+
 public class VobTask extends AbstractTask {
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( VobTask.class.getName() );
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
@@ -40,7 +41,7 @@ public class VobTask extends AbstractTask {
 			}
 		} catch( EntityAlreadyExistsException e1 ) {
 			if( ucm ) {
-				logger.debug( "The pvob already exists, tear it down" );
+				logger.fine( "The pvob already exists, tear it down" );
 				/* TODO Make sure this pvob has a test attribute */
 				
 				PVob vob = new PVob( tag );

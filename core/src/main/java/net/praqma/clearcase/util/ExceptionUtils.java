@@ -1,13 +1,14 @@
 package net.praqma.clearcase.util;
 
 import java.io.PrintStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.util.debug.Logger;
 
 public abstract class ExceptionUtils {
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( ExceptionUtils.class.getName() );
 
 	public static void print( Throwable e, PrintStream out, boolean stack ) {
 		
@@ -40,7 +41,7 @@ public abstract class ExceptionUtils {
 			log( e.getCause(), stack );
 		} else {
 			if( stack ) { 
-				logger.warning( e );
+				logger.log( Level.WARNING, "", e );
 			} else {
 				logger.warning( e.getMessage() );
 			}

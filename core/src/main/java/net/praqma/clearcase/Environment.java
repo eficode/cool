@@ -5,24 +5,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Component;
-import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Version;
-import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.util.setup.EnvironmentParser;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
-import net.praqma.util.debug.Logger;
-import net.praqma.util.debug.Logger.LogLevel;
-import net.praqma.util.debug.appenders.ConsoleAppender;
 
 public class Environment {
 
-	protected static Logger logger = Logger.getLogger();
-	protected static ConsoleAppender appender = new ConsoleAppender();
-	
+    protected static Logger logger = Logger.getLogger( Environment.class.getName() );
+
 	/**
 	 * This variable is null until bootStrap is called.
 	 */
@@ -42,12 +36,6 @@ public class Environment {
 	
 	protected File viewPath;
 
-	static {
-		appender.setTemplate( "[%level]%space %message%newline" );
-		appender.setMinimumLevel( LogLevel.DEBUG );
-		Logger.addAppender( appender );
-	}
-	
 	public Environment() {
 		viewPath = new File( System.getProperty( "viewpath", "views" ) );
 	}
@@ -99,10 +87,10 @@ public class Environment {
 	public void addNewElement( Component component, File viewpath, String filename ) throws ClearCaseException {
 		File file = new File( new File( viewpath, component.getShortname() ), filename );
 		
-		logger.debug( "FILE IS " + viewpath );
-		logger.debug( "FILE IS " + component );
-		logger.debug( "FILE IS " + filename );
-		logger.debug( "FILE IS " + file );
+		logger.fine( "FILE IS " + viewpath );
+		logger.fine( "FILE IS " + component );
+		logger.fine( "FILE IS " + filename );
+		logger.fine( "FILE IS " + file );
 		
 		if( !file.exists() ) {
 			try {

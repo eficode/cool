@@ -3,19 +3,16 @@ package net.praqma.cli;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
-import net.praqma.util.debug.Logger;
-import net.praqma.util.debug.Logger.LogLevel;
-import net.praqma.util.debug.appenders.StreamAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class CleanView {
 	
-	private static Logger logger = Logger.getLogger();
-	private static StreamAppender app = new StreamAppender( System.out );
+	private static Logger logger = Logger.getLogger( CleanView.class.getName() );
 	
 	public static void main( String[] args ) throws IOException, ClearCaseException {
 		try {
@@ -35,23 +32,14 @@ public class CleanView {
 		o.setOption( opath );
 		o.setOption( oroot );
 
-        app.setTemplate( "[%level]%space %message%newline" );
-        Logger.addAppender( app );
-        
         o.setDefaultOptions();
         
         o.parse( args );
-        
-        if( o.isVerbose() ) {
-        	app.setMinimumLevel( LogLevel.VERBOSE );
-        } else {
-        	app.setMinimumLevel( LogLevel.INFO );
-        }
 
 		try {
 			o.checkOptions();
 		} catch( Exception e ) {
-			logger.error( "Incorrect option: " + e.getMessage() );
+			logger.severe( "Incorrect option: " + e.getMessage() );
 			o.display();
 			System.exit( 1 );
 		}

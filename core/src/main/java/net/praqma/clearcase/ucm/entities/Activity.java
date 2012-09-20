@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.entities;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +16,6 @@ import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Activity extends UCMEntity {
@@ -23,7 +23,7 @@ public class Activity extends UCMEntity {
 	//private final static Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
 	private final static Pattern pattern_activity = Pattern.compile( "^[<>-]{2}\\s*(\\S+)\\s*.*$" );
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( Activity.class.getName() );
 	
 	/* Activity specific fields */
 	public Changeset changeset = new Changeset();
@@ -47,9 +47,7 @@ public class Activity extends UCMEntity {
 	 * Load the Activity into memory from ClearCase.<br>
 	 * This function is automatically called when needed by other functions.
 	 * @return 
-	 * @throws UnableToLoadEntityException 
-	 * 
-	 * @throws UCMException
+	 * @throws UnableToLoadEntityException
 	 */
 	public Activity load() throws UnableToLoadEntityException {
 		List<String> result = null;
@@ -128,7 +126,7 @@ public class Activity extends UCMEntity {
 
 				/* A special case? */
 				if( current.getShortname().equals( "no_activity" ) ) {
-					logger.debug( "Recorded a special activity case" );
+					logger.fine( "Recorded a special activity case" );
 					current.setSpecialCase( true );
 				}
 				activities.add( current );
@@ -136,7 +134,7 @@ public class Activity extends UCMEntity {
 			}
 
 			if( current == null ) {
-				logger.debug( "Not an activity: " + s );
+				logger.fine( "Not an activity: " + s );
 				continue;
 			}
 

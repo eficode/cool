@@ -1,17 +1,16 @@
 package net.praqma.clearcase.util;
 
 import java.util.Set;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.util.debug.Logger;
-import net.praqma.util.execute.CommandLine;
 
 public class SetupUtils {
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( SetupUtils.class.getName() );
 	
 	public static void tearDown( PVob pvob ) throws CleartoolException {
 		Set<UCMView> views = pvob.getViews();
@@ -19,9 +18,9 @@ public class SetupUtils {
 		/* The pvob needs to be loaded */
 		pvob.load();
 		
-		logger.verbose( "Removing views" );
+		logger.config( "Removing views" );
 		for( UCMView view : views ) {
-			logger.debug( "Removing " + view );
+			logger.fine( "Removing " + view );
 			try {
 				view.end();
 				view.remove();
@@ -32,9 +31,9 @@ public class SetupUtils {
 		
 		Set<Vob> vobs = pvob.getVobs();
 		
-		logger.verbose( "Removing vobs" );
+		logger.config( "Removing vobs" );
 		for( Vob vob : vobs ) {
-			logger.debug( "Removing " + vob );
+			logger.fine( "Removing " + vob );
 			try {
 				vob.unmount();
 				vob.remove();
@@ -43,7 +42,7 @@ public class SetupUtils {
 			}
 		}
 		
-		logger.verbose( "Removing pvob" );
+		logger.config( "Removing pvob" );
 		pvob.unmount();
 		pvob.remove();
 		

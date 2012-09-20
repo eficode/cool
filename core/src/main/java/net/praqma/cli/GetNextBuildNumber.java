@@ -1,6 +1,7 @@
 package net.praqma.cli;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
@@ -11,15 +12,11 @@ import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.utils.BuildNumber;
-import net.praqma.util.debug.Logger;
-import net.praqma.util.debug.appenders.Appender;
-import net.praqma.util.debug.appenders.ConsoleAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class GetNextBuildNumber {
-	private static Logger logger = Logger.getLogger();
-	private static Appender app = new ConsoleAppender();
+	private static Logger logger = Logger.getLogger( GetNextBuildNumber.class.getName() );
 
 	public static void main( String[] args ) throws ClearCaseException {
 		try {
@@ -37,9 +34,6 @@ public class GetNextBuildNumber {
 		Option ostream = new Option( "stream", "s", false, 1, "Retrieve the next build number given a stream" );
 		o.setOption( oproject );
 		o.setOption( ostream );
-		
-        app.setTemplate( "[%level]%space %message%newline" );
-        Logger.addAppender( app );
 
 		o.setDefaultOptions();
 
@@ -51,13 +45,13 @@ public class GetNextBuildNumber {
 		try {
 			o.checkOptions();
 		} catch( Exception e ) {
-			logger.fatal( "Incorrect option: " + e.getMessage() );
+			logger.severe( "Incorrect option: " + e.getMessage() );
 			o.display();
 			System.exit( 1 );
 		}
 
 		if( !oproject.used && !ostream.used ) {
-			logger.fatal( "Neither a stream nor a project was given." );
+			logger.severe( "Neither a stream nor a project was given." );
 			System.exit( 1 );
 		}
 
@@ -75,7 +69,7 @@ public class GetNextBuildNumber {
 			logger.info( number );
 			System.exit( 0 );
 		} catch( ClearCaseException e ) {
-			logger.error( "Could not retrieve the build number" );
+			logger.severe( "Could not retrieve the build number" );
 			System.exit( 1 );
 		}
 	}

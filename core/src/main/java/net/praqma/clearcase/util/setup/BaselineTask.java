@@ -2,6 +2,7 @@ package net.praqma.clearcase.util.setup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
@@ -10,13 +11,12 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
-import net.praqma.util.debug.Logger;
 
 import org.w3c.dom.Element;
 
 public class BaselineTask extends AbstractTask {
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( BaselineTask.class.getName() );
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {

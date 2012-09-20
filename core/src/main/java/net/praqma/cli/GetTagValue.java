@@ -10,15 +10,13 @@ import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnknownEntityException;
 import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.util.debug.Logger;
-import net.praqma.util.debug.appenders.Appender;
-import net.praqma.util.debug.appenders.ConsoleAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
+import java.util.logging.Logger;
+
 public class GetTagValue {
-	private static Logger logger = Logger.getLogger();
-	private static Appender app = new ConsoleAppender();
+	private static Logger logger = Logger.getLogger( GetTagValue.class.getName() );
 	
 	public static void main( String[] args ) throws ClearCaseException {
 		try {
@@ -41,9 +39,6 @@ public class GetTagValue {
 		o.setOption( okey );
 		o.setOption( otagtype );
 		o.setOption( otagid );
-		
-        app.setTemplate( "[%level]%space %message%newline" );
-        Logger.addAppender( app );
 
 		o.setDefaultOptions();
 
@@ -56,7 +51,7 @@ public class GetTagValue {
 		try {
 			o.checkOptions();
 		} catch (Exception e) {
-			logger.fatal( "Incorrect option: " + e.getMessage() );
+			logger.severe( "Incorrect option: " + e.getMessage() );
 			o.display();
 			System.exit( 1 );
 		}

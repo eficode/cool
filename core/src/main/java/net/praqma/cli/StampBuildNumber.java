@@ -2,6 +2,7 @@ package net.praqma.cli;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.exceptions.BuildNumberException;
@@ -13,17 +14,12 @@ import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.utils.BuildNumber;
-import net.praqma.util.debug.Logger;
-import net.praqma.util.debug.appenders.Appender;
-import net.praqma.util.debug.appenders.ConsoleAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class StampBuildNumber extends Cool {
-	private static Logger logger = Logger.getLogger();
-	private static Appender app = new ConsoleAppender();
+	private static Logger logger = Logger.getLogger( StampBuildNumber.class.getName() );
 	
 	public static void main( String[] args ) throws ClearCaseException, IOException {
 		try {
@@ -43,9 +39,6 @@ public class StampBuildNumber extends Cool {
 		o.setOption( obaseline );
 		o.setOption( oignore );
 		o.setOption( odir );
-		
-        app.setTemplate( "[%level]%space %message%newline" );
-        Logger.addAppender( app );
 
 		o.setDefaultOptions();
 

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,12 +27,11 @@ import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.HyperLink;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.structure.Tuple;
 
 public class BuildNumber extends Cool {
-	transient private static Logger logger = Logger.getLogger();
+	transient private static Logger logger = Logger.getLogger( BuildNumber.class.getName()  );
 	
 	private final static String rx_buildnumber = "\\S+__(\\d+)_(\\d+)_(\\d+)_(\\d+)";
 	private final static Pattern pattern_buildnumber = Pattern.compile( "^" + rx_buildnumber + "$" );
@@ -113,7 +114,7 @@ public class BuildNumber extends Cool {
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.getComponent();
 
-		logger.debug( "I got " + component.getFullyQualifiedName() );
+		logger.fine( "I got " + component.getFullyQualifiedName() );
 
 		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], false );
 	}
@@ -122,7 +123,7 @@ public class BuildNumber extends Cool {
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.getComponent();
 
-		logger.debug( "I got " + component.getFullyQualifiedName() );
+		logger.fine( "I got " + component.getFullyQualifiedName() );
 
 		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], ignoreErrors );
 	}
@@ -151,17 +152,17 @@ public class BuildNumber extends Cool {
 
 			try {
 				number = stamp.stampIntoCode( major, minor, patch, sequence );
-				logger.log( "Stamping file " + file );
+				logger.log( Level.INFO, "Stamping file " + file );
 			} catch (IOException e2) {
 				throw new IOException( "Failed hijacking. Could not access file", e );
 			}
 		}
 
 		if( number == 0 ) {
-			logger.debug( "Stamping file " + file + ": No occurrences found" );
+			logger.fine( "Stamping file " + file + ": No occurrences found" );
 			System.err.println( "Stamping file " + file + ": No occurrences found" );
 		} else {
-			logger.debug( "Stamping file " + file + ": Occurrences found" );
+			logger.fine( "Stamping file " + file + ": Occurrences found" );
 			System.out.println( "Stamping file " + file + ": Occurrences found" );
 		}
 
@@ -183,8 +184,7 @@ public class BuildNumber extends Cool {
 	 * @throws UnableToCreateEntityException 
 	 * @throws UnableToLoadEntityException 
 	 * @throws NoSingleTopComponentException 
-	 * @throws UnableToGetEntityException 
-	 * @throws UCMException
+	 * @throws UnableToGetEntityException
 	 */
 	public static Integer getNextBuildSequence( Project project ) throws NoSingleTopComponentException, UnableToInitializeEntityException, UnableToListAttributesException, BuildNumberException, UnableToSetAttributeException {
 		Component c = project.getIntegrationStream().getSingleTopComponent();

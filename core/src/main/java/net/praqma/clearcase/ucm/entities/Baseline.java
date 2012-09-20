@@ -3,13 +3,10 @@ package net.praqma.clearcase.ucm.entities;
 import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.Cool;
-import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -24,15 +21,12 @@ import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnableToPromoteBaselineException;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
-import net.praqma.clearcase.ucm.entities.Version.Status;
 
-import net.praqma.clearcase.ucm.view.SnapshotView;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Baseline extends UCMEntity implements Diffable {
 
-	transient static private Logger logger = Logger.getLogger();
+	transient static private Logger logger = Logger.getLogger( Baseline.class.getName()  );
 
 	/* Baseline specific fields */
 
@@ -99,7 +93,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		}
 
 		String[] rs = result.split( UCMEntity.delim );
-        logger.debug("Result:" + result);
+        logger.fine( "Result:" + result );
 
 		/* Component . component:GENI_Source@\bbComponent */
 		String c = ( rs[1].matches( "^component:.*$" ) ? "" : "component:" ) + ( rs[1].matches( ".*@" + PVob.rx_tag_format + "$" ) ? rs[1] : rs[1] + "@" + this.pvob );
@@ -108,7 +102,7 @@ public class Baseline extends UCMEntity implements Diffable {
 			String s = ( rs[2].matches( "^stream:.*$" ) ? "" : "stream:" ) + ( rs[2].matches( ".*@" + PVob.rx_tag_format + "$" ) ? rs[2] : rs[2] + "@" + this.pvob );
 			this.stream = Stream.get( s );
 		} else {
-			logger.debug( "No stream set for baseline" );
+			logger.fine( "No stream set for baseline" );
 		}
 
 		/* Now with factory creation! */
@@ -116,12 +110,12 @@ public class Baseline extends UCMEntity implements Diffable {
 		this.plevel = Project.getPlevelFromString( rs[3] );
 		this.user = rs[4];
 		try {
-            logger.debug("Result[5]:" + rs[5]);
+            logger.fine( "Result[5]:" + rs[5] );
             synchronized( dateFormatter ) {
             	this.date = dateFormatter.parse( rs[5] );
             }
 		} catch( ParseException e ) {
-			logger.debug( "Unable to parse date: " + e.getMessage() );
+			logger.fine( "Unable to parse date: " + e.getMessage() );
 			this.date = null;
 		}
 
@@ -182,7 +176,7 @@ public class Baseline extends UCMEntity implements Diffable {
 			} else {
 				out = Cleartool.run( cmd ).stdoutBuffer.toString();
 			}
-			logger.debug( "Baseline output: " + out );
+			logger.fine( "Baseline output: " + out );
 
 			created = out.matches( "(?s).*Created baseline \".*?\" in component \".*?\".*" ); // Created baseline
 		} catch( AbnormalProcessTerminationException e ) {
@@ -387,7 +381,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	}
 	
 	public List<Baseline> getPostedBaselinesFor(Component component) throws UnableToInitializeEntityException, UnableToListBaselinesException, UnableToLoadEntityException {
-		logger.debug( "Getting posted baselines for " + this.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() );
+		logger.fine( "Getting posted baselines for " + this.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() );
 		List<String> bls_str = null;
 		
 		String cmd = "des -fmt %X[member_of_closure]p " + this.getFullyQualifiedName();
@@ -401,15 +395,15 @@ public class Baseline extends UCMEntity implements Diffable {
 		List<Baseline> bls = new ArrayList<Baseline>();
 
 		for( String bl_lines : bls_str ) {
-			logger.debug( "Baselines " + bl_lines );
+			logger.fine( "Baselines " + bl_lines );
 			String[] baselines = bl_lines.split(" ");
-			logger.debug( "I got " + baselines.length + " baselines." );
+			logger.fine( "I got " + baselines.length + " baselines." );
 			for(String bl : baselines ) {
-				logger.debug( "Baseline " + bl );
+				logger.fine( "Baseline " + bl );
 				Baseline b = Baseline.get( bl ).load();
-				logger.debug( "Baseline " + b.getFullyQualifiedName() + " component " + b.getComponent().getFullyQualifiedName() );
-				logger.debug( "Component " + component.getFullyQualifiedName());
-				logger.debug( "Baseline component " + b.getComponent().getFullyQualifiedName());
+				logger.fine( "Baseline " + b.getFullyQualifiedName() + " component " + b.getComponent().getFullyQualifiedName() );
+				logger.fine( "Component " + component.getFullyQualifiedName());
+				logger.fine( "Baseline component " + b.getComponent().getFullyQualifiedName());
 				if( b.getComponent().equals(component) ) 
 					bls.add( b );
 			}

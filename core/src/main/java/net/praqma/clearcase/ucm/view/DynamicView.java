@@ -4,11 +4,12 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.exceptions.ViewException.Type;
 import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.util.debug.Logger;
+
+import java.util.logging.Logger;
 
 public class DynamicView extends UCMView {
 
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( DynamicView.class.getName() );
 
 	public DynamicView() {
 

@@ -1,12 +1,11 @@
 package net.praqma.clearcase.ucm.entities;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,9 +28,7 @@ import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.interfaces.StreamContainable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.utils.Baselines;
-import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 
@@ -45,7 +42,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 	private static final String rx_stream_load = "\\s*Error: stream not found\\s*";
 
-	transient static private Logger logger = Logger.getLogger();
+	transient static private Logger logger = Logger.getLogger( Stream.class.getName() );
 
 	/* Stream specific fields */
 	private ArrayList<Baseline> recommendedBaselines = null;
@@ -91,7 +88,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * @return A new Stream given the parameters
 	 */
 	public static Stream create( StreamContainable parent, String nstream, boolean readonly, List<Baseline> baselines ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
-		logger.debug( "Creating stream " + nstream + " as child of " + parent );
+		logger.fine( "Creating stream " + nstream + " as child of " + parent );
 
 		String cmd = "mkstream -in " + parent;
 		if( baselines != null && baselines.size() > 0 ) {
@@ -166,8 +163,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	public Stream load() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToInitializeEntityException {
-		logger.debug( "loading stream" );
-		//context.loadStream( this );
+		logger.fine( "loading stream" );
 
 		String rawdata = "";
 
@@ -185,7 +181,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		}
 
 		String[] data = rawdata.split( "\\}\\{" );
-		logger.debug( "I got: " + data );
+		logger.fine( "I got: " + data );
 
 		/* Set project */
 		setProject( Project.get( data[1] ) );
@@ -195,7 +191,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			try {
 				setDefaultTarget( Stream.get( data[2].trim() ) );
 			} catch( Exception e ) {
-				logger.debug( "The Stream did not have a default target." );
+				logger.fine( "The Stream did not have a default target." );
 			}
 		}
 
@@ -249,7 +245,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			Baseline baseline = it.next();
 
 			if( date.after( baseline.getDate() ) ) {
-				logger.debug( "Removing [" + baseline.getShortname() + " " + baseline.getDate() + "/" + date + "]" );
+				logger.fine( "Removing [" + baseline.getShortname() + " " + baseline.getDate() + "/" + date + "]" );
 				it.remove();
 			}
 		}
@@ -286,7 +282,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 
 		} catch( UCMEntityNotFoundException e ) {
-			logger.debug( "The Stream has no child streams" );
+			logger.fine( "The Stream has no child streams" );
 		}
 		
 		/**/
@@ -295,13 +291,13 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		while( it.hasNext() ) {
 			Stream stream = it.next();
 			String childMastership = stream.getMastership();
-			logger.debug( "Child Mastership = " + childMastership );
+			logger.fine( "Child Mastership = " + childMastership );
 
 			if( stream.hasPostedDelivery() && !multisitePolling ) {
-				logger.debug( "Removing [" + stream.getShortname() + "] due to non-supported posted delivery" );
+				logger.fine( "Removing [" + stream.getShortname() + "] due to non-supported posted delivery" );
 				it.remove();
 			} else if( !mastership.equals( childMastership ) ) {
-				logger.debug( "Removing [" + stream.getShortname() + "] due to different mastership" );
+				logger.fine( "Removing [" + stream.getShortname() + "] due to different mastership" );
 				it.remove();
 
 			}
@@ -338,9 +334,9 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 	
 	public boolean hasPostedDelivery() throws UnableToInitializeEntityException {
-		logger.debug( "hasPostedDelivery" );
+		logger.fine( "hasPostedDelivery" );
 		try {
-			logger.debug( "Status: " + Deliver.getStatus( this ) );
+			logger.fine( "Status: " + Deliver.getStatus( this ) );
 			return Deliver.getStatus( this ).contains( "Operation posted from" );
 		} catch( Exception e ) {
 			throw new UnableToInitializeEntityException( Stream.class, e );
@@ -369,7 +365,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * @return
 	 */
 	public List<Stream> getSiblingStreams() throws UnableToListProjectsException, UnableToInitializeEntityException {
-		logger.debug( "Getting sibling streams" );
+		logger.fine( "Getting sibling streams" );
 		List<Project> projects = Project.getProjects( this.getPVob() );
 		List<Stream> streams = new ArrayList<Stream>();
 
@@ -386,7 +382,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 		}
 
-		logger.debug( streams );
+		logger.fine( streams.toString() );
 
 		return streams;
 	}
@@ -397,7 +393,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * @param fqname
 	 *            Fully qualified name
 	 * @return True if the Stream exists, false otherwise
-	 * @throws UCMException
 	 *             Is thrown if the fully qualified name is not a valid name
 	 */
 	public static boolean streamExists( String fqname ) {
@@ -430,7 +425,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	public List<Baseline> getRecommendedBaselines( boolean force ) throws UnableToListBaselinesException, UnableToInitializeEntityException {
-		logger.debug( "Getting recommended baselines" );
+		logger.fine( "Getting recommended baselines" );
 
 		if( this.recommendedBaselines == null || force ) {
 			ArrayList<Baseline> bls = new ArrayList<Baseline>();
@@ -489,7 +484,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 		}
 		
-		logger.debug( "The list is " + bls );
+		logger.fine( "The list is " + bls );
 
 		return bls;
 	}
@@ -556,8 +551,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * @throws UnableToLoadEntityException 
 	 * @throws UCMEntityNotFoundException 
 	 * @throws UnableToCreateEntityException 
-	 * @throws UnableToGetEntityException 
-	 * @throws UCMException
+	 * @throws UnableToGetEntityException
 	 */
 	public Stream getDefaultTarget() {
 		if( !loaded ) {

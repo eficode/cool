@@ -3,15 +3,15 @@ package net.praqma.clearcase.ucm.utils.filters;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.utils.BaselineFilter;
 import net.praqma.clearcase.ucm.utils.BaselineList;
-import net.praqma.util.debug.Logger;
 
 public class AfterDate extends BaselineFilter {
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( AfterDate.class.getName() );
 
 	private Date date;
 	
@@ -21,7 +21,7 @@ public class AfterDate extends BaselineFilter {
 	
 	@Override
 	public int filter( BaselineList baselines ) {
-		logger.debug( "Date is " + date );
+		logger.fine( "Date is " + date );
 		
 		/* Sort the baselines */
 		Collections.sort( baselines, new BaselineList.AscendingDateSort() );

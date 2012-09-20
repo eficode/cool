@@ -2,18 +2,18 @@ package net.praqma.clearcase.util.setup;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
-import net.praqma.util.debug.Logger;
 
 import org.w3c.dom.Element;
 
 public class CheckinTask extends AbstractTask {
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( CheckinTask.class.getName() );
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
@@ -30,16 +30,16 @@ public class CheckinTask extends AbstractTask {
 			try {
 				List<File> files = Version.getUncheckedIn( context.path );
 				for( File f : files ) {
-					logger.debug( "Checking in " + f );
+					logger.fine( "Checking in " + f );
 					try {
 						Version.checkIn( f, false, context.path );
 					} catch( CleartoolException e1 ) {
-						logger.debug( "Unable to checkin " + f );
+						logger.fine( "Unable to checkin " + f );
 						/* No op */
 					}
 				}
 			} catch( CleartoolException e1 ) {
-				logger.error( e1.getMessage() );				
+				logger.severe( e1.getMessage() );
 			}
 		}
 	}

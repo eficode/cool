@@ -2,24 +2,18 @@ package net.praqma.cli;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.SnapshotView.Components;
 import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules;
 import net.praqma.clearcase.ucm.view.SnapshotView.UpdateInfo;
-import net.praqma.util.debug.Logger;
-import net.praqma.util.debug.Logger.LogLevel;
-import net.praqma.util.debug.appenders.Appender;
-import net.praqma.util.debug.appenders.ConsoleAppender;
-import net.praqma.util.debug.appenders.StreamAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class UpdateView {
-	private static Logger logger = Logger.getLogger();
-	private static Appender app = new ConsoleAppender();
+	private static Logger logger = Logger.getLogger( UpdateView.class.getName() );
 	
 	public static void main( String[] args ) throws ClearCaseException, IOException {
 		try {
@@ -48,9 +42,6 @@ public class UpdateView {
 		
 		o.setOption( oall );
 		o.setOption( omodifiable );
-		
-        app.setTemplate( "[%level]%space %message%newline" );
-        Logger.addAppender( app );
 
         o.setDefaultOptions();
         
@@ -59,7 +50,7 @@ public class UpdateView {
 		try {
 			o.checkOptions();
 		} catch( Exception e ) {
-			logger.error( "Incorrect option: " + e.getMessage() );
+			logger.severe( "Incorrect option: " + e.getMessage() );
 			o.display();
 			System.exit( 1 );
 		}
@@ -87,13 +78,13 @@ public class UpdateView {
 		}
 		
 		if( oall.isUsed() && omodifiable.isUsed() ) {
-			logger.error( "Only all or modifiable can be chosen" );
+			logger.severe( "Only all or modifiable can be chosen" );
 			o.display();
 			System.exit( 1 );
 		}
 		
 		if( !oall.isUsed() && !omodifiable.isUsed() ) {
-			logger.error( "One of all and modifiable must be chosen" );
+			logger.severe( "One of all and modifiable must be chosen" );
 			o.display();
 			System.exit( 1 );
 		}

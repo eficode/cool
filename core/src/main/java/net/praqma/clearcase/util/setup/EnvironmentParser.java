@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -24,12 +25,11 @@ import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.util.ExceptionUtils;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.xml.XML;
 
 public class EnvironmentParser extends XML {
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( EnvironmentParser.class.getName() );
 	
 	private static Map<String, AbstractTask> map = new HashMap<String, AbstractTask>();
 	
@@ -160,7 +160,7 @@ public class EnvironmentParser extends XML {
 		/* For each environment */
 		for( Element environment : environments ) {
 			String ename = environment.getAttribute( "name" );
-			logger.verbose( "Parsing environment " + ename );
+			logger.config( "Parsing environment " + ename );
 			
 			List<Element> elements = getElements( environment );
 			
@@ -168,19 +168,19 @@ public class EnvironmentParser extends XML {
 			
 			for( Element e : elements ) {
 				String tag = e.getTagName();
-				logger.verbose( "Parsing <" + tag + ">" );
+				logger.config( "Parsing <" + tag + ">" );
 				try {
 					if( tag != null && tag.length() > 0 ) {
 						map.get( tag ).parse( e, context );
 					} else {
-						logger.debug( "Not handling anonymous tags" );
+						logger.fine( "Not handling anonymous tags" );
 					}
 				} catch( ClearCaseException e1 ) {
 					ExceptionUtils.print( e1, System.out, true );
 					print( e, System.out );
 					throw e1;
 				} catch( Exception e1 ) {
-					logger.fatal( "Failed to parse: " + e1.getMessage() );
+					logger.severe( "Failed to parse: " + e1.getMessage() );
 					print( e, System.out );
 					throw e1;
 				}

@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +35,6 @@ import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 import net.praqma.util.io.IO;
@@ -48,7 +49,7 @@ import net.praqma.util.structure.Tuple;
  */
 public class SnapshotView extends UCMView {
 
-	transient private static Logger logger = Logger.getLogger();
+	transient private static Logger logger = Logger.getLogger( SnapshotView.class.getName() );
 
 	//protected static final String rx_view_uuid = "view_uuid:(.*)";
 	protected static final Pattern rx_view_uuid_file = Pattern.compile( "view_uuid:(.*)" );
@@ -93,7 +94,7 @@ public class SnapshotView extends UCMView {
 			loadRules = " -add_loadrules ";
 
 			if( components.equals( Components.ALL ) ) {
-				logger.debug( "All components" );
+				logger.fine( "All components" );
 
 				List<Baseline> bls = view.stream.getLatestBaselines();
 				for( Baseline b : bls ) {
@@ -102,7 +103,7 @@ public class SnapshotView extends UCMView {
 					loadRules += rule;
 				}
 			} else {
-				logger.debug( "Modifiable components" );
+				logger.fine( "Modifiable components" );
 
 				Project project = view.stream.getProject();
 				List<Component> comps = project.getModifiableComponents();
@@ -157,7 +158,7 @@ public class SnapshotView extends UCMView {
 	public static SnapshotView create( Stream stream, File viewroot, String viewtag ) throws ViewException, UnableToInitializeEntityException, CleartoolException, IOException {
 		//context.makeSnapshotView( stream, viewroot, viewtag );
 
-		logger.debug( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
+		logger.fine( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
 
 		if( viewroot.exists() ) {
 			IO.deleteDirectory( viewroot );
@@ -191,7 +192,7 @@ public class SnapshotView extends UCMView {
 	}
 
 	public static void regenerateViewDotDat( File dir, String viewtag ) throws IOException, UnableToListViewsException {
-		logger.debug( dir + ", " + viewtag );
+		logger.fine( dir + ", " + viewtag );
 
 		File viewdat = new File( dir + File.separator + VIEW_DOT_DAT_FILE );
 
@@ -299,15 +300,14 @@ public class SnapshotView extends UCMView {
 	 * @return The view tag
 	 * @throws IOException 
 	 * @throws CleartoolException 
-	 * @throws ViewException 
-	 * @throws UCMException
+	 * @throws ViewException
 	 */
 	public static String viewrootIsValid( File viewroot ) throws IOException, CleartoolException, ViewException {
-		logger.debug( viewroot.getAbsolutePath() );
+		logger.fine( viewroot.getAbsolutePath() );
 
 		File viewdotdatpname = new File( viewroot + File.separator + VIEW_DOT_DAT_FILE );
 
-		logger.debug( "The view file = " + viewdotdatpname );
+		logger.fine( "The view file = " + viewdotdatpname );
 
 		FileReader fr = null;
 		try {
@@ -329,7 +329,7 @@ public class SnapshotView extends UCMView {
 			throw e;
 		}
 
-		logger.debug( "FILE CONTENT=" + result.toString() );
+		logger.fine( "FILE CONTENT=" + result.toString() );
 
 		Matcher match = rx_view_uuid_file.matcher( result.toString() );
 
@@ -368,7 +368,7 @@ public class SnapshotView extends UCMView {
 	}
 
 	public File getCurrentViewRoot( File viewroot ) throws ViewException {
-		logger.debug( viewroot.getAbsolutePath() );
+		logger.fine( viewroot.getAbsolutePath() );
 
 		try {
 			String wvroot = Cleartool.run( "pwv -root", viewroot ).stdoutBuffer.toString();
@@ -402,7 +402,7 @@ public class SnapshotView extends UCMView {
 			this.stream.generate();
 		}
 
-		logger.debug( "STREAM GENEREATES" );
+		logger.fine( "STREAM GENEREATES" );
 
 		if( swipe ) {
 			Map<String, Integer> sinfo = swipe( this.viewroot, excludeRoot );
@@ -412,11 +412,11 @@ public class SnapshotView extends UCMView {
 			info.filesDeleted = sinfo.get( "files_deleted" );
 		}
 
-		logger.debug( "SWIPED" );
+		logger.fine( "SWIPED" );
 
 		// Cache current directory and chdir into the viewroot
 		String result = updateView( this, overwrite, loadRules.getLoadRules() );
-		logger.debug( result );
+		logger.fine( result );
 
 		return info;
 	}
@@ -426,7 +426,7 @@ public class SnapshotView extends UCMView {
 		
 		String result = "";
 		
-		logger.debug( view.getViewRoot().getAbsolutePath() );
+		logger.fine( view.getViewRoot().getAbsolutePath() );
 
 		String cmd = "setcs -stream";
 		try {
@@ -435,7 +435,7 @@ public class SnapshotView extends UCMView {
 			throw new CleartoolException( "Unable to set cs stream: " + view.getViewRoot() , e );
 		}
 
-		logger.debug( "Updating view" );
+		logger.fine( "Updating view" );
 
 		cmd = "update -force " + ( overwrite ? " -overwrite " : "" ) + loadrules;
 		try {
@@ -443,11 +443,10 @@ public class SnapshotView extends UCMView {
 		} catch( AbnormalProcessTerminationException e ) {
 			Matcher m = rx_view_rebasing.matcher( e.getMessage() );
 			if( m.find() ) {
-				logger.warning( "The view is currently rebasing the stream " + m.group( 1 ) + ": " + e.getMessage() );
-				logger.warning( e );
+				logger.log( Level.WARNING, "The view is currently rebasing the stream" + m.group( 1 ), e);
 				throw new ViewException( "The view is currently rebasing the stream " + m.group( 1 ), view.getViewRoot().getAbsolutePath(), Type.REBASING, e );
 			} else {
-				logger.warning( e );
+                logger.log( Level.WARNING, "" + m.group( 1 ), e);
 				throw new ViewException( "Unable to update view " + m.group( 1 ), view.getViewRoot().getAbsolutePath(), Type.UNKNOWN, e );
 			}
 		}
@@ -462,7 +461,7 @@ public class SnapshotView extends UCMView {
 	}
 	
 	public Map<String, Integer> swipe( File viewroot, boolean excludeRoot ) throws CleartoolException {
-		logger.debug( viewroot.toString() );
+		logger.fine( viewroot.toString() );
 
 		File[] files = viewroot.listFiles();
 		String fls = "";
@@ -475,7 +474,7 @@ public class SnapshotView extends UCMView {
 		 */
 		for( File f : files ) {
 			if( !f.canWrite() ) {
-				logger.debug( f + " is write protected." );
+				logger.fine( f + " is write protected." );
 				continue;
 			}
 
@@ -495,7 +494,7 @@ public class SnapshotView extends UCMView {
 
 		/* Remove all other dirs */
 		for( File notVob : notVobs ) {
-			logger.debug( "Removing " + notVob );
+			logger.fine( "Removing " + notVob );
 			net.praqma.util.io.IO.deleteDirectory( notVob );
 		}
 
@@ -503,7 +502,7 @@ public class SnapshotView extends UCMView {
 		info.put( "success", 1 );
 
 		if( fls.length() == 0 ) {
-			logger.debug( "No files to delete" );
+			logger.fine( "No files to delete" );
 			return info;
 		}
 
@@ -533,14 +532,14 @@ public class SnapshotView extends UCMView {
 
 		info.put( "total", total );
 
-		logger.debug( "Found " + total + " files, of which " + ( total - vpFiles.size() ) + " were CO, CTR or KEEP's." );
+		logger.fine( "Found " + total + " files, of which " + ( total - vpFiles.size() ) + " were CO, CTR or KEEP's." );
 
 		List<File> dirs = new ArrayList<File>();
 		int dircount = 0;
 		int filecount = 0;
 
 		/* Removing view private files, saving directories for later */
-		logger.verbose( "Removing files:" );
+		logger.config( "Removing files:" );
 		for( File f : vpFiles ) {
 			// logger.debug( "FILE=" + f );
 
@@ -548,32 +547,32 @@ public class SnapshotView extends UCMView {
 				if( f.isDirectory() ) {
 					dirs.add( f );
 				} else {
-					logger.verbose( " * " + f );
+					logger.config( " * " + f );
 					f.delete();
 					filecount++;
 				}
 			} else {
-				logger.debug( "The file " + f + " does not exist." );
+				logger.fine( "The file " + f + " does not exist." );
 			}
 		}
 
 		info.put( "files_deleted", filecount );
 
 		/* TODO Remove the directories, somehow!? Only the empty!? */
-		logger.verbose( "Removing directories:" );
+		logger.config( "Removing directories:" );
 		for( File d : dirs ) {
 			try {
-				logger.verbose( " * " + d );
+				logger.config( " * " + d );
 				d.delete();
 				dircount++;
 			} catch( SecurityException e ) {
-				logger.debug( "Unable to delete \"" + d + "\". Probably not empty." );
+				logger.fine( "Unable to delete \"" + d + "\". Probably not empty." );
 			}
 		}
 
 		info.put( "dirs_deleted", dircount );
 
-		logger.debug( "Deleted " + dircount + " director" + ( dircount == 1 ? "y" : "ies" ) + " and " + filecount + " file" + ( filecount == 1 ? "" : "s" ) );
+		logger.fine( "Deleted " + dircount + " director" + ( dircount == 1 ? "y" : "ies" ) + " and " + filecount + " file" + ( filecount == 1 ? "" : "s" ) );
 
 		if( dircount + filecount == total ) {
 			info.put( "success", 1 );
@@ -587,7 +586,7 @@ public class SnapshotView extends UCMView {
 
 
 	public Map<String, Integer> swipe( boolean excludeRoot ) throws CleartoolException {
-		logger.debug( "Swiping " + this.getViewRoot() );
+		logger.fine( "Swiping " + this.getViewRoot() );
 		Map<String, Integer> sinfo = swipe( viewroot, excludeRoot );
 		//Printer.mapPrinter( sinfo );
 

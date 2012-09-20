@@ -1,36 +1,31 @@
 package net.praqma.clearcase.ucm.utils;
 
-import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
-import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
-import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
-import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.UCMEntity.LabelStatus;
 import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
+/**
+ * @deprecated since 0.6.0
+ */
 public class Baselines {
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( Baselines.class.getName()  );
 	
 	public static List<Baseline> get( Stream stream, Component component, PromotionLevel plevel, boolean multisitePolling ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
-		logger.debug( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel + " and multisitepolling " +  multisitePolling);
+		logger.fine( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel + " and multisitepolling " +  multisitePolling);
 		List<Baseline> baselines = null;
 		
 		if(stream.hasPostedDelivery()) {
@@ -46,7 +41,7 @@ public class Baselines {
 	}
 
 	public static List<Baseline> get( Stream stream, Component component, PromotionLevel plevel) throws UnableToInitializeEntityException, UnableToListBaselinesException {
-		logger.debug( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel );
+		logger.fine( "Getting baselines from " + stream.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() + " with level " + plevel );
 		List<String> bls_str = null;
 		
 		String cmd = "lsbl -s -component " + component + " -stream " + stream + ( plevel != null ? " -level " + plevel.toString() : "" );
@@ -57,7 +52,7 @@ public class Baselines {
 			throw new UnableToListBaselinesException( stream, component, plevel, e );
 		}
 
-		logger.debug( "I got " + bls_str.size() + " baselines." );
+		logger.fine( "I got " + bls_str.size() + " baselines." );
 		List<Baseline> bls = new ArrayList<Baseline>();
 
 		int c = 0;
@@ -99,17 +94,17 @@ public class Baselines {
 		List<Baseline> baselines = null;
 		
 		/* Printing info for debug */
-		logger.debug( " --- Get baselines information --- " );
-		logger.debug( "Component: " + component.getNormalizedName() );
-		logger.debug( "Stream   : " + stream.getNormalizedName() );
-		logger.debug( "Level    : " + plevel );
-		logger.debug( "Max      : " + max );
-		logger.debug( "Date     : " + date );
-		logger.debug( "Baseline : " + ( after != null ? after.getNormalizedName() : "N/A" ) );
+		logger.fine( " --- Get baselines information --- " );
+		logger.fine( "Component: " + component.getNormalizedName() );
+		logger.fine( "Stream   : " + stream.getNormalizedName() );
+		logger.fine( "Level    : " + plevel );
+		logger.fine( "Max      : " + max );
+		logger.fine( "Date     : " + date );
+		logger.fine( "Baseline : " + ( after != null ? after.getNormalizedName() : "N/A" ) );
 
 		baselines = Baselines.get( stream, component, plevel );
-		logger.debug( " --- Bare retrieval --- " );
-		logger.debug( "Baselines: " + baselines );
+		logger.fine( " --- Bare retrieval --- " );
+		logger.fine( "Baselines: " + baselines );
 
 		/* Prune */
 		int pruned = 0;
@@ -135,23 +130,23 @@ public class Baselines {
 		}
 		
 		if( pruned > 0 ) {
-			logger.verbose( "[ClearCase] Pruned " + pruned + " baselines" );
+			logger.config( "[ClearCase] Pruned " + pruned + " baselines" );
 		}
 		
-		logger.debug( " --- Pruned for delivers + loads --- " );
-		logger.debug( "Baselines: " + baselines );
+		logger.fine( " --- Pruned for delivers + loads --- " );
+		logger.fine( "Baselines: " + baselines );
 
 		/* Sort by date - first is oldest, last is newest */
 		Collections.sort( baselines, new AscendingDateSort() );
         for (Baseline b : baselines)
-            logger.debug( "Baselines: " + b.stringify() );
+            logger.fine( "Baselines: " + b.stringify() );
         
 		/* Get from a specific baseline */
 		if( after != null ) {
 			Iterator<Baseline> itAfter = baselines.iterator();
 			while( itAfter.hasNext() ) {
 				Baseline baseline = itAfter.next();
-				logger.debug( "Removing " + baseline.getNormalizedName() );
+				logger.fine( "Removing " + baseline.getNormalizedName() );
 				if( baseline.equals( after ) ) {
 					/* We found the baseline we were looking for */
 					/* Let's remove this too */
@@ -162,13 +157,13 @@ public class Baselines {
 				}
 			}
 			
-			logger.debug( " --- Pruned before baseline --- " );
-			logger.debug( "Baselines: " + baselines );
+			logger.fine( " --- Pruned before baseline --- " );
+			logger.fine( "Baselines: " + baselines );
 		}
 		
 		/* Prune from a specified date */
 		if( date != null ) {
-			logger.debug( "Date is " + date );
+			logger.fine( "Date is " + date );
 			Iterator<Baseline> itDate = baselines.iterator();
 			while( itDate.hasNext() ) {
 				Baseline baseline = itDate.next();
@@ -179,13 +174,13 @@ public class Baselines {
 					break;
 				}
 			}
-			logger.debug( " --- Pruned before date --- " );
-			logger.debug( "Baselines: " + baselines );
+			logger.fine( " --- Pruned before date --- " );
+			logger.fine( "Baselines: " + baselines );
 		} else {
 			/* No modifier */
 		}
 		
-		logger.verbose( "Done" );
+		logger.config( "Done" );
 		
 		/* Max? 0 = unlimited */
 		if( max > 0 && baselines.size() > 0 ) {

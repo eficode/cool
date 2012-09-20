@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.ucm.entities.Version;
-import net.praqma.util.debug.Logger;
 
 public class VersionList extends ArrayList<Version> {
 
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( VersionList.class.getName() );
 	
 	public VersionList() {
 		
@@ -33,21 +33,21 @@ public class VersionList extends ArrayList<Version> {
 				
 				Map<String, Version> bmap = fmap.get( v.getFile() );
 				if( bmap.containsKey( v.getBranch() ) ) {
-					logger.debug( "Existing branch: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
+					logger.fine( "Existing branch: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
 					Version iv = bmap.get( v.getBranch() );
 					if( iv.getRevision().intValue() < v.getRevision().intValue() ) {
-						logger.debug( "Updating branch: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
+						logger.fine( "Updating branch: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
 						bmap.put( v.getBranch(), v );
 						//fmap.put( v.getFile(), nbmap );
 					}
 				} else {
-					logger.debug( "New branch: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
+					logger.fine( "New branch: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
 					bmap.put( v.getBranch(), v );
 					//fmap.put( v.getFile(), nbmap );
 				}
 
 			} else {
-				logger.debug( "New file: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
+				logger.fine( "New file: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
 				Map<String, Version> nmap = new HashMap<String, Version>();
 				nmap.put( v.getBranch(), v );
 				fmap.put( v.getFile(), nmap );

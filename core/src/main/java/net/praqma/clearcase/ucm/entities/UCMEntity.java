@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,18 +27,12 @@ import net.praqma.clearcase.exceptions.HyperlinkException;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
-import net.praqma.clearcase.exceptions.UnableToListAttributesException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
-import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
-import net.praqma.clearcase.exceptions.UnknownAttributeException;
 import net.praqma.clearcase.exceptions.UnknownEntityException;
-import net.praqma.clearcase.exceptions.UnknownEntityTypeException;
 import net.praqma.clearcase.exceptions.UnknownUserException;
 import net.praqma.clearcase.exceptions.UnknownVobException;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
-import net.praqma.util.structure.Tuple;
 
 /**
  * 
@@ -46,7 +41,7 @@ import net.praqma.util.structure.Tuple;
  */
 public abstract class UCMEntity extends ClearCase implements Serializable {
 
-	transient private static Logger logger = Logger.getLogger();
+	transient private static Logger logger = Logger.getLogger( UCMEntity.class.getName() );
 
 	private static final long serialVersionUID = 1123123123L;
 
@@ -169,7 +164,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	 * @throws UnableToGetEntityException
 	 */
 	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
-		logger.debug( "Load method is not implemented for this Entity(" + this.fqname + ")" );
+		logger.fine( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
 
 		return this;
@@ -214,7 +209,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	/* Tag stuff */
 
 	public Tag getTag( String tagType, String tagID ) throws TagException, UnableToInitializeEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		logger.debug( "Retrieving tags for " + tagType + ", " + tagID );
+		logger.fine( "Retrieving tags for " + tagType + ", " + tagID );
 		return Tag.getTag( this, tagType, tagID, true );
 	}
 
@@ -245,7 +240,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 		/* There are elements */
 		if( list.size() > 2 ) {
 			for( int i = 2; i < list.size(); i++ ) {
-				logger.debug( "[" + i + "]" + list.get( i ) );
+				logger.fine( "[" + i + "]" + list.get( i ) );
 				Matcher match = pattern_hlink.matcher( list.get( i ) );
 				if( match.find() ) {
 					//hlinks.add( new Tuple<String, String>( match.group( 1 ).trim(), match.group( 2 ).trim() ) );
@@ -322,8 +317,6 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	 * Returns a string representation of the entity object
 	 * 
 	 * @return A String
-	 * @throws UCMException
-	 * @throws UnableToLoadEntityException
 	 */
 	public String stringify() {
 		StringBuffer sb = new StringBuffer();

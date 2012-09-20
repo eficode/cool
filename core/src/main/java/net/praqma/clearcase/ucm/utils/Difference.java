@@ -2,22 +2,18 @@ package net.praqma.clearcase.ucm.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.entities.Version.Status;
 import net.praqma.clearcase.ucm.view.SnapshotView;
-import net.praqma.util.debug.Logger;
 
 /**
  * 
@@ -75,7 +71,7 @@ public class Difference {
 	
 	private static final Pattern rx_baselineDiff = Pattern.compile( "^(\\S+)\\s*(.*?)\\s*(.*)\\s*$" );
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( Difference.class.getName() );
 	
 	private Baseline bl1;
 	private Baseline bl2;
@@ -104,7 +100,7 @@ public class Difference {
 			if( m.find() ) {
 
 				String f = m.group( 3 ).trim();
-				logger.debug( "F: " + f );
+				logger.fine( "F: " + f );
 				Version v = (Version) Version.get( f );
 				v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
 

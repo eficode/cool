@@ -5,31 +5,26 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.ClearCase;
-import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
-import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.exceptions.ViewException.Type;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.CmdResult;
 
 public class UCMView extends ClearCase implements Serializable {
 
 	public static final Pattern rx_view_get_path = Pattern.compile( "^\\s*Global path:\\s*(.*?)\\s*$" );
 
-	transient private static Logger logger = Logger.getLogger();
+	transient private static Logger logger = Logger.getLogger( UCMView.class.getName() );
 	
 	private static Map<String, UCMView> createdViews = new HashMap<String, UCMView>();
 
@@ -60,18 +55,16 @@ public class UCMView extends ClearCase implements Serializable {
 	}
 
 	public static boolean viewExists(String viewtag) {
-		//boolean b = context.viewExists(viewtag);
-		
-		logger.debug( viewtag );
+		logger.fine( viewtag );
 
 		String cmd = "lsview " + viewtag;
 
 		try {
 			String s = Cleartool.run( cmd ).stdoutBuffer.toString();
-			logger.debug( viewtag + " exists" );
+			logger.fine( viewtag + " exists" );
 			return true;
 		} catch( Exception e ) {
-			logger.debug( "View check failed: " + e.getMessage() );
+			logger.fine( "View check failed: " + e.getMessage() );
 			return false;
 		}
 	}
@@ -106,7 +99,7 @@ public class UCMView extends ClearCase implements Serializable {
 	public UCMView load() throws ViewException {
 		//Map<String, String> options = context.loadView( this );
 		
-		logger.debug( "Loading view " + this );
+		logger.fine( "Loading view " + this );
 
 		String cmd = "lsview -l " + getViewtag();
 
@@ -193,7 +186,7 @@ public class UCMView extends ClearCase implements Serializable {
 	}
 	
 	protected static void create( String tag, String stgloc, boolean snapshotView, Stream stream ) throws ViewException {
-		logger.debug( "Creating " + tag );
+		logger.fine( "Creating " + tag );
 
 		String cmd = "mkview -tag " + tag + ( snapshotView ? " -snapshot" : "" ) + ( stream != null ? " -stream " + stream.getFullyQualifiedName() : "" ) + " -stgloc " + ( stgloc != null ? stgloc : "-auto" );
 

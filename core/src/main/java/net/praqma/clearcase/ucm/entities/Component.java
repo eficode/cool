@@ -1,17 +1,16 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
-import java.util.List;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Component extends UCMEntity {
 	
-	private transient static Logger logger = Logger.getLogger();
+	private transient static Logger logger = Logger.getLogger( Component.class.getName()  );
 	
 	private static final String rx_component_load = "\\s*Error: component not found\\s*";
 	

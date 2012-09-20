@@ -11,16 +11,14 @@ import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.UnknownEntityException;
 import net.praqma.clearcase.ucm.entities.Tag;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
-import net.praqma.util.debug.Logger;
-import net.praqma.util.debug.appenders.Appender;
-import net.praqma.util.debug.appenders.ConsoleAppender;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
+import java.util.logging.Logger;
+
 public class SetTag {
 	
-	private static Logger logger = Logger.getLogger();
-	private static Appender app = new ConsoleAppender();
+	private static Logger logger = Logger.getLogger( SetTag.class.getName() );
 	
 	public static void main( String[] args ) throws ClearCaseException {
 		try {
@@ -32,7 +30,6 @@ public class SetTag {
 	}
 
 	public static void run( String[] args ) throws UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnknownEntityException, TagException, UnableToGetEntityException, UnableToInitializeEntityException {
-		Logger.addAppender( app );
 		Options o = new Options();
 
 		Option oentity = new Option( "entity", "e", true, 1, "The UCM entity" );
@@ -56,7 +53,7 @@ public class SetTag {
 		try {
 			o.checkOptions();
 		} catch( Exception e ) {
-			logger.fatal( "Incorrect option: " + e.getMessage() );
+			logger.severe( "Incorrect option: " + e.getMessage() );
 			o.display();
 			System.exit( 1 );
 		}
@@ -76,7 +73,7 @@ public class SetTag {
 			String[] entry = t.split( "=" );
 
 			try {
-				logger.verbose( "+(" + entry[0] + ", " + entry[1] + ") " );
+				logger.config( "+(" + entry[0] + ", " + entry[1] + ") " );
 
 				tag.setEntry( entry[0].trim(), entry[1].trim() );
 			} catch( ArrayIndexOutOfBoundsException ea ) {
@@ -89,7 +86,7 @@ public class SetTag {
 			tag.persist();
 		} catch( TagException ex ) {
 			if( ex.getType().equals( Type.CREATION_FAILED ) ) {
-				logger.fatal( "Could not persist the tag." );
+				logger.severe( "Could not persist the tag." );
 				System.exit( 1 );
 			}
 		}

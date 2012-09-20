@@ -2,15 +2,15 @@ package net.praqma.cli;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.setup.EnvironmentParser;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class Setup extends CLI {
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( Setup.class.getName() );
 	
 	public static void main( String[] args ) throws ClearCaseException, IOException, Exception {
 		Setup s = new Setup();
@@ -32,14 +32,14 @@ public class Setup extends CLI {
 		try {
 			o.checkOptions();
 		} catch( Exception e ) {
-			logger.error( "Incorrect option: " + e.getMessage() );
+			logger.severe( "Incorrect option: " + e.getMessage() );
 			o.display();
 			System.exit( 1 );
 		}
 
 
 		File file = new File( ofile.getString() );
-		logger.verbose( "Parsing " + file.getAbsolutePath() );
+		logger.config( "Parsing " + file.getAbsolutePath() );
 		EnvironmentParser parser = new EnvironmentParser( file );
 		parser.parse();
 	}

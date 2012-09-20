@@ -2,6 +2,7 @@ package net.praqma.clearcase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
@@ -9,7 +10,6 @@ import net.praqma.clearcase.exceptions.RebaseException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 
@@ -17,7 +17,7 @@ public class Rebase {
 	
 	private static final String rx_rebase_in_progress = "^Rebase operation in progress on stream";
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( Rebase.class.getName() );
 	
 	private Stream stream;
 	private List<Baseline> baselines = new ArrayList<Baseline>();
@@ -36,7 +36,7 @@ public class Rebase {
 	}
 
 	public boolean rebase( boolean complete ) throws RebaseException {
-		logger.debug( "Rebasing " + view.getViewtag() );
+		logger.fine( "Rebasing " + view.getViewtag() );
 
 		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + view.getViewtag() + " -stream " + stream;
 		

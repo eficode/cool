@@ -8,14 +8,15 @@ import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
-import net.praqma.util.debug.Logger;
+
+import java.util.logging.Logger;
 
 /**
  * 
  * @author Praqma
  */
 public class Folder extends UCMEntity {
-	transient static private Logger logger = Logger.getLogger();
+	transient static private Logger logger = Logger.getLogger( Folder.class.getName() );
 
 	Folder() {
 		super( "folder" );

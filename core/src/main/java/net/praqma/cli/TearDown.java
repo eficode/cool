@@ -1,18 +1,16 @@
 package net.praqma.cli;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.SetupUtils;
-import net.praqma.clearcase.util.setup.EnvironmentParser;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class TearDown extends CLI {
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( TearDown.class.getName() );
 	
 	public static void main( String[] args ) throws ClearCaseException, IOException {
 		TearDown s = new TearDown();
@@ -34,7 +32,7 @@ public class TearDown extends CLI {
 		try {
 			o.checkOptions();
 		} catch( Exception e ) {
-			logger.error( "Incorrect option: " + e.getMessage() );
+			logger.severe( "Incorrect option: " + e.getMessage() );
 			o.display();
 			System.exit( 1 );
 		}

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,7 +19,6 @@ import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.entities.Version.Status;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class ChangeSet2 extends Cool {
@@ -30,7 +30,7 @@ public class ChangeSet2 extends Cool {
 	Map<File, List<Version>> changesetVersions = new HashMap<File, List<Version>>();
 	Map<File, ChangeSetElement2> elements = new HashMap<File, ChangeSetElement2>();
 
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( ChangeSet2.class.getName()  );
 
 	private File viewContext;
 
@@ -266,8 +266,8 @@ public class ChangeSet2 extends Cool {
 						// changeset.addElement( newFile,
 						// Version.Status.CHANGED, version );
 
-						logger.debug( "[" + oldFile + "]" );
-						logger.debug( "[" + newFile + "]" );
+						logger.fine( "[" + oldFile + "]" );
+						logger.fine( "[" + newFile + "]" );
 						ChangeSetElement2 element = new ChangeSetElement2( newFile, Version.Status.CHANGED, version );
 						element.setOldFile( oldFile );
 						changeset.addElement( element );

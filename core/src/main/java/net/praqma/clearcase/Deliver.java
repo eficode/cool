@@ -1,6 +1,8 @@
 package net.praqma.clearcase;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,12 +14,11 @@ import net.praqma.clearcase.exceptions.DeliverException.Type;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.SnapshotView;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 
 public class Deliver {
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( Deliver.class.getName() );
 
 	private static final Pattern rx_deliver_find_baseline = Pattern.compile( "Baselines to be delivered:\\s*baseline:", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE );
 	private static final Pattern rx_deliver_find_nobaseline = Pattern.compile( "Baselines to be delivered:\\s*baseline:", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE );
@@ -65,14 +66,14 @@ public class Deliver {
 	}
 	
 	public boolean deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException, CleartoolException {
-		logger.debug( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );
+		logger.fine( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );
 		try {
 			return _deliver( force, complete, abort, resume );
 		} catch( DeliverException e ) {
 			if( e.getType().equals( Type.DELIVER_IN_PROGRESS ) ) { //could be a posted delivery
 				String status = getStatus( stream );
 				if( status.replace( System.getProperty( "line.separator" ), " " ).contains( "Operation posted from" ) ) {
-					logger.debug( "Posted delivery" );
+					logger.fine( "Posted delivery" );
 					try {
 						return _deliver( force, complete, abort, true );
 					} catch( DeliverException e1 ) {
@@ -124,8 +125,7 @@ public class Deliver {
 		try {
 			result = Cleartool.run( cmd, context, true ).stdoutBuffer.toString();
 		} catch( AbnormalProcessTerminationException e ) {
-			logger.warning( "Could not deliver to target " + target + ": " );
-			logger.warning( e );			
+			logger.log( Level.WARNING, "Could not deliver to target " + target, e);
 			
 			/* Deliver being cancelled - Untested functionality, but must be tested for first */
 			if( e.getMessage().matches( "(?i)(?m)(?s)^.*Operation is currently being canceled.*$" ) ) {

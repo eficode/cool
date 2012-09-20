@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,6 @@ import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.ucm.utils.TagQuery;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.structure.Tuple;
@@ -32,7 +32,7 @@ public class Tag extends UCMEntity {
 	//private static final Pattern pattern_tags = Pattern.compile( "^\\s*(" + __TAG_NAME + "@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"(.*?)\"\\s*$" );
 	private static final Pattern pattern_tags = Pattern.compile( "^\\s*(.*?)\\s*->\\s*\"(.*?)\"\\s*$" );
 
-	transient private static Logger logger = Logger.getLogger();
+	transient private static Logger logger = Logger.getLogger( Tag.class.getName() );
 
 	/* Tag specific fields */
 	private String tagType = "";
@@ -67,7 +67,7 @@ public class Tag extends UCMEntity {
 
 	public static Map<String, String> CGIToHash( String cgi ) {
 		HashMap<String, String> hash = new HashMap<String, String>();
-		logger.debug( "cgi=" + cgi );
+		logger.fine( "cgi=" + cgi );
 
 		String[] entries = cgi.split( "&" );
 		for( String e : entries ) {
@@ -84,7 +84,7 @@ public class Tag extends UCMEntity {
 	public boolean queryTag( TagQuery query ) {
 		for( Tuple<String, String> t : query ) {
 			if( this.keyval.containsKey( t.t1 ) ) {
-				logger.debug( "(" + t.t1 + ", " + t.t2 + ") = " + this.keyval.get( t.t1 ) );
+				logger.fine( "(" + t.t1 + ", " + t.t2 + ") = " + this.keyval.get( t.t1 ) );
 
 				Pattern pattern = Pattern.compile( t.t2 );
 				Matcher match = pattern.matcher( this.keyval.get( t.t1 ) );
@@ -94,7 +94,7 @@ public class Tag extends UCMEntity {
 					return false;
 				}
 			} else {
-				logger.debug( "(" + t.t1 + ", " + t.t2 + ") = " );
+				logger.fine( "(" + t.t1 + ", " + t.t2 + ") = " );
 
 				/*
 				 * Handling non-existing keys, if the condition can't fall back
@@ -161,17 +161,17 @@ public class Tag extends UCMEntity {
 	}
 
 	public void setEntry( String key, String value ) {
-		logger.debug( "Setting " + key + " = " + value );
+		logger.fine( "Setting " + key + " = " + value );
 		keyval.put( key, value );
 	}
 
 	public boolean removeEntry( String key ) {
 		if( keyval.containsKey( key ) ) {
-			logger.debug( "Removing " + key );
+			logger.fine( "Removing " + key );
 			keyval.remove( key );
 			return true;
 		} else {
-			logger.debug( "Could not remove " + key );
+			logger.fine( "Could not remove " + key );
 			return false;
 		}
 	}
@@ -226,7 +226,7 @@ public class Tag extends UCMEntity {
 	}
 
 	public static List<Tag> getTags( UCMEntity entity ) throws TagException, UnableToInitializeEntityException {
-		logger.debug( entity );
+		logger.fine( entity.toString() );
 
 		String cmd = "describe -ahlink " + __TAG_NAME + " -l " + entity;
 		CmdResult res = null;
@@ -236,7 +236,7 @@ public class Tag extends UCMEntity {
 			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
 			logger.warning( "Unable to get tags: " + e.getMessage() );
 			if( match.find() ) {
-				logger.debug( "Tag type not found" );
+				logger.fine( "Tag type not found" );
 				//UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + __TAG_NAME + " -c \"Hyperlink type for tagging entities\"\"" );
 				//throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e.getMessage(), UCMType.UNKNOWN_HLINK_TYPE );
 				//UCMException ucme = new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e, UCMType.UNKNOWN_HLINK_TYPE );
@@ -245,7 +245,7 @@ public class Tag extends UCMEntity {
 				te.addInformation( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -c \"Hyperlink type for tagging entities\" " + __TAG_NAME + "@" + match.group( 2 ) );
 				throw te;
 			} else {
-				logger.debug( "Something else" );
+				logger.fine( "Something else" );
 				throw new TagException( entity, "", __TAG_NAME, Type.CREATION_FAILED, e );
 			}
 		}
@@ -261,7 +261,7 @@ public class Tag extends UCMEntity {
 		/* There are tags */
 		if( list.size() > 2 ) {
 			for( int i = 2; i < list.size(); i++ ) {
-				logger.debug( "[" + i + "]" + list.get( i ) );
+				logger.fine( "[" + i + "]" + list.get( i ) );
 				
 				Matcher match = pattern_tags.matcher( list.get( i ) );
 				if( match.find() ) {
@@ -280,13 +280,13 @@ public class Tag extends UCMEntity {
 	}
 
 	private static void deleteTagsWithID( String tagType, String tagID, UCMEntity entity ) throws TagException, UnableToInitializeEntityException {
-		logger.debug( tagType + tagID );
+		logger.fine( tagType + tagID );
 
 		List<Tag> list = getTags( entity );
-		logger.debug( list.size() + " Tags!" );
+		logger.fine( list.size() + " Tags!" );
 
 		for( Tag t : list ) {
-			logger.debug( "Testing " + t.getTagType() + " > " + t.getTagID() );
+			logger.fine( "Testing " + t.getTagType() + " > " + t.getTagID() );
 
 			if( t.getTagID().matches( "^.*tagtype=" + tagType + ".*$" ) && t.getTagID().matches( "^.*tagid=" + tagID + ".*$" ) ) {
 				String cmd = "rmhlink " + t.getTagType();
@@ -302,20 +302,20 @@ public class Tag extends UCMEntity {
 	}
 	
 	public static Tag getTag( UCMEntity entity, String tagType, String tagID, boolean create ) throws TagException, UnableToInitializeEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		logger.debug( entity.toString() );
+		logger.fine( entity.toString() );
 		List<Tag> tags = getTags( entity );
 
 		for( Tag t : tags ) {
-			logger.debug( "Current: " + t );
+			logger.fine( "Current: " + t );
 			/* Is it the correct tag? Return it! */
 			if( t.getTagType().equals( tagType ) && t.getTagID().equals( tagID ) ) {
-				logger.debug( "This is it!" );
+				logger.fine( "This is it!" );
 				t.setTagEntity( entity );
 				return t;
 			}
 		}
 
-		logger.debug( "Could not find the Tag with ID " + tagType + tagID + ". Creating new." );
+		logger.fine( "Could not find the Tag with ID " + tagType + tagID + ". Creating new." );
 
 		if( create ) {
 			return newTag( entity, tagType, tagID );
@@ -338,12 +338,12 @@ public class Tag extends UCMEntity {
 	}
 
 	private static Tag newTag( String tagType, String tagID, UCMEntity entity, String cgi ) throws TagException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
-		logger.debug( "ENTITY=" + entity.toString() );
-		logger.debug( "CGI FOR NEW = " + cgi );
+		logger.fine( "ENTITY=" + entity.toString() );
+		logger.fine( "CGI FOR NEW = " + cgi );
 		// System.out.println( "CGI==="+cgi );
 
 		/* Delete any existing Tags with the unique ID */
-		logger.debug( "Deleting Tags with ID: " + tagType + tagID + " for entity " + entity.getFullyQualifiedName() );
+		logger.fine( "Deleting Tags with ID: " + tagType + tagID + " for entity " + entity.getFullyQualifiedName() );
 		deleteTagsWithID( tagType, tagID, entity );
 
 		cgi = "tagtype=" + tagType + "&tagid=" + tagID + ( cgi.length() > 0 ? "&" + cgi : "" );
@@ -359,7 +359,7 @@ public class Tag extends UCMEntity {
 	}
 
 	private static String storeTag( UCMEntity entity, String cgi ) throws TagException {
-		logger.debug( entity.getFullyQualifiedName() );
+		logger.fine( entity.getFullyQualifiedName() );
 
 		String cmd = "mkhlink -ttext \"" + cgi + "\" " + __TAG_NAME + " " + entity;
 
@@ -370,7 +370,7 @@ public class Tag extends UCMEntity {
 			logger.warning( "Unable add tag: " + e.getMessage() );
 			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
 			if( match.find() ) {
-				logger.debug( "Found match" );
+				logger.fine( "Found match" );
 				//UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + __TAG_NAME + " -c \"Hyperlink type for tagging entities\"\"" );
 				//throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found.", e.getMessage(), UCMType.UNKNOWN_HLINK_TYPE );
 

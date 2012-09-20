@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
@@ -13,11 +14,10 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class BaselineList extends ArrayList<Baseline> {
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( BaselineList.class.getName() );
 
 	private List<BaselineFilter> filters = new ArrayList<BaselineFilter>();
 	private Comparator<Baseline> sorter;
@@ -62,13 +62,13 @@ public class BaselineList extends ArrayList<Baseline> {
 	public BaselineList apply() throws UnableToInitializeEntityException, UnableToListBaselinesException {
 
 		/* Printing info for debug */
-		logger.debug( " --- Get baselines information --- " );
-		logger.debug( "Component: " + component.getNormalizedName() );
-		logger.debug( "Stream   : " + stream.getNormalizedName() );
-		logger.debug( "Level    : " + level );
-		logger.debug( "Limit    : " + limit );
-		logger.debug( "# filters: " + filters.size() );
-		logger.debug( "Multisite: " + multisitePolling );
+		logger.fine( " --- Get baselines information --- " );
+		logger.fine( "Component: " + component.getNormalizedName() );
+		logger.fine( "Stream   : " + stream.getNormalizedName() );
+		logger.fine( "Level    : " + level );
+		logger.fine( "Limit    : " + limit );
+		logger.fine( "# filters: " + filters.size() );
+		logger.fine( "Multisite: " + multisitePolling );
 
 		if( multisitePolling ) {
 			if( stream.hasPostedDelivery() ) {
@@ -80,15 +80,15 @@ public class BaselineList extends ArrayList<Baseline> {
 			this.addAll( _get() );
 		}
 
-		logger.debug( " --- Bare retrieval --- " );
-		logger.debug( "Baselines: " + this );
+		logger.fine( " --- Bare retrieval --- " );
+		logger.fine( "Baselines: " + this );
 
 		/* Do the filtering */
 		int pruned = 0;
 		for( BaselineFilter filter : filters ) {
-			logger.debug( "Filter: " + filter.getName() );
+			logger.fine( "Filter: " + filter.getName() );
 			pruned += filter.filter( this );
-			logger.debug( "Baselines: " + this );
+			logger.fine( "Baselines: " + this );
 		}
 		
 		/* Load em? */
@@ -109,7 +109,7 @@ public class BaselineList extends ArrayList<Baseline> {
 		}
 		
 		if( pruned > 0 ) {
-			logger.verbose( "[ClearCase] Pruned " + pruned + " baselines" );
+			logger.config( "[ClearCase] Pruned " + pruned + " baselines" );
 		}
 		
 		/* Sort the baselines */
@@ -121,10 +121,10 @@ public class BaselineList extends ArrayList<Baseline> {
 		if( limit > 0 && this.size() > 0 ) {
 			BaselineList n = new BaselineList();
 			n.addAll( this.subList( 0, limit ) );
-			logger.debug( "Final list of baselines: " + n );
+			logger.fine( "Final list of baselines: " + n );
 			return n;
 		} else {
-			logger.debug( "Final list of baselines: " + this );
+			logger.fine( "Final list of baselines: " + this );
 			return this;
 		}
 	}
@@ -135,7 +135,7 @@ public class BaselineList extends ArrayList<Baseline> {
 	 * @return
 	 */
 	public BaselineList applyFilter( BaselineFilter filter ) {
-		logger.debug( "Filter: " + filter.getName() );
+		logger.fine( "Filter: " + filter.getName() );
 		filter.filter( this );
 		
 		return this;
@@ -194,7 +194,7 @@ public class BaselineList extends ArrayList<Baseline> {
 			throw new UnableToListBaselinesException( stream, component, level, e );
 		}
 
-		logger.debug( "I got " + bls_str.size() + " baselines." );
+		logger.fine( "I got " + bls_str.size() + " baselines." );
 		List<Baseline> bls = new ArrayList<Baseline>();
 
 		int c = 0;

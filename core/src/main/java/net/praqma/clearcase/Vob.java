@@ -2,6 +2,7 @@ package net.praqma.clearcase;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,7 +10,6 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
 import net.praqma.clearcase.exceptions.NotMountedException;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
@@ -25,7 +25,7 @@ public class Vob extends ClearCase implements Serializable {
 
 	public static final Pattern rx_vob_get_path = Pattern.compile( "^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$" );
 
-	transient private static Logger logger = Logger.getLogger();
+	transient private static Logger logger = Logger.getLogger( Vob.class.getName() );
 
 	protected String name;
 
@@ -46,7 +46,7 @@ public class Vob extends ClearCase implements Serializable {
 
 	public void load() throws CleartoolException {
 		//context.loadVob(this);
-		logger.debug( "Loading vob " + this );
+		logger.fine( "Loading vob " + this );
 
 		String cmd = "describe vob:" + this;
 
@@ -82,14 +82,14 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public void mount() throws NotMountedException {
-		logger.debug( "Mounting vob " + this );
+		logger.fine( "Mounting vob " + this );
 
 		String cmd = "mount " + this;
 		
 		/* Linux specifics 
 		 * TODO we should check if the vob IS private, otherwise we should create it ourselves */
 		if( Cool.getOS().equals( OperatingSystem.UNIX ) ) {
-			logger.debug( "Creating mount-over directory" );
+			logger.fine( "Creating mount-over directory" );
 			File path = new File( this.getName() );
 			if( !path.exists() && !path.mkdirs() ) {
 				throw new NotMountedException( "Could not create mount-over directory" );
@@ -109,7 +109,7 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public void unmount() throws CleartoolException {
-		logger.debug( "UnMounting vob " + this );
+		logger.fine( "UnMounting vob " + this );
 
 		String cmd = "umount " + this;
 		try {
@@ -152,8 +152,7 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public static Vob create( String name, boolean UCMProject, String path, String comment ) throws CleartoolException, EntityAlreadyExistsException {
-		//context.createVob(name, false, path, comment);
-		logger.debug( "Creating vob " + name );
+		logger.fine( "Creating vob " + name );
 
 		String cmd = "mkvob -tag " + name + ( UCMProject ? " -ucmproject" : "" ) + ( comment != null ? " -c \"" + comment + "\"" : " -nc" ) + " -stgloc " + ( path != null ? path : "-auto" );
 
@@ -194,13 +193,13 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public static boolean isVob( File context ) {
-		logger.debug( "Testing " + context );
+		logger.fine( "Testing " + context );
 
 		String cmd = "lsvob \\" + context.getName();
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
-			logger.debug( "E=" + e.getMessage() );
+			logger.fine( "E=" + e.getMessage() );
 			return false;
 		}
 

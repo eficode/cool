@@ -3,19 +3,19 @@ package net.praqma.clearcase;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.UnableToCreateAttributeException;
 import net.praqma.clearcase.exceptions.UnableToListAttributesException;
 import net.praqma.clearcase.exceptions.UnableToSetAttributeException;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
 public abstract class ClearCase extends Cool {
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( ClearCase.class.getName() );
 
 	public static final String rx_attr_find = "^\\s*\\S+\\s*=\\s*\\S*\\s*$";
 	
@@ -79,7 +79,7 @@ public abstract class ClearCase extends Cool {
 			value = "'\"" + value + "\"'";
 		}
 
-		logger.debug( "Setting attribute " + attribute + "=" + value + " for " + this.getFullyQualifiedName() );
+		logger.fine( "Setting attribute " + attribute + "=" + value + " for " + this.getFullyQualifiedName() );
 
 		String cmd = "mkattr " + ( replace ? "-replace " : "" ) + attribute + " " + value + " " + this.getFullyQualifiedName();
 		try {
@@ -103,7 +103,6 @@ public abstract class ClearCase extends Cool {
 	 * @param name Name of the type
 	 * @param pvob The PVob
 	 * @param replace
-	 * @throws CleartoolException
 	 */
 	public static void createSimpleAttributeType( String name, PVob pvob, boolean replace ) throws UnableToCreateAttributeException {
 		String cmd = "mkattype -vtype string -nc " + name + "@" + pvob;
