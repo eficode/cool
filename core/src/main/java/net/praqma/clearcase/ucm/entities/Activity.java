@@ -57,7 +57,7 @@ public class Activity extends UCMEntity {
 			result[0] = "System";
 			result[1] = "";
 		} else {
-			String cmd = "describe -fmt %u{!}n%[headline]p " + this;
+			String cmd = "describe -fmt %u{!}%[headline]p " + this;
 			try {
 				String line = Cleartool.run( cmd ).stdoutBuffer.toString();
                 result = line.split( "\\{!\\}" );
