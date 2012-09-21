@@ -50,25 +50,25 @@ public class Activity extends UCMEntity {
 	 * @throws UnableToLoadEntityException
 	 */
 	public Activity load() throws UnableToLoadEntityException {
-		List<String> result = null;
+		String[] result = new String[2];
 
 		/* The special case branch */
 		if( isSpecialCase() ) {
-			result = new ArrayList<String>();
-			result.add( "System" );
-			result.add( "" );
+			result[0] = "System";
+			result[1] = "";
 		} else {
-			String cmd = "describe -fmt %u\\n%[headline]p " + this;
+			String cmd = "describe -fmt %u{!}n%[headline]p " + this;
 			try {
-				result = Cleartool.run( cmd ).stdoutList;
+				String line = Cleartool.run( cmd ).stdoutBuffer.toString();
+                result = line.split( "\\{!\\}" );
 			} catch( AbnormalProcessTerminationException e ) {
 				//throw new UCMException( e.getMessage(), e.getMessage() );
 				throw new UnableToLoadEntityException( this, e );
 			}
 		}
 		
-		setUser( result.get( 0 ) );
-		headline = result.get( 1 );
+		setUser( result[0].trim() );
+		headline = result[1].trim();
 		
 		return this;
 	}
