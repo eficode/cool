@@ -30,7 +30,7 @@ public class AfterDate extends BaselineFilter {
 		Iterator<Baseline> itDate = baselines.iterator();
 		while( itDate.hasNext() ) {
 			Baseline baseline = itDate.next();
-			if( baseline.getDate().before( date ) ) {
+            if( date.after( baseline.getDate() ) ) {
 				itDate.remove();
 				pruned++;
 			} else {
