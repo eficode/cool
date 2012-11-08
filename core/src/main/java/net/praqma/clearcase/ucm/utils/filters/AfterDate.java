@@ -31,7 +31,7 @@ public class AfterDate extends BaselineFilter {
 		while( itDate.hasNext() ) {
 			Baseline baseline = itDate.next();
             logger.finest( baseline.getDate() + "==" + date );
-            if( date.after( baseline.getDate() ) ) {
+            if( date.after( baseline.getDate() ) || date.compareTo( baseline.getDate() ) == 0 ) {
                 logger.finest( "REMOVED" );
 				itDate.remove();
 				pruned++;
