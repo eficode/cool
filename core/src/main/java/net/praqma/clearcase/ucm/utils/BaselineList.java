@@ -67,7 +67,7 @@ public class BaselineList extends ArrayList<Baseline> {
 		logger.fine( "Stream   : " + stream.getNormalizedName() );
 		logger.fine( "Level    : " + level );
 		logger.fine( "Limit    : " + limit );
-		logger.fine( "# filters: " + filters.size() );
+		logger.fine( "Filters  : " + filters );
 		logger.fine( "Multisite: " + multisitePolling );
 
 		if( multisitePolling ) {
