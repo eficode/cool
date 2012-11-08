@@ -30,11 +30,13 @@ public class AfterDate extends BaselineFilter {
 		Iterator<Baseline> itDate = baselines.iterator();
 		while( itDate.hasNext() ) {
 			Baseline baseline = itDate.next();
+            logger.finest( baseline.getDate() + "==" + date );
             if( date.after( baseline.getDate() ) ) {
+                logger.finest( "REMOVED" );
 				itDate.remove();
 				pruned++;
 			} else {
-				/* We must be after date, since the list is sorted, there's no more baselines before date */
+				/* We must be after date, since the list is sorted, there are no more baselines before date */
 				break;
 			}
 		}
