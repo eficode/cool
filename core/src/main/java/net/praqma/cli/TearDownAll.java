@@ -1,9 +1,12 @@
 package net.praqma.cli;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.Region;
+import net.praqma.clearcase.Site;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.SetupUtils;
 import net.praqma.util.option.Option;
@@ -21,10 +24,6 @@ public class TearDownAll extends CLI {
 
 		Options o = new Options( "1.0.0" );
 
-		Option otag = new Option( "tag", "t", true, 1, "UCM Project VOB tag" );
-
-		o.setOption( otag );
-
 		o.setDefaultOptions();
 
 		o.parse( args );
@@ -37,7 +36,13 @@ public class TearDownAll extends CLI {
 			System.exit( 1 );
 		}
 
-		PVob pvob = PVob.get( otag.getString() );
-		SetupUtils.tearDown( pvob );
+        for( PVob pvob : PVob.getPVobs() ) {
+            logger.info( "Removing " + pvob );
+            try {
+		        SetupUtils.tearDown( pvob );
+            } catch( Exception e ) {
+                logger.log( Level.WARNING, "Unable to remove " + pvob, e );
+            }
+        }
 	}
 }
