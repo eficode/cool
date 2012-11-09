@@ -17,9 +17,7 @@ public class RemoveVob extends Command<Boolean> {
 
     public RemoveVob( Vob vob ) {
         this.vob = vob;
-    }
 
-    public RemoveVob() {
         this.cmd.append( "rmvob -force " + vob.getStorageLocation() );
     }
 

@@ -37,6 +37,9 @@ public class TearDownAll extends CLI {
 			System.exit( 1 );
 		}
 
+        logger.info( "Removing PVobs" );
+        logger.info( "--------------" );
+
         for( Vob pvob : PVob.getPVobs() ) {
             logger.info( "Removing " + pvob );
             try {
@@ -46,9 +49,17 @@ public class TearDownAll extends CLI {
             }
         }
 
+        logger.info( "Removing Vobs" );
+        logger.info( "-------------" );
+
         /* Remaining Vobs */
         for( Vob vob : PVob.list( false ) ) {
-            vob.remove( true );
+            logger.info( "Removing " + vob );
+            try {
+                vob.remove( true );
+            } catch( Exception e ) {
+                logger.log( Level.WARNING, "Unable to remove " + vob, e );
+            }
         }
 	}
 }
