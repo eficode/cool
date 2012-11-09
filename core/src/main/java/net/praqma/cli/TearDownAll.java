@@ -1,6 +1,7 @@
 package net.praqma.cli;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,8 +54,13 @@ public class TearDownAll extends CLI {
         logger.info( "-------------" );
 
         /* Remaining Vobs */
-        for( Vob vob : PVob.list( false ) ) {
-            logger.info( "Removing " + vob );
+        List<Vob> list = PVob.list( false );
+        //for( Vob vob : list ) {
+        for( int i = 0 ; i < list.size() ; i++ ) {
+            Vob vob = list.get( i );
+
+            double p = ( Math.floor( ( (double)i / (double)list.size() ) * 10000 ) ) / 100;
+            logger.info( "(" + p + "%) Removing " + vob );
             try {
                 vob.remove( true );
             } catch( Exception e ) {
