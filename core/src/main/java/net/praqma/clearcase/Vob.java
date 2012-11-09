@@ -7,8 +7,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.command.RemoveVob;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
+import net.praqma.clearcase.exceptions.EntityNotLoadedException;
 import net.praqma.clearcase.exceptions.NotMountedException;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
@@ -128,6 +130,13 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public String getStorageLocation() {
+        if( this.storageLocation == null ) {
+            try {
+                load();
+            } catch( CleartoolException e ) {
+                throw new EntityNotLoadedException( name, name + " could not be auto loaded", e );
+            }
+        }
 		return this.storageLocation;
 	}
 
@@ -173,13 +182,7 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public void remove() throws CleartoolException {
-		String cmd = "rmvob -force " + getStorageLocation();
-
-		try {
-			Cleartool.run( cmd );
-		} catch( Exception e ) {
-			throw new CleartoolException( "Could not remove Vob " + this, e );
-		}
+		new RemoveVob( this ).execute();
 	}
 
 	public static Vob get( String vobname ) {
