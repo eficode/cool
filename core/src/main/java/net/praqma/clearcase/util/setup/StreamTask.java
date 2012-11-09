@@ -18,6 +18,7 @@ public class StreamTask extends AbstractTask {
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
 		String name = getValue( "name", e, context );
+        String target = getValue( "target", e, context, null );
 		boolean integration = e.getAttribute( "type" ).equals( "integration" );
 		String comment = getComment( e, context );
 		String in = getValue( "in", e, context, null );
@@ -40,14 +41,22 @@ public class StreamTask extends AbstractTask {
 		} catch( Exception e1 ) {
 			/* No baselines given, skipping */
 		}
-		
+
+        Stream s = null;
 		if( integration ) {
-			Stream s = Stream.createIntegration( name, Project.get( in, pvob ), baselines );
+			s = Stream.createIntegration( name, Project.get( in, pvob ), baselines );
 			context.integrationStreams.put( name, s );
 			context.streams.put( name, s );
 		} else {
-			context.streams.put( name, Stream.create( Stream.get( in, pvob ), name + "@" + pvob, readonly, baselines ) );
+            s = Stream.create( Stream.get( in, pvob ), name + "@" + pvob, readonly, baselines );
+			context.streams.put( name, s );
 		}
-	}
+
+        if( target != null ) {
+            Stream targetStream = Stream.get( target, pvob );
+            s.setDefaultTarget( targetStream );
+        }
+
+    }
 
 }
