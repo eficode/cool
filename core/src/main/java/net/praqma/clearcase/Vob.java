@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.command.RemoveVob;
+import net.praqma.clearcase.command.UnmountVob;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
 import net.praqma.clearcase.exceptions.EntityNotLoadedException;
@@ -111,11 +112,8 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public void unmount() throws CleartoolException {
-		logger.fine( "UnMounting vob " + this );
-
-		String cmd = "umount " + this;
 		try {
-			Cleartool.run( cmd );
+			new UnmountVob( this ).execute();
 		} catch( AbnormalProcessTerminationException e ) {
 			if( e.getMessage().equals( this + " is not currently mounted." ) ) {
 				return;
