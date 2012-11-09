@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
-import net.praqma.clearcase.command.ListPVobs;
+import net.praqma.clearcase.command.ListVobs;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
 import net.praqma.clearcase.exceptions.ViewException;
@@ -124,8 +124,7 @@ public class PVob extends Vob {
 		return vobs;
 	}
 
-    public static List<PVob> getPVobs() {
-        return new ListPVobs().execute().get();
+    public static List<Vob> getPVobs() {
+        return new ListVobs().execute().get();
     }
-
 }

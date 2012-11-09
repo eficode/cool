@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.Site;
+import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.SetupUtils;
 import net.praqma.util.option.Option;
@@ -36,15 +37,18 @@ public class TearDownAll extends CLI {
 			System.exit( 1 );
 		}
 
-        for( PVob pvob : PVob.getPVobs() ) {
+        for( Vob pvob : PVob.getPVobs() ) {
             logger.info( "Removing " + pvob );
             try {
-		        SetupUtils.tearDown( pvob );
+		        SetupUtils.tearDown( (PVob) pvob );
             } catch( Exception e ) {
                 logger.log( Level.WARNING, "Unable to remove " + pvob, e );
             }
         }
 
         /* Remaining Vobs */
+        for( Vob vob : PVob.list( false ) ) {
+            vob.remove( true );
+        }
 	}
 }

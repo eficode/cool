@@ -2,11 +2,13 @@ package net.praqma.clearcase;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
+import net.praqma.clearcase.command.ListVobs;
 import net.praqma.clearcase.command.RemoveVob;
 import net.praqma.clearcase.command.UnmountVob;
 import net.praqma.clearcase.exceptions.CleartoolException;
@@ -183,6 +185,13 @@ public class Vob extends ClearCase implements Serializable {
 		new RemoveVob( this ).execute();
 	}
 
+    public void remove( boolean unmount ) throws CleartoolException {
+        if( unmount ) {
+            unmount();
+        }
+        new RemoveVob( this ).execute();
+    }
+
 	public static Vob get( String vobname ) {
 		try {
 			Vob vob = new Vob( vobname );
@@ -228,4 +237,8 @@ public class Vob extends ClearCase implements Serializable {
 		return "vob:" + this;
 	}
 
+
+    public static List<Vob> list( boolean ucmvobs ) {
+        return new ListVobs().setVobType( ListVobs.VobType.get( ucmvobs ) ).execute().get();
+    }
 }
