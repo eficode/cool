@@ -1,6 +1,8 @@
 package net.praqma.clearcase.ucm.utils;
 
-public abstract class BaselineFilter {
+import java.io.Serializable;
+
+public abstract class BaselineFilter implements Serializable {
 
 	public abstract int filter( BaselineList baselines );
 	

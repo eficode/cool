@@ -1,5 +1,6 @@
 package net.praqma.clearcase.ucm.utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -206,7 +207,7 @@ public class BaselineList extends ArrayList<Baseline> {
 		return bls;
 	}
 	
-	public static class AscendingDateSort implements Comparator<Baseline> {
+	public static class AscendingDateSort implements Comparator<Baseline>, Serializable {
 
 		@Override
 		public int compare( Baseline bl1, Baseline bl2 ) {
