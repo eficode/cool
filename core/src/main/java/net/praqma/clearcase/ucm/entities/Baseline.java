@@ -409,6 +409,10 @@ public class Baseline extends UCMEntity implements Diffable {
 			}
 		}
 
+		if( bls.isEmpty()) {
+			logger.fine( "Baseline used because it was not rootless: " + this.getFullyQualifiedName());
+			bls.add(this);
+		}
 		return bls;
 	}
 
