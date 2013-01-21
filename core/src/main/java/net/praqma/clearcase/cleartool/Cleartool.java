@@ -1,6 +1,7 @@
 package net.praqma.clearcase.cleartool;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import net.praqma.clearcase.*;
 import net.praqma.clearcase.exceptions.CleartoolNotInstalledException;
@@ -23,7 +24,10 @@ import net.praqma.util.execute.CommandLineInterface;
  */
 public abstract class Cleartool extends Cool {
 
+    
 	private static CommandLineInterface cli = null;
+    private static final Logger log = Logger.getLogger(Cleartool.class.getName());
+    private static String prefix = "["+Cleartool.class.getSimpleName()+"]"; 
 
 	static {
 		cli = CommandLine.getInstance();
@@ -47,6 +51,7 @@ public abstract class Cleartool extends Cool {
 	
 	private static CmdResult _run( String cmd, File dir, boolean merge, boolean ignore ) throws CommandLineException, AbnormalProcessTerminationException {
 		try {
+            log.finest( String.format( "%s cleartool %s", prefix, cmd ) );
 			return cli.run( "cleartool " + cmd, dir, merge, ignore );
 		} catch( AbnormalProcessTerminationException e ) {
 			
