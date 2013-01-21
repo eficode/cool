@@ -71,13 +71,12 @@ public class BaselineList extends ArrayList<Baseline> {
 		logger.fine( "Filters  : " + filters );
 		logger.fine( "Multisite: " + multisitePolling );
 
-		if( multisitePolling ) {
-			if( stream.hasPostedDelivery() ) {
+		if(stream.hasPostedDelivery()) {
+			if(multisitePolling) {
 				this.addAll( stream.getPostedBaselines( component, level ) );
-			} else {
-				return this;
 			}
-		} else {
+		}
+		else {
 			this.addAll( _get() );
 		}
 
