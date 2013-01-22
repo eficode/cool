@@ -53,8 +53,7 @@ public abstract class Cleartool extends Cool {
 		try {
             log.finest( String.format( "%s cleartool %s", prefix, cmd ) );
 			return cli.run( "cleartool " + cmd, dir, merge, ignore );
-		} catch( AbnormalProcessTerminationException e ) {
-			
+		} catch( AbnormalProcessTerminationException e ) {			
 			/* Validate exit errors */
 			if( e.getMessage().contains( "cleartool: command not found" ) ) {
 				throw new CleartoolNotInstalledException( "Cleartool not installed", e );
