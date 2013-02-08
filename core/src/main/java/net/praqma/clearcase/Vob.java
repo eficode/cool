@@ -205,7 +205,7 @@ public class Vob extends ClearCase implements Serializable {
 	public static boolean isVob( File context ) {
 		logger.fine( "Testing " + context );
 
-		String cmd = "lsvob \\" + context.getName();
+		String cmd = "lsvob " + Cool.filesep + context.getName();
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
