@@ -736,7 +736,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		try {
 			lines = Cleartool.run( cmd, viewContext ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new CleartoolException( "Could not get difference between " + d1.getFullyQualifiedName() + " and " + d2.getFullyQualifiedName() + ": " + e.getMessage(), e );
+			throw new CleartoolException( "Could not get difference between " + d1 + " and " + d2 + ": " + e.getMessage(), e );
 		}
 		
 		logger.debug( "LINES: " + lines );
