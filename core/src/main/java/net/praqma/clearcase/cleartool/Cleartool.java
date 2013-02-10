@@ -51,7 +51,6 @@ public abstract class Cleartool extends Cool {
 	
 	private static CmdResult _run( String cmd, File dir, boolean merge, boolean ignore ) throws CommandLineException, AbnormalProcessTerminationException {
 		try {
-            log.finest( String.format( "%s cleartool %s", prefix, cmd ) );
 			return cli.run( "cleartool " + cmd, dir, merge, ignore );
 		} catch( AbnormalProcessTerminationException e ) {			
 			/* Validate exit errors */
