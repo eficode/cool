@@ -286,6 +286,14 @@
             <version>0.1.28</version>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>net.praqma</groupId>
+            <artifactId>praqmajutils</artifactId>
+            <version>0.1.28</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
 		
 		
         <dependency>
