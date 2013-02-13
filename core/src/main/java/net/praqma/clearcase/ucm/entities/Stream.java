@@ -1,10 +1,7 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -182,7 +179,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		}
 
 		String[] data = rawdata.split( "\\}\\{" );
-		logger.fine( "I got: " + data );
+		logger.fine( "I got: " + Arrays.asList( data ) );
 
 		/* Set project */
 		setProject( Project.get( data[1] ) );
