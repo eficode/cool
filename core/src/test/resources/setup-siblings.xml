@@ -84,6 +84,14 @@
     </components>
   </project>
   
+  <project name="three" comment="" pvob="${pvobname}" in="one-folder">
+    <components>
+      <component name="Service" pvob="${pvobname}" />
+      <component name="Model" pvob="${pvobname}" />
+      <component name="Clientapp" pvob="${pvobname}" />
+    </components>
+  </project>
+  
   <stream name="one_int" in="one" comment="" pvob="${pvobname}" type="integration">
     <baselines>
       <baseline name="_System_1.0" pvob="${pvobname}" />
