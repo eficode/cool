@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -187,12 +186,12 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		/* Set project */
 		setProject( Project.get( data[1] ) );
 
-		/* Set default target, if it exists */
+		/* Set default target, if exists */
 		if( !data[2].trim().equals( "" ) ) {
 			try {
-				defaultTarget = Stream.get( data[2].trim() );
+				setDefaultTarget( Stream.get( data[2].trim() ) );
 			} catch( Exception e ) {
-				logger.log( Level.WARNING, "The default target could not be loaded", e );
+				logger.fine( "The Stream did not have a default target." );
 			}
 		}
 

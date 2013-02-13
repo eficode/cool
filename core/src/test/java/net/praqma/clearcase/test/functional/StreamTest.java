@@ -1,9 +1,16 @@
 package net.praqma.clearcase.test.functional;
 
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
+import net.praqma.clearcase.exceptions.UnableToListProjectsException;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Stream;
 import org.junit.ClassRule;
 import org.junit.Test;
+
+import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author cwolfgang
@@ -12,10 +19,13 @@ import org.junit.Test;
  */
 public class StreamTest {
     @ClassRule
-    public static ClearCaseRule ccenv = new ClearCaseRule( "FB6497", "setup-siblings.xml" );
+    public static ClearCaseRule ccenv = new ClearCaseRule( "FB8603", "setup-siblings.xml" );
 
     @Test
-    public void findSiblings() {
+    public void findSiblings() throws UnableToInitializeEntityException, UnableToListProjectsException {
         Stream one = ccenv.context.streams.get( "one_int" );
+
+        List<Stream> siblings = one.getSiblingStreams();
+        assertThat( siblings.size(), is( 2 ) );
     }
 }
