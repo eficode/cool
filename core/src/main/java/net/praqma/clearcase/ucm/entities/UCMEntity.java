@@ -432,6 +432,16 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 		return this.loaded;
 	}
 
+    protected void autoLoad() throws EntityNotLoadedException {
+        if( !loaded ) {
+            try {
+                load();
+            } catch( ClearCaseException e ) {
+                throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+            }
+        }
+    }
+
 	public boolean isCreated() {
 		return created;
 	}
