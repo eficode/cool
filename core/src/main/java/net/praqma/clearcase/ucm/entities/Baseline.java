@@ -28,12 +28,25 @@ public class Baseline extends UCMEntity implements Diffable {
 
 	transient static private Logger logger = Logger.getLogger( Baseline.class.getName()  );
 
-	/* Baseline specific fields */
-
+    /**
+     * The {@link Component} of the {@link Baseline}
+     */
 	private Component component = null;
+
+    /**
+     * The {@link PromotionLevel} of the {@link Baseline}
+     */
 	private Project.PromotionLevel plevel = Project.PromotionLevel.INITIAL;
+
+    /**
+     * The {@link Stream} of the {@link Baseline}
+     */
 	private Stream stream = null;
-	private ArrayList<Activity> activities = null;
+
+    /**
+     * The {@link Activity}ies of the {@link Baseline}
+     */
+	private ArrayList<Activity> activities = new ArrayList<Activity>();
 	
 	public enum LabelBehaviour {
 		NOLABEL,
@@ -80,7 +93,6 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToGetEntityException 
 	 */
 	public Baseline load() throws UnableToLoadEntityException, UnableToInitializeEntityException {
-		//logger.debug( "Loading baseline " + this );
 
 		String result = "";
 
@@ -88,14 +100,13 @@ public class Baseline extends UCMEntity implements Diffable {
 		try {
 			result = Cleartool.run( cmd ).stdoutBuffer.toString();
 		} catch( Exception e ) {
-			//throw new UCMException( "Could not load the baseline " + baseline, e.getMessage() );
 			throw new UnableToLoadEntityException( this, e );
 		}
 
 		String[] rs = result.split( UCMEntity.delim );
         logger.fine( "Result:" + result );
 
-		/* Component . component:GENI_Source@\bbComponent */
+		/* Component */
 		String c = ( rs[1].matches( "^component:.*$" ) ? "" : "component:" ) + ( rs[1].matches( ".*@" + PVob.rx_tag_format + "$" ) ? rs[1] : rs[1] + "@" + this.pvob );
 		/* Stream */
 		if( rs[2].trim().length() > 0 ) {
@@ -124,9 +135,6 @@ public class Baseline extends UCMEntity implements Diffable {
 		/* mastership */
 		this.mastership = rs[7];
 
-		//logger.debug( "[BASELINE] component: " + this.component + ", stream: " + this.stream + ", plevel: " + this.plevel + ", user: " + this.user + ", date: " + this.date + ", label " + this.labelStatus );
-
-		activities = new ArrayList<Activity>();
 		this.loaded = true;
 
 		return this;
@@ -146,7 +154,7 @@ public class Baseline extends UCMEntity implements Diffable {
 			basename = basename.replaceFirst( "baseline:", "" );
 		}
 
-		boolean created = false; // context.createBaseline( basename, component, view, incremental, identical, activities, depends );
+		boolean created = false;
 
 		String cmd = "mkbl -nc -component " + component.getNormalizedName() + ( identical ? " -identical" : "" );
 
@@ -242,7 +250,6 @@ public class Baseline extends UCMEntity implements Diffable {
 		}
 
 		if( this.plevel.equals( PromotionLevel.REJECTED ) ) {
-			//throw new UCMException("Cannot promote from REJECTED");
 			throw new UnableToPromoteBaselineException( this, PromotionLevel.REJECTED );
 		}
 
@@ -276,6 +283,11 @@ public class Baseline extends UCMEntity implements Diffable {
 		return Project.PromotionLevel.REJECTED;
 	}
 
+    /**
+     * Set the {@link PromotionLevel}
+     * @param plevel
+     * @throws UnableToPromoteBaselineException
+     */
 	public void setPromotionLevel( Project.PromotionLevel plevel ) throws UnableToPromoteBaselineException {
 		this.plevel = plevel;
 
@@ -286,20 +298,6 @@ public class Baseline extends UCMEntity implements Diffable {
 			throw new UnableToPromoteBaselineException( this, this.plevel );
 		}
 	}
-
-	/**
-	 * Get the differences between two Baselines.<br>
-	 * Currently this method only support the previous Baseline and with -nmerge
-	 * set.<br>
-	 * 
-	 * @return A BaselineDiff object containing a set of Activities.
-	 * @throws UnableToGetEntityException 
-	 */
-	/*
-	public BaselineDiff getDifferences( SnapshotView view ) {
-		return new BaselineDiff( view, this );
-	}
-	*/
 
 	public Component getComponent() {
 		if( !loaded ) {
@@ -385,7 +383,6 @@ public class Baseline extends UCMEntity implements Diffable {
 		List<String> bls_str = null;
 		
 		String cmd = "des -fmt %X[member_of_closure]p " + this.getFullyQualifiedName();
-				//"lsbl -s -component " + component + " -stream " + stream + ( plevel != null ? " -level " + plevel.toString() : "" );
 		try {
 			bls_str = Cleartool.run( cmd, null, false ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
