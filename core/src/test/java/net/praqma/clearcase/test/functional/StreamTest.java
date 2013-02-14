@@ -27,6 +27,16 @@ public class StreamTest {
     public static LoggingRule lrule = new LoggingRule( "net.praqma" );
 
     @Test
+    public void testLoad() throws CleartoolException, UnableToInitializeEntityException {
+        Stream one = ccenv.context.streams.get( "one_int" );
+        Stream two = ccenv.context.streams.get( "two_int" );
+        one.setDefaultTarget( two );
+
+        Stream stream = Stream.get( "one_int", one.getPVob() );
+        assertThat( stream.getDefaultTarget(), is( two ) );
+    }
+
+    @Test
     public void findSiblings() throws UnableToInitializeEntityException, UnableToListProjectsException, CleartoolException {
         Stream one = ccenv.context.streams.get( "one_int" );
         Stream two = ccenv.context.streams.get( "two_int" );
