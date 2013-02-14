@@ -24,11 +24,21 @@ public class Activity extends UCMEntity {
 	private final static Pattern pattern_activity = Pattern.compile( "^[<>-]{2}\\s*(\\S+)\\s*.*$" );
 	
 	private static Logger logger = Logger.getLogger( Activity.class.getName() );
-	
-	/* Activity specific fields */
+
+    /**
+     * The change set of the activity
+     */
 	public Changeset changeset = new Changeset();
+
+    /**
+     * The specialCase field is used when parsing an activity string from cleartool,<br />
+     * when there's no_activity
+     */
 	private boolean specialCase = false;
-	
+
+    /**
+     * The headline of the {@link Activity}
+     */
 	private String headline = "";
 
 	Activity() {
@@ -62,7 +72,6 @@ public class Activity extends UCMEntity {
 				String line = Cleartool.run( cmd ).stdoutBuffer.toString();
                 result = line.split( "\\{!\\}" );
 			} catch( AbnormalProcessTerminationException e ) {
-				//throw new UCMException( e.getMessage(), e.getMessage() );
 				throw new UnableToLoadEntityException( this, e );
 			}
 		}
@@ -141,14 +150,9 @@ public class Activity extends UCMEntity {
 			/* If not an activity, it must be a version */
 			String f = s.trim();
 
-			/*
-			 * If the version cannot be instantiated and is a special case, skip
-			 * it
-			 */
-			
 			Version v = (Version) UCMEntity.getEntity( Version.class, f ).load();
 			v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
-			//System.out.println(f);
+
 			current.changeset.versions.add( v );
 		
 		}

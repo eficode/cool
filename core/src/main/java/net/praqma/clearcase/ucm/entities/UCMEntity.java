@@ -269,6 +269,10 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 		return this.user;
 	}
 
+    /**
+     * Set the user responsible for this entity
+     * @param user
+     */
 	public void setUser( String user ) {
 		this.user = user;
 	}
