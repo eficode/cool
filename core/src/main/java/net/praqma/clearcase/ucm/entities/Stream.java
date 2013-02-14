@@ -42,27 +42,42 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 	transient static private Logger logger = Logger.getLogger( Stream.class.getName() );
 
-	/* Stream specific fields */
+    /**
+     * The list of recommended {@link Baseline}s
+     */
 	private ArrayList<Baseline> recommendedBaselines = null;
+
+    /**
+     * The {@link Project} for this {@link Stream}
+     */
 	private Project project = null;
+
+    /**
+     * The default target {@link Stream} for this {@link Stream}
+     */
 	private Stream defaultTarget = null;
+
+    /**
+     * If this {@link Stream} is read only or not
+     */
 	private boolean readOnly = true;
+
+    /**
+     * The list of foundation {@link Baseline}s for this {@link Stream}
+     */
 	private List<Baseline> foundations = new ArrayList<Baseline>();
 	
 	private String status = null;
 
+    /**
+     * The parent {@link Stream}
+     */
 	private Stream parent;
 
 	public Stream() {
 		super( "stream" );
 	}
 
-	/**
-	 * This method is only available to the package, because only UCMEntity
-	 * should be allowed to call it.
-	 * 
-	 * @return A new Stream Entity
-	 */
 	static Stream getEntity() {
 		return new Stream();
 	}
@@ -74,7 +89,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	/**
-	 * Create a new stream, given a parent Stream, a fully qualified name for
+	 * Create a new stream in ClearCase, given a parent Stream, a fully qualified name for
 	 * the new Stream and whether the Stream is read only or not
 	 * 
 	 * @param parent
@@ -102,6 +117,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		try {
 			UCMEntity.getNamePart( nstream );
 		} catch( CleartoolException e1 ) {
+            /* The nstream wasn't prefixed with "stream:" */
 			nstream = "stream:" + nstream + "@" + parent.getPVob();
 		}
 		
@@ -110,7 +126,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
-			//throw new UCMException( "Could not create stream: " + e.getMessage() );
 			throw new UnableToCreateEntityException( Stream.class, e );
 		}
 
@@ -130,7 +145,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		baselines.add( baseline );
 		return createIntegration( name, project, baselines );
 	}
-	
+
+    /**
+     * Create an integration {@link Stream} in ClearCase
+     */
 	public static Stream createIntegration( String name, Project project, List<Baseline> baselines ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
 		String cmd = "mkstream -integration -in " + project;
 				
@@ -145,6 +163,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		try {
 			UCMEntity.getNamePart( name );
 		} catch( CleartoolException e1 ) {
+            /* name wasn't prefixed with "stream:" */
 			name = "stream:" + name + "@" + project.getPVob();
 		}
 				
@@ -153,7 +172,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
-			//throw new UCMException( "Could not create integration stream: " + e.getMessage(), UCMType.CREATION_FAILED );
 			throw new UnableToCreateEntityException( Stream.class, e );
 		}
 
@@ -170,10 +188,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			rawdata = Cleartool.run( cmd ).stdoutBuffer.toString();
 		} catch( AbnormalProcessTerminationException e ) {
 			if( e.getMessage().matches( rx_stream_load ) ) {
-				//throw new UCMException( "The component \"" + this + "\", does not exist.", UCMType.LOAD_FAILED );
 				throw new UCMEntityNotFoundException( this, e );
 			} else {
-				//throw new UCMException( e.getMessage(), e.getMessage(), UCMType.LOAD_FAILED );
 				throw new UnableToLoadEntityException( this, e );
 			}
 		}
@@ -186,11 +202,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 		/* Set default target, if it exists */
 		if( !data[2].trim().equals( "" ) ) {
-			try {
-				defaultTarget = Stream.get( data[2].trim() );
-			} catch( Exception e ) {
-				logger.log( Level.WARNING, "The default target could not be loaded", e );
-			}
+            defaultTarget = Stream.get( data[2].trim() );
 		}
 
 		/* Set read only */
@@ -208,6 +220,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			}
 		} catch( Exception e ) {
 			logger.warning( "Could not get the foundation baseline: " + e.getMessage() );
+            /* PEH */
 		}
 		
 		/* Set mastership */
@@ -216,6 +229,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			this.mastership = ms;
 		} catch( Exception e ) {
 			logger.warning( "Could not set mastership: " + e.getMessage() );
+            /* PEH */
 		}
 
 		this.loaded = true;
@@ -223,14 +237,20 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return this;
 	}
 
+    @Deprecated
 	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UnableToInitializeEntityException, UnableToListBaselinesException, NoSingleTopComponentException {
 		return Baselines.get( this, getSingleTopComponent(), plevel );
 	}
 
+    @Deprecated
 	public List<Baseline> getBaselines( Component component, PromotionLevel plevel ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		return Baselines.get( this, component, plevel );
 	}
 
+    /**
+     * @deprecated functionality found in {@link net.praqma.clearcase.ucm.utils.BaselineList}
+     */
+    @Deprecated
 	public List<Baseline> getBaselines( Component component, PromotionLevel plevel, Date date ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		List<Baseline> baselines = Baselines.get( this, component, plevel );
 
@@ -341,10 +361,19 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		}
 	}
 
+    /**
+     * Set the {@link Project} of the {@link Stream}
+     * @param project
+     */
 	public void setProject( Project project ) {
 		this.project = project;
 	}
 
+    /**
+     * Set the default target {@link Stream} in ClearCase
+     * @param stream
+     * @throws CleartoolException
+     */
 	public void setDefaultTarget( Stream stream ) throws CleartoolException {
 		
 		String cmd = "chstream -target " + stream + " " + this;
@@ -376,6 +405,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 					streams.add( p.getIntegrationStream() );
 				}
 			} catch( Exception e ) {
+                /* PEH */
 				/* Just move on! */
 				logger.warning( "Could not check project " + p + ": " + e.getMessage() );
 			}
@@ -434,7 +464,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			try {
 				result = Cleartool.run( cmd ).stdoutBuffer.toString();
 			} catch( AbnormalProcessTerminationException e ) {
-				//throw new UCMException( "Unable to get recommended baselines from " + stream + ": " + e.getMessage() );
 				throw new UnableToListBaselinesException( this, null, null, e );
 			}
 			
@@ -443,7 +472,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			for( int i = 0; i < rs.length; i++ ) {
 				/* There is something in the element. */
 				if( rs[i].matches( "\\S+" ) ) {
-					// bls.add( (Baseline)UCMEntity.GetEntity( rs[i], true ) );
 					bls.add( Baseline.get( rs[i], pvob ) );
 				}
 			}
@@ -454,6 +482,9 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return this.recommendedBaselines;
 	}
 
+    /**
+     * Recommend the {@link Baseline} for this {@link Stream} in ClearCase
+     */
 	public void recommendBaseline( Baseline baseline ) throws CleartoolException {
 		String cmd = "chstream -recommend " + baseline + " " + this;
 		try {
@@ -479,6 +510,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 					bls.add( Baseline.get( s.trim() ) );
 				} catch( Exception e ) {
 					/* Unable to add, no op */
+                    /* PEH */
 				}
 			}
 		}
@@ -532,7 +564,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		
 		return null;
 	}
-	
+
+    /**
+     * Remove this {@link Stream} from ClearCase
+     * @throws UnableToRemoveEntityException
+     */
 	public void remove() throws UnableToRemoveEntityException {
 		String cmd = "rmstream -force " + this;
 		
@@ -547,10 +583,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * This method returns the default Stream the given Stream will deliver to.
 	 * 
 	 * @return A Stream
-	 * @throws UnableToLoadEntityException 
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToCreateEntityException 
-	 * @throws UnableToGetEntityException
 	 */
 	public Stream getDefaultTarget() {
 		if( !loaded ) {
@@ -582,25 +614,24 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	/**
-	 * Add a single foundation baseline
+	 * Add a single foundation {@link Baseline} for this {@link Stream}
 	 * @param baseline
 	 */
 	public void setFoundationBaseline( Baseline baseline ) {
 		this.foundations.clear();
 		this.foundations.add( baseline );
 	}
-	
+
+    /**
+     * Add a foundation {@link Baseline} for this {@link Stream}
+     * @param baseline
+     */
 	public void addFoundationBaseline( Baseline baseline ) {
 		this.foundations.add( baseline );
 	}
 
 	/**
-	 * Get the first foundation baseline. This is a method implemented to maintain backwards compatibility. 
-	 * @return
-	 * @throws UCMEntityNotFoundException
-	 * @throws UnableToLoadEntityException
-	 * @throws UnableToCreateEntityException
-	 * @throws UnableToGetEntityException
+	 * Get the first foundation baseline. This is a method implemented to maintain backwards compatibility.
 	 */
 	public Baseline getFoundationBaseline() {
 		if( !loaded ) {
@@ -613,7 +644,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		
 		return this.foundations.get( 0 );
 	}
-	
+
+    /**
+     *
+     * @return A list of {@link Baseline}s, never null
+     */
 	public List<Baseline> getFoundationBaselines() {
 		if( !loaded ) {
 			try {
@@ -633,7 +668,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	public Stream getParent() {
 		return parent;
 	}
-	
+
+    /**
+     * Get the original mastership from ClearCase
+     */
 	public String getOriginalMastership() throws CleartoolException {
 		Matcher m = Pattern.compile( ".*Operation posted from replica \"(\\w*)\".*" ).matcher( Deliver.getStatus( this ) );
 		if( m.find() ) {
