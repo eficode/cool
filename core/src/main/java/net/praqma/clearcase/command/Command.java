@@ -4,6 +4,8 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.util.execute.CmdResult;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: cwolfgang
@@ -13,6 +15,7 @@ import java.io.File;
 public abstract class Command<T> {
 
     protected StringBuilder cmd = new StringBuilder();
+    protected List<String> cmdList = new ArrayList<String>();
 
     protected File path;
     protected boolean merge = false;
@@ -52,6 +55,19 @@ public abstract class Command<T> {
     }
 
     public abstract T get();
+
+    public String getCommand() {
+        StringBuilder sb = new StringBuilder();
+
+        if( cmdList.size() > 1 ) {
+            for( int i = 0 ; i < cmdList.size() ; i++ ) {
+                String s = cmdList.get( i );
+                sb.append( s );
+            }
+        }
+
+        return sb.toString();
+    }
 
     public Command<T> execute() {
         result = Cleartool.run( cmd.toString(), path, merge, ignore );

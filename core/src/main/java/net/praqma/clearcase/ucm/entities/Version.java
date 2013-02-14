@@ -33,9 +33,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	private static final Pattern rx_versionName = Pattern.compile( "^(\\S+)\\s+([\\S\\s.^@]+@@.*)$" );
 	
 	transient private static Logger logger = Logger.getLogger();
-	
-	//private String date = null;
-	private String user = null;
+
 	private String machine = null;
 	private boolean checkedout = false;
 	private String comment = null;
@@ -48,6 +46,10 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 	private String fullfile = null;
 	private String sfile = null;
+
+    /**
+     * The {@link File} object for this {@link Version}
+     */
 	private File file = null;
 	private String version = "";
 	
@@ -70,7 +72,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 
 	private static final Pattern rx_findAddedElements = Pattern.compile( qfs + ".*?" + qfs + "(\\d+)" + qfs + "(.*?)" + qfs );
-	//private static final Pattern rx_findRevision = Pattern.compile( qfs + "(\\d+)$" );
 	private static final Pattern rx_findRevision = Pattern.compile( "^(.*?)" + qfsor + "(\\d+)$" );
 
 	@Override
@@ -139,11 +140,11 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return this.file.setWritable( true );
 	}
 
-	/* Getters */
-
+    /**
+     * Given a file({@link File}) and a viewroot({@link File}) return the {@link Version} from ClearCase
+     */
 	public static Version getUnextendedVersion( File file, File viewroot ) throws IOException, CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
-		//return context.getVersionExtension( file, viewroot );
-		
+
 		if( !file.exists() ) {
 			throw new IOException( "The file " + file + " does not exist." );
 		}
@@ -227,7 +228,10 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		
 		return version;
 	}
-	
+
+    /**
+     * Make an element in ClearCase
+     */
 	public static void makeElement( File file, File view, String comment ) throws CleartoolException {
 		String cmd = "mkelem " + ( comment != null ? "-c \"" + comment + "\" " : "" ) + file;
 		
@@ -237,7 +241,10 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			throw new CleartoolException( "Unable to make element " + file, e );
 		}
 	}
-	
+
+    /**
+     * Make a directory in ClearCase
+     */
 	public static void makeDirectory( File directory, File view, String comment ) throws CleartoolException {
 		String cmd = "mkdir " + ( comment != null ? "-c \"" + comment + "\" " : "" ) + directory;
 		
@@ -249,12 +256,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	/**
-	 * 
-	 * @param file
-	 * @param view
-	 * @param viewContext
-	 * @param checkIn
-	 * @throws CleartoolException
+	 * Add a {@link File} in ClearCase
 	 */
 	public static void addToSourceControl( File file, File viewContext, String comment, boolean checkIn ) throws CleartoolException {
 		String cmd = "mkelem -mkpath ";
@@ -282,16 +284,14 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 			for( int i = files.size() - 1; i >= 0; i-- ) {
 				String cmd = "mkdir " + files.get( i ).getPath();
-				try {
-					/* The parent must be checked out before adding elements */
-					try {
-						checkOut( files.get( i ).getParentFile(), view );
-					} catch( CleartoolException e ) {
-						/* This probably indicates the directory is checked out */
-					}
-					Cleartool.run( cmd, view );
-				} catch( Exception e ) {
-				}
+				/* The parent must be checked out before adding elements */
+                try {
+                    checkOut( files.get( i ).getParentFile(), view );
+                } catch( CleartoolException e ) {
+                    /* This indicates that the directory is checked out */
+                }
+
+                Cleartool.run( cmd, view );
 			}
 
 			try {
@@ -299,7 +299,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 				try {
 					checkOut( file.getParentFile(), view );
 				} catch( CleartoolException e ) {
-					/* Maybe it is checked out? */
+					/* It is checked out */
 				}
 
 				/* Determine whether the File is a file or a directory */
@@ -325,7 +325,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		}
 	
 	public void checkIn() throws CleartoolException {
-		//context.checkIn( this, false, view.getViewRoot() );
 		checkIn( file, false, view );
 	}
 	
@@ -377,9 +376,12 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	public void removeVersion() throws CleartoolException {
 		removeVersion( this.file, view );
 	}
-	
+
+    /**
+     * Remove a {@link Version} in ClearCase
+     */
 	public static void removeVersion( File file, File viewContext ) throws CleartoolException {
-		/* Firstly, checkout directory */
+		/* First checkout directory */
 		try {
 			checkOut( file.getParentFile(), viewContext );
 		} catch( CleartoolException e ) {
@@ -426,8 +428,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		}
 
 		try {
-			// String cmd = "rmname -force " + ( checkedOut ? "" : "-nco " ) +
-			// file;
 			String cmd = "rmname -force -nco " + file;
 			Cleartool.run( cmd, context );
 		} catch( Exception e ) {
@@ -493,21 +493,13 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		}
 	}
 	
-	public static void recursiveCheckin( File path ) {
-		try {
-			List<File> files = Version.getUncheckedIn( path );
-			for( File f : files ) {
-				logger.debug( "Checking in " + f );
-				try {
-					Version.checkIn( f, false, path );
-				} catch( CleartoolException e1 ) {
-					logger.debug( "Unable to checkin " + f );
-					/* No op */
-				}
-			}
-		} catch( CleartoolException e1 ) {
-			logger.error( e1.getMessage() );				
-		}
+	public static void recursiveCheckin( File path ) throws CleartoolException {
+        List<File> files = Version.getUncheckedIn( path );
+        for( File f : files ) {
+            logger.debug( "Checking in " + f );
+
+            Version.checkIn( f, false, path );
+        }
 	}
 
 	public void setView( SnapshotView view ) {
@@ -578,26 +570,12 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	public boolean isDirectory() throws UnableToLoadEntityException {
-		if( !loaded ) {
-			try {
-				load();
-			} catch( ClearCaseException e ) {
-				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
-			}
-		}
-		
+		autoLoad();
 		return kind.equals( Kind.DIRECTORY_ELEMENT );
 	}
 	
 	public boolean isFile() throws UnableToLoadEntityException {
-		if( !loaded ) {
-			try {
-				load();
-			} catch( ClearCaseException e ) {
-				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
-			}
-		}
-		
+        autoLoad();
 		return kind.equals( Kind.FILE_ELEMENT );
 	}
 
@@ -677,7 +655,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	public static ChangeSet2 getChangeset( Diffable e1, Diffable e2, boolean merge, File viewContext ) throws CleartoolException, UnableToInitializeEntityException {
-		//return context.getChangeset( e1, e2, merge, viewContext );
 		String cmd = "diffbl -version " + ( !merge ? "-nmerge " : "" ) + ( e2 == null ? "-pre " : "" ) + " " + e1.getFullyQualifiedName() + ( e2 != null ? e2.getFullyQualifiedName() : "" );
 
 		List<String> lines = null;
@@ -689,8 +666,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		}
 
 		int length = viewContext.getAbsoluteFile().toString().length();
-
-		// System.out.println(viewContext.getAbsolutePath() + " - " + length);
 
 		net.praqma.clearcase.changeset.ChangeSet2 changeset = new ChangeSet2( viewContext );
 
