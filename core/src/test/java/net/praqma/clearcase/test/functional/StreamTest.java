@@ -1,8 +1,6 @@
 package net.praqma.clearcase.test.functional;
 
-import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
-import net.praqma.clearcase.exceptions.UnableToListProjectsException;
+import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.util.test.junit.LoggingRule;
@@ -37,7 +35,7 @@ public class StreamTest {
     }
 
     @Test
-    public void findSiblings() throws UnableToInitializeEntityException, UnableToListProjectsException, CleartoolException {
+    public void findSiblings() throws UnableToInitializeEntityException, UnableToListProjectsException, CleartoolException, UCMEntityNotFoundException, UnableToLoadEntityException {
         Stream one = ccenv.context.streams.get( "one_int" );
         Stream two = ccenv.context.streams.get( "two_int" );
         Stream three = ccenv.context.streams.get( "three_int" );
