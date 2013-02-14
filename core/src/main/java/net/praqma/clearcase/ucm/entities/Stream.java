@@ -213,16 +213,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		}
 
 		/* Set foundation baseline */
-		try {
-			String[] blss = data[4].split( "\\s+" );
-			for( String bls : blss ) {
-				addFoundationBaseline( Baseline.get( bls ) );
-			}
-		} catch( Exception e ) {
-			logger.warning( "Could not get the foundation baseline: " + e.getMessage() );
-            /* PEH */
-		}
-		
+        String[] blss = data[4].split( "\\s+" );
+        for( String bls : blss ) {
+            addFoundationBaseline( Baseline.get( bls ) );
+        }
+
 		/* Set mastership */
 		try {
 			String ms = data[5].trim();
@@ -391,24 +386,18 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 * 
 	 * @return
 	 */
-	public List<Stream> getSiblingStreams() throws UnableToListProjectsException, UnableToInitializeEntityException {
+	public List<Stream> getSiblingStreams() throws UnableToListProjectsException, UnableToInitializeEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		logger.fine( "Getting sibling streams" );
 		List<Project> projects = Project.getProjects( this.getPVob() );
 		List<Stream> streams = new ArrayList<Stream>();
 
 		for( Project p : projects ) {
-			try {
-				p.load();
-				p.getIntegrationStream().load();
-                Stream dts = p.getIntegrationStream().getDefaultTarget();
-				if( dts != null && this.equals( dts ) ) {
-					streams.add( p.getIntegrationStream() );
-				}
-			} catch( Exception e ) {
-                /* PEH */
-				/* Just move on! */
-				logger.warning( "Could not check project " + p + ": " + e.getMessage() );
-			}
+            p.load();
+            p.getIntegrationStream().load();
+            Stream dts = p.getIntegrationStream().getDefaultTarget();
+            if( dts != null && this.equals( dts ) ) {
+                streams.add( p.getIntegrationStream() );
+            }
 		}
 
 		logger.fine( streams.toString() );
@@ -506,12 +495,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		List<Baseline> bls = new ArrayList<Baseline>();
 		for( String line : lines ) {
 			for( String s : line.split( " " ) ) {
-				try {
-					bls.add( Baseline.get( s.trim() ) );
-				} catch( Exception e ) {
-					/* Unable to add, no op */
-                    /* PEH */
-				}
+                bls.add( Baseline.get( s.trim() ) );
 			}
 		}
 		
