@@ -13,19 +13,11 @@ public class Component extends UCMEntity {
 	private transient static Logger logger = Logger.getLogger( Component.class.getName()  );
 	
 	private static final String rx_component_load = "\\s*Error: component not found\\s*";
-	
-	/* Component specific fields */
 
 	Component() {
 		super( "component" );
 	}
 
-	/**
-	 * This method is only available to the package, because only
-	 * ClearcaseEntity should be allowed to call it.
-	 * 
-	 * @return A new Component Entity
-	 */
 	static Component getEntity() {
 		return new Component();
 	}
@@ -48,14 +40,12 @@ public class Component extends UCMEntity {
 	}
 
 	public static Component create( String name, PVob pvob, String root, String comment, File view ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
-		//context.createComponent( name, pvob, root, comment, view );
-		
+
 		String cmd = "mkcomp" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + ( root != null ? " -root " + root : " -nroot" ) + " " + name + "@" + pvob;
 
 		try {
 			Cleartool.run( cmd, view );
 		} catch( Exception e ) {
-			//throw new UCMException( e.getMessage(), UCMType.CREATION_FAILED );
 			throw new UnableToCreateEntityException( Component.class, e );
 		}
 
@@ -67,7 +57,7 @@ public class Component extends UCMEntity {
 		try {
 			return Cleartool.run( cmd ).stdoutBuffer.toString();
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new CleartoolException( "Unable to get rootdir: " + e.getMessage(), e );
+			throw new CleartoolException( "Unable to get root dir: " + e.getMessage(), e );
 		}
 	}
 
@@ -94,8 +84,7 @@ public class Component extends UCMEntity {
          * @return unique hash value for object.
          */
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             // check for load not needed fqname always given
             // FullyQualifiedName is unique in ClearCase (at least in this installation)
             return (this.getFullyQualifiedName().hashCode());
