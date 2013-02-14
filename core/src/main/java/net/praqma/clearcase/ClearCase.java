@@ -33,7 +33,6 @@ public abstract class ClearCase extends Cool {
 		try {
 			res = Cleartool.run( cmd, context );
 		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( "Could not find attributes on " + fqname + ". Recieved: " + e.getMessage(), e.getMessage() );
 			throw new UnableToListAttributesException( entity, context, e );
 		}
 

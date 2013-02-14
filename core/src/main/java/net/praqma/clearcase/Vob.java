@@ -50,7 +50,6 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public void load() throws CleartoolException {
-		//context.loadVob(this);
 		logger.fine( "Loading vob " + this );
 
 		String cmd = "describe vob:" + this;

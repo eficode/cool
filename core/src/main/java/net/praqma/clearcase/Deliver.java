@@ -92,9 +92,7 @@ public class Deliver {
 	
 	public Deliver complete() throws DeliverException {
 		String cmd = "deliver -complete";
-		//cmd += ( baseline != null ? " -baseline " + baseline : "" );
 		cmd += ( stream != null ? " -stream " + stream : "" );
-		//cmd += ( target != null ? " -target " + target : "" );
 		cmd += ( viewtag != null ? " -to " + viewtag : "" );
 		cmd += " -f";
 		
