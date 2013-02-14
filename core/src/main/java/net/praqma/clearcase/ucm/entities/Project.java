@@ -140,7 +140,6 @@ public class Project extends UCMEntity implements StreamContainable {
 	 * @return a new {@link Project}
 	 */
 	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, List<Component> mcomps ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
-		//context.createProject( name, root, pvob, policy, comment, mcomps );
 
 		String cmd = "mkproject" + ( comment != null ? " -c \"" + comment + "\"" : "" ) + " -in " + ( root == null ? "RootFolder" : root ) + ( normal ? "" : " -model SIMPLE" );
 		
@@ -160,7 +159,6 @@ public class Project extends UCMEntity implements StreamContainable {
 		try {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
-			//throw new UCMException( "Could not create Project " + root + ": " + e.getMessage(), e, UCMType.CREATION_FAILED );
 			throw new UnableToCreateEntityException( Project.class, e );
 		}
 
@@ -187,6 +185,10 @@ public class Project extends UCMEntity implements StreamContainable {
 		return this;
 	}
 
+    /**
+     * Set the integration {@link Stream} for this {@link Project} object
+     * @param stream
+     */
 	public void setStream( Stream stream ) {
 		this.stream = stream;
 	}
@@ -233,6 +235,12 @@ public class Project extends UCMEntity implements StreamContainable {
 		return retval;
 	}
 
+    /**
+     * Get the list of {@link Project}s in a given {@link PVob}
+     * @return
+     * @throws UnableToListProjectsException
+     * @throws UnableToInitializeEntityException
+     */
 	public static List<Project> getProjects( PVob pvob ) throws UnableToListProjectsException, UnableToInitializeEntityException {
 
 		logger.fine( "Getting projects for " + pvob );
@@ -253,12 +261,17 @@ public class Project extends UCMEntity implements StreamContainable {
 			projects.add( Project.get( p + "@" + pvob ) );
 		}
 
-		logger.fine( projects.toString() );
+		logger.fine( "Found projects: " + projects );
 
 		return projects;
 	}
-	
-	
+
+    /**
+     * Get a list of modifiable {@link Component}s for this {@link Project} from ClearCase
+     * @return
+     * @throws UnableToInitializeEntityException
+     * @throws CleartoolException
+     */
 	public List<Component> getModifiableComponents() throws UnableToInitializeEntityException, CleartoolException {
 		String[] cs;
 		String cmd = "desc -fmt %[mod_comps]p " + this;
@@ -276,7 +289,11 @@ public class Project extends UCMEntity implements StreamContainable {
 
 		return comps;
 	}
-	
+
+    /**
+     * Remove this {@link Project} from ClearCase
+     * @throws UnableToRemoveEntityException
+     */
 	public void remove() throws UnableToRemoveEntityException {
 		String cmd = "rmproject -force " + this;
 		
