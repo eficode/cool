@@ -74,6 +74,9 @@
       <component name="Model" pvob="${pvobname}" />
       <component name="Clientapp" pvob="${pvobname}" />
     </components>
+	<policies>
+	  <policy>POLICY_INTERPROJECT_DELIVER</policy>
+	</policies>
   </project>
 
   <project name="two" comment="" pvob="${pvobname}" in="one-folder">
@@ -82,6 +85,10 @@
       <component name="Model" pvob="${pvobname}" />
       <component name="Clientapp" pvob="${pvobname}" />
     </components>
+	<policies>
+	  <policy>POLICY_INTERPROJECT_DELIVER</policy>
+	</policies>
+
   </project>
   
   <project name="three" comment="" pvob="${pvobname}" in="one-folder">
@@ -90,6 +97,10 @@
       <component name="Model" pvob="${pvobname}" />
       <component name="Clientapp" pvob="${pvobname}" />
     </components>
+	<policies>
+	  <policy>POLICY_INTERPROJECT_DELIVER</policy>
+	</policies>
+
   </project>
   
   <stream name="one_int" in="one" comment="" pvob="${pvobname}" type="integration">

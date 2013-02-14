@@ -371,7 +371,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			try {
 				p.load();
 				p.getIntegrationStream().load();
-				if( p.getIntegrationStream().getDefaultTarget() != null && this.equals( p.getIntegrationStream().getDefaultTarget() ) ) {
+                Stream dts = p.getIntegrationStream().getDefaultTarget();
+				if( dts != null && this.equals( dts ) ) {
 					streams.add( p.getIntegrationStream() );
 				}
 			} catch( Exception e ) {

@@ -1,5 +1,6 @@
 package net.praqma.clearcase.test.functional;
 
+import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToListProjectsException;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
@@ -26,10 +27,17 @@ public class StreamTest {
     public static LoggingRule lrule = new LoggingRule( "net.praqma" );
 
     @Test
-    public void findSiblings() throws UnableToInitializeEntityException, UnableToListProjectsException {
+    public void findSiblings() throws UnableToInitializeEntityException, UnableToListProjectsException, CleartoolException {
         Stream one = ccenv.context.streams.get( "one_int" );
+        Stream two = ccenv.context.streams.get( "two_int" );
+        Stream three = ccenv.context.streams.get( "three_int" );
+        one.setDefaultTarget( two );
+        two.setDefaultTarget( three );
 
         List<Stream> siblings = one.getSiblingStreams();
-        assertThat( siblings.size(), is( 2 ) );
+        assertThat( siblings.size(), is( 0 ) );
+
+        List<Stream> siblings2 = two.getSiblingStreams();
+        assertThat( siblings2.size(), is( 1 ) );
     }
 }
