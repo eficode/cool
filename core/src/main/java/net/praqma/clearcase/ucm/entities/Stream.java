@@ -213,9 +213,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		}
 
 		/* Set foundation baseline */
-        String[] blss = data[4].split( "\\s+" );
+        String[] blss = data[4].trim().split( "\\s+" );
         for( String bls : blss ) {
-            addFoundationBaseline( Baseline.get( bls ) );
+            if( bls != null && !bls.isEmpty() ) {
+                addFoundationBaseline( Baseline.get( bls ) );
+            }
         }
 
 		/* Set mastership */
