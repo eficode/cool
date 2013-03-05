@@ -197,7 +197,7 @@ public class SnapshotView extends UCMView {
 		File viewdat = new File( dir + File.separator + VIEW_DOT_DAT_FILE );
 
 		if( viewdat.exists() ) {
-			throw new IOException( VIEW_DOT_DAT_FILE + " file already exist. No need for regenrating." );
+			throw new IOException( VIEW_DOT_DAT_FILE + " file already exist. No need for regenerating." );
 		}
 
 		String cmd = "lsview -l " + viewtag;

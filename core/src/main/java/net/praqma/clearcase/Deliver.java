@@ -1,6 +1,7 @@
 package net.praqma.clearcase;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -16,6 +17,7 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
+import org.apache.commons.io.FileUtils;
 
 public class Deliver {
 	private static Logger logger = Logger.getLogger( Deliver.class.getName() );
@@ -184,9 +186,10 @@ public class Deliver {
 		return true;
 	}
 	
-	public static void rollBack( String oldViewTag, Stream oldSourceStream, File context ) throws CleartoolException {
+	public static void rollBack( String oldViewTag, Stream oldSourceStream, File context ) throws CleartoolException, IOException {
 
-		String cmd = "deliver -cancel -force -stream " + oldSourceStream;
+		//String cmd = "deliver -cancel -force -stream " + oldSourceStream;
+        String cmd = "deliver -cancel -stream " + oldSourceStream;
 
 		try {
 			if( context.exists() ) {
@@ -199,30 +202,18 @@ public class Deliver {
 			throw new CleartoolException( "Could not regenerate view to force deliver: " + oldViewTag, e );
 		} finally {
 			if( context.exists() && oldViewTag != null ) {
-				deleteDir( context );
+                FileUtils.deleteDirectory( context );
 			}
 		}
 	}
-	
-	private static boolean deleteDir( File dir ) {
-		if( dir.isDirectory() ) {
-			String[] children = dir.list();
-			for( int i = 0; i < children.length; i++ ) {
-				boolean success = deleteDir( new File( dir, children[i] ) );
-				if( !success ) {
-					return false;
-				}
-			}
-		}
-		
-		return dir.delete();
-	}
-	
+
 	public void cancel() throws CancelDeliverException {
 		cancel( stream, context );
 	}
 	
 	public static void cancel( Stream stream, File context ) throws CancelDeliverException {
+        logger.fine( "Cancel deliver from " + stream.getNormalizedName() + " in " + context );
+
 		try {
 			String cmd = "deliver -cancel -force" + ( stream != null ? " -stream " + stream : "" );
 			Cleartool.run( cmd, context );
