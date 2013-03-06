@@ -429,6 +429,42 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return streamExists( this.fqname );
 	}
 
+    /**
+     * Get the {@link Stream} delivering to this {@link Stream}. Null if no {@link Deliver} is in progress.
+     */
+    public Stream getDeliveringStream( boolean isMultiSite ) throws ClearCaseException {
+        /* Heuristic: Typically a child stream delivering
+         * Let's ask them first. */
+
+        logger.finer( "Searching amongst child-streams" );
+        Stream s = getDeliveringStream( isMultiSite, getChildStreams( isMultiSite ) );
+
+        if( s == null ) {
+            logger.finer( "Searching among all streams" );
+            s = getDeliveringStream( isMultiSite, this.getProject().getStreams() );
+        }
+
+        logger.fine( "Found " + s );
+        return s;
+    }
+
+    public Stream getDeliveringStream( boolean isMultiSite, List<Stream> streams ) throws ClearCaseException {
+
+
+        for( Stream stream : streams ) {
+            Deliver.Status status = stream.getDeliverStatus();
+            logger.finer( "Status: " + status );
+            if( status.isInProgress() && status.getSourceStream().equals( stream ) ) {
+                return stream;
+            }
+        }
+
+        return null;
+    }
+
+    public Deliver.Status getDeliverStatus() throws ClearCaseException {
+        return Deliver.Status.getStatus( this );
+    }
 
 
 	public List<Baseline> getRecommendedBaselines() throws UnableToListBaselinesException, UnableToInitializeEntityException {

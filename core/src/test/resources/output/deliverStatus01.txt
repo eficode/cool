@@ -1,0 +1,9 @@
+Deliver operation in progress on stream "stream:one_dev@\ccucm_PVOB"
+    Started by "Night-Vobadmin" on "2013-03-05T16:28:27+01:00"
+    Using integration activity "deliver.one_dev.20130305.162827".
+    Using view "ccucm_one_int".
+    Baselines will be delivered to the default target stream "stream:one_int@\ccucm_PVOB"
+in project "project:one@\ccucm_PVOB".
+
+Baselines to be delivered:
+        baseline:first.8861@\ccucm_PVOB component:Model@\ccucm_PVOB

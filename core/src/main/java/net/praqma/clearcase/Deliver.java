@@ -8,10 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.cleartool.Cleartool;
-import net.praqma.clearcase.exceptions.CancelDeliverException;
-import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.DeliverException;
+import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.exceptions.DeliverException.Type;
+import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.SnapshotView;
@@ -63,12 +62,20 @@ public class Deliver {
 		this.viewtag = viewtag;
 	}
 
+    public Deliver( Stream stream, Stream target ) {
+        this.stream = stream;
+        this.target = target;
+    }
+
+    /**
+     * @deprecated since 0.6.10
+     */
 	public boolean deliverForced( Stream stream, Stream target, File viewcontext, String viewtag ) throws DeliverException, CleartoolException {
 		return deliver( true, true, true, false );
 	}
 	
 	public boolean deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException, CleartoolException {
-		logger.fine( "Delivering " + baseline + ", " + stream + ", " + target + ", " + context + ", " + viewtag );
+		logger.fine( "Delivering " + baseline + " from " + stream + " to " + target + " in " + context + " with tag " + viewtag );
 		try {
 			return _deliver( force, complete, abort, resume );
 		} catch( DeliverException e ) {
@@ -262,6 +269,77 @@ public class Deliver {
 			return DeliverStatus.UNKOWN;
 		}
 	}
+
+    public static Pattern rxFindStream   = Pattern.compile( "^Deliver operation in progress on stream \"(.*?)\"$", Pattern.MULTILINE );
+    public static Pattern rxFindActivity = Pattern.compile( "^\\s*Using integration activity \"(.*?)\"\\.$", Pattern.MULTILINE );
+    public static Pattern rxFindViewTag  = Pattern.compile( "^\\s*Using view \"(.*?)\"\\.$", Pattern.MULTILINE );
+
+    public static class Status {
+        private DeliverStatus status;
+        private Stream sourceStream;
+        private Activity activity;
+        private String viewTag;
+
+        private Status() {}
+
+        public Status( DeliverStatus status, Stream sourceStream, Activity activity, String viewTag ) {
+            this.status = status;
+            this.sourceStream = sourceStream;
+            this.activity = activity;
+            this.viewTag = viewTag;
+        }
+
+        public static Status getStatus( Stream stream ) throws ClearCaseException {
+            return Status.getStatus( Deliver.getStatus( stream ) );
+        }
+
+        public static Status getStatus( String statusString ) throws ClearCaseException {
+            Status s = new Status();
+
+            s.status = stringToStatus( statusString );
+            if( s.status.equals( DeliverStatus.DELIVER_IN_PROGRESS ) ) {
+
+                Matcher streamName   = rxFindStream.matcher( statusString );
+                Matcher activityName = rxFindActivity.matcher( statusString );
+                Matcher viewTag      = rxFindViewTag.matcher( statusString );
+
+                if( streamName.find() && activityName.find() && viewTag.find() ) {
+                    s.sourceStream = Stream.get( streamName.group( 1 ) );
+                    s.activity = Activity.get( activityName.group( 1 ), s.sourceStream.getPVob() );
+                    s.viewTag = viewTag.group( 1 );
+                } else {
+                    throw new CleartoolException( "Unable to find deliver elements" );
+                }
+            }
+
+            return s;
+        }
+
+        public Activity getActivity() {
+            return activity;
+        }
+
+        public String getViewTag() {
+            return viewTag;
+        }
+
+        public Stream getSourceStream() {
+            return sourceStream;
+        }
+
+        public boolean isInProgress() {
+            return status.equals( DeliverStatus.DELIVER_IN_PROGRESS );
+        }
+
+        @Override
+        public String toString() {
+            if( isInProgress() ) {
+                return "DeliverStatus[" + sourceStream.getShortname() + ", in progress]";
+            } else {
+                return "DeliverStatus[No deliver in progress]";
+            }
+        }
+    }
 	
 	public File getViewContext() {
 		return this.context;
