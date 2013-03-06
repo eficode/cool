@@ -206,7 +206,7 @@ public class Project extends UCMEntity implements StreamContainable {
 	}
 	
 	public List<Stream> getStreams() throws CleartoolException {
-		String cmd = "lsstream -in " + this;
+		String cmd = "lsstream -s -in " + this;
 		
 		List<String> list;
 		try {
@@ -218,7 +218,7 @@ public class Project extends UCMEntity implements StreamContainable {
 		List<Stream> streams = new ArrayList<Stream>();
 		for( String item : list ) {
 			try {
-				streams.add( Stream.get( item ) );
+				streams.add( Stream.get( item, getPVob() ) );
 			} catch( ClearCaseException e ) {
 				logger.severe( "Could not get " + item );
 			}
