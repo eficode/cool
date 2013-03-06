@@ -217,7 +217,7 @@ public class Deliver {
 	public void cancel() throws CancelDeliverException {
 		cancel( stream, context );
 	}
-	
+
 	public static void cancel( Stream stream, File context ) throws CancelDeliverException {
         logger.fine( "Cancel deliver from " + stream.getNormalizedName() + " in " + context );
 
@@ -228,6 +228,24 @@ public class Deliver {
 			throw new CancelDeliverException( stream, e );
 		}
 	}
+
+    public static void cancel( Stream targetStream ) throws ClearCaseException {
+        logger.fine( "Cancelling deliver to " + targetStream.getNormalizedName() );
+
+        Stream source = targetStream.getDeliveringStream( false );
+        logger.fine( "Source stream is " + source.getNormalizedName() );
+
+        if( source != null ) {
+            try {
+                String cmd = "deliver -cancel -force -stream " + source;
+                Cleartool.run( cmd );
+            } catch( AbnormalProcessTerminationException e ) {
+                throw new CancelDeliverException( targetStream, e );
+            }
+        } else {
+            throw new CancelDeliverException( targetStream, "Could not find source stream for deliver" );
+        }
+    }
 	
 	public String getStatus() throws CleartoolException {
 		return Deliver.getStatus( stream );

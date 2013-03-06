@@ -10,8 +10,14 @@ public class CancelDeliverException extends ClearCaseException {
 		super( e );
 		this.stream = s;
 	}
-	
-	public Stream getStream() {
+
+    public CancelDeliverException( Stream s, String e ) {
+        super( e );
+        this.stream = s;
+    }
+
+
+    public Stream getStream() {
 		return stream;
 	}
 
