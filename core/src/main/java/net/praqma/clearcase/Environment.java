@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -111,6 +112,7 @@ public class Environment {
 			fw = new FileWriter( file, true );
 			fw.write( content );
 		} catch( IOException e1 ) {
+            logger.log( Level.WARNING, "Failed to write", e1 );
 			throw new ClearCaseException( e1 );
 		} finally {
 			try {
