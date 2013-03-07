@@ -24,7 +24,7 @@ public class PVobTest {
 		assertTrue( Vob.isValidTag( unixName1 ) );
 		assertTrue( Vob.isValidTag( unixName2 ) );
 	}
-	/*
+
 	@Test
 	public void namingFindVob() {
 		String windowsName = "\\mypvob\\comp1";
@@ -45,7 +45,7 @@ public class PVobTest {
 			m = PVob.rx_find_vob.matcher( unixName2 );
 			
 			if( m.find() ) {
-				assertThat( m.group( 1 ), is( "/vobs/mypvob" ) );
+				assertThat( m.group( 1 ), is( "/vobs" ) );
 			} else {
 				fail();
 			}
@@ -53,11 +53,10 @@ public class PVobTest {
 			Matcher m = PVob.rx_find_vob.matcher( windowsName );
 			
 			if( m.find() ) {
-				assertThat( m.group( 1 ), is( "\\mypvob\\comp1" ) );
+				assertThat( m.group( 1 ), is( "\\mypvob" ) );
 			} else {
 				fail();
 			}
 		}
 	}
-	*/
 }

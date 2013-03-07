@@ -85,7 +85,7 @@ public class PVob extends Vob {
 	}
 	
 	public static final Pattern rx_find_component = Pattern.compile( "\\{(.*?)\\}" );
-	public static final Pattern rx_find_vob = Pattern.compile( "^(.*?)" + Cool.filesep + "[\\S&&[^"+Cool.filesep+"]]+$" );
+	public static final Pattern rx_find_vob = Pattern.compile( "^(.*?)" + Cool.qfs + "[\\S&&[^"+Cool.qfs+"]]+$" );
 	
 	public Set<Vob> getVobs() throws CleartoolException {
 		String cmd = "lscomp -fmt {%[root_dir]p} -invob " + this;
