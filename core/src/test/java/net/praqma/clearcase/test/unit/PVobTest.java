@@ -45,7 +45,7 @@ public class PVobTest {
 			m = PVob.rx_find_vob.matcher( unixName2 );
 			
 			if( m.find() ) {
-				assertThat( m.group( 1 ), is( "/vobs" ) );
+				assertThat( m.group( 1 ), is( "/vobs/mypvob" ) );
 			} else {
 				fail();
 			}
