@@ -17,8 +17,14 @@ public class AfterBaseline extends BaselineFilter {
 	public AfterBaseline( Baseline after ) {
 		this.after = after;
 	}
-	
-	@Override
+
+    @Override
+    public void preFilter( BaselineList list ) {
+        logger.fine( "Ensuring " + after.getNormalizedName() );
+        list.ensureBaseline( after );
+    }
+
+    @Override
 	public int filter( BaselineList baselines ) {
 		
 		/* Sort the baselines */

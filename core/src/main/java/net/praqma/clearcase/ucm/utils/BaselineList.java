@@ -1,11 +1,7 @@
 package net.praqma.clearcase.ucm.utils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 import net.praqma.clearcase.cleartool.Cleartool;
@@ -29,6 +25,8 @@ public class BaselineList extends ArrayList<Baseline> {
 	private PromotionLevel level;
 	private boolean multisitePolling;
 	private int limit = 0;
+
+    private List<Baseline> required = new LinkedList<Baseline>();
 	
 	public BaselineList() {
 		
@@ -75,10 +73,27 @@ public class BaselineList extends ArrayList<Baseline> {
 			if(multisitePolling) {
 				this.addAll( stream.getPostedBaselines( component, level ) );
 			}
-		}
-		else {
+		} else {
 			this.addAll( _get() );
 		}
+
+        logger.fine( "Pre filter steps" );
+        for( BaselineFilter filter : filters ) {
+            filter.preFilter( this );
+        }
+
+        if( required.size() > 0 ) {
+            for( Baseline b : required ) {
+                if( !this.contains( b ) ) {
+                    this.add( b );
+                }
+            }
+        }
+
+        /* Sort the baselines */
+        if( sorter != null ) {
+            Collections.sort( this, sorter );
+        }
 
 		logger.fine( " --- Bare retrieval --- " );
 		logger.fine( "Baselines: " + this );
@@ -111,12 +126,7 @@ public class BaselineList extends ArrayList<Baseline> {
 		if( pruned > 0 ) {
 			logger.config( "[ClearCase] Pruned " + pruned + " baselines" );
 		}
-		
-		/* Sort the baselines */
-		if( sorter != null ) {
-			Collections.sort( this, sorter );
-		}		
-		
+
 		/* Limit? 0 = unlimited */
 		if( limit > 0 && this.size() > 0 ) {
 			BaselineList n = new BaselineList();
@@ -128,6 +138,17 @@ public class BaselineList extends ArrayList<Baseline> {
 			return this;
 		}
 	}
+
+    /**
+     * Ensure that the {@link Baseline} is in the list
+     * @param baseline
+     * @return
+     */
+    public BaselineList ensureBaseline( Baseline baseline ) {
+        required.add( baseline );
+
+        return this;
+    }
 	
 	/**
 	 * Apply a single filter to the {@link BaselineList}
