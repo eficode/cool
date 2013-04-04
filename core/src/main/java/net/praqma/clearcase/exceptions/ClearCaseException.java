@@ -5,14 +5,14 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class ClearCaseException extends Exception {
 	
 	
-	private static Logger logger = Logger.getLogger();
+	private static Logger logger = Logger.getLogger( ClearCaseException.class.getName() );
 
 	protected List<String> information = new ArrayList<String>();
 

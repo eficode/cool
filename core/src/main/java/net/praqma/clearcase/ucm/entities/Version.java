@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +22,6 @@ import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.view.SnapshotView;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
@@ -32,7 +32,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	private static final Pattern rx_checkExistence = Pattern.compile( ".*?Entry named \".*\" already exists.*?" );
 	private static final Pattern rx_versionName = Pattern.compile( "^(\\S+)\\s+([\\S\\s.^@]+@@.*)$" );
 	
-	transient private static Logger logger = Logger.getLogger();
+	transient private static Logger logger = Logger.getLogger( Version.class.getName() );
 
 	private String machine = null;
 	private boolean checkedout = false;
@@ -127,8 +127,8 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			/* Set the branch */
 			this.branch = r.group( 1 );
 			
-			logger.debug( "REVISION: " + revision );
-			logger.debug( "BRANCH: " + branch );
+			logger.fine( "REVISION: " + revision );
+			logger.fine( "BRANCH: " + branch );
 		}
 	}
 
@@ -275,8 +275,8 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			/* Check existence */
 			List<File> files = new ArrayList<File>();
 			File parent = file.getParentFile();
-			logger.debug( "FILE  : " + file );
-			logger.debug( "PARENT: " + parent );
+			logger.finer( "FILE  : " + file );
+			logger.finer( "PARENT: " + parent );
 			while( !parent.equals( view ) ) {
 				files.add( parent );
 				parent = parent.getParentFile();
@@ -312,10 +312,10 @@ public class Version extends UCMEntity implements Comparable<Version> {
 				Cleartool.run( cmd, view );
 			} catch( Exception e ) {
 				/* Already added to source control */
-				logger.debug( "---->" + e.getMessage() );
+				logger.finer( "---->" + e.getMessage() );
 				Matcher m = rx_checkExistence.matcher( e.getMessage() );
 				if( m.find() ) {
-					logger.debug( file + " already added to source control" );
+					logger.fine( file + " already added to source control" );
 					return;
 				}
 
@@ -338,7 +338,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			Cleartool.run( cmd, viewContext, true, false );
 		} catch( Exception e ) {
 			if( e.getMessage().matches( "(?s).*By default, won't create version with data identical to predecessor.*" ) ) {
-				logger.debug( "Identical version, trying to uncheckout" );
+				logger.fine( "Identical version, trying to uncheckout" );
 				uncheckout( file, false, viewContext );
 				return;
 			} else {
@@ -424,7 +424,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			uncheckout( file, false, context );
 		} catch( CleartoolException e ) {
 			/* Could not uncheckout */
-			logger.debug( "Could not uncheckout " + file );
+			logger.fine( "Could not uncheckout " + file );
 		}
 
 		try {
@@ -496,7 +496,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	public static void recursiveCheckin( File path ) throws CleartoolException {
         List<File> files = Version.getUncheckedIn( path );
         for( File f : files ) {
-            logger.debug( "Checking in " + f );
+            logger.fine( "Checking in " + f );
 
             Version.checkIn( f, false, path );
         }
@@ -548,11 +548,11 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		try {
 			File[] vobs = viewContext.listFiles();
 			for( File vob : vobs ) {
-				logger.debug( "Checking " + vob );
+				logger.fine( "Checking " + vob );
 				if( !vob.isDirectory() || vob.getName().matches( "^\\.{1,2}$" ) ) {
 					continue;
 				}
-				logger.debug( vob + " is a valid vob" );
+				logger.fine( vob + " is a valid vob" );
 
 				String cmd = "lsco -s -r";
 				List<String> list = Cleartool.run( cmd, vob ).stdoutList;
@@ -675,7 +675,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 				String f = m.group( 2 ).trim();
 
-				logger.debug( "F: " + f );
+				logger.finer( "F: " + f );
 
 				Version version = (Version) UCMEntity.getEntity( Version.class, m.group( 2 ).trim() );
 
@@ -714,7 +714,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			throw new CleartoolException( "Could not get difference between " + d1 + " and " + d2 + ": " + e.getMessage(), e );
 		}
 		
-		logger.debug( "LINES: " + lines );
+		logger.finer( "LINES: " + lines );
 		
 		return Activity.parseActivityStrings( lines, viewContext.getAbsoluteFile().toString().length() );
 	}
@@ -741,7 +741,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	public static void printCheckouts( File viewContext ) {
 		try {
 			CmdResult result = Cleartool.run( "lsco -r", viewContext );
-			logger.debug( "RESULT\\n" + result.stdoutBuffer );
+			logger.finer( "RESULT\\n" + result.stdoutBuffer );
 		} catch( Exception ex ) {
 			logger.warning( ex.getMessage() );
 		}
