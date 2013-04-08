@@ -15,13 +15,11 @@ import net.praqma.clearcase.util.ExceptionUtils;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-public class BaselineTest {
+public class BaselineTest extends BaseClearCaseTest {
 
 	@ClassRule
 	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-baseline" );
 
-	public final String vn = "cc-" + Environment.getUniqueTimestamp();
-	
 	@Test
 	public void testLoadAndPromotionLevel() throws Exception {
 		Baseline bl = ccenv.context.baselines.get( "model-3" ).load();
@@ -67,17 +65,7 @@ public class BaselineTest {
 		bl.demote();
 		assertEquals( PromotionLevel.REJECTED, bl.getPromotionLevel( false ) );
 	}
-	
-	@Test
-	public void testSetPromotionLevel() throws Exception {
-		Baseline bl = ccenv.context.baselines.get( "model-1" ).load();
-		
-		assertNotNull( bl );
-		assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
-		bl.setPromotionLevel( PromotionLevel.RELEASED );
-		assertEquals( PromotionLevel.RELEASED, bl.getPromotionLevel( false ) );
-	}
-	
+
 	@Test
 	public void testGetStream() throws Exception {
 		Baseline bl = ccenv.context.baselines.get( "model-1" ).load();
