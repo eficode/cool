@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 public class BaselineDynamicTest extends BaseClearCaseTest {
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-baseline" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-baseline-dynamic" );
 
 	@Test
 	public void testSetPromotionLevel() throws Exception {
