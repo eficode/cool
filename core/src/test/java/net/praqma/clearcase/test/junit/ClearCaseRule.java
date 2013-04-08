@@ -1,6 +1,7 @@
 package net.praqma.clearcase.test.junit;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -19,6 +20,8 @@ import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.clearcase.util.SetupUtils;
 
 public class ClearCaseRule extends Environment implements TestRule {
+
+    private static Logger logger = Logger.getLogger( ClearCaseRule.class.getName() );
 
 	protected Description testDescription;
 	
@@ -76,7 +79,7 @@ public class ClearCaseRule extends Environment implements TestRule {
 				/* Not possible to tear down */
 			}
 		} else {
-			System.out.println( " == Saving environment ==" );
+            logger.fine( "== Saving environment ==" );
 		}
 	}
 
@@ -117,13 +120,12 @@ public class ClearCaseRule extends Environment implements TestRule {
 				Thread t = Thread.currentThread();
 				String o = t.getName();
 				t.setName( "Executing " + testDescription.getDisplayName() );
-				System.out.println( " ===== Setting up ClearCase =====" );
+				logger.fine( "===== Setting up ClearCase =====" );
 				before( theUniqueName );
 				try {
-					System.out.println( " ===== Running test: " + testDescription.getDisplayName() + " [" + testDescription.getMethodName() + "] =====" );
 					base.evaluate();
 				} finally {
-					System.out.println( " ===== Tearing down ClearCase =====" );
+                    logger.fine( "===== Tearing down ClearCase =====" );
 					after();
 					testDescription = null;
 					t.setName( o );
