@@ -1,53 +1,46 @@
-package net.praqma.jenkins.utils;
+package net.praqma.clearcase.util;
 
-import hudson.FilePath;
+import net.praqma.clearcase.exceptions.*;
+import net.praqma.clearcase.exceptions.ViewException.Type;
+import net.praqma.clearcase.ucm.entities.Stream;
+import net.praqma.clearcase.ucm.view.SnapshotView;
+import net.praqma.clearcase.ucm.view.SnapshotView.Components;
+import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules;
+import net.praqma.clearcase.ucm.view.UCMView;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.PrintWriter;
-
-import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToGetEntityException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
-import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
-import net.praqma.clearcase.exceptions.ViewException;
-import net.praqma.clearcase.exceptions.ViewException.Type;
-import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.clearcase.ucm.view.SnapshotView;
-import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules;
-import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.clearcase.ucm.view.SnapshotView.Components;
+import java.util.logging.Logger;
 
 /**
  * Helper class for UCM views
  * 
  * @author wolfgang
  *
- * @deprecated since 0.6.13
  */
 public class ViewUtils {
+
+    private static Logger logger = Logger.getLogger( ViewUtils.class.getName() );
 	
-	public static SnapshotView createView( PrintStream logger, Stream stream, String loadModule, File viewroot, String viewtag ) throws ViewException, UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException, IOException {
-		return createView( logger, stream, loadModule, viewroot, viewtag, true );
+	public static SnapshotView createView( Stream stream, String loadModule, File viewroot, String viewtag ) throws ViewException, UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException, IOException {
+		return createView( stream, loadModule, viewroot, viewtag, true );
 	}
 	
-	public static SnapshotView createView( PrintStream logger, Stream stream, String loadModule, File viewroot, String viewtag, boolean update ) throws ViewException, UnableToInitializeEntityException, CleartoolException, IOException, UnableToLoadEntityException {
+	public static SnapshotView createView( Stream stream, String loadModule, File viewroot, String viewtag, boolean update ) throws ViewException, UnableToInitializeEntityException, CleartoolException, IOException, UnableToLoadEntityException {
 
 		SnapshotView snapview = null;
 
-		logger.println( "[UCMView] View root: " + viewroot.getAbsolutePath() );
-		logger.println( "[UCMView] View tag : " + viewtag );
+		logger.fine( "[UCMView] View root: " + viewroot.getAbsolutePath() );
+        logger.fine( "[UCMView] View tag : " + viewtag );
 
 		boolean pathExists = false;
 
 		/* Determine if there is a view path if not, create it */
 		if( viewroot.exists() ) {
 			pathExists = true;
-			logger.println( "[UCMView] Reusing view root" );
+            logger.fine( "[UCMView] Reusing view root" );
 		} else {
 			if( !viewroot.mkdir() ) {
 				//throw new UCMViewException( "Could not create folder for view root:  " + viewroot.toString() );
@@ -56,35 +49,35 @@ public class ViewUtils {
 		}
 
 		/* Determine if the view tag exists, if not create it */
-		logger.println( "[UCMView] Determine if view tag exists" );
+        logger.fine( "[UCMView] Determine if view tag exists" );
 		if( UCMView.viewExists( viewtag ) ) {
-			logger.println( "[UCMView] Reusing view tag" );
+            logger.fine( "[UCMView] Reusing view tag" );
+
 			try {
 				String vt = SnapshotView.viewrootIsValid( viewroot );
-				logger.println( "[UCMView] UUID resulted in " + vt );
+                logger.fine( "[UCMView] UUID resulted in " + vt );
 				
 				/* Not the correct view tag for the given view, delete it and try again */
 				if( !vt.equals( viewtag ) && pathExists ) {
-					logger.println( "[UCMView] View tag is not the same as " + vt );
+                    logger.fine( "[UCMView] View tag is not the same as " + vt );
 					
 					/* Delete view */
-					FilePath path = new FilePath( viewroot );
-					logger.println( "[UCMView] Trying to delete " + path );
+                    logger.fine( "[UCMView] Trying to delete " + viewroot );
 					try {
-						path.deleteRecursive();
+                        FileUtils.deleteDirectory( viewroot );
 					} catch( Exception e ) {
 						//throw new UCMViewException( "Unable to recursively prepare view root", e );
 						throw new ViewException( "Unable to recursively prepare view root", viewroot.getAbsolutePath(), Type.CREATION_FAILED, e );
 					}
 					
 					/* Try to create the view again */
-					return createView( logger, stream, loadModule, viewroot, viewtag );
+					return createView( stream, loadModule, viewroot, viewtag );
 				}
 			} catch( ClearCaseException e ) {
 				
 				/* Try to regenerate the view */
 				try {
-					logger.println( "[UCMView] Regenerating invalid view root" );
+                    logger.fine( "[UCMView] Regenerating invalid view root" );
 					SnapshotView.end( viewtag );
 					SnapshotView.regenerateViewDotDat( viewroot, viewtag );
 				} catch( ClearCaseException e1 ) {
@@ -92,27 +85,27 @@ public class ViewUtils {
 					throw new ViewException( "Unable to regenerate view", viewroot.getAbsolutePath(), Type.CREATION_FAILED, e1 );
 				}
 			} catch( Exception e ) {
-				logger.println( "[UCMView] Unable to make workspace: " + e.getMessage() );
+                logger.fine( "[UCMView] Unable to make workspace: " + e.getMessage() );
 				//throw new UCMViewException( "Unable to make workspace", e );
 				throw new ViewException( "Unable to make workspace", viewroot.getAbsolutePath(), Type.CREATION_FAILED, e );
 			}
 
-			logger.println( "[UCMView] Getting snapshotview" );
+            logger.fine( "[UCMView] Getting snapshotview" );
 
 			snapview = SnapshotView.get( viewroot );
 		} else {
 			
 			/* The view does not exist, create it */
-			logger.println( "[UCMView] Creating new view" );
+            logger.fine( "[UCMView] Creating new view" );
 			snapview = SnapshotView.create( stream, viewroot, viewtag );
 
-			logger.println( "[UCMView] Created new view in local workspace: " + viewroot.getAbsolutePath() );
+            logger.fine( "[UCMView] Created new view in local workspace: " + viewroot.getAbsolutePath() );
 			
 		}
 
 		/* Update view */
 		if( update ) {
-			logger.println( "[UCMView] Updating view using " + loadModule.toLowerCase() + " modules." );
+            logger.fine( "[UCMView] Updating view using " + loadModule.toLowerCase() + " modules." );
 			LoadRules lr = new LoadRules( snapview, Components.valueOf( loadModule.toUpperCase() ) );
 			
 			snapview.Update( true, true, true, false, lr );

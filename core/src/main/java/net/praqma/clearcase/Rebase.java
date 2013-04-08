@@ -2,7 +2,9 @@ package net.praqma.clearcase;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import net.praqma.clearcase.cleartool.Cleartool;
@@ -26,6 +28,9 @@ public class Rebase {
     private File viewPath;
 
 	private List<Baseline> baselines = new ArrayList<Baseline>();
+    private Set<Baseline> droppedBaselines = new HashSet<Baseline>();
+
+    private boolean dropFromStream = false;
 
 
     /**
@@ -74,6 +79,32 @@ public class Rebase {
         return this;
     }
 
+    public Rebase dropBaseline( Baseline baseline ) {
+        droppedBaselines.add( baseline );
+
+        return this;
+    }
+
+    public Rebase dropBaselines( List<Baseline> baselines ) {
+        this.droppedBaselines.addAll( baselines );
+
+        return this;
+    }
+
+    public Set<Baseline> getDroppedBaselines() {
+        return droppedBaselines;
+    }
+
+    /**
+     * Drop those foundation {@link Baseline}s not given as parameters from the {@link Stream}s configuration
+     * @return
+     */
+    public Rebase dropFromStream() {
+        dropFromStream = true;
+
+        return this;
+    }
+
 	public boolean rebase( boolean complete ) throws RebaseException {
 		logger.fine( "Rebasing" );
 
@@ -83,12 +114,24 @@ public class Rebase {
             cmd += " -view " + view.getViewtag();
         } else if( stream != null ) {
             cmd +=  " -stream " + stream;
+
+            if( dropFromStream ) {
+                List<Baseline> fbls = stream.getFoundationBaselines();
+                logger.fine( "Dropping unselected foundation baselines. " + fbls );
+                for( Baseline fbl : fbls ) {
+                    fbl.getc
+                    if( !baselines.contains( fbl ) ) {
+                        logger.finest( "Dropping " + fbl );
+                        droppedBaselines.add( fbl );
+                    }
+                }
+            }
         } else if( viewTag != null ) {
             cmd += " -view " + viewTag;
         } else {
             throw new IllegalStateException( "No valid parameters given for rebase" );
         }
-		
+
 		if( baselines != null && baselines.size() > 0 ) {
 			cmd += " -baseline ";
 			for( Baseline b : baselines ) {
@@ -96,6 +139,14 @@ public class Rebase {
 			}
 			cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
 		}
+
+        if( droppedBaselines != null && droppedBaselines.size() > 0 ) {
+            cmd += " -dbaseline ";
+            for( Baseline b : droppedBaselines ) {
+                cmd += b.getNormalizedName() + ",";
+            }
+            cmd = cmd.substring( 0, ( cmd.length() - 1 ) );
+        }
 		
 		try {
 			CmdResult res = Cleartool.run( cmd );
