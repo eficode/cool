@@ -1,5 +1,6 @@
 package net.praqma.clearcase;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -20,25 +21,73 @@ public class Rebase {
 	private static Logger logger = Logger.getLogger( Rebase.class.getName() );
 	
 	private Stream stream;
+    private UCMView view;
+    private String viewTag;
+    private File viewPath;
+
 	private List<Baseline> baselines = new ArrayList<Baseline>();
-	private UCMView view;
-	
+
+
+    /**
+     * @deprecated since 0.6.13
+     */
 	public Rebase( Stream stream, UCMView view, Baseline baseline ) {
 		this.stream = stream;
 		this.baselines.add( baseline );
 		this.view = view;
 	}
-	
+
+    /**
+     * @deprecated since 0.6.13
+     */
 	public Rebase( Stream stream, UCMView view, List<Baseline> baselines ) {
 		this.stream = stream;
 		this.baselines = baselines;
 		this.view = view;
 	}
 
-	public boolean rebase( boolean complete ) throws RebaseException {
-		logger.fine( "Rebasing " + view.getViewtag() );
+    public Rebase( Stream stream ) {
+        this.stream = stream;
+    }
 
-		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force -view " + view.getViewtag() + " -stream " + stream;
+    public Rebase( UCMView view ) {
+        this.view = view;
+    }
+
+    public Rebase( String viewTag ) {
+        this.viewTag = viewTag;
+    }
+
+    public Rebase( File viewPath ) {
+        this.viewPath = viewPath;
+    }
+
+    public Rebase addBaseline( Baseline baseline ) {
+        this.baselines.add( baseline );
+
+        return this;
+    }
+
+    public Rebase addBaselines( List<Baseline> baselines ) {
+        this.baselines.addAll( baselines );
+
+        return this;
+    }
+
+	public boolean rebase( boolean complete ) throws RebaseException {
+		logger.fine( "Rebasing" );
+
+		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force";
+
+        if( view != null ) {
+            cmd += " -view " + view.getViewtag();
+        } else if( stream != null ) {
+            cmd +=  " -stream " + stream;
+        } else if( viewTag != null ) {
+            cmd += " -view " + viewTag;
+        } else {
+            throw new IllegalStateException( "No valid parameters given for rebase" );
+        }
 		
 		if( baselines != null && baselines.size() > 0 ) {
 			cmd += " -baseline ";

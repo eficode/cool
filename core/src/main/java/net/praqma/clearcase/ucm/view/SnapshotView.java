@@ -402,7 +402,7 @@ public class SnapshotView extends UCMView {
 			this.stream.generate();
 		}
 
-		logger.fine( "STREAM GENEREATES" );
+		logger.fine( "STREAM GENERATES" );
 
 		if( swipe ) {
 			Map<String, Integer> sinfo = swipe( this.viewroot, excludeRoot );
