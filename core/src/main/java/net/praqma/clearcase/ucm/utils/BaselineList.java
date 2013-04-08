@@ -68,6 +68,7 @@ public class BaselineList extends ArrayList<Baseline> {
 		logger.fine( "Limit    : " + limit );
 		logger.fine( "Filters  : " + filters );
 		logger.fine( "Multisite: " + multisitePolling );
+        logger.finest( "Requiring: " + required );
 
 		if(stream.hasPostedDelivery()) {
 			if(multisitePolling) {
