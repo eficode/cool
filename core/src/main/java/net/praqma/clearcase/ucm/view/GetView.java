@@ -52,6 +52,10 @@ public class GetView {
         return this;
     }
 
+    public SnapshotView getView() {
+        return snapview;
+    }
+
     public GetView get() throws IOException, ClearCaseException {
 
         if( UCMView.viewExists( viewTag ) ) {
@@ -88,7 +92,7 @@ public class GetView {
     }
 
     private void create() throws ClearCaseException, IOException {
-        if( !viewRoot.mkdirs() ) {
+        if( !viewRoot.exists() && !viewRoot.mkdirs() ) {
             throw new IOException( "Unable to create view root path " + viewRoot );
         }
 
@@ -97,6 +101,16 @@ public class GetView {
     }
 
     public void validateViewRoot() throws ClearCaseException, IOException {
+        String vt = SnapshotView.viewrootIsValid( viewRoot );
+        logger.fine( LOGGER_PREFIX + "UUID resulted in " + vt );
+
+        /* Not the correct view tag for the given view, delete it and try again */
+        if( !vt.equals( viewTag ) ) {
+            throw new IllegalStateException( "View tag does not match path(" + viewTag + " == " + vt + ")" );
+        }
+    }
+
+    public void validateViewRoot2() throws ClearCaseException, IOException {
         String vt = SnapshotView.viewrootIsValid( viewRoot );
         logger.fine( LOGGER_PREFIX + "UUID resulted in " + vt );
 

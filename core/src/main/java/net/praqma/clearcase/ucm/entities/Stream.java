@@ -105,6 +105,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 		String cmd = "mkstream -in " + parent;
 		if( baselines != null && baselines.size() > 0 ) {
+            logger.finest( "Baselines: " + baselines );
 			cmd += " -baseline ";
 			for( Baseline b : baselines ) {
 				cmd += b.getNormalizedName() + ",";
