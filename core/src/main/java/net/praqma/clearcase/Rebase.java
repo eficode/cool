@@ -119,7 +119,6 @@ public class Rebase {
                 List<Baseline> fbls = stream.getFoundationBaselines();
                 logger.fine( "Dropping unselected foundation baselines. " + fbls );
                 for( Baseline fbl : fbls ) {
-                    fbl.getc
                     if( !baselines.contains( fbl ) ) {
                         logger.finest( "Dropping " + fbl );
                         droppedBaselines.add( fbl );
