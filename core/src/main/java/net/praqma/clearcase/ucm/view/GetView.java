@@ -27,7 +27,7 @@ public class GetView {
     private Stream stream;
 
     private boolean createIfAbsent = false;
-    private boolean validateViewRoot = true;
+    private boolean validateViewRoot = false;
 
     public GetView( File viewRoot, String viewTag ) {
         this.viewRoot = viewRoot;
@@ -40,8 +40,8 @@ public class GetView {
         return this;
     }
 
-    public GetView dontValidateViewRoot() {
-        validateViewRoot = false;
+    public GetView validateView() {
+        validateViewRoot = true;
 
         return this;
     }
@@ -69,7 +69,7 @@ public class GetView {
                 logger.fine( LOGGER_PREFIX + "Validating view root " + viewRoot );
 
                 try {
-                    validateViewRoot();
+                    validateViewRoot2();
                 } catch( ClearCaseException e ) {
                     /* Try to regenerate the view */
                     try {
@@ -111,20 +111,19 @@ public class GetView {
     }
 
     public void validateViewRoot2() throws ClearCaseException, IOException {
-        String vt = SnapshotView.viewrootIsValid( viewRoot );
-        logger.fine( LOGGER_PREFIX + "UUID resulted in " + vt );
 
-        /* Not the correct view tag for the given view, delete it and try again */
-        if( !vt.equals( viewTag ) ) {
-            logger.fine( LOGGER_PREFIX + "View tag is not the same as " + vt );
+        try {
+            validateViewRoot();
+        } catch( IllegalStateException e ) {
+            /* Not the correct view tag for the given view, delete it and try again */
+            logger.fine( LOGGER_PREFIX + e.getMessage() );
 
             /* Delete view */
             logger.fine( LOGGER_PREFIX + "Trying to delete " + viewRoot );
             try {
                 FileUtils.deleteDirectory( viewRoot );
-            } catch( Exception e ) {
-                //throw new UCMViewException( "Unable to recursively prepare view root", e );
-                throw new ViewException( "Unable to recursively prepare view root", viewRoot.getAbsolutePath(), ViewException.Type.CREATION_FAILED, e );
+            } catch( Exception e1 ) {
+                throw new ViewException( "Unable to recursively prepare view root", viewRoot.getAbsolutePath(), ViewException.Type.CREATION_FAILED, e1 );
             }
         }
     }

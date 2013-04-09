@@ -52,13 +52,38 @@ public class GetViewTest extends GetViewTestBase {
     @Test
     public void basicGet() throws IOException, ClearCaseException {
         File path = createTempPath();
-        String viewTag = ccenv.getUniqueName() + "_TAG2";
+        String viewTag = ccenv.getUniqueName() + "_TAG2a";
+
+        Stream oneInt = ccenv.context.streams.get( "one_int" );
+        Baseline model1 = ccenv.context.baselines.get( "model-1" );
+
+        Stream container = Stream.create( oneInt, "container2a", true, model1 );
+
+        GetView gv = new GetView( path, viewTag ).createIfAbsent().setStream( container );
+        SnapshotView view = gv.get();
+
+        SnapshotView.LoadRules lr = new SnapshotView.LoadRules( view, SnapshotView.Components.ALL );
+        new UpdateView( view ).setLoadRules( lr ).update();
+
+        /* Verify first */
+        listFiles( view.getViewRoot() );
+        verifyView( gv, ccenv.getUniqueName() + "/Model/model.h", "#1" );
+
+        /* Verify second */
+        GetView gv2 = new GetView( path, viewTag );
+        verifyView( gv2, ccenv.getUniqueName() + "/Model/model.h", "#1" );
+    }
+
+    @Test
+    public void advancedGet() throws IOException, ClearCaseException {
+        File path = createTempPath();
+        String viewTag = ccenv.getUniqueName() + "_TAG2b";
 
         Stream oneInt = ccenv.context.streams.get( "one_int" );
         Baseline model1 = ccenv.context.baselines.get( "model-1" );
         Baseline model2 = ccenv.context.baselines.get( "model-2" );
 
-        Stream container = Stream.create( oneInt, "container2", true, model1 );
+        Stream container = Stream.create( oneInt, "container2b", true, model1 );
 
         GetView gv = new GetView( path, viewTag ).createIfAbsent().setStream( container );
         SnapshotView view = gv.get();
@@ -75,5 +100,57 @@ public class GetViewTest extends GetViewTestBase {
         /* Verify second */
         GetView gv2 = new GetView( path, viewTag );
         verifyView( gv2, ccenv.getUniqueName() + "/Model/model.h", "#1#2" );
+    }
+
+    @Test( expected = IllegalStateException.class )
+    public void testNonExistent() throws IOException, ClearCaseException {
+        File path = createTempPath();
+        String viewTag = ccenv.getUniqueName() + "_TAG3";
+
+        Stream oneInt = ccenv.context.streams.get( "one_int" );
+        Baseline model1 = ccenv.context.baselines.get( "model-1" );
+
+        Stream container = Stream.create( oneInt, "container3", true, model1 );
+
+        GetView gv = new GetView( path, viewTag ).createIfAbsent().setStream( container );
+        SnapshotView view = gv.get();
+
+        SnapshotView.LoadRules lr = new SnapshotView.LoadRules( view, SnapshotView.Components.ALL );
+        new UpdateView( view ).setLoadRules( lr ).update();
+
+        /* Verify first */
+        listFiles( view.getViewRoot() );
+        verifyView( gv, ccenv.getUniqueName() + "/Model/model.h", "#1" );
+
+        /* Verify second */
+        GetView gv2 = new GetView( new File( path.getParent(), "98u2n918u2n9831u2n3981nu23981u2398/hahahaha" ), viewTag );
+        gv2.get();
+    }
+
+    @Test
+    public void change() throws IOException, ClearCaseException {
+        File path = createTempPath();
+        String viewTag = ccenv.getUniqueName() + "_TAG4";
+        String viewTag2 = ccenv.getUniqueName() + "_TAG4_2";
+
+        Stream oneInt = ccenv.context.streams.get( "one_int" );
+        Baseline model1 = ccenv.context.baselines.get( "model-1" );
+
+        Stream container = Stream.create( oneInt, "container4", true, model1 );
+
+        GetView gv = new GetView( path, viewTag ).createIfAbsent().setStream( container );
+        SnapshotView view = gv.get();
+
+        SnapshotView.LoadRules lr = new SnapshotView.LoadRules( view, SnapshotView.Components.ALL );
+        new UpdateView( view ).setLoadRules( lr ).update();
+
+        /* Verify first */
+        listFiles( view.getViewRoot() );
+        verifyView( gv, ccenv.getUniqueName() + "/Model/model.h", "#1" );
+
+        /* Verify second */
+        GetView gv2 = new GetView( path, viewTag2 );
+        gv2.get();
+        //verifyView( gv2, ccenv.getUniqueName() + "/Model/model.h", "#1" );
     }
 }
