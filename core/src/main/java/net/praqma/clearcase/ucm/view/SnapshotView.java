@@ -54,12 +54,12 @@ public class SnapshotView extends UCMView {
 	//protected static final String rx_view_uuid = "view_uuid:(.*)";
 	protected static final Pattern rx_view_uuid_file = Pattern.compile( "view_uuid:(.*)" );
 	protected static final Pattern rx_view_uuid = Pattern.compile( "View uuid:(.*)" );
-	private static final Pattern rx_view_rebasing = Pattern.compile( "^\\.*Error: This view is currently being used to rebase stream \"(.+)\"\\.*$" );
-	private static final Pattern pattern_cache = Pattern.compile( "^\\s*log has been written to\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE );
+	public static final Pattern rx_view_rebasing = Pattern.compile( "^\\.*Error: This view is currently being used to rebase stream \"(.+)\"\\.*$" );
+	public static final Pattern pattern_cache = Pattern.compile( "^\\s*log has been written to\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE );
 	
-	private final String rx_co_file = ".*CHECKEDOUT$";
-	private final String rx_ctr_file = ".*\\.contrib";
-	private final String rx_keep_file = ".*\\.keep$";
+	public final String rx_co_file = ".*CHECKEDOUT$";
+    public final String rx_ctr_file = ".*\\.contrib";
+    public final String rx_keep_file = ".*\\.keep$";
 	
 	public static String VIEW_DOT_DAT_FILE = "view.dat";
 	
@@ -352,6 +352,9 @@ public class SnapshotView extends UCMView {
 		}
 	}
 
+    /**
+     * @deprecated since 0.6.13
+     */
 	public class UpdateInfo {
 		public Integer totalFilesToBeDeleted = 0;
 		public boolean success = false;
@@ -393,7 +396,17 @@ public class SnapshotView extends UCMView {
 	 * viewroot, null ); }
 	 */
 
+    /**
+     * @deprecated since 0.6.13
+     */
 	public UpdateInfo Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules loadRules ) throws CleartoolException, ViewException {
+        return update( swipe, generate, overwrite, excludeRoot, loadRules );
+    }
+
+    /**
+     * @deprecated since 0.6.13
+     */
+    public UpdateInfo update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules loadRules ) throws CleartoolException, ViewException {
 
 		UpdateInfo info = new UpdateInfo();
 
@@ -420,7 +433,10 @@ public class SnapshotView extends UCMView {
 
 		return info;
 	}
-	
+
+    /**
+     * @deprecated since 0.6.13
+     */
 	private static String updateView( SnapshotView view, boolean overwrite, String loadrules ) throws CleartoolException, ViewException {
 		//String result = strategy.viewUpdate( view.getViewRoot(), overwrite, loadrules );
 		
@@ -459,7 +475,7 @@ public class SnapshotView extends UCMView {
 
 		return "";
 	}
-	
+
 	public Map<String, Integer> swipe( File viewroot, boolean excludeRoot ) throws CleartoolException {
 		logger.fine( viewroot.toString() );
 
