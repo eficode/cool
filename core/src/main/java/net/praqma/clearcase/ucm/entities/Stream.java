@@ -471,6 +471,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return getRecommendedBaselines( false );
 	}
 
+    /**
+     * Update the config spec of the {@link Stream}
+     * @throws CleartoolException
+     */
 	public void generate() throws CleartoolException {
 		String cmd = "chstream -generate " + this;
 		try {

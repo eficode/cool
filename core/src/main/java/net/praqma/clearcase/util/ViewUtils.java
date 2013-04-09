@@ -23,12 +23,8 @@ import java.util.logging.Logger;
 public class ViewUtils {
 
     private static Logger logger = Logger.getLogger( ViewUtils.class.getName() );
-	
-	public static SnapshotView createView( Stream stream, String loadModule, File viewroot, String viewtag ) throws ViewException, UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException, IOException {
-		return createView( stream, loadModule, viewroot, viewtag, true );
-	}
-	
-	public static SnapshotView createView( Stream stream, String loadModule, File viewroot, String viewtag, boolean update ) throws ViewException, UnableToInitializeEntityException, CleartoolException, IOException, UnableToLoadEntityException {
+
+	public static SnapshotView createView( Stream stream, String loadModule, File viewroot, String viewtag ) throws ViewException, UnableToInitializeEntityException, CleartoolException, IOException, UnableToLoadEntityException {
 
 		SnapshotView snapview = null;
 
@@ -104,12 +100,14 @@ public class ViewUtils {
 		}
 
 		/* Update view */
+        /*
 		if( update ) {
             logger.fine( "[UCMView] Updating view using " + loadModule.toLowerCase() + " modules." );
 			LoadRules lr = new LoadRules( snapview, Components.valueOf( loadModule.toUpperCase() ) );
 			
 			snapview.Update( true, true, true, false, lr );
 		}
+		*/
 
 		return snapview;
 	}
