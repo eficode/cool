@@ -1,14 +1,13 @@
 package net.praqma.clearcase.test.functional;
 
+import net.praqma.clearcase.Rebase;
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.test.BaseClearCaseTest;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.GetView;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.UpdateView;
-import org.apache.commons.io.FileUtils;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ import static org.junit.Assert.assertThat;
 /**
  * @author cwolfgang
  */
-public class GetViewTest extends BaseClearCaseTest {
+public class GetViewTest extends GetViewTestBase {
 
     private static Logger logger = Logger.getLogger( GetViewTest.class.getName() );
 
@@ -32,59 +31,49 @@ public class GetViewTest extends BaseClearCaseTest {
     @Test
     public void basicCreate() throws IOException, ClearCaseException {
         File path = createTempPath();
-        String viewTag = ccenv.getUniqueName() + "_TAG";
+        String viewTag = ccenv.getUniqueName() + "_TAG1";
 
         Stream oneInt = ccenv.context.streams.get( "one_int" );
         Baseline model1 = ccenv.context.baselines.get( "model-1" );
 
-        Stream container = Stream.create( oneInt, "container", true, model1 );
+        Stream container = Stream.create( oneInt, "container1", true, model1 );
 
         GetView gv = new GetView( path, viewTag ).createIfAbsent().setStream( container );
-        gv.get();
+        SnapshotView view = gv.get();
 
-
-        SnapshotView view = gv.getView();
         SnapshotView.LoadRules lr = new SnapshotView.LoadRules( view, SnapshotView.Components.ALL );
-        //new UpdateView( view ).setLoadRules( lr ).update();
+        new UpdateView( view ).setLoadRules( lr ).update();
 
         listFiles( view.getViewRoot() );
 
         verifyView( gv, ccenv.getUniqueName() + "/Model/model.h", "#1" );
     }
 
-    public void listFiles( File path ) {
-        logger.info( "Listing " + path.getAbsolutePath() );
-        String[] files = path.list();
-        for( String f : files ) {
-            logger.info( " * " + f );
-        }
-    }
+    @Test
+    public void basicGet() throws IOException, ClearCaseException {
+        File path = createTempPath();
+        String viewTag = ccenv.getUniqueName() + "_TAG2";
 
-    public void verifyView( GetView gv, String file, String content ) throws IOException, ClearCaseException {
-        logger.info( "Verifying " + file );
+        Stream oneInt = ccenv.context.streams.get( "one_int" );
+        Baseline model1 = ccenv.context.baselines.get( "model-1" );
+        Baseline model2 = ccenv.context.baselines.get( "model-2" );
 
-        gv.validateViewRoot();
-        SnapshotView view = gv.getView();
-        File ccfile = new File( view.getViewRoot(), file );
+        Stream container = Stream.create( oneInt, "container2", true, model1 );
 
-        String c = FileUtils.readFileToString( ccfile );
+        GetView gv = new GetView( path, viewTag ).createIfAbsent().setStream( container );
+        SnapshotView view = gv.get();
 
-        logger.info( "Verifying content" );
-        assertThat( c, is( content ) );
-    }
+        SnapshotView.LoadRules lr = new SnapshotView.LoadRules( view, SnapshotView.Components.ALL );
+        new UpdateView( view ).setLoadRules( lr ).update();
 
-    public File createTempPath() throws IOException {
-        File path = path = File.createTempFile( "snapshot", "view" );
+        /* Verify first */
+        listFiles( view.getViewRoot() );
+        verifyView( gv, ccenv.getUniqueName() + "/Model/model.h", "#1" );
 
-        if( !path.delete() ) {
-            throw new IOException( "Unable to delete dir " + path );
-        }
+        new Rebase( container ).addBaseline( model2 ).rebase( true );
 
-        if( !path.mkdirs() ) {
-            throw new IOException( "Unable to make dir " + path );
-        }
-        System.out.println( "Path: " + path );
-
-        return path;
+        /* Verify second */
+        GetView gv2 = new GetView( path, viewTag );
+        verifyView( gv2, ccenv.getUniqueName() + "/Model/model.h", "#1#2" );
     }
 }

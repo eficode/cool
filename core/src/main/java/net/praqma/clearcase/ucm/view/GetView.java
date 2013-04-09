@@ -52,11 +52,11 @@ public class GetView {
         return this;
     }
 
-    public SnapshotView getView() {
-        return snapview;
-    }
+    public SnapshotView get() throws IOException, ClearCaseException {
 
-    public GetView get() throws IOException, ClearCaseException {
+        if( snapview != null ) {
+            return snapview;
+        }
 
         if( UCMView.viewExists( viewTag ) ) {
             logger.fine( LOGGER_PREFIX + "The view \"" + viewTag + "\" exists" );
@@ -88,7 +88,7 @@ public class GetView {
             create();
         }
 
-        return this;
+        return snapview;
     }
 
     private void create() throws ClearCaseException, IOException {
