@@ -516,6 +516,9 @@ public class SnapshotView extends UCMView {
 
 		Map<String, Integer> info = new HashMap<String, Integer>();
 		info.put( "success", 1 );
+        info.put( "total", 0 );
+        info.put( "dirs_deleted", 0 );
+        info.put( "files_deleted", 0 );
 
 		if( fls.length() == 0 ) {
 			logger.fine( "No files to delete" );
@@ -532,6 +535,8 @@ public class SnapshotView extends UCMView {
 		}
 		List<File> vpFiles = new ArrayList<File>();
 
+        logger.finest( "View private files found: " + result );
+
 		if( !excludeRoot ) {
 			vpFiles.addAll( rootVPFiles );
 		}
@@ -545,6 +550,8 @@ public class SnapshotView extends UCMView {
 		}
 
 		int total = vpFiles.size();
+        logger.finest( "View private files: " + vpFiles );
+        logger.finest( "Int total: " + total );
 
 		info.put( "total", total );
 

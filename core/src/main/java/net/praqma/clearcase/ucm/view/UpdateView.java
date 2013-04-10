@@ -5,9 +5,12 @@ import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
+import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +27,8 @@ public class UpdateView {
     private boolean generate = false;
     private boolean overwrite = false;
     private boolean excludeRoot = false;
+
+    private boolean removeDanglingComponentFolders = false;
 
     private SnapshotView.LoadRules loadRules;
 
@@ -96,16 +101,20 @@ public class UpdateView {
             logger.fine( "Swipe view" );
             Map<String, Integer> sinfo = view.swipe( excludeRoot );
             success = sinfo.get( "success" ) == 1 ? true : false;
-            totalFilesToBeDeleted = sinfo.get( "total" );
-            dirsDeleted = sinfo.get( "dirs_deleted" );
-            filesDeleted = sinfo.get( "files_deleted" );
-        }
+            totalFilesToBeDeleted = sinfo.containsKey( "total" ) ? sinfo.get( "total" ) : 0;
+            dirsDeleted = sinfo.containsKey( "dirs_deleted" ) ? sinfo.get( "dirs_deleted" ) : 0;
+            filesDeleted = sinfo.containsKey( "files_deleted") ? sinfo.get( "files_deleted" ) : 0;
 
-        logger.fine( "SWIPED" );
+            logger.fine( "SWIPED" );
+        }
 
         // Cache current directory and chdir into the viewroot
         String result = updateView( view, overwrite, loadRules );
         logger.fine( result );
+
+        if( removeDanglingComponentFolders ) {
+            removeComponentFolders();
+        }
 
         return this;
     }
@@ -148,5 +157,28 @@ public class UpdateView {
         }
 
         return "";
+    }
+
+    public UpdateView removeDanglingComponentFolders() {
+        this.removeDanglingComponentFolders = true;
+
+        return this;
+    }
+
+    private void removeComponentFolders() throws ClearCaseException, IOException {
+        List<Baseline> bls = view.getStream().getFoundationBaselines();
+        logger.finest( "Baselines: " + bls );
+        for( Baseline bl : bls ) {
+            String dir = bl.getComponent().getRootDir();
+            logger.finer( "Root directory: " + dir );
+        }
+    }
+
+    public void b( File path, int i ) {
+        if( i == 0 ) {
+
+        } else {
+
+        }
     }
 }

@@ -61,25 +61,28 @@ public class GetView {
         if( UCMView.viewExists( viewTag ) ) {
             logger.fine( LOGGER_PREFIX + "The view \"" + viewTag + "\" exists" );
 
-            if( !viewRoot.exists() ) {
-                throw new IllegalStateException( "The view root " + viewRoot + " does not exist, but the view tag " + viewTag + " does." );
-            }
+            if( viewRoot.exists() ) {
 
-            if( validateViewRoot ) {
-                logger.fine( LOGGER_PREFIX + "Validating view root " + viewRoot );
+                if( validateViewRoot ) {
+                    logger.fine( LOGGER_PREFIX + "Validating view root " + viewRoot );
 
-                try {
-                    validateViewRoot2();
-                } catch( ClearCaseException e ) {
-                    /* Try to regenerate the view */
                     try {
-                        logger.fine( "[UCMView] Regenerating invalid view root" );
-                        SnapshotView.end( viewTag );
-                        SnapshotView.regenerateViewDotDat( viewRoot, viewTag );
-                    } catch( ClearCaseException e1 ) {
-                        throw new ViewException( "Unable to regenerate view", viewRoot.getAbsolutePath(), ViewException.Type.CREATION_FAILED, e1 );
+                        validateViewRoot2();
+                    } catch( ClearCaseException e ) {
+                        /* Try to regenerate the view */
+                        try {
+                            logger.fine( "[UCMView] Regenerating invalid view root" );
+                            SnapshotView.end( viewTag );
+                            SnapshotView.regenerateViewDotDat( viewRoot, viewTag );
+                        } catch( ClearCaseException e1 ) {
+                            throw new ViewException( "Unable to regenerate view", viewRoot.getAbsolutePath(), ViewException.Type.CREATION_FAILED, e1 );
+                        }
                     }
                 }
+            } else {
+                logger.fine( "The view tag \"" + viewTag + "\" exists, but the view root " + viewRoot.getAbsolutePath() + " does not" );
+                SnapshotView.end( viewTag );
+                SnapshotView.regenerateViewDotDat( viewRoot, viewTag );
             }
 
             snapview = SnapshotView.get( viewRoot );
