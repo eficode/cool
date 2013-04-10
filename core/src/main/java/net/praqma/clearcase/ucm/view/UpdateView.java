@@ -104,13 +104,13 @@ public class UpdateView {
         logger.fine( "SWIPED" );
 
         // Cache current directory and chdir into the viewroot
-        String result = updateView( view, overwrite, loadRules.getLoadRules() );
+        String result = updateView( view, overwrite, loadRules );
         logger.fine( result );
 
         return this;
     }
 
-    private static String updateView( SnapshotView view, boolean overwrite, String loadrules ) throws CleartoolException, ViewException {
+    private static String updateView( SnapshotView view, boolean overwrite, SnapshotView.LoadRules loadrules ) throws CleartoolException, ViewException {
         String result = "";
 
         logger.fine( view.getViewRoot().getAbsolutePath() );
@@ -124,7 +124,10 @@ public class UpdateView {
 
         logger.fine( "Updating view with " + loadrules );
 
-        cmd = "update -force " + ( overwrite ? " -overwrite " : "" ) + loadrules;
+        cmd = "update -force " + ( overwrite ? " -overwrite " : "" );
+        if( loadrules != null ) {
+            cmd += loadrules.getLoadRules();
+        }
         try {
             result = Cleartool.run( cmd, view.getViewRoot(), true ).stdoutBuffer.toString();
         } catch( AbnormalProcessTerminationException e ) {
