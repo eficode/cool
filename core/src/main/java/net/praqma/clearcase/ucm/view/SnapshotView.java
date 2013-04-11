@@ -40,6 +40,7 @@ import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 import net.praqma.util.io.IO;
 import net.praqma.util.structure.Printer;
 import net.praqma.util.structure.Tuple;
+import org.apache.commons.io.FileUtils;
 
 /**
  * The OO implementation of the ClearCase entity Snapshot view. The next line
@@ -512,6 +513,7 @@ public class SnapshotView extends UCMView {
 		for( File notVob : notVobs ) {
 			logger.fine( "Removing " + notVob );
 			net.praqma.util.io.IO.deleteDirectory( notVob );
+            //FileUtils.deleteQuietly( notVob );
 		}
 
 		Map<String, Integer> info = new HashMap<String, Integer>();

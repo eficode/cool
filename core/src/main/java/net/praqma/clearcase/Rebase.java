@@ -63,8 +63,16 @@ public class Rebase {
         this.viewTag = viewTag;
     }
 
+    /*
     public Rebase( File viewPath ) {
         this.viewPath = viewPath;
+    }
+    */
+
+    public Rebase setViewTag( String viewTag ) {
+        this.viewTag = viewTag;
+
+        return this;
     }
 
     public Rebase addBaseline( Baseline baseline ) {
@@ -125,6 +133,10 @@ public class Rebase {
                     }
                 }
             }
+
+            if( viewTag != null ) {
+                cmd += " -view " + viewTag;
+            }
         } else if( viewTag != null ) {
             cmd += " -view " + viewTag;
         } else {
@@ -148,7 +160,7 @@ public class Rebase {
         }
 		
 		try {
-			CmdResult res = Cleartool.run( cmd );
+			CmdResult res = Cleartool.run( cmd, viewPath );
 
 			if( res.stdoutBuffer.toString().matches( "^No rebase needed.*" ) ) {
 				return false;
