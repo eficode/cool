@@ -47,26 +47,6 @@ public class BaselineTest extends BaseClearCaseTest {
 	}
 	
 	@Test
-	public void testPromote() throws Exception {
-		Baseline bl = ccenv.context.baselines.get( "model-3" ).load();
-		
-		assertNotNull( bl );
-		assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
-		bl.promote();
-		assertEquals( PromotionLevel.BUILT, bl.getPromotionLevel( false ) );
-	}
-	
-	@Test
-	public void testDemote() throws Exception {
-		Baseline bl = ccenv.context.baselines.get( "model-2" ).load();
-		
-		assertNotNull( bl );
-		assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
-		bl.demote();
-		assertEquals( PromotionLevel.REJECTED, bl.getPromotionLevel( false ) );
-	}
-
-	@Test
 	public void testGetStream() throws Exception {
 		Baseline bl = ccenv.context.baselines.get( "model-1" ).load();
 		
