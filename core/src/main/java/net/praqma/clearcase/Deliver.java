@@ -73,13 +73,16 @@ public class Deliver {
 	public boolean deliverForced( Stream stream, Stream target, File viewcontext, String viewtag ) throws DeliverException, CleartoolException {
 		return deliver( true, true, true, false );
 	}
-	
+
+    /**
+     * @deprecated since 0.6.13
+     */
 	public boolean deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException, CleartoolException {
 		logger.fine( "Delivering " + baseline + " from " + stream + " to " + target + " in " + context + " with tag " + viewtag );
 		try {
 			return _deliver( force, complete, abort, resume );
 		} catch( DeliverException e ) {
-			if( e.getType().equals( Type.DELIVER_IN_PROGRESS ) ) { //could be a posted delivery
+			if( e.getType().equals( Type.DELIVER_IN_PROGRESS ) && !resume ) { //could be a posted delivery
 				String status = getStatus( stream );
 				if( status.replace( System.getProperty( "line.separator" ), " " ).contains( "Operation posted from" ) ) {
 					logger.fine( "Posted delivery" );

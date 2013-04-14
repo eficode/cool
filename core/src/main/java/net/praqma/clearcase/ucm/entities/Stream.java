@@ -292,6 +292,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 				throw new UCMEntityNotFoundException( this, e );
 			}
 
+            logger.finest( "Command result: " + res.stdoutBuffer.toString() );
+
 			String[] strms = res.stdoutBuffer.toString().split( ", " );
 			for( String stream : strms ) {
 				streams.add( Stream.get( stream ) );
@@ -350,7 +352,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 	
 	public boolean hasPostedDelivery() throws UnableToInitializeEntityException {
-		logger.fine( "hasPostedDelivery" );
 		try {
 			logger.fine( "Status: " + Deliver.getStatus( this ) );
 			return Deliver.getStatus( this ).contains( "Operation posted from" );
