@@ -43,8 +43,6 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 
 	transient private static Logger logger = Logger.getLogger( UCMEntity.class.getName() );
 
-	private static final long serialVersionUID = 1123123123L;
-
 	protected static final String rx_ccdef_allowed = "[\\w\\.-]";
 	protected static final String rx_ccdef_vob = "[\\\\\\w\\./-]";
 	protected static final Pattern pattern_std_fqname = Pattern.compile( "^(\\w+):(" + rx_ccdef_allowed + "+)@(" + rx_ccdef_vob + "+)$" );
