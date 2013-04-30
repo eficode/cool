@@ -10,7 +10,11 @@ import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
 import org.w3c.dom.Element;
 
+import java.util.logging.Logger;
+
 public class ViewTask extends AbstractTask {
+
+    private static Logger logger = Logger.getLogger( ViewTask.class.getName() );
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
@@ -27,7 +31,9 @@ public class ViewTask extends AbstractTask {
 		} catch( Exception e1 ) {
 			/* No stream given */
 		}
-		
+
+        String testString = new String( tag );
+
 		if( snapshot ) {
 			
 		} else {

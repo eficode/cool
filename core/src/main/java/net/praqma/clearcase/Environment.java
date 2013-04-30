@@ -54,6 +54,7 @@ public class Environment {
 		try {
 			EnvironmentParser parser = new EnvironmentParser( file );
 			context = parser.parse( variables );
+            logger.fine( context.toString() );
 			logger.info( "CONTEXT PVOBS: " + context.pvobs );
 			if( context.pvobs.size() > 0 ) {
 
