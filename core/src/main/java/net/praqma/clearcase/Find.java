@@ -2,6 +2,8 @@ package net.praqma.clearcase;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
+import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 import java.io.File;
@@ -122,22 +124,36 @@ public class Find {
         return this;
     }
 
-    public void find() throws CleartoolException {
+    public List<Version> find() throws CleartoolException, UnableToInitializeEntityException {
         logger.fine( "Finding objects in ClearCase" );
         String cmd = getCommandLine();
 
+        List<String> lines;
+
         try {
-            Cleartool.run( cmd, viewRoot );
+            lines = Cleartool.run( cmd, viewRoot ).stdoutList;
         } catch( AbnormalProcessTerminationException e ) {
             throw new CleartoolException( "Error while finding", e );
         }
+
+        List<Version> versions = new ArrayList<Version>( lines.size() );
+
+        for( String line : lines ) {
+            versions.add( Version.getVersion( line ) );
+        }
+
+        return versions;
     }
 
     public String getCommandLine() {
         StringBuilder sb = new StringBuilder();
         sb.append( "find" );
 
-        if( ( type == null || !type.equals( Type.avobs ) ) && pathNames.size() > 0 ) {
+        if( ( type == null || !type.equals( Type.avobs ) ) ) {
+            if( pathNames.size() == 0 ) {
+                throw new IllegalStateException( "At least one path name must be specified" );
+            }
+
             for( String pname : pathNames ) {
                 sb.append( " " + pname );
             }
@@ -150,9 +166,19 @@ public class Find {
 
         /* Selections */
 
+        if( !extendedNames ) {
+            sb.append( " -nxname" );
+        }
+
         /* Actions */
+        boolean actions = false;
         if( print ) {
             sb.append( " -print" );
+            actions = true;
+        }
+
+        if( !actions ) {
+            throw new IllegalStateException( "No actions defined" );
         }
 
         return sb.toString();
