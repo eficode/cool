@@ -61,6 +61,9 @@ public class Component extends UCMEntity {
 		}
 	}
 
+    public boolean isRootLess() throws CleartoolException {
+        return getRootDir().isEmpty();
+    }
 	
 	public static Component get( String name, PVob pvob ) throws UnableToInitializeEntityException {
 		if( !name.startsWith( "component:" ) ) {
