@@ -24,7 +24,7 @@ public class FB9017 {
     @ClassRule
     public static LoggingRule lrule = new LoggingRule( "net.praqma" );
 
-    @Test
+    //@Test
     @ClearCaseUniqueVobName( name = "rødgrødmedfløde" )
     public void test01() throws ClearCaseException, IOException {
         Component model = ccenv.context.components.get( "Model" );
