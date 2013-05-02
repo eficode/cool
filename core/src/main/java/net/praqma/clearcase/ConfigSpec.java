@@ -34,7 +34,13 @@ public class ConfigSpec {
     }
 
     public ConfigSpec addLoadRule( Component component ) throws CleartoolException {
-        loadRules.add( component.getRootDir() );
+        String rootDir = component.getRootDir();
+        if( rootDir != null && !rootDir.isEmpty() ) {
+            logger.fine( component.getShortname() + " is rooted and added directly" );
+            loadRules.add( rootDir );
+        } else {
+            logger.fine( component.getShortname() + " is rootless" );
+        }
 
         return this;
     }
@@ -63,6 +69,7 @@ public class ConfigSpec {
 
     public ConfigSpec addLoadRulesFromBaseline( Baseline baseline ) throws CleartoolException {
         addLoadRule( baseline.getComponent() );
+        //baseline.get
 
         return this;
     }
