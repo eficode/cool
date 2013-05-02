@@ -66,6 +66,8 @@ public class Report extends CLI {
             Date now = new Date();
             long secs = now.getTime();
 
+            logger.fine( "Version: " + versions );
+
             sb.append( v.getFile().getAbsolutePath() ).append( ", " ); // Name
             sb.append( secs - v.getDate().getTime() ).append( ", " ); // Age
             sb.append( file.isDirectory() ).append( ", " ); // Absolute file

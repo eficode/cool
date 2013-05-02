@@ -353,14 +353,8 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	}
 
 	public Date getDate() {
-		if( !loaded ) {
-			try {
-				load();
-			} catch( ClearCaseException e ) {
-				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
-			}
-		}
-		
+		autoLoad();
+        
 		return date;
 	}
 
