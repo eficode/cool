@@ -354,7 +354,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 
 	public Date getDate() {
 		autoLoad();
-        
+
 		return date;
 	}
 
