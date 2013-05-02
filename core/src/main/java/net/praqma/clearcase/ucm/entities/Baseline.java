@@ -7,18 +7,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import net.praqma.clearcase.Cool;
+import net.praqma.clearcase.Describe;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
-import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.EntityNotLoadedException;
-import net.praqma.clearcase.exceptions.NothingNewException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToGetEntityException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
-import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
-import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
-import net.praqma.clearcase.exceptions.UnableToPromoteBaselineException;
+import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 
@@ -310,6 +302,22 @@ public class Baseline extends UCMEntity implements Diffable {
 		
 		return this.component;
 	}
+
+    /**
+     * Get the {@link List} of {@link Baseline}'s, that depends on this {@link Baseline}.
+     */
+    public List<Baseline> getDependant() throws CleartoolException, UnableToInitializeEntityException {
+        logger.fine( "Finding dependant baselines for " + this.getNormalizedName() );
+
+        String[] ds = new Describe( this ).dependentsOn().describe().get( "depends_on" );
+
+        List<Baseline> baselines = new ArrayList<Baseline>( ds.length );
+        for( String bl : ds ) {
+            baselines.add( Baseline.get( bl ) );
+        }
+
+        return baselines;
+    }
 
 	public Stream getStream() {
 		if( !loaded ) {
