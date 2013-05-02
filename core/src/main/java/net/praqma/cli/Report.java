@@ -44,7 +44,18 @@ public class Report extends CLI {
 
         File path = new File( opath.getString() );
         Find find = new Find().addPathName( "." ).useUnExtendedNames().setFindAll().print().setViewRoot( path );
-        List<Version> versions = find.find();
+
+        List<Version> versions = null;
+        try {
+            versions = find.find();
+        } catch( Exception e ) {
+            File[] fs = path.listFiles();
+            for( File f : fs ) {
+                logger.info( f.toString() );
+            }
+
+            throw e;
+        }
 
         List<String> rows = new ArrayList<String>( versions.size() );
 
