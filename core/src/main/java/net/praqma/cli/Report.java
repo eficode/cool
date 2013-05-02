@@ -67,6 +67,8 @@ public class Report extends CLI {
             long secs = now.getTime();
 
             logger.fine( "Version: " + v );
+            logger.fine( "Version: " + v.getDate() );
+            logger.fine( "Version: " + v.getRevision() );
 
             sb.append( v.getFile().getAbsolutePath() ).append( ", " ); // Name
             sb.append( secs - v.getDate().getTime() ).append( ", " ); // Age
