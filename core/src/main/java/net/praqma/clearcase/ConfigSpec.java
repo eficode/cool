@@ -116,6 +116,11 @@ public class ConfigSpec {
         try {
             Cleartool.run( cmd, viewRoot );
         } catch( AbnormalProcessTerminationException e ) {
+            try {
+                logger.severe( FileUtils.readFileToString( temporaryCSFile ) );
+            } catch( IOException e1 ) {
+                logger.severe( "Unable to dump config spec, " + e1.getMessage() );
+            }
             throw new CleartoolException( "Unable to set the config spec", e );
         }
 
