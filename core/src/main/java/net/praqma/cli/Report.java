@@ -1,10 +1,14 @@
 package net.praqma.cli;
 
 import net.praqma.clearcase.Find;
+import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -39,7 +43,27 @@ public class Report extends CLI {
         }
 
         File path = new File( opath.getString() );
-        Find find = new Find().addPathName( "." ).useUnExtendedNames().setType( Find.Type.all ).print();
-        find.find();
+        Find find = new Find().addPathName( "." ).useUnExtendedNames().setFindAll().print().setViewRoot( path );
+        List<Version> versions = find.find();
+
+        List<String> rows = new ArrayList<String>( versions.size() );
+
+        for( Version v : versions ) {
+            StringBuilder sb = new StringBuilder();
+            File file = v.getFile();
+
+            Date now = new Date();
+            long secs = now.getTime();
+
+            sb.append( v.getFile().getAbsolutePath() ).append( ", " ); // Name
+            sb.append( secs - v.getDate().getTime() ).append( ", " ); // Age
+            sb.append( file.isDirectory() ).append( ", " ); // Absolute file
+            sb.append( v.getUser() ).append( ", " ); // The user
+            sb.append( v.getDate() ); // The creation date?
+
+            rows.add( sb.toString() );
+        }
+
+        logger.info( "Rows: " + rows );
     }
 }
