@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author cwolfgang
@@ -62,15 +64,15 @@ public class FB9184 {
         List<Baseline> baselines_1 = model1.getDependant();
         assertThat( baselines_1.size(), is( 2 ) );
 
-        assertThat( baselines_1.get( 0 ).getComponent().isRootLess(), is( true ) );
-        assertThat( baselines_1.get( 1 ).getComponent().isRootLess(), is( true ) );
+        assertTrue( baselines_1.get( 0 ).getComponent().isRootLess() );
+        assertTrue( baselines_1.get( 1 ).getComponent().isRootLess() );
 
         List<Baseline> baselines_2_1 = baselines_1.get( 0 ).getDependant();
         List<Baseline> baselines_2_2 = baselines_1.get( 1 ).getDependant();
 
-        assertThat( baselines_2_1.get( 0 ).getComponent().isRootLess(), is( false ) );
-        assertThat( baselines_2_1.get( 1 ).getComponent().isRootLess(), is( false ) );
-        assertThat( baselines_2_2.get( 0 ).getComponent().isRootLess(), is( false ) );
-        assertThat( baselines_2_2.get( 1 ).getComponent().isRootLess(), is( false ) );
+        assertFalse( baselines_2_1.get( 0 ).getComponent().isRootLess() );
+        assertFalse( baselines_2_1.get( 1 ).getComponent().isRootLess() );
+        assertFalse( baselines_2_2.get( 0 ).getComponent().isRootLess() );
+        assertFalse( baselines_2_2.get( 1 ).getComponent().isRootLess() );
     }
 }
