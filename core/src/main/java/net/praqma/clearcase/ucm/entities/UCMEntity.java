@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.entities;
 import java.io.File;
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.ClearCase;
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.cleartool.Cleartool;
@@ -355,8 +357,38 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	public Date getDate() {
 		autoLoad();
 
+        if( date == null ) {
+            try {
+                loadDate();
+            } catch( CleartoolException e ) {
+                throw new EntityNotLoadedException( fqname, fqname + " could not be load date", e );
+            }
+        }
+
 		return date;
 	}
+
+    public void loadDate() throws CleartoolException {
+
+        String result = "";
+
+        String cmd = "desc -fmt %Nd " + this;
+        try {
+            result = Cleartool.run( cmd ).stdoutBuffer.toString();
+        } catch( Exception e ) {
+            throw new CleartoolException( "Unable to load date for " + this.getNormalizedName(), e );
+        }
+
+        try {
+            logger.fine( "Result:" + result );
+            synchronized( dateFormatter ) {
+                this.date = dateFormatter.parse( result );
+            }
+        } catch( ParseException e ) {
+            logger.fine( "Unable to parse date: " + e.getMessage() );
+            this.date = null;
+        }
+    }
 
 	public void setComment( String comment ) {
 		this.comment = comment;
@@ -433,6 +465,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
         if( !loaded ) {
             try {
                 load();
+                loaded = true;
             } catch( ClearCaseException e ) {
                 throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
             }
