@@ -1,14 +1,14 @@
 package net.praqma.cli;
 
+import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.Find;
+import net.praqma.clearcase.command.ListType;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -43,7 +43,25 @@ public class Report extends CLI {
         }
 
         File path = new File( opath.getString() );
-        Find find = new Find().addPathName( "." ).useUnExtendedNames().setFindAll().print().setViewRoot( path );
+
+        ListType ls = new ListType().setLocal().setBranchType().setViewRoot( path );
+        List<Branch> branches = ls.list();
+
+        Map<File, Entry> map = new HashMap<File, Entry>();
+
+        for( Branch branch : branches ) {
+            findBranch( path, branch, map );
+        }
+
+        for( File key : map.keySet() ) {
+            System.out.println( map.get( key ).string );
+        }
+    }
+
+    private void findBranch( File path, Branch branch, Map<File, Entry> map ) throws Exception {
+        logger.info( "Processing " + branch );
+
+        Find find = new Find().addPathName( "." ).setFindAll().print().setViewRoot( path ).setVersionQuery( "version(.../" + branch.getName() + "/LATEST)" );
 
         List<Version> versions = null;
         try {
@@ -57,7 +75,7 @@ public class Report extends CLI {
             throw e;
         }
 
-        List<String> rows = new ArrayList<String>( versions.size() );
+        //List<Entry> rows = new ArrayList<Entry>( versions.size() );
 
         for( Version v : versions ) {
             StringBuilder sb = new StringBuilder();
@@ -71,14 +89,29 @@ public class Report extends CLI {
             logger.fine( "Version: " + v.getRevision() );
 
             sb.append( v.getFile().getAbsolutePath() ).append( ", " ); // Name
-            sb.append( secs - v.getDate().getTime() ).append( ", " ); // Age
-            sb.append( file.isDirectory() ).append( ", " ); // Absolute file
+            long age = secs - v.getDate().getTime();
+            sb.append( age / ( 1000 * 60 * 60 ) ).append( ", " ); // Age
+            sb.append( v.isDirectory() ).append( ", " ); // Absolute file
             sb.append( v.getUser() ).append( ", " ); // The user
+            sb.append( branch.getName() ).append( ", " ); // The branch
             sb.append( v.getDate() ); // The creation date?
 
-            rows.add( sb.toString() );
+            if( map.containsKey( file ) ) {
+                if( map.get( file ).age < age ) {
+                    map.put( file, new Entry( sb.toString(), age ) );
+                }
+            } else {
+                map.put( file, new Entry( sb.toString(), age ) );
+            }
         }
+    }
 
-        logger.info( "Rows: " + rows );
+    public class Entry {
+        String string;
+        long age;
+        public Entry( String string, long age ) {
+            this.string = string;
+            this.age = age;
+        }
     }
 }
