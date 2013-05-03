@@ -91,7 +91,7 @@ public class Report extends CLI {
             sb.append( v.getFile().getAbsolutePath() ).append( ", " ); // Name
             long age = secs - v.getDate().getTime();
             sb.append( age / ( 1000 * 60 * 60 ) ).append( ", " ); // Age
-            sb.append( v.isDirectory() ).append( ", " ); // Absolute file
+            sb.append( v.isDirectory() ? "directory" : "file" ).append( ", " ); // Absolute file
             sb.append( v.getUser() ).append( ", " ); // The user
             sb.append( branch.getName() ).append( ", " ); // The branch
             sb.append( v.getDate() ); // The creation date?
