@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.entities;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -126,9 +127,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			
 			/* Set the branch */
 			this.branch = r.group( 1 );
-			
-			logger.fine( "REVISION: " + revision );
-			logger.fine( "BRANCH: " + branch );
 		}
 	}
 
@@ -177,6 +175,8 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		try {
 			String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + this + "\"";
 			String[] list = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\}\\{" );
+
+            logger.finest( "Elements: " + Arrays.asList( list ) );
 
 			/* First line, user */
 			setUser( list[0] );

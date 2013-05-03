@@ -18,9 +18,9 @@ public class SetupUtils {
 		/* The pvob needs to be loaded */
 		pvob.load();
 		
-		logger.config( "Removing views" );
+		logger.info( "Removing views" );
 		for( UCMView view : views ) {
-			logger.fine( "Removing " + view );
+			logger.config( "Removing " + view );
 			try {
 				view.end();
 				view.remove();
@@ -31,9 +31,9 @@ public class SetupUtils {
 		
 		Set<Vob> vobs = pvob.getVobs();
 		
-		logger.config( "Removing vobs" );
+		logger.info( "Removing vobs" );
 		for( Vob vob : vobs ) {
-			logger.fine( "Removing " + vob );
+			logger.config( "Removing " + vob );
 			try {
 				vob.unmount();
 				vob.remove();

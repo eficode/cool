@@ -58,7 +58,7 @@ public class PVob extends Vob {
 			throw new CleartoolException( "Unable to list views", e );
 		}
 		
-		logger.fine( "OUT IS: " + lines );
+		logger.finest( "OUT IS: " + lines );
 		
 		Set<UCMView> views = new HashSet<UCMView>();
 		
