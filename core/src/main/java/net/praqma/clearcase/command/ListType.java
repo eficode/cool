@@ -6,6 +6,7 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,14 @@ public class ListType {
 
     private Kind kind;
 
+    private File viewRoot;
+
+    public ListType setViewRoot( File path ) {
+        this.viewRoot = path;
+
+        return this;
+    }
+
     public ListType setType( Kind kind ) {
         this.kind = kind;
 
@@ -70,7 +79,7 @@ public class ListType {
         List<String> lines;
 
         try {
-            lines = Cleartool.run( cmd ).stdoutList;
+            lines = Cleartool.run( cmd, viewRoot ).stdoutList;
         } catch( AbnormalProcessTerminationException e ) {
             throw new CleartoolException( "Error while listing " + kind, e );
         }
