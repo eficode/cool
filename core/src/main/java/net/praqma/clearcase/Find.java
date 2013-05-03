@@ -52,6 +52,11 @@ public class Find {
      */
     protected boolean extendedNames = true;
 
+    /**
+     * From the set of objects that survived the element-level and branch-level queries (if any), selects version objects using a VOB query.
+     */
+    protected String versionQuery;
+
 
     /* Actions */
 
@@ -90,6 +95,12 @@ public class Find {
 
     public Find setType( Type type ) {
         this.type = type;
+
+        return this;
+    }
+
+    public Find setVersionQuery( String query ) {
+        this.versionQuery = query;
 
         return this;
     }
@@ -139,9 +150,11 @@ public class Find {
         List<Version> versions = new ArrayList<Version>( lines.size() );
 
         for( String line : lines ) {
+            logger.finest( "LINE: " + line );
             versions.add( Version.getVersion( line ) );
         }
 
+        logger.fine( "Done finding...." );
         return versions;
     }
 
@@ -168,6 +181,10 @@ public class Find {
 
         if( !extendedNames ) {
             sb.append( " -nxname" );
+        }
+
+        if( versionQuery != null ) {
+            sb.append( " -version \"" ).append( versionQuery ).append( "\"" );
         }
 
         /* Actions */
