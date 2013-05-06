@@ -40,8 +40,8 @@ public class DescribeTest {
 
         assertThat( r.size(), is( 3 ) );
         assertThat( r.get( 0 ), is( "1" ) );
-        assertThat( r.get( 0 ), is( "2" ) );
-        assertThat( r.get( 0 ), is( "3" ) );
+        assertThat( r.get( 1 ), is( "2" ) );
+        assertThat( r.get( 2 ), is( "3" ) );
     }
 
     @Test
