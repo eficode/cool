@@ -18,14 +18,14 @@ public class ListTypeTest {
     @Test
     public void test() {
         ListType ls = new ListType().setBranchType().setLocal();
-        assertThat( ls.getCommandLine(), is( "lstype -kind brtype -local" ) );
+        assertThat( ls.getCommandLine(), is( "lstype -short -kind brtype -local" ) );
     }
 
     @Test
     public void test2() {
         ListType ls = new ListType().setBranchType();
         List<String> lines = new ArrayList<String>(1);
-        lines.add( "--04-15T15:23  night-vobadmin  branch type \"main\"" );
+        lines.add( "main" );
 
         List<Branch> branches = ls.getTypes( lines );
 

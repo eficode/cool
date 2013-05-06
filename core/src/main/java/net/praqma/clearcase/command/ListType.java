@@ -69,8 +69,6 @@ public class ListType {
         return this;
     }
 
-    public static Pattern rx = Pattern.compile( "^--.*\"(.*?)\"$" );
-
     public <T extends Type> List<T> list() throws CleartoolException {
         logger.fine( "Listing " + kind );
 
@@ -91,15 +89,12 @@ public class ListType {
         List<T> types = new ArrayList<T>( lines.size() );
 
         for( String line : lines ) {
-            Matcher m = rx.matcher( line );
-            if( m.find() ) {
-                try {
-                    Constructor c = kind.clazz.getConstructor( String.class );
-                    T instance = (T) c.newInstance( m.group( 1 ) );
-                    types.add( instance );
-                } catch( Exception e ) {
-                    logger.log( Level.SEVERE, "Unable to add element", e );
-                }
+            try {
+                Constructor c = kind.clazz.getConstructor( String.class );
+                T instance = (T) c.newInstance( line.trim() );
+                types.add( instance );
+            } catch( Exception e ) {
+                logger.log( Level.SEVERE, "Unable to add element", e );
             }
         }
 
@@ -108,7 +103,7 @@ public class ListType {
 
     public String getCommandLine() {
         StringBuilder sb = new StringBuilder();
-        sb.append( "lstype" );
+        sb.append( "lstype -short" );
 
         if( kind == null ) {
             throw new IllegalStateException( "No kind defined" );
