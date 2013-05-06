@@ -14,13 +14,15 @@ public class SetupUtils {
 	
 	public static void tearDown( PVob pvob ) throws CleartoolException {
 		Set<UCMView> views = pvob.getViews();
+
+        logger.fine( "Views: " + views );
 		
 		/* The pvob needs to be loaded */
 		pvob.load();
 		
 		logger.info( "Removing views" );
 		for( UCMView view : views ) {
-			logger.config( "Removing " + view );
+			logger.info( "Removing " + view );
 			try {
 				view.end();
 				view.remove();
@@ -33,7 +35,7 @@ public class SetupUtils {
 		
 		logger.info( "Removing vobs" );
 		for( Vob vob : vobs ) {
-			logger.config( "Removing " + vob );
+			logger.info( "Removing " + vob );
 			try {
 				vob.unmount();
 				vob.remove();
