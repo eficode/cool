@@ -372,7 +372,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 
         String result = "";
 
-        String cmd = "desc -fmt %Nd " + this;
+        String cmd = "desc -fmt %Nd " + "\""+this + "\"";
         try {
             result = Cleartool.run( cmd ).stdoutBuffer.toString();
         } catch( Exception e ) {
