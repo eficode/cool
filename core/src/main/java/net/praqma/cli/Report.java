@@ -88,7 +88,7 @@ public class Report extends CLI {
             logger.fine( "Version: " + v.getDate() );
             logger.fine( "Version: " + v.getRevision() );
 
-            sb.append( v.getFile().getAbsolutePath() ).append( ", " ); // Name
+            sb.append("\""+v.getFile().getAbsolutePath()+"\"").append(", " ); // Name
             long age = secs - v.getDate().getTime();
             sb.append( age / ( 1000 * 60 * 60 ) ).append( ", " ); // Age
             sb.append( v.isDirectory() ? "directory" : "file" ).append( ", " ); // Absolute file
