@@ -23,13 +23,17 @@ public class Report extends CLI {
     }
 
     private String sep = ", ";
+    private File path;
+    private int lengthOfPath = 0;
+    private boolean showFullPath = false;
 
     @Override
     public void perform( String[] arguments ) throws Exception {
         Options o = new Options( "1.0.0" );
 
-        Option opath = new Option( "path", "p", true, 1, "The path to report" );
+        Option opath = new Option( "path", "p", false, 1, "The path to report" );
         Option osep = new Option( "separator", "s", false, 1, "The separator to use, default is \",\"" );
+        Option oshowfull = new Option( "showFull", "f", false, 0, "Show full view path" );
 
         o.setOption( opath );
         o.setOption( osep );
@@ -50,7 +54,17 @@ public class Report extends CLI {
             sep = osep.getString() + " ";
         }
 
-        File path = new File( opath.getString() );
+        if( oshowfull.isUsed() ) {
+            showFullPath = true;
+        }
+
+        if( opath.isUsed() ) {
+            path = new File( opath.getString() );
+        } else {
+            path = new File( System.getProperty( "user.dir" ) );
+        }
+        lengthOfPath = path.getAbsolutePath().length();
+        logger.fine( "Path is " + path.getAbsolutePath() + ", " + lengthOfPath );
 
         ListType ls = new ListType().setLocal().setBranchType().setViewRoot( path );
         List<Branch> branches = ls.list();
@@ -61,7 +75,7 @@ public class Report extends CLI {
             findBranch( path, branch, map );
         }
 
-        System.out.println( "File" + sep + "Age" + sep + "Type" + sep + "User" + sep + "Branch name" + sep + "Date" );
+        System.out.println( "File" + sep + "Age" + sep + "Type" + sep + "Last user" + sep + "Branch name" + sep + "Date" );
 
         for( File key : map.keySet() ) {
             System.out.println( map.get( key ).string );
@@ -98,12 +112,27 @@ public class Report extends CLI {
             logger.fine( "Version: " + v.getDate() );
             logger.fine( "Version: " + v.getRevision() );
 
-            sb.append( "\"" + v.getFile().getAbsolutePath() + "\"" ).append( sep ); // Name
+            /* Get file */
+            if( showFullPath ) {
+                sb.append( "\"" + v.getFile().getAbsolutePath() + "\"" ).append( sep ); // Name
+            } else {
+                sb.append( "\"" + v.getFile().getAbsolutePath().substring( lengthOfPath ) + "\"" ).append( sep ); // Name
+            }
+
+            /* Get age */
             long age = secs - v.getDate().getTime();
             sb.append( age / ( 1000 * 60 * 60 ) ).append( sep ); // Age
+
+            /* Get type */
             sb.append( v.isDirectory() ? "directory" : "file" ).append( sep ); // Absolute file
+
+            /* Get user */
             sb.append( v.getUser() ).append( sep ); // The user
+
+            /* Get branch name */
             sb.append( branch.getName() ).append( sep ); // The branch
+
+            /* Get date */
             sb.append( v.getDate() ); // The creation date?
 
             if( map.containsKey( file ) ) {
