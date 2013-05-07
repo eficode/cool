@@ -22,13 +22,17 @@ public class Report extends CLI {
         s.perform( args );
     }
 
+    private String sep = ", ";
+
     @Override
     public void perform( String[] arguments ) throws Exception {
         Options o = new Options( "1.0.0" );
 
         Option opath = new Option( "path", "p", true, 1, "The path to report" );
+        Option osep = new Option( "separator", "s", false, 1, "The separator to use, default is \",\"" );
 
         o.setOption( opath );
+        o.setOption( osep );
 
         o.setDefaultOptions();
 
@@ -40,6 +44,10 @@ public class Report extends CLI {
             logger.severe( "Incorrect option: " + e.getMessage() );
             o.display();
             System.exit( 1 );
+        }
+
+        if( osep.isUsed() ) {
+            sep = osep.getString() + " ";
         }
 
         File path = new File( opath.getString() );
@@ -88,12 +96,12 @@ public class Report extends CLI {
             logger.fine( "Version: " + v.getDate() );
             logger.fine( "Version: " + v.getRevision() );
 
-            sb.append("\""+v.getFile().getAbsolutePath()+"\"").append(", " ); // Name
+            sb.append( "\"" + v.getFile().getAbsolutePath() + "\"" ).append( sep ); // Name
             long age = secs - v.getDate().getTime();
-            sb.append( age / ( 1000 * 60 * 60 ) ).append( ", " ); // Age
-            sb.append( v.isDirectory() ? "directory" : "file" ).append( ", " ); // Absolute file
-            sb.append( v.getUser() ).append( ", " ); // The user
-            sb.append( branch.getName() ).append( ", " ); // The branch
+            sb.append( age / ( 1000 * 60 * 60 ) ).append( sep ); // Age
+            sb.append( v.isDirectory() ? "directory" : "file" ).append( sep ); // Absolute file
+            sb.append( v.getUser() ).append( sep ); // The user
+            sb.append( branch.getName() ).append( sep ); // The branch
             sb.append( v.getDate() ); // The creation date?
 
             if( map.containsKey( file ) ) {
