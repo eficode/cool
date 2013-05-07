@@ -2,6 +2,7 @@ package net.praqma.clearcase;
 
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -45,6 +46,32 @@ public class ConfigSpec {
         return this;
     }
 
+    public ConfigSpec addLoadRule( List<Baseline> baselines ) throws CleartoolException, UnableToInitializeEntityException {
+        for( Baseline b : baselines ) {
+            addLoadRule( b );
+        }
+
+        return this;
+    }
+
+    public ConfigSpec addLoadRule( Baseline baseline ) throws CleartoolException, UnableToInitializeEntityException {
+        logger.fine( "Adding load rule for " + baseline.getNormalizedName() );
+
+        Component component = baseline.getComponent();
+        String rootDir = component.getRootDir();
+        if( rootDir != null && !rootDir.isEmpty() ) {
+            logger.fine( component.getShortname() + " is rooted and added directly" );
+            loadRules.add( rootDir );
+        } else {
+            logger.fine( component.getShortname() + " is rootless" );
+            for( Baseline bl : baseline.getDependant() ) {
+                addLoadRule( bl );
+            }
+        }
+
+        return this;
+    }
+
     public ConfigSpec addLoadRule( String loadRule ) throws CleartoolException {
         loadRules.add( loadRule );
 
@@ -65,21 +92,6 @@ public class ConfigSpec {
 
     public File getTemporaryConfigSpecFile() {
         return temporaryCSFile;
-    }
-
-    public ConfigSpec addLoadRulesFromBaseline( Baseline baseline ) throws CleartoolException {
-        addLoadRule( baseline.getComponent() );
-        //baseline.get
-
-        return this;
-    }
-
-    public ConfigSpec addLoadRulesFromBaselines( List<Baseline> baselines ) throws CleartoolException {
-        for( Baseline b : baselines ) {
-            addLoadRule( b.getComponent() );
-        }
-
-        return this;
     }
 
     /**
