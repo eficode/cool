@@ -8,6 +8,8 @@ import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -27,6 +29,8 @@ public class Report extends CLI {
     private int lengthOfPath = 0;
     private boolean showFullPath = false;
 
+    private DateFormat dateFormatter;
+
     @Override
     public void perform( String[] arguments ) throws Exception {
         Options o = new Options( "1.0.0" );
@@ -34,6 +38,8 @@ public class Report extends CLI {
         Option opath = new Option( "path", "p", false, 1, "The path to report" );
         Option osep = new Option( "separator", "s", false, 1, "The separator to use, default is \",\"" );
         Option oshowfull = new Option( "showFull", "f", false, 0, "Show full view path" );
+        Option odateFormat = new Option( "dateFormat", "d", false, 1, "Date format, default is \"yyyy.MM.dd\"" );
+
 
         o.setOption( opath );
         o.setOption( osep );
@@ -65,6 +71,12 @@ public class Report extends CLI {
         }
         lengthOfPath = path.getAbsolutePath().length();
         logger.fine( "Path is " + path.getAbsolutePath() + ", " + lengthOfPath );
+
+        if( odateFormat.isUsed()) {
+            dateFormatter = new SimpleDateFormat( odateFormat.getString() );
+        } else {
+            dateFormatter = new SimpleDateFormat( "yyyy.MM.dd" );
+        }
 
         ListType ls = new ListType().setLocal().setBranchType().setViewRoot( path );
         List<Branch> branches = ls.list();
@@ -133,8 +145,9 @@ public class Report extends CLI {
             sb.append( branch.getName() ).append( sep ); // The branch
 
             /* Get date */
-            sb.append( v.getDate() ); // The creation date?
+            sb.append( dateFormatter.format( v.getDate() ) );
 
+            /* Put to map */
             if( map.containsKey( file ) ) {
                 if( map.get( file ).age < age ) {
                     map.put( file, new Entry( sb.toString(), age ) );
