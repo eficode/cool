@@ -61,6 +61,8 @@ public class Report extends CLI {
             findBranch( path, branch, map );
         }
 
+        System.out.println( "File" + sep + "Age" + sep + "Type" + sep + "User" + sep + "Branch name" + sep + "Date" );
+
         for( File key : map.keySet() ) {
             System.out.println( map.get( key ).string );
         }
