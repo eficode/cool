@@ -1,6 +1,8 @@
-package net.praqma.clearcase.test;
+package net.praqma.clearcase.test.functional;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.Deliver.DeliverStatus;
@@ -26,39 +28,46 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DeliverMergeError {
+public class Deliver6391 {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-merge", "setup-no-baselines.xml" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-6391", "setup-6391.xml" );
 	
 	@Test
-	public void mergeError() throws ClearCaseException {
-		Stream source = ccenv.context.streams.get( "one_dev" );
-		Stream target = ccenv.context.streams.get( "one_int" );
+	public void deliver6391() throws ClearCaseException {
+		assertTrue( true );
+	}
+	
+	public void deliver6391_disabled() throws ClearCaseException {
+		Stream dev = ccenv.context.streams.get( "two_dev" );
+		Stream non_modifiable_int = ccenv.context.streams.get( "two_int" );
+		Stream modifiable_int = ccenv.context.streams.get( "one_int" );
 		
 		/* Integration */
-		String tviewtag = ccenv.getUniqueName() + "_one_int";
-		File tpath = ccenv.setDynamicActivity( target, tviewtag, "strict-deliver" );
-		Baseline tb = getNewBaseline( tpath, "merge.txt", "one" );
-		target.recommendBaseline( tb );
+		String nmviewtag = ccenv.getUniqueName() + "_two_int";
+		File nmpath = ccenv.getDynamicPath( nmviewtag );
 		
-		/* Development */
-		String viewtag = ccenv.getUniqueName() + "_one_dev";
-		File path = ccenv.setDynamicActivity( source, viewtag, "strict-deliver-dev" );
-		Baseline b = getNewBaseline( path, "merge.txt", "two" );
-				
-		Deliver deliver = new Deliver( b, source, target, tpath, tviewtag );
+		/* Rebase dev to new baseline */
+		Baseline model_bl = ccenv.context.baselines.get( "model-1" );
+		Baseline service_bl = Baseline.get( "Service_INITIAL", ccenv.getPVob() );
+		Baseline client_bl = Baseline.get( "Clientapp_INITIAL", ccenv.getPVob() );
+		List<Baseline> cfg = new ArrayList<Baseline>();
+		cfg.add( client_bl );
+		cfg.add( service_bl );
+		cfg.add( model_bl );
+		String devviewtag = ccenv.getUniqueName() + "_two_dev";
+		Rebase rebase = new Rebase( dev, new UCMView( "", devviewtag ), cfg );
+		rebase.rebase( true );
+		dev.generate();
+						
+		Deliver deliver = new Deliver( dev, non_modifiable_int, nmpath, nmviewtag );
 		try { 
 			deliver.deliver( true, true, true, false );
 			fail( "Deliver should fail" );
 		} catch( DeliverException e ) {
 			assertEquals( Type.MERGE_ERROR, e.getType() );
 		}
-		
-		/* Deliver should be started */
-		DeliverStatus status = deliver.getDeliverStatus();
-		assertTrue( status.busy() );
 	}
 	
 	

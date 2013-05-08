@@ -1,4 +1,4 @@
-package net.praqma.clearcase.test;
+package net.praqma.clearcase.test.unit;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;

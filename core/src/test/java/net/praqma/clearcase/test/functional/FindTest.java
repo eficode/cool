@@ -1,8 +1,6 @@
-package net.praqma.clearcase.command.listype;
+package net.praqma.clearcase.test.functional;
 
-import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.Find;
-import net.praqma.clearcase.command.ListType;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
@@ -11,21 +9,19 @@ import net.praqma.util.test.junit.LoggingRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * @author cwolfgang
  */
-public class ListTypeFuncTest {
+public class FindTest {
 
-    private static Logger logger = Logger.getLogger( ListTypeFuncTest.class.getName() );
+    private static Logger logger = Logger.getLogger( FindTest.class.getName() );
 
     @ClassRule
-    public static ClearCaseRule ccenv = new ClearCaseRule( "list-type", "setup.xml" );
+    public static ClearCaseRule ccenv = new ClearCaseRule( "find", "setup.xml" );
 
     @ClassRule
     public static LoggingRule lrule = new LoggingRule( "net.praqma" );
@@ -33,9 +29,11 @@ public class ListTypeFuncTest {
     @Test
     public void test() throws UnableToInitializeEntityException, CleartoolException {
 
-        ListType ls = new ListType().setBranchType().setLocal();
-        List<Branch> branches = ls.list();
+        File path = new File( ccenv.context.mvfs + "/" + ccenv.getUniqueName() + "_one_int/" + ccenv.getVobName() );
 
-        assertThat( branches.size(), is( 2 ) );
+        Find find = new Find().addPathName( "." ).useUnExtendedNames().setFindAll().print().setViewRoot( path );
+        List<Version> versions = find.find();
+
+        logger.fine( versions.toString() );
     }
 }

@@ -1,4 +1,4 @@
-package net.praqma.clearcase.test;
+package net.praqma.clearcase.test.functional;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package net.praqma.clearcase.test;
+package net.praqma.clearcase.test.functional;
 
 import static org.junit.Assert.*;
 
@@ -6,6 +6,7 @@ import java.io.File;
 
 import net.praqma.clearcase.Environment;
 import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.test.BaseClearCaseTest;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;

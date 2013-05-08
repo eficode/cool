@@ -1,6 +1,7 @@
-package net.praqma.clearcase.test;
+package net.praqma.clearcase.test.functional;
 
 import net.praqma.clearcase.exceptions.*;
+import net.praqma.clearcase.test.BaseClearCaseTest;
 import net.praqma.clearcase.test.annotations.ClearCaseUniqueVobName;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Baseline;

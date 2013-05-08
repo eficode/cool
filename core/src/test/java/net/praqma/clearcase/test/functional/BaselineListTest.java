@@ -1,9 +1,10 @@
-package net.praqma.clearcase.test;
+package net.praqma.clearcase.test.functional;
 
 import java.io.File;
 import java.util.Date;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.test.BaseClearCaseTest;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;

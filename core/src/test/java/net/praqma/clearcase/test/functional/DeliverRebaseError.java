@@ -1,4 +1,4 @@
-package net.praqma.clearcase.test;
+package net.praqma.clearcase.test.functional;
 
 import java.io.File;
 
@@ -26,53 +26,63 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DeliverInProgress {
+public class DeliverRebaseError {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-in-progress", "setup-no-baselines.xml" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-rebase" );
 	
 	@Test
-	public void deliverInProgress() throws ClearCaseException {
-		Stream dev1 = ccenv.context.streams.get( "one_dev" );
-		Stream dev2 = ccenv.context.streams.get( "two_dev" );
+	public void basicRebase() throws ClearCaseException {
+		
+		Stream source = ccenv.context.streams.get( "one_dev" );
 		Stream target = ccenv.context.streams.get( "one_int" );
 		
 		/* Target */
 		String tviewtag = ccenv.getUniqueName() + "_one_int";
 		File tpath = new File( ccenv.context.mvfs + "/" + tviewtag + "/" + ccenv.getVobName() );
 		
-		/* Set deliver one up */
-		String d1viewtag = ccenv.getUniqueName() + "_one_dev";
-		File d1path = ccenv.setDynamicActivity( dev1, d1viewtag, "dip1" );
-		Baseline bl1 = getNewBaseline( d1path, "dip1.txt", "dip1" );
+		String viewtag = ccenv.getUniqueName() + "_one_dev";
 		
-		/* Do not complete deliver */
-		Deliver deliver1 = new Deliver( bl1, dev1, target, tpath, tviewtag );
-		deliver1.deliver( true, false, true, false );
+		Baseline latest = ccenv.context.baselines.get( "model-3" );
+
+		/* Setup deliver */
+		File path = setActivity( "basic-rebase" );
+		Baseline b = getNewBaseline( path, "basic-rebase.txt", "five" );
 		
-		/* Set deliver two up */
-		String d2viewtag = ccenv.getUniqueName() + "_two_dev";
-		File d2path = ccenv.setDynamicActivity( dev2, d2viewtag, "dip2" );
-		Baseline bl2 = getNewBaseline( d2path, "dip2.txt", "dip2" );
+		/* Setup rebase */
+		Rebase rebase = new Rebase( source, new DynamicView( "", viewtag ), latest );
+		rebase.rebase( false );
 		
-		Deliver deliver2 = new Deliver( bl2, dev2, target, tpath, tviewtag );
+		Deliver deliver = new Deliver( b, source, target, tpath, tviewtag );
 		try { 
-			deliver2.deliver( true, true, true, false );
+			deliver.deliver( true, false, true, false );
 			fail( "Deliver should fail" );
 		} catch( DeliverException e ) {
-			if( !e.getType().equals( Type.DELIVER_IN_PROGRESS ) ) {
-				fail( "Should be DELIVER IN PROGRESS" );
+			if( !e.getType().equals( Type.REBASE_IN_PROGRESS ) ) {
+				fail( "Should be REBASE IN PROGRESS" );
 			}
 		}
 		
-		/* Deliver should NOT be started */
-		DeliverStatus status = deliver2.getDeliverStatus();
+		/* Deliver should not be started */
+		DeliverStatus status = deliver.getDeliverStatus();
 		assertFalse( status.busy() );
 	}
 	
-	
-
+	protected File setActivity( String name ) throws ClearCaseException {
+		/**/
+		String viewtag = ccenv.getUniqueName() + "_one_dev";
+		System.out.println( "VIEW: " + ccenv.context.views.get( viewtag ) );
+		File path = new File( ccenv.context.mvfs + "/" + viewtag + "/" + ccenv.getVobName() );
+				
+		System.out.println( "PATH: " + path );
+		
+		Stream stream = Stream.get( "one_dev", ccenv.getPVob() );
+		Activity activity = Activity.create( "deliver-" + name, stream, ccenv.getPVob(), true, "ccucm activity", null, path );
+		UCMView.setActivity( activity, path, null, null );
+		
+		return path;
+	}
 	
 	protected Baseline getNewBaseline( File path, String filename, String bname ) throws ClearCaseException {
 		

@@ -1,4 +1,4 @@
-package net.praqma.clearcase.test;
+package net.praqma.clearcase.test.unit;
 
 import java.io.IOException;
 import java.util.HashMap;

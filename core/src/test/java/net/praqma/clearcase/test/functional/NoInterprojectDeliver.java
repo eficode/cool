@@ -1,8 +1,6 @@
-package net.praqma.clearcase.test;
+package net.praqma.clearcase.test.functional;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.Deliver.DeliverStatus;
@@ -28,46 +26,38 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class Deliver6391 {
+public class NoInterprojectDeliver {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-6391", "setup-6391.xml" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-inter", "setup-no-interproject-no-baselines.xml" );
 	
 	@Test
-	public void deliver6391() throws ClearCaseException {
-		assertTrue( true );
-	}
-	
-	public void deliver6391_disabled() throws ClearCaseException {
-		Stream dev = ccenv.context.streams.get( "two_dev" );
-		Stream non_modifiable_int = ccenv.context.streams.get( "two_int" );
-		Stream modifiable_int = ccenv.context.streams.get( "one_int" );
+	public void rebaseBeforeDeliver() throws ClearCaseException {
+		Stream target = ccenv.context.streams.get( "two_int" );
+		Stream source = ccenv.context.streams.get( "one_int" );
 		
-		/* Integration */
-		String nmviewtag = ccenv.getUniqueName() + "_two_int";
-		File nmpath = ccenv.getDynamicPath( nmviewtag );
+		/* One */
+		String viewtag = ccenv.getUniqueName() + "_one_int";
+		File path = ccenv.setDynamicActivity( source, viewtag, "interproject-deliver-one" );
+		Baseline b = getNewBaseline( path, "interproject-deliver.txt", "one" );
+		source.recommendBaseline( b );
 		
-		/* Rebase dev to new baseline */
-		Baseline model_bl = ccenv.context.baselines.get( "model-1" );
-		Baseline service_bl = Baseline.get( "Service_INITIAL", ccenv.getPVob() );
-		Baseline client_bl = Baseline.get( "Clientapp_INITIAL", ccenv.getPVob() );
-		List<Baseline> cfg = new ArrayList<Baseline>();
-		cfg.add( client_bl );
-		cfg.add( service_bl );
-		cfg.add( model_bl );
-		String devviewtag = ccenv.getUniqueName() + "_two_dev";
-		Rebase rebase = new Rebase( dev, new UCMView( "", devviewtag ), cfg );
-		rebase.rebase( true );
-		dev.generate();
-						
-		Deliver deliver = new Deliver( dev, non_modifiable_int, nmpath, nmviewtag );
+		/* Two */
+		String tviewtag = ccenv.getUniqueName() + "_two_int";
+		File tpath = ccenv.getDynamicPath( tviewtag );
+				
+		Deliver deliver = new Deliver( b, source, target, tpath, tviewtag );
 		try { 
 			deliver.deliver( true, true, true, false );
 			fail( "Deliver should fail" );
 		} catch( DeliverException e ) {
-			assertEquals( Type.MERGE_ERROR, e.getType() );
+			assertEquals( Type.INTERPROJECT_DELIVER_DENIED, e.getType() );
 		}
+		
+		/* Deliver should not be started */
+		DeliverStatus status = deliver.getDeliverStatus();
+		assertFalse( status.busy() );
 	}
 	
 	

@@ -1,4 +1,4 @@
-package net.praqma.clearcase.command.listype;
+package net.praqma.clearcase.test.unit;
 
 import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.command.ListType;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 /**
  * @author cwolfgang
  */
-public class ListTypeTest {
+public class ListTypeUnitTest {
 
     @Test
     public void test() {

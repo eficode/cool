@@ -1,4 +1,4 @@
-package net.praqma.clearcase.test;
+package net.praqma.clearcase.test.functional;
 
 import java.io.File;
 
@@ -26,38 +26,39 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class NoInterprojectDeliver {
+public class DeliverMergeError {
 	private static Logger logger = Logger.getLogger();
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-inter", "setup-no-interproject-no-baselines.xml" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-deliver-merge", "setup-no-baselines.xml" );
 	
 	@Test
-	public void rebaseBeforeDeliver() throws ClearCaseException {
-		Stream target = ccenv.context.streams.get( "two_int" );
-		Stream source = ccenv.context.streams.get( "one_int" );
+	public void mergeError() throws ClearCaseException {
+		Stream source = ccenv.context.streams.get( "one_dev" );
+		Stream target = ccenv.context.streams.get( "one_int" );
 		
-		/* One */
-		String viewtag = ccenv.getUniqueName() + "_one_int";
-		File path = ccenv.setDynamicActivity( source, viewtag, "interproject-deliver-one" );
-		Baseline b = getNewBaseline( path, "interproject-deliver.txt", "one" );
-		source.recommendBaseline( b );
+		/* Integration */
+		String tviewtag = ccenv.getUniqueName() + "_one_int";
+		File tpath = ccenv.setDynamicActivity( target, tviewtag, "strict-deliver" );
+		Baseline tb = getNewBaseline( tpath, "merge.txt", "one" );
+		target.recommendBaseline( tb );
 		
-		/* Two */
-		String tviewtag = ccenv.getUniqueName() + "_two_int";
-		File tpath = ccenv.getDynamicPath( tviewtag );
+		/* Development */
+		String viewtag = ccenv.getUniqueName() + "_one_dev";
+		File path = ccenv.setDynamicActivity( source, viewtag, "strict-deliver-dev" );
+		Baseline b = getNewBaseline( path, "merge.txt", "two" );
 				
 		Deliver deliver = new Deliver( b, source, target, tpath, tviewtag );
 		try { 
 			deliver.deliver( true, true, true, false );
 			fail( "Deliver should fail" );
 		} catch( DeliverException e ) {
-			assertEquals( Type.INTERPROJECT_DELIVER_DENIED, e.getType() );
+			assertEquals( Type.MERGE_ERROR, e.getType() );
 		}
 		
-		/* Deliver should not be started */
+		/* Deliver should be started */
 		DeliverStatus status = deliver.getDeliverStatus();
-		assertFalse( status.busy() );
+		assertTrue( status.busy() );
 	}
 	
 	

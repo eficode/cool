@@ -1,9 +1,10 @@
 /**
  * Test package for testing the package with same name.
  */
-package net.praqma.clearcase.ucm.entities;
+package net.praqma.clearcase.test.unit;
 
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
+import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.util.debug.Logger;
 import net.praqma.util.debug.appenders.Appender;
 import net.praqma.util.debug.appenders.ConsoleAppender;
