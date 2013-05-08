@@ -20,7 +20,7 @@
 
     <profiles>
         <profile>
-            <id>unit-tests</id>
+            <id>unitTests</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -40,11 +40,7 @@
                         <configuration>
                             <includes>
                                 <include>net/praqma/clearcase/test/unit/*.java</include>
-                                <include>net/praqma/clearcase/ucm/entities/*.java</include>
                             </includes>
-                            <excludes>
-                                <exclude>net/praqma/clearcase/test/*.java</exclude>
-                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -52,7 +48,7 @@
         </profile>
         
         <profile>
-            <id>integration-tests</id>
+            <id>functionalTests</id>
             <build>
                 <plugins>
                     <plugin>
@@ -68,7 +64,7 @@
                         </dependencies>
                         <configuration>
                             <includes>
-                                <include>net/praqma/clearcase/test/*.java</include>
+                                <include>net/praqma/clearcase/test/functional/*.java</include>
                             </includes>
                         </configuration>
                     </plugin>
