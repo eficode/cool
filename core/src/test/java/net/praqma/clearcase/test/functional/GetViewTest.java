@@ -2,6 +2,7 @@ package net.praqma.clearcase.test.functional;
 
 import net.praqma.clearcase.Rebase;
 import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
@@ -102,7 +103,7 @@ public class GetViewTest extends GetViewTestBase {
         verifyView( gv2, ccenv.getUniqueName() + "/Model/model.h", "#1#2" );
     }
 
-    @Test( expected = IllegalStateException.class )
+    @Test( expected = ViewException.class )
     public void testNonExistent() throws IOException, ClearCaseException {
         File path = createTempPath();
         String viewTag = ccenv.getUniqueName() + "_TAG3";
