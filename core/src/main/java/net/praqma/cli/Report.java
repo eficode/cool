@@ -24,7 +24,7 @@ public class Report extends CLI {
         s.perform( args );
     }
 
-    private String sep = ", ";
+    private String sep = "; ";
     private File path;
     private int lengthOfPath = 0;
     private boolean showFullPath = false;
