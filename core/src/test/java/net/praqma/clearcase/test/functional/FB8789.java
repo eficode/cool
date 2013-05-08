@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 public class FB8789 {
 
     @Rule
-    public static ClearCaseRule ccenv = new ClearCaseRule( "FB8671", "setup.xml" );
+    public static ClearCaseRule ccenv = new ClearCaseRule( "FB8789", "setup.xml" );
 
     @ClassRule
     public static LoggingRule lrule = new LoggingRule( "net.praqma" );
