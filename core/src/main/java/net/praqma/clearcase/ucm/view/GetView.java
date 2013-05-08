@@ -88,7 +88,13 @@ public class GetView {
             snapview = SnapshotView.get( viewRoot );
         } else {
             logger.fine( LOGGER_PREFIX + "The view \"" + viewTag + "\" does not exist" );
-            create();
+            if( createIfAbsent ) {
+                if( stream == null ) {
+                    throw new IllegalStateException( "No Stream given" );
+                }
+
+                create();
+            }
         }
 
         return snapview;

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -150,8 +151,9 @@ public class GetViewTest extends GetViewTestBase {
         verifyView( gv, ccenv.getUniqueName() + "/Model/model.h", "#1" );
 
         /* Verify second */
-        GetView gv2 = new GetView( path, viewTag2 );
-        gv2.get();
+        GetView gv2 = new GetView( path, viewTag2 ).setStream( container );
+        SnapshotView v = gv2.get();
+        assertNull( v );
         //verifyView( gv2, ccenv.getUniqueName() + "/Model/model.h", "#1" );
     }
 }
