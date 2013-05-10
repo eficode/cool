@@ -6,6 +6,12 @@
 	<version>0.6.14-SNAPSHOT</version>
 	<name>ClearCase Oriented Open Library</name>
 	<url>http://maven.apache.org</url>
+
+    <parent>
+        <groupId>net.praqma</groupId>
+        <artifactId>praqma-parent</artifactId>
+        <version>0.1.1</version>
+    </parent>
 	
 	<modules>
 		<module>core</module>
