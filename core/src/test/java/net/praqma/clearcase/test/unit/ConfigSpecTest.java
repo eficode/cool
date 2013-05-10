@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -28,7 +29,7 @@ public class ConfigSpecTest {
 
     @Test
     public void noNewLoadRules() throws IOException, CleartoolException {
-        File file = new File( this.getClass().getResource( "cs.txt" ).getFile() );
+        File file = new File( URLDecoder.decode( this.getClass().getResource( "cs.txt" ).getFile(), "UTF-8" ) );
         List<String> csList = FileUtils.readLines( file );
 
         ConfigSpec cs = new ConfigSpec( null );
@@ -43,7 +44,7 @@ public class ConfigSpecTest {
 
     @Test
     public void oldConfigSpec() throws IOException, CleartoolException {
-        File file = new File( this.getClass().getResource( "cs.txt" ).getFile() );
+        File file = new File( URLDecoder.decode( this.getClass().getResource( "cs.txt" ).getFile(), "UTF-8" ) );
         List<String> csList = FileUtils.readLines( file );
 
         ConfigSpec cs = new ConfigSpec( null );
@@ -60,7 +61,7 @@ public class ConfigSpecTest {
 
     @Test
     public void newLoadRules() throws IOException, CleartoolException {
-        File file = new File( this.getClass().getResource( "cs.txt" ).getFile() );
+        File file = new File( URLDecoder.decode( this.getClass().getResource( "cs.txt" ).getFile(), "UTF-8" ) );
         List<String> csList = FileUtils.readLines( file );
 
         ConfigSpec cs = new ConfigSpec( null );
@@ -79,7 +80,7 @@ public class ConfigSpecTest {
 
     @Test( expected = IllegalStateException.class )
     public void apply() throws IOException, CleartoolException {
-        File file = new File( this.getClass().getResource( "cs.txt" ).getFile() );
+        File file = new File( URLDecoder.decode( this.getClass().getResource( "cs.txt" ).getFile(), "UTF-8" ) );
         List<String> csList = FileUtils.readLines( file );
 
         ConfigSpec cs = new ConfigSpec( null );

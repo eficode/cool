@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.logging.Level;
 
 import static org.hamcrest.core.Is.is;
@@ -27,8 +29,8 @@ public class DeliverTest {
     public static LoggingRule logging = new LoggingRule( Level.ALL, "net.praqma" );
 
     @Test
-    public void testStatus() throws FileNotFoundException, ClearCaseException {
-        String output = FileUtilities.getContent( new File( Environment.class.getClassLoader().getResource( "output/deliverStatus01.txt" ).getFile() ) );
+    public void testStatus() throws FileNotFoundException, ClearCaseException, UnsupportedEncodingException {
+        String output = FileUtilities.getContent( new File( URLDecoder.decode( Environment.class.getClassLoader().getResource( "output/deliverStatus01.txt" ).getFile(), "UTF-8" ) ) );
 
         Deliver.Status status = Deliver.Status.getStatus( output );
 
@@ -39,8 +41,8 @@ public class DeliverTest {
     }
 
     @Test
-    public void testStatus2() throws FileNotFoundException, ClearCaseException {
-        String output = FileUtilities.getContent( new File( Environment.class.getClassLoader().getResource( "output/deliverStatus02.txt" ).getFile() ) );
+    public void testStatus2() throws FileNotFoundException, ClearCaseException, UnsupportedEncodingException {
+        String output = FileUtilities.getContent( new File( URLDecoder.decode( Environment.class.getClassLoader().getResource( "output/deliverStatus02.txt" ).getFile(), "UTF-8" ) ) );
 
         Deliver.Status status = Deliver.Status.getStatus( output );
 
