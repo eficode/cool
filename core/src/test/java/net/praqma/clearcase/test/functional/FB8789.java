@@ -1,6 +1,7 @@
 package net.praqma.clearcase.test.functional;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.test.annotations.ClearCaseUniqueVobName;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
@@ -31,6 +32,7 @@ public class FB8789 {
     public static LoggingRule lrule = new LoggingRule( "net.praqma" );
 
     @Test
+    @ClearCaseUniqueVobName( name = "fb8789" )
     public void test01() throws ClearCaseException {
 
         Stream stream = ccenv.context.streams.get( "one_int" );
