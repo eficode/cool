@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.changeset.ChangeSet2;
@@ -38,13 +40,30 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	private String machine = null;
 	private boolean checkedout = false;
 	private String comment = null;
+
+    /**
+     * This is actually not the exact branch, but the string of branches separated by slashes.
+     */
 	private String branch = null;
+
+    /**
+     * This is the list of {@link Branch}'s
+     */
+    private List<Branch> branches;
+
+    /**
+     * Determines whether this version is from another branch(than the current) or not.
+     */
+    private boolean offBranched = false;
 	
 	private boolean oldVersion = false;
 	private File oldFile;
 
 	private File view = null;
 
+    /**
+     * A string representation of the file
+     */
 	private String fullfile = null;
 	private String sfile = null;
 
@@ -73,7 +92,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 
 	private static final Pattern rx_findAddedElements = Pattern.compile( qfs + ".*?" + qfs + "(\\d+)" + qfs + "(.*?)" + qfs );
-	private static final Pattern rx_findRevision = Pattern.compile( "^(.*?)" + qfsor + "(\\d+)$" );
+	private static final Pattern rx_findRevision = Pattern.compile( "^(.*?)" + qfsor + "(\\d+)(.*?)$" );
 
 	@Override
 	protected void initialize() {
@@ -125,10 +144,49 @@ public class Version extends UCMEntity implements Comparable<Version> {
 				this.status = Status.ADDED;
 			}
 			
-			/* Set the branch */
+			/* Set the branch(es) */
 			this.branch = r.group( 1 );
-		}
+            this.branches = getBranches( this.branch );
+
+            handleOffBranchedVersion( r.group( 3 ) );
+		} else {
+            this.branches = Collections.EMPTY_LIST;
+        }
 	}
+
+    public void handleOffBranchedVersion( String offBranchedVersion ) {
+        logger.fine( "Handling off branched version, " + offBranchedVersion );
+
+        if( !offBranchedVersion.isEmpty() ) {
+            this.fullfile += offBranchedVersion;
+            this.file = new File( this.fullfile );
+            this.offBranched = true;
+        } else {
+
+        }
+    }
+
+    public boolean isOffBranched() {
+        return offBranched;
+    }
+
+    public static List<Branch> getBranches( String branchSpecifier ) {
+        String[] bs = branchSpecifier.split( Cool.qfs );
+
+        List<Branch> branches = new ArrayList<Branch>(bs.length);
+
+        for( String b : bs ) {
+            if( !b.isEmpty() ) {
+                branches.add( new Branch( b ) );
+            }
+        }
+
+        return branches;
+    }
+
+    public List<Branch> getBranches() {
+        return branches;
+    }
 
 	public boolean hijack() {
 		if( this.file.canWrite() ) {

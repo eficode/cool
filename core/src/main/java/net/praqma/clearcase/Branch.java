@@ -1,7 +1,5 @@
 package net.praqma.clearcase;
 
-import java.util.List;
-
 /**
  * @author cwolfgang
  */

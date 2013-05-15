@@ -149,7 +149,9 @@ public class Report extends CLI {
 
             /* Put to map */
             if( map.containsKey( file ) ) {
-                if( map.get( file ).age < age ) {
+                logger.fine( "Ages " + age + "<" + map.get( file ).age );
+                if( map.get( file ).age > age ) {
+                    logger.fine( "Replaced!" );
                     map.put( file, new Entry( sb.toString(), age ) );
                 }
             } else {
