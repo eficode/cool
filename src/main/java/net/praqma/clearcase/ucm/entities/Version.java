@@ -133,38 +133,37 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		this.status = Status.CHANGED;
 		Matcher ma = rx_findAddedElements.matcher( version );
 		while( ma.find() ) {
-			this.fullfile += filesep + ma.group(2);
+			this.fullfile += filesep + ma.group( 2 );
 		}
 
-		this.file = new File( this.fullfile );
-		Matcher r = rx_findRevision.matcher( this.version );
-		if( r.find() ) {
-			this.revision = Integer.parseInt( r.group(2) );
-			if( this.revision == 1 ) {
-				this.status = Status.ADDED;
-			}
-			
-			/* Set the branch(es) */
-			this.branch = r.group( 1 );
-            this.branches = getBranches( this.branch );
+        this.fullfile = this.fullfile.replace( "@@", "" );
 
-            handleOffBranchedVersion( r.group( 3 ) );
-		} else {
-            this.branches = Collections.EMPTY_LIST;
+		this.file = new File( this.fullfile );
+
+        if( version.contains( "@@" ) ) {
+            String[] s = version.split( "@@" );
+            handleSimpleVersion( s[1] );
+        } else {
+            handleSimpleVersion( version );
         }
 	}
 
-    public void handleOffBranchedVersion( String offBranchedVersion ) {
-        logger.fine( "Handling off branched version, " + offBranchedVersion );
+    private void handleSimpleVersion( String version ) {
+        Matcher r = rx_findRevision.matcher( version );
 
-        if( !offBranchedVersion.isEmpty() ) {
-            this.fullfile += offBranchedVersion;
-            this.file = new File( this.fullfile );
-            this.offBranched = true;
+        if( r.find() ) {
+            this.revision = Integer.parseInt( r.group( 2 ) );
+            if( this.revision == 1 ) {
+                this.status = Status.ADDED;
+            }
+
+            this.branch = r.group( 1 );
+            this.branches = getBranches( this.branch );
         } else {
-
+            this.branches = Collections.EMPTY_LIST;
         }
     }
+
 
     public boolean isOffBranched() {
         return offBranched;

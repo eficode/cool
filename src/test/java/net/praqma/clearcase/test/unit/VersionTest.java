@@ -86,7 +86,6 @@ public class VersionTest {
         Version v = Version.get( s );
 
         assertThat( v.getFile().getAbsolutePath(), is( "C:\\views\\chw-server\\night-vobadmin_one_int_3\\crot\\Model\\wolles.txt" ) );
-        assertTrue( v.isOffBranched() );
     }
 
     @Test
@@ -95,6 +94,25 @@ public class VersionTest {
         Version v = Version.get( s );
 
         assertThat( v.getFile().getAbsolutePath(), is( "C:\\views\\chw-server\\night-vobadmin_one_int_3\\crot\\Model" ) );
-        assertFalse( v.isOffBranched() );
+    }
+
+    @Test
+    public void complexVersionSyntax() throws UnableToInitializeEntityException {
+        String s = "M:\\vobadm_view\\kerne2\\@@\\main\\ker2_work\\3\\01_Domænetest\\main\\ker2_work\\1\\03_Leverancetestrapporter\\main\\ker2_work\\1\\Release 7\\main\\ker2_work\\1\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@\\main\\ker2_work\\1";
+
+        Version v = Version.get( s );
+
+        assertThat( v.getFile(), is( new File( "M:\\vobadm_view\\kerne2\\01_Domænetest\\03_Leverancetestrapporter\\Release 7\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc" ) ) );
+    }
+
+    @Test
+    public void testExtendedNaming() throws UnableToInitializeEntityException {
+        String s = "M:\\vobadm_view\\kerne2\\.@@\\main\\ker2_work\\3\\01_Domænetest\\main\\ker2_work\\1\\03_Leverancetestrapporter\\main\\ker2_work\\1\\Release 7\\main\\ker2_work\\1\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@\\main\\ker2_work\\1";
+
+        Version v = Version.get( s );
+
+        assertThat( v.getRevision(), is( 1 ) );
+        assertThat( v.getBranches().size(), is( 2 ) );
+        assertThat( v.getFile().toString(), is( "M:\\vobadm_view\\kerne2\\01_Domænetest\\03_Leverancetestrapporter\\Release 7\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc" ) );
     }
 }
