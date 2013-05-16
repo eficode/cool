@@ -101,11 +101,31 @@ public class Report extends CLI {
     }
 
     public <K, V> void dump( PrintStream out, Map<K, V> map ) {
-        out.println( "File" + sep + "Age" + sep + "Type" + sep + "Last user" + sep + "Branch name" + sep + "Number of versions on branch" + sep + "Date" );
+        /* Build header */
+        StringBuilder b = new StringBuilder(  ).
+                append( "File" ).append( sep ).
+                append( "Age" ).append( sep ).
+                append( "Type" ).append( sep ).
+                append( "Last user" ).append( sep ).
+                append( "Branch name" ).append( sep ).
+                append( "Number of versions on branch" ).append( sep ).
+                append( "Date" ).append( sep ).
+                append( "Branches" );
+
+        out.println( b.toString() );
+
         for( K key : map.keySet() ) {
-            out.println( map.get( key ).toString() );
+            out.print( map.get( key ).toString() );
+            
+            /* Add the branches */
+            out.println( branches.get( key ).toString() );
         }
     }
+
+    /**
+     * Track the branches containing a given element.
+      */
+    private Map<File, List<Branch>> branches = new HashMap<File, List<Branch>>();
 
     private void findBranch( File path, Branch branch, Map<File, Entry> map ) throws Exception {
         logger.info( "Processing " + branch );
@@ -172,6 +192,16 @@ public class Report extends CLI {
                 }
             } else {
                 map.put( file, new Entry( sb.toString(), age ) );
+            }
+
+            /**/
+            if( branches.containsKey( file ) ) {
+                List<Branch> b = branches.get( file );
+                b.add( branch );
+            } else {
+                List<Branch> bs = new ArrayList<Branch>(  );
+                bs.add( branch );
+                branches.put( file, bs );
             }
         }
     }
