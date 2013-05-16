@@ -101,7 +101,7 @@ public class Report extends CLI {
     }
 
     public <K, V> void dump( PrintStream out, Map<K, V> map ) {
-        out.println( "File" + sep + "Age" + sep + "Type" + sep + "Last user" + sep + "Branch name" + sep + "Date" );
+        out.println( "File" + sep + "Age" + sep + "Type" + sep + "Last user" + sep + "Branch name" + sep + "Number of versions on branch" + sep + "Date" );
         for( K key : map.keySet() ) {
             out.println( map.get( key ).toString() );
         }
@@ -155,7 +155,10 @@ public class Report extends CLI {
             sb.append( v.getUser() ).append( sep ); // The user
 
             /* Get branch name */
-            sb.append( branch.getName() ).append( sep ); // The branch
+            sb.append( branch.getName() ).append( sep );
+
+            /* The number of versions on the branch */
+            sb.append( v.getRevision() ).append( sep );
 
             /* Get date */
             sb.append( dateFormatter.format( v.getDate() ) );
