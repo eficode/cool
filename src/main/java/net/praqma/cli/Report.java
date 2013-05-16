@@ -8,6 +8,7 @@ import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -36,13 +37,17 @@ public class Report extends CLI {
         Options o = new Options( "1.0.0" );
 
         Option opath = new Option( "path", "p", false, 1, "The path to report" );
-        Option osep = new Option( "separator", "s", false, 1, "The separator to use, default is \",\"" );
+        Option osep = new Option( "separator", "s", false, 1, "The separator to use, default is \";\"" );
         Option oshowfull = new Option( "showFull", "f", false, 0, "Show full view path" );
         Option odateFormat = new Option( "dateFormat", "d", false, 1, "Date format, default is \"yyyy.MM.dd\"" );
+        Option oOutput = new Option( "outputFile", "o", false, 1, "Output the result to the specified file, otherwise dump it to the console." );
 
 
         o.setOption( opath );
         o.setOption( osep );
+        o.setOption( oshowfull );
+        o.setOption( odateFormat );
+        o.setOption( oOutput );
 
         o.setDefaultOptions();
 
@@ -87,10 +92,18 @@ public class Report extends CLI {
             findBranch( path, branch, map );
         }
 
-        System.out.println( "File" + sep + "Age" + sep + "Type" + sep + "Last user" + sep + "Branch name" + sep + "Date" );
+        if( oOutput.isUsed() ) {
+            File outputFile = new File( oOutput.getString() );
+            dump( new PrintStream( outputFile ), map );
+        } else {
+            dump( System.out, map );
+        }
+    }
 
-        for( File key : map.keySet() ) {
-            System.out.println( map.get( key ).string );
+    public <K, V> void dump( PrintStream out, Map<K, V> map ) {
+        out.println( "File" + sep + "Age" + sep + "Type" + sep + "Last user" + sep + "Branch name" + sep + "Date" );
+        for( K key : map.keySet() ) {
+            out.println( map.get( key ).toString() );
         }
     }
 
@@ -166,6 +179,11 @@ public class Report extends CLI {
         public Entry( String string, long age ) {
             this.string = string;
             this.age = age;
+        }
+
+        @Override
+        public String toString() {
+            return string;
         }
     }
 }

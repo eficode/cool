@@ -23,6 +23,7 @@ public class Find {
     protected File viewRoot;
 
     public enum Visibility {
+        all,
         visible,
         nvisible
     }
@@ -32,7 +33,7 @@ public class Find {
         avobs
     }
 
-    protected Visibility visible = Visibility.visible;
+    protected Visibility visible = Visibility.all;
     protected Type type;
 
     /* Selections */
@@ -89,6 +90,12 @@ public class Find {
 
     public Find setNotVisible() {
         visible = Visibility.nvisible;
+
+        return this;
+    }
+
+    public Find setVisible() {
+        visible = Visibility.visible;
 
         return this;
     }
@@ -174,7 +181,10 @@ public class Find {
 
         if( type != null ) {
             sb.append( " -" + type );
-            sb.append( " -" + visible.toString() );
+
+            if( !visible.equals( Visibility.all ) ) {
+                sb.append( " -" + visible.toString() );
+            }
         }
 
         /* Selections */
