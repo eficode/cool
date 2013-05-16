@@ -190,6 +190,12 @@ public class Baseline extends UCMEntity implements Diffable {
 		}
 	}
 
+    public PromotionLevel getPromotionLevel() {
+        autoLoad();
+
+        return plevel;
+    }
+
 	/**
 	 * Return the promotion level of a baseline. <br>
 	 * If <code>cached</code> is not set, the promotion level is loaded from
@@ -198,20 +204,13 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @param cached
 	 *            Whether to use the cached promotion level or not
 	 * @return The promotion level of the Baseline
-	 * @throws UnableToLoadEntityException
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToCreateEntityException 
-	 * @throws UnableToGetEntityException 
 	 */
 	public Project.PromotionLevel getPromotionLevel( boolean cached ) {
-
-		//TODO if !loaded return this.plevel DONE.....
 		if( cached ) {
-			return this.plevel;
+			return getPromotionLevel();
 		} else {
-			/* TODO Get from clear case, uses cached value */
-			/* If different from cached, cache the new */
-			return this.plevel;
+            //String cmd = "desc -fmt %[plevel]p " + this;
+			return getPromotionLevel();
 		}
 	}
 

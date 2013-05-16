@@ -47,21 +47,9 @@ public class Project extends UCMEntity implements StreamContainable {
 
 	/**
 	 * Given a String, return the corresponding Promotion Level.
-	 * 
-	 * @param str
-	 *            , if not a valid Promotion Level INITAL is returned.
-	 * @return A Promotion Level
 	 */
 	public static PromotionLevel getPlevelFromString( String str ) {
-		PromotionLevel plevel = PromotionLevel.INITIAL;
-
-		try {
-			plevel = PromotionLevel.valueOf( str );
-		} catch( Exception e ) {
-			/* Do nothing... */
-		}
-
-		return plevel;
+		return PromotionLevel.valueOf( str );
 	}
 
 	public static PromotionLevel promoteFrom( PromotionLevel plevel ) {
