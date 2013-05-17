@@ -116,7 +116,7 @@ public class Report extends CLI {
 
         for( K key : map.keySet() ) {
             out.print( map.get( key ).toString() );
-            
+
             /* Add the branches */
             out.println( branches.get( key ).toString() );
         }

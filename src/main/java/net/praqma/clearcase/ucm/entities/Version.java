@@ -187,6 +187,15 @@ public class Version extends UCMEntity implements Comparable<Version> {
         return branches;
     }
 
+    public Branch getUltimateBranch() {
+        int s = branches.size();
+        if( s > 0 ) {
+            return branches.get( s - 1 );
+        } else {
+            return null;
+        }
+    }
+
 	public boolean hijack() {
 		if( this.file.canWrite() ) {
 			return true;

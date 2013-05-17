@@ -13,4 +13,18 @@ public abstract class Type {
     public String getName() {
         return name;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if( o == this ) {
+            return true;
+        }
+
+        if( o instanceof Type ) {
+            Type other = (Type) o;
+            return other.getName().equals( this.name );
+        } else {
+            return false;
+        }
+    }
 }
