@@ -18,6 +18,14 @@
         <powermock.version>1.4.12</powermock.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>praqma-repo</id>
+            <url>http://code.praqma.net/repo/maven/</url>
+        </repository>
+
+    </repositories>
+
     <profiles>
         <profile>
             <id>unitTests</id>
