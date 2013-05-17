@@ -80,7 +80,7 @@ public class VersionTest {
         assertThat( v.getBranches().get( 1 ).getName(), is( "wolles_dev" ) );
     }
 
-    @Test
+    //@Test
     public void testOffBranchedVersions() throws UnableToInitializeEntityException {
         String s = "C:\\views\\chw-server\\night-vobadmin_one_int_3\\crot\\Model@@\\main\\wolles_dev\\1\\wolles.txt";
         Version v = Version.get( s );
@@ -98,11 +98,11 @@ public class VersionTest {
 
     @Test
     public void complexVersionSyntax() throws UnableToInitializeEntityException {
-        String s = "M:\\vobadm_view\\kerne2\\@@\\main\\ker2_work\\3\\01_Domænetest\\main\\ker2_work\\1\\03_Leverancetestrapporter\\main\\ker2_work\\1\\Release 7\\main\\ker2_work\\1\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@\\main\\ker2_work\\1";
+        String s = "M:\\vobadm_view\\kerne2\\.@@\\main\\ker2_work\\3\\01_Domænetest\\main\\ker2_work\\1\\03_Leverancetestrapporter\\main\\ker2_work\\1\\Release 7\\main\\ker2_work\\1\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@\\main\\ker2_work\\1";
 
         Version v = Version.get( s );
 
-        assertThat( v.getFile(), is( new File( "M:\\vobadm_view\\kerne2\\01_Domænetest\\03_Leverancetestrapporter\\Release 7\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc" ) ) );
+        assertThat( v.getFile(), is( new File( "M:\\vobadm_view\\kerne2\\.\\01_Domænetest\\03_Leverancetestrapporter\\Release 7\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc" ) ) );
     }
 
     @Test
@@ -113,6 +113,6 @@ public class VersionTest {
 
         assertThat( v.getRevision(), is( 1 ) );
         assertThat( v.getBranches().size(), is( 2 ) );
-        assertThat( v.getFile().toString(), is( "M:\\vobadm_view\\kerne2\\01_Domænetest\\03_Leverancetestrapporter\\Release 7\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc" ) );
+        assertThat( v.getFile().toString(), is( "M:\\vobadm_view\\kerne2\\.\\01_Domænetest\\03_Leverancetestrapporter\\Release 7\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc" ) );
     }
 }

@@ -36,7 +36,7 @@ public class FindTest {
     public void findAllPathNamePrint() {
         Find find = new Find().setFindAll().addPathName( "." ).print();
 
-        assertThat( find.getCommandLine(), is( "find . -all -visible -print" ) );
+        assertThat( find.getCommandLine(), is( "find . -all -print" ) );
     }
 
     @Test
