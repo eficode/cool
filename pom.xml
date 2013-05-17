@@ -214,14 +214,14 @@
         <dependency>
             <groupId>net.praqma</groupId>
             <artifactId>praqmajutils</artifactId>
-            <version>0.1.32-SNAPSHOT</version>
+            <version>0.1.32</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>net.praqma</groupId>
             <artifactId>praqmajutils</artifactId>
-            <version>0.1.32-SNAPSHOT</version>
+            <version>0.1.32</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
