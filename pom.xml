@@ -222,14 +222,14 @@
         <dependency>
             <groupId>net.praqma</groupId>
             <artifactId>praqmajutils</artifactId>
-            <version>0.1.32</version>
+            <version>0.1.33</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>net.praqma</groupId>
             <artifactId>praqmajutils</artifactId>
-            <version>0.1.32</version>
+            <version>0.1.33</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
@@ -246,11 +246,6 @@
             <artifactId>powermock-api-mockito</artifactId>
             <version>${powermock.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.praqma</groupId>
-            <artifactId>junit-tools</artifactId>
-            <version>0.1.0</version>
         </dependency>
     </dependencies>
 </project>

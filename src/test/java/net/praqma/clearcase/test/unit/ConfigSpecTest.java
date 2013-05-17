@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class ConfigSpecTest {
 
     private static Logger logger = Logger.getLogger( ConfigSpec.class.getName() );
+
     @ClassRule
     public static LoggingRule lrule = new LoggingRule( "net.praqma" ).setFormat( PraqmaticLogFormatter.TINY_FORMAT );
 

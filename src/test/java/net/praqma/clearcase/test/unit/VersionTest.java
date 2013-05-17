@@ -7,9 +7,9 @@ import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.ucm.entities.*;
-import net.praqma.junit.LoggingRule;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
+import net.praqma.util.test.junit.LoggingRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 import static org.junit.Assert.*;
