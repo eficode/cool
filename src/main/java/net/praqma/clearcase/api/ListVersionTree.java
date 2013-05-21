@@ -107,7 +107,7 @@ public class ListVersionTree extends Command<List<String>> {
         }
 
         for( String pname : pathNames ) {
-            sb.append( " " ).append( pname );
+            sb.append( " \"" ).append( pname ).append( "\"" );
         }
 
         return sb.toString();

@@ -47,6 +47,27 @@ public class Label extends Type {
         return labels;
     }
 
+    /**
+     * From a string, get a {@link List} of {@link Label}s.
+     * @param labelString
+     * @return
+     */
+    public static List<Label> getLabels( String labelString ) {
+        int b = labelString.startsWith( "(" ) ? 1 : 0;
+        int e = labelString.endsWith( ")" ) ? labelString.length() - 1 : labelString.length();
+
+        String sub = labelString.substring( b, e );
+        String[] ls = sub.split( "," );
+
+        List<Label> labels = new ArrayList<Label>( ls.length );
+
+        for( String l : ls ) {
+            labels.add( new Label( l.trim() ) );
+        }
+
+        return labels;
+    }
+
     @Override
     public String toString() {
         return "Label " + name;

@@ -125,4 +125,31 @@ public class VersionTest {
         assertThat( v.getBranches().size(), is( 2 ) );
         assertThat( v.getFile().toString(), is( "M:\\vobadm_view\\kerne2\\.\\01_Domænetest\\03_Leverancetestrapporter\\Release 7\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc" ) );
     }
+
+    @Test
+    public void testQualifiedFilename() throws UnableToInitializeEntityException {
+        String s = "M:\\vobadm_view\\kerne2\\.@@\\main\\ker2_work\\3\\01_Domænetest\\main\\ker2_work\\1\\03_Leverancetestrapporter\\main\\ker2_work\\1\\Release 7\\main\\ker2_work\\1\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@\\main\\ker2_work\\1";
+
+        Version v = Version.get( s );
+
+        assertThat( v.getQualifiedFilename(), is( "M:\\vobadm_view\\kerne2\\.@@\\main\\ker2_work\\3\\01_Domænetest\\main\\ker2_work\\1\\03_Leverancetestrapporter\\main\\ker2_work\\1\\Release 7\\main\\ker2_work\\1\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@" ) );
+    }
+
+    @Test
+    public void testQualifiedFilename2() throws UnableToInitializeEntityException {
+        String s = "M:\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@\\main\\ker2_work\\1";
+
+        Version v = Version.get( s );
+
+        assertThat( v.getQualifiedFilename(), is( "M:\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@" ) );
+    }
+
+    @Test
+    public void testQualifiedFilename3() throws UnableToInitializeEntityException {
+        String s = "M:\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc";
+
+        Version v = Version.get( s );
+
+        assertThat( v.getQualifiedFilename(), is( "M:\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@" ) );
+    }
 }

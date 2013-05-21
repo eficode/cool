@@ -38,4 +38,46 @@ public class LabelTest {
             fail( "Was not true" );
         }
     }
+
+    @Test
+    public void getLabelsFromString01() {
+        String s = "label1, label2";
+
+        List<Label> labels = Label.getLabels( s );
+
+        assertThat( labels.size(), is( 2 ) );
+        assertThat( labels.get( 0 ).getName(), is( "label1" ) );
+        assertThat( labels.get( 1 ).getName(), is( "label2" ) );
+    }
+
+    @Test
+    public void getLabelsFromString02() {
+        String s = "(label1, label2)";
+
+        List<Label> labels = Label.getLabels( s );
+
+        assertThat( labels.size(), is( 2 ) );
+        assertThat( labels.get( 0 ).getName(), is( "label1" ) );
+        assertThat( labels.get( 1 ).getName(), is( "label2" ) );
+    }
+
+    @Test
+         public void getLabelsFromString03() {
+        String s = "(label1)";
+
+        List<Label> labels = Label.getLabels( s );
+
+        assertThat( labels.size(), is( 1 ) );
+        assertThat( labels.get( 0 ).getName(), is( "label1" ) );
+    }
+
+    @Test
+    public void getLabelsFromString04() {
+        String s = "label1";
+
+        List<Label> labels = Label.getLabels( s );
+
+        assertThat( labels.size(), is( 1 ) );
+        assertThat( labels.get( 0 ).getName(), is( "label1" ) );
+    }
 }

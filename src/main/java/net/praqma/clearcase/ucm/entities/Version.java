@@ -65,7 +65,13 @@ public class Version extends UCMEntity implements Comparable<Version> {
      * A string representation of the file
      */
 	private String fullfile = null;
+
 	private String sfile = null;
+
+    /**
+     * A representation of the {@link Version} without the version syntax.
+     */
+    private String qualifiedFilename;
 
     /**
      * The {@link File} object for this {@link Version}
@@ -140,6 +146,12 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 		this.file = new File( this.fullfile );
 
+        this.qualifiedFilename = fqname.replaceAll( "^(.*@@)(.*?)$", "$1" );
+        /* Make sure @@ is appended to the version */
+        if( !qualifiedFilename.endsWith( "@@" ) ) {
+            this.qualifiedFilename += "@@";
+        }
+
         if( version.contains( "@@" ) ) {
             String[] s = version.split( "@@" );
             handleSimpleVersion( s[1] );
@@ -164,9 +176,11 @@ public class Version extends UCMEntity implements Comparable<Version> {
         }
     }
 
-
-    public boolean isOffBranched() {
-        return offBranched;
+    /**
+     * Get the qualified filename, without any branch and version syntax.
+     */
+    public String getQualifiedFilename() {
+        return qualifiedFilename;
     }
 
     public static List<Branch> getBranches( String branchSpecifier ) {
@@ -233,6 +247,9 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return this.version;
 	}
 
+    /**
+     * Get the fully qualified branch name.
+     */
 	public String getBranch() {
 		return branch;
 	}

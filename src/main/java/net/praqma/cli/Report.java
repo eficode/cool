@@ -3,7 +3,11 @@ package net.praqma.cli;
 import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.Find;
 import net.praqma.clearcase.command.ListType;
+import net.praqma.clearcase.container.LabelsForVersion;
+import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.ucm.entities.Version;
+import net.praqma.clearcase.util.Labels;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
@@ -109,8 +113,9 @@ public class Report extends CLI {
                 append( "Last user" ).append( sep ).
                 append( "Branch name" ).append( sep ).
                 append( "Number of versions on branch" ).append( sep ).
+                append( "Labeled versions" ).append( sep ).
                 append( "Date" ).append( sep ).
-                append( "Branches" );
+                append( "Branches" ); // case 9236
 
         out.println( b.toString() );
 
@@ -180,6 +185,9 @@ public class Report extends CLI {
             /* The number of versions on the branch */
             sb.append( v.getRevision() ).append( sep );
 
+            /* TODO Labeled versions, case 9223 */
+            sb.append( compileLabeledVersions( v.getQualifiedFilename(), branch ) ).append( sep );
+
             /* Get date */
             sb.append( dateFormatter.format( v.getDate() ) );
 
@@ -204,6 +212,20 @@ public class Report extends CLI {
                 branches.put( file, bs );
             }
         }
+    }
+
+    private List<Integer> compileLabeledVersions( String pathname, Branch branch ) throws UnableToInitializeEntityException, CleartoolException {
+        List<LabelsForVersion> lfvs = Labels.getLabels( pathname, branch );
+
+        List<Integer> versionNumbers = new ArrayList<Integer>( lfvs.size() );
+
+        for( LabelsForVersion lfv : lfvs ) {
+            if( branch.equals( lfv.getBranch() ) ) {
+                versionNumbers.add( lfv.getRevision() );
+            }
+        }
+
+        return versionNumbers;
     }
 
     public class Entry {
