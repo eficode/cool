@@ -127,6 +127,32 @@ public class Report extends CLI {
         }
     }
 
+    private String printBranches( List<Branch> branches ) {
+
+        if( branches.size() == 0 ) {
+            return "NONE";
+        }
+
+        StringBuilder b = new StringBuilder(  );
+
+        boolean printMain = branches.size() > 1 ? false : true;
+
+        int i = 0;
+        for( ; i < branches.size() ; ++i ) {
+            Branch branch = branches.get( i );
+            boolean isMain = branch.getName().equals( "main" );
+            if( !isMain || ( isMain && printMain ) ) {
+                b.append( branch.getName() );
+            }
+
+            if( i < branches.size() - 1 ) {
+                b.append( ", " );
+            }
+        }
+
+        return b.toString();
+    }
+
     /**
      * Track the branches containing a given element.
       */
@@ -189,7 +215,7 @@ public class Report extends CLI {
             sb.append( compileLabeledVersions( v.getQualifiedFilename(), branch ) ).append( sep );
 
             /* Get date */
-            sb.append( dateFormatter.format( v.getDate() ) );
+            sb.append( dateFormatter.format( v.getDate() ) ).append( sep );
 
             /* Put to map */
             if( map.containsKey( file ) ) {
