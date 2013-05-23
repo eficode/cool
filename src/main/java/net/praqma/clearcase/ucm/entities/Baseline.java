@@ -4,11 +4,12 @@ import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import net.praqma.clearcase.Cool;
-import net.praqma.clearcase.Describe;
 import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.api.Describe;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.interfaces.Diffable;
@@ -308,7 +309,8 @@ public class Baseline extends UCMEntity implements Diffable {
     public List<Baseline> getDependant() throws CleartoolException, UnableToInitializeEntityException {
         logger.fine( "Finding dependant baselines for " + this.getNormalizedName() );
 
-        String[] ds = new Describe( this ).dependentsOn().describe().get( "depends_on" );
+        String[] ds = new net.praqma.clearcase.Describe( this ).dependentsOn().describe().get( "depends_on" );
+        //String[] ds = new Describe( this ).addModifier( Describe.dependsOn.clone().commaSeparate() ).execute();
 
         List<Baseline> baselines = new ArrayList<Baseline>( ds.length );
         for( String bl : ds ) {
@@ -385,43 +387,97 @@ public class Baseline extends UCMEntity implements Diffable {
 		return entity;
 	}
 	
-	public List<Baseline> getPostedBaselinesFor(Component component) throws UnableToInitializeEntityException, UnableToListBaselinesException, UnableToLoadEntityException {
-		logger.fine( "Getting posted baselines for " + this.getFullyQualifiedName() + " and " + component.getFullyQualifiedName() );
-		List<String> bls_str = null;
-		
-		String cmd = "des -fmt %X[member_of_closure]p " + this.getFullyQualifiedName();
-		try {
-			bls_str = Cleartool.run( cmd, null, false ).stdoutList;
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new UnableToListBaselinesException(getStream(), component, getPromotionLevel(true), e );
-		}
+	public List<Baseline> getPostedBaselinesFor( Component component ) throws UnableToInitializeEntityException, CleartoolException {
+        logger.fine( "Getting posted baselines for " + this + " and " + component );
+
+        List<Baseline> baselines = getCompositeMemberBaselines( component );
+
+        if( baselines.isEmpty()) {
+            if( this.getComponent().equals(component) ) {
+                logger.fine( "Baseline " + this.getFullyQualifiedName() + " used because it was not rootless, and matched component " + component.getFullyQualifiedName());
+                baselines.add(this);
+            } else {
+                logger.warning( "Could not find a baseline matching component: " + component.getFullyQualifiedName());
+            }
+        }
+        return baselines;
+    }
+
+    /**
+     * Get all the composite {@link Baseline}s that are members of this {@link Baseline}.
+     * That is, {@link Baseline}s that are descendants of this.
+     */
+    public List<Baseline> getCompositeMemberBaselines() throws UnableToInitializeEntityException, CleartoolException {
+        return getCompositeMemberBaselines( null );
+    }
+
+    /**
+     * Get all the composite {@link Baseline}s that are members of this {@link Baseline} given a specific {@link Component}. <br />
+     * That is, {@link Baseline}s that are descendants of this.
+     */
+    public List<Baseline> getCompositeMemberBaselines( Component component ) throws UnableToInitializeEntityException, CleartoolException {
+		logger.fine( "Getting composite member baselines for " + this + ( component != null ? " and " + component : "" ) );
+
+        Map<String, String[]> bls_str = new Describe( this ).addModifier( Describe.memberOfClosure ).describe();
 
 		List<Baseline> bls = new ArrayList<Baseline>();
 
-		for( String bl_lines : bls_str ) {
-			logger.fine( "Baselines " + bl_lines );
-			String[] baselines = bl_lines.split(" ");
-			logger.fine( "I got " + baselines.length + " baselines." );
-			for(String bl : baselines ) {
-				logger.fine( "Baseline " + bl );
-				Baseline b = Baseline.get( bl ).load();
-				logger.fine( "Baseline " + b.getFullyQualifiedName() + " component " + b.getComponent().getFullyQualifiedName() );
-				logger.fine( "Component " + component.getFullyQualifiedName());
-				logger.fine( "Baseline component " + b.getComponent().getFullyQualifiedName());
-				if( b.getComponent().equals(component) ) 
-					bls.add( b );
-			}
-		}
+        for( String bl : bls_str.get( "member_of_closure" ) ) {
+            logger.fine( "Baseline " + bl );
+            Baseline b = Baseline.get( bl );
+            if( component == null || b.getComponent().equals( component ) ) {
+                bls.add( b );
+            }
+        }
 
-		if( bls.isEmpty()) {
-			if( this.getComponent().equals(component) ) { 
-				logger.fine( "Baseline " + this.getFullyQualifiedName() + " used because it was not rootless, and matched component " + component.getFullyQualifiedName());
-				bls.add(this);
-			} else {
-				logger.warning( "Could not find a baseline matching component: " + component.getFullyQualifiedName());
-			}
-		}
-		return bls;
-	}
+        return bls;
+    }
+
+    /**
+     * Get all the composite {@link Baseline}s that are dependant on this {@link Baseline}.
+     * That is, {@link Baseline}s that are ancestors of this.
+     */
+    public List<Baseline> getCompositeDependantBaselines() throws UnableToInitializeEntityException, CleartoolException {
+        return getCompositeDependantBaselines( null );
+    }
+
+    /**
+     * Get all the composite {@link Baseline}s that are dependant on this {@link Baseline} given a specific {@link Component}. <br />
+     * That is, {@link Baseline}s that are ancestors of this.
+     */
+    public List<Baseline> getCompositeDependantBaselines( Component component ) throws UnableToInitializeEntityException, CleartoolException {
+        logger.fine( "Getting composite dependant baselines for " + this + ( component != null ? " and " + component : "" ) );
+
+        Map<String, String[]> bls_str = new Describe( this ).addModifier( Describe.dependsOnClosure ).describe();
+
+        List<Baseline> bls = new ArrayList<Baseline>();
+
+        for( String bl : bls_str.get( "depends_on_closure" ) ) {
+            logger.fine( "Baseline " + bl );
+            Baseline b = Baseline.get( bl );
+            if( component == null || b.getComponent().equals( component ) ) {
+                bls.add( b );
+            }
+        }
+
+        return bls;
+    }
+
+    /**
+     * Get the rooted version of this {@link Baseline}. Returns null if none found.
+     */
+    public Baseline getRootedBaseline() throws UnableToInitializeEntityException, CleartoolException {
+        List<Baseline> baselines = getCompositeDependantBaselines();
+
+        /* Find a rooted baseline */
+        Baseline b = null;
+        for( Baseline baseline : baselines ) {
+            if( baseline.getFullyQualifiedName().contains( getShortname() ) && !baseline.getComponent().isRootLess() ) {
+                return baseline;
+            }
+        }
+
+        return null;
+    }
 
 }

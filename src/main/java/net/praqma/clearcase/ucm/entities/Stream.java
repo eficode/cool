@@ -339,10 +339,13 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 				logger.warning( "Posted baseline : " + m.group( 1 ) );
 	
 				Baseline b = Baseline.get( m.group( 1 ) );
-				
-				if( b.getPromotionLevel( true ) == plevel ) {
-					res.addAll( b.getPostedBaselinesFor(component) );
-				}
+
+                List<Baseline> possibleBaselines = b.getPostedBaselinesFor( component );
+                for( Baseline bl : possibleBaselines ) {
+                    if( bl.getPromotionLevel() == plevel ) {
+                        res.add( bl );
+                    }
+                }
 			}
 		} catch( Exception e ) {
 			throw new UnableToInitializeEntityException( Baseline.class, e );

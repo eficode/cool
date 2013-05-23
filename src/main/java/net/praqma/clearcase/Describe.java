@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author cwolfgang
+ * @deprecated
  */
 public class Describe {
 

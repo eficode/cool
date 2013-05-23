@@ -73,6 +73,11 @@ public class ListVersionTree extends Command<List<String>> {
     }
 
     @Override
+    public String getCommand() {
+        return "lsvtree";
+    }
+
+    @Override
     public String getCommandLine() {
 
         if( pathNames.isEmpty() ) {
