@@ -82,8 +82,8 @@ public class StreamUnitTest {
         Baseline baseline = Baseline.get( "bl@\\pvob" );
         Baseline spy = Mockito.spy( baseline );
 
-        Mockito.doReturn( level ).when( spy ).getPromotionLevel( Mockito.anyBoolean() );
-        Mockito.doReturn( Collections.singletonList( baseline ) ).when( spy ).getPostedBaselinesFor( component );
+        Mockito.doReturn( level ).when( spy ).getPromotionLevel();
+        Mockito.doReturn( Collections.singletonList( spy ) ).when( spy ).getPostedBaselinesFor( component );
 
         PowerMockito.mockStatic( Deliver.class );
         PowerMockito.when( Deliver.getStatus( stream ) ).thenReturn( "baseline:bl@\\pvob" );
