@@ -69,9 +69,9 @@ public class ClearCaseRule extends Environment implements TestRule {
 
 	protected void after() {
 		if( System.getProperty( "saveEnv", null ) == null ) {
-			if( pvob != null ) {
+			if( getPVob() != null ) {
 				try {
-					SetupUtils.tearDown( pvob );
+					SetupUtils.tearDown( getPVob() );
 				} catch( CleartoolException e ) {
 					ExceptionUtils.print( e, System.out, true );
 				}
