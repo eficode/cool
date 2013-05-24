@@ -28,7 +28,7 @@ public class Region extends Cool {
     }
 
     public List<UCMView> getViews() throws CleartoolException {
-		String cmd = "lsview" + ( this != null ? " -region " + getName() : "" );
+		String cmd = "lsview -region " + getName();
 		try {
 			CmdResult cr = Cleartool.run( cmd );
 

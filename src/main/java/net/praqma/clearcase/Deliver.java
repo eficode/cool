@@ -206,7 +206,7 @@ public class Deliver {
 				Cleartool.run( cmd, context );
 			} else {
 				SnapshotView.regenerateViewDotDat( context, oldViewTag );
-				CmdResult res = Cleartool.run( cmd, context );
+				Cleartool.run( cmd, context );
 			}
 		} catch( Exception e ) {
 			throw new CleartoolException( "Could not regenerate view to force deliver: " + oldViewTag, e );
@@ -222,7 +222,7 @@ public class Deliver {
 	}
 
 	public static void cancel( Stream stream, File context ) throws CancelDeliverException {
-        logger.fine( "Cancel deliver from " + stream.getNormalizedName() + " in " + context );
+        logger.fine( "Cancel deliver" + ( stream != null ? " from " + stream.getNormalizedName() : "" ) + " in " + context );
 
 		try {
 			String cmd = "deliver -cancel -force" + ( stream != null ? " -stream " + stream : "" );
@@ -236,9 +236,8 @@ public class Deliver {
         logger.fine( "Cancelling deliver to " + targetStream.getNormalizedName() );
 
         Stream source = targetStream.getDeliveringStream( false );
-        logger.fine( "Source stream is " + source.getNormalizedName() );
-
         if( source != null ) {
+            logger.fine( "Source stream is " + source.getNormalizedName() );
             try {
                 String cmd = "deliver -cancel -force -stream " + source;
                 Cleartool.run( cmd );
@@ -291,9 +290,9 @@ public class Deliver {
 		}
 	}
 
-    public static Pattern rxFindStream   = Pattern.compile( "^Deliver operation in progress on stream \"(.*?)\"$", Pattern.MULTILINE );
-    public static Pattern rxFindActivity = Pattern.compile( "^\\s*Using integration activity \"(.*?)\"\\.$", Pattern.MULTILINE );
-    public static Pattern rxFindViewTag  = Pattern.compile( "^\\s*Using view \"(.*?)\"\\.$", Pattern.MULTILINE );
+    public static final Pattern rxFindStream   = Pattern.compile( "^Deliver operation in progress on stream \"(.*?)\"$", Pattern.MULTILINE );
+    public static final Pattern rxFindActivity = Pattern.compile( "^\\s*Using integration activity \"(.*?)\"\\.$", Pattern.MULTILINE );
+    public static final Pattern rxFindViewTag  = Pattern.compile( "^\\s*Using view \"(.*?)\"\\.$", Pattern.MULTILINE );
 
     public static class Status {
         private DeliverStatus status;

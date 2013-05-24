@@ -23,7 +23,7 @@ public class Describe {
 
     private UCMEntity enitity;
 
-    private class Describer {
+    private static class Describer {
         private String describer;
         private String modifier;
         private boolean multiple = false;

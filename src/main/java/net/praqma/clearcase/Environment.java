@@ -16,7 +16,7 @@ import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
 public class Environment {
 
-    protected static Logger logger = Logger.getLogger( Environment.class.getName() );
+    private static Logger logger = Logger.getLogger( Environment.class.getName() );
 
 	/**
 	 * This variable is null until bootStrap is called.
@@ -33,7 +33,7 @@ public class Environment {
 	 */
 	public Map<String, String> variables = new HashMap<String, String>();
 	
-	protected static PVob pvob;
+	private static PVob pvob;
 	
 	protected File viewPath;
 
@@ -116,11 +116,13 @@ public class Environment {
             logger.log( Level.WARNING, "Failed to write", e1 );
 			throw new ClearCaseException( e1 );
 		} finally {
-			try {
-				fw.close();
-			} catch( IOException e1 ) {
-				throw new ClearCaseException( e1 );
-			}
+            if( fw != null ) {
+                try {
+                    fw.close();
+                } catch( IOException e1 ) {
+                    throw new ClearCaseException( e1 );
+                }
+            }
 		}
 	}
 	
