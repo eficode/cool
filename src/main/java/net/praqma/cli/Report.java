@@ -108,7 +108,7 @@ public class Report extends CLI {
         /* Build header */
         StringBuilder b = new StringBuilder(  ).
                 append( "File" ).append( sep ).
-                append( "Age" ).append( sep ).
+                append( "Age in hours" ).append( sep ).
                 append( "Type" ).append( sep ).
                 append( "Last user" ).append( sep ).
                 append( "Branch name" ).append( sep ).
@@ -123,8 +123,27 @@ public class Report extends CLI {
             out.print( map.get( key ).toString() );
 
             /* Add the branches */
-            out.println( branches.get( key ).toString() );
+            //out.println( branches.get( key ).toString() );
+            out.println( printBranches( branches.get( key ) ) );
         }
+    }
+
+    private String getVersionNumbers( List<Integer> ints ) {
+        if( ints == null || ints.isEmpty() ) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder(  );
+
+        int i = 0;
+        for( ; i < ints.size() - 1 ; ++i ) {
+            int version = ints.get( i );
+            sb.append( version ).append( ", " );
+        }
+
+        sb.append( ints.get( i ) );
+
+        return sb.toString();
     }
 
     private String printBranches( List<Branch> branches ) {
@@ -143,10 +162,10 @@ public class Report extends CLI {
             boolean isMain = branch.getName().equals( "main" );
             if( !isMain || ( isMain && printMain ) ) {
                 b.append( branch.getName() );
-            }
 
-            if( i < branches.size() - 1 ) {
-                b.append( ", " );
+                if( i < branches.size() - 2 ) {
+                    b.append( ", " );
+                }
             }
         }
 
@@ -212,7 +231,7 @@ public class Report extends CLI {
             sb.append( v.getRevision() ).append( sep );
 
             /* TODO Labeled versions, case 9223 */
-            sb.append( compileLabeledVersions( v.getQualifiedFilename(), branch ) ).append( sep );
+            sb.append( getVersionNumbers( compileLabeledVersions( v.getQualifiedFilename(), branch ) ) ).append( sep );
 
             /* Get date */
             sb.append( dateFormatter.format( v.getDate() ) ).append( sep );
