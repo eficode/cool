@@ -7,10 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -19,6 +16,7 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.api.ListVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
@@ -484,6 +482,7 @@ public class SnapshotView extends UCMView {
 		String fls = "";
 		List<File> notVobs = new ArrayList<File>();
 		List<File> rootVPFiles = new ArrayList<File>();
+        List<File> vobfolders = new LinkedList<File>(  );
 
 		/*
 		 * Scanning root folder for directories that are not vobs and files, not
@@ -498,6 +497,7 @@ public class SnapshotView extends UCMView {
 			if( f.isDirectory() ) {
 				if( Vob.isVob( f ) ) {
 					fls += "\"" + f.getAbsolutePath() + "\" ";
+                    vobfolders.add( f );
 				} else {
 					notVobs.add( f );
 				}
@@ -527,29 +527,17 @@ public class SnapshotView extends UCMView {
 			return info;
 		}
 
-		/* Get view private files from vobs */
-		String cmd = "ls -short -recurse -view_only " + fls;
-		List<String> result = null;
-		try {
-			result = Cleartool.run( cmd ).stdoutList;
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new CleartoolException( "Unable to list files " + fls, e );
-		}
-		List<File> vpFiles = new ArrayList<File>();
+        logger.fine( "Finding view private files" );
+        List<File> vpFiles = new ArrayList<File>();
 
-        logger.finest( "View private files found: " + result );
+        for( File folder : vobfolders ) {
+            logger.fine( "Finding view private files for " + folder );
+            vpFiles.addAll( findViewPrivateFilesFromVob( folder ) );
+        }
 
-		if( !excludeRoot ) {
-			vpFiles.addAll( rootVPFiles );
-		}
-
-		for( String vpFile : result ) {
-			if( vpFile.matches( rx_co_file ) || vpFile.matches( rx_keep_file ) || vpFile.matches( rx_ctr_file ) ) {
-				continue;
-			}
-
-			vpFiles.add( new File( vpFile ) );
-		}
+        if( !excludeRoot ) {
+            vpFiles.addAll( rootVPFiles );
+        }
 
 		int total = vpFiles.size();
         logger.finest( "View private files: " + vpFiles );
@@ -609,6 +597,29 @@ public class SnapshotView extends UCMView {
 		return info;
 	}
 
+    /**
+     * Returns a list of view private files from a vob folder.
+     * @param vobFolder The {@link File} path for the vob
+     * @return A {@link List} of {@link File}s representing the view private files of a vob in the view.
+     * @throws CleartoolException
+     */
+    private List<File> findViewPrivateFilesFromVob( File vobFolder ) throws CleartoolException {
+        List<String> result = new ListVob().recurse().restrictToViewOnly().shortReportLength().addPathName( vobFolder.getAbsolutePath() ).execute();
+
+        logger.finest( "View private files for " + vobFolder + ": " + result );
+
+        List<File> vpFiles = new ArrayList<File>( result.size() );
+
+        for( String vpFile : result ) {
+            if( vpFile.matches( rx_co_file ) || vpFile.matches( rx_keep_file ) || vpFile.matches( rx_ctr_file ) ) {
+                continue;
+            }
+
+            vpFiles.add( new File( vpFile ) );
+        }
+
+        return vpFiles;
+    }
 
 	public Map<String, Integer> swipe( boolean excludeRoot ) throws CleartoolException {
 		logger.fine( "Swiping " + this.getViewRoot() );
