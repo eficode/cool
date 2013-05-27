@@ -253,6 +253,7 @@
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-core</artifactId>
@@ -269,6 +270,7 @@
             <groupId>org.powermock</groupId>
             <artifactId>powermock-classloading-xstream</artifactId>
             <version>${powermock.version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
