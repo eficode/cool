@@ -128,28 +128,37 @@ public class VersionTest {
 
     @Test
     public void testQualifiedFilename() throws UnableToInitializeEntityException {
-        String s = "M:\\vobadm_view\\kerne2\\.@@\\main\\ker2_work\\3\\01_Domænetest\\main\\ker2_work\\1\\03_Leverancetestrapporter\\main\\ker2_work\\1\\Release 7\\main\\ker2_work\\1\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@\\main\\ker2_work\\1";
+        String s = "/vobadm_view/kerne2/.@@/main/ker2_work/3/01_Domænetest/main/ker2_work/1/03_Leverancetestrapporter/main/ker2_work/1/Release 7/main/ker2_work/1/Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@/main/ker2_work/1";
+        String osstring = getOSFileString( s );
 
-        Version v = Version.get( s );
+        Version v = Version.get( osstring );
 
-        assertThat( v.getQualifiedFilename(), is( "M:\\vobadm_view\\kerne2\\.@@\\main\\ker2_work\\3\\01_Domænetest\\main\\ker2_work\\1\\03_Leverancetestrapporter\\main\\ker2_work\\1\\Release 7\\main\\ker2_work\\1\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@" ) );
+        assertThat( v.getQualifiedFilename(), is( getOSFileString( "\\vobadm_view\\kerne2\\.@@\\main\\ker2_work\\3\\01_Domænetest\\main\\ker2_work\\1\\03_Leverancetestrapporter\\main\\ker2_work\\1\\Release 7\\main\\ker2_work\\1\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@" ) ) );
     }
 
     @Test
     public void testQualifiedFilename2() throws UnableToInitializeEntityException {
-        String s = "M:\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@\\main\\ker2_work\\1";
+        String s = getOSFileString( "\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@\\main\\ker2_work\\1" );
 
         Version v = Version.get( s );
 
-        assertThat( v.getQualifiedFilename(), is( "M:\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@" ) );
+        assertThat( v.getQualifiedFilename(), is( getOSFileString( "\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@" ) ) );
     }
 
     @Test
     public void testQualifiedFilename3() throws UnableToInitializeEntityException {
-        String s = "M:\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc";
+        String s = getOSFileString( "\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc" );
 
         Version v = Version.get( s );
 
-        assertThat( v.getQualifiedFilename(), is( "M:\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@" ) );
+        assertThat( v.getQualifiedFilename(), is( getOSFileString( "\\vobadm_view\\kerne2\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@" ) ) );
+    }
+
+    public String getOSFileString( String fileString ) {
+        if( Cool.getOS().equals( OperatingSystem.WINDOWS ) ) {
+            return "M:" + fileString.replace( Cool.qfsor, Cool.filesep );
+        } else {
+            return fileString.replace( Cool.qfsor, Cool.filesep );
+        }
     }
 }
