@@ -156,9 +156,9 @@ public class VersionTest {
 
     public String getOSFileString( String fileString ) {
         if( Cool.getOS().equals( OperatingSystem.WINDOWS ) ) {
-            return "M:" + fileString.replaceAll( Cool.qfsor, Cool.filesep );
+            return "M:" + fileString.replaceAll( Cool.qfsor, Cool.qfs );
         } else {
-            return fileString.replaceAll( Cool.qfsor, Cool.filesep );
+            return fileString.replaceAll( Cool.qfsor, Cool.qfs );
         }
     }
 }
