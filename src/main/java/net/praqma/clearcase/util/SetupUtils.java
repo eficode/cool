@@ -17,6 +17,8 @@ public class SetupUtils {
 	private static Logger logger = Logger.getLogger( SetupUtils.class.getName() );
 	
 	public static void tearDown( PVob pvob ) throws CleartoolException, UnableToInitializeEntityException, ViewException {
+        logger.info( "Tearing down " + pvob );
+        
 		/* The pvob needs to be loaded */
 		pvob.load();
 
