@@ -54,6 +54,10 @@ public class UCMView extends ClearCase implements Serializable {
 		this.stream = stream;
 	}
 
+    public boolean exists() {
+        return viewExists( viewtag );
+    }
+
 	public static boolean viewExists(String viewtag) {
 		logger.fine( viewtag );
 

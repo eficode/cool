@@ -14,8 +14,6 @@ import static org.junit.Assert.assertThat;
 
 /**
  * @author cwolfgang
- *         Date: 13-02-13
- *         Time: 16:34
  */
 public class StreamTest {
     @ClassRule

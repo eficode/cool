@@ -1,5 +1,6 @@
 package net.praqma.clearcase;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +12,9 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.command.ListVobs;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.EntityAlreadyExistsException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
+import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.UCMView;
 
 public class PVob extends Vob {
@@ -48,6 +51,25 @@ public class PVob extends Vob {
 			return null;
 		}
 	}
+
+    public List<Stream> getStreams() throws CleartoolException, UnableToInitializeEntityException {
+        String cmd = "lsstream -fmt %Xn\\n -invob " + this;
+        List<String> lines = null;
+        try {
+            lines = Cleartool.run( cmd ).stdoutList;
+            logger.finest( "Output: " + lines );
+        } catch( Exception e ) {
+            throw new CleartoolException( "Unable to list views", e );
+        }
+
+        List<Stream> streams = new ArrayList<Stream>( lines.size() );
+
+        for( String line : lines ) {
+            streams.add( Stream.get( line.trim() ) );
+        }
+
+        return streams;
+    }
 	
 	public Set<UCMView> getViews() throws CleartoolException {
 		String cmd = "lsstream -fmt {%[views]p} -invob " + this;

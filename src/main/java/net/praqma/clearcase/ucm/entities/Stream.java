@@ -10,18 +10,7 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
-import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.EntityNotLoadedException;
-import net.praqma.clearcase.exceptions.NoSingleTopComponentException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToGetEntityException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
-import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
-import net.praqma.clearcase.exceptions.UnableToListProjectsException;
-import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
-import net.praqma.clearcase.exceptions.UnableToRemoveEntityException;
+import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.interfaces.StreamContainable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
@@ -578,22 +567,26 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return this.project;
 	}
 	
-	public List<UCMView> getViews() throws CleartoolException {
+	public List<UCMView> getViews() throws CleartoolException, ViewException {
+        logger.fine( "Finding views for " + this.getNormalizedName() );
+
 		String cmd = "describe -fmt %X[views]p " + this;
 		
-		String[] views = null;
+		String[] viewsString = null;
 		try {
-			views = Cleartool.run( cmd ).stdoutBuffer.toString().split( " " );
-			
+            viewsString = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" );
+            logger.finest( "Output: " + viewsString );
 		} catch( Exception e ) {
 			throw new CleartoolException( "Unable to list views for " + this, e );
 		}
+
+        List<UCMView> views = new ArrayList<UCMView>( viewsString.length );
 		
-		for( String view : views ) {
-			
+		for( String view : viewsString ) {
+			views.add( UCMView.getView( view ) );
 		}
 		
-		return null;
+		return views;
 	}
 
     /**
