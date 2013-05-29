@@ -145,8 +145,8 @@ public class UpdateView {
                 logger.log( Level.WARNING, "The view is currently rebasing the stream" + m.group( 1 ), e);
                 throw new ViewException( "The view is currently rebasing the stream " + m.group( 1 ), view.getViewRoot().getAbsolutePath(), ViewException.Type.REBASING, e );
             } else {
-                logger.log( Level.WARNING, "" + m.group( 1 ), e);
-                throw new ViewException( "Unable to update view " + m.group( 1 ), view.getViewRoot().getAbsolutePath(), ViewException.Type.UNKNOWN, e );
+                logger.log( Level.WARNING, "Unable to update view", e );
+                throw new ViewException( "Unable to update view", view.getViewRoot().getAbsolutePath(), ViewException.Type.UNKNOWN, e );
             }
         }
 

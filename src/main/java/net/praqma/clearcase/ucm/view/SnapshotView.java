@@ -479,7 +479,6 @@ public class SnapshotView extends UCMView {
 		logger.fine( viewroot.toString() );
 
 		File[] files = viewroot.listFiles();
-		String fls = "";
 		List<File> notVobs = new ArrayList<File>();
 		List<File> rootVPFiles = new ArrayList<File>();
         List<File> vobfolders = new LinkedList<File>(  );
@@ -496,7 +495,6 @@ public class SnapshotView extends UCMView {
 
 			if( f.isDirectory() ) {
 				if( Vob.isVob( f ) ) {
-					fls += "\"" + f.getAbsolutePath() + "\" ";
                     vobfolders.add( f );
 				} else {
 					notVobs.add( f );
@@ -522,11 +520,6 @@ public class SnapshotView extends UCMView {
         info.put( "dirs_deleted", 0 );
         info.put( "files_deleted", 0 );
 
-		if( fls.length() == 0 ) {
-			logger.fine( "No files to delete" );
-			return info;
-		}
-
         logger.fine( "Finding view private files" );
         List<File> vpFiles = new ArrayList<File>();
 
@@ -541,9 +534,11 @@ public class SnapshotView extends UCMView {
 
 		int total = vpFiles.size();
         logger.finest( "View private files: " + vpFiles );
-        logger.finest( "Int total: " + total );
 
-		info.put( "total", total );
+        if( total == 0 ) {
+            logger.fine( "No files to delete" );
+            return info;
+        }
 
 		logger.fine( "Found " + total + " files, of which " + ( total - vpFiles.size() ) + " were CO, CTR or KEEP's." );
 
@@ -552,17 +547,18 @@ public class SnapshotView extends UCMView {
 		int filecount = 0;
 
 		/* Removing view private files, saving directories for later */
-		logger.config( "Removing files:" );
+		logger.fine( "Removing files" );
 		for( File f : vpFiles ) {
-			// logger.debug( "FILE=" + f );
-
 			if( f.exists() ) {
 				if( f.isDirectory() ) {
+                    /* TODO The directory could just be recursively deleted?! All sub files are view private too as well. */
 					dirs.add( f );
 				} else {
-					logger.config( " * " + f );
-					f.delete();
-					filecount++;
+                    if(	f.delete() ) {
+					    filecount++;
+                    } else {
+                        logger.warning( "Could not delete " + f );
+                    }
 				}
 			} else {
 				logger.fine( "The file " + f + " does not exist." );
@@ -575,9 +571,11 @@ public class SnapshotView extends UCMView {
 		logger.config( "Removing directories:" );
 		for( File d : dirs ) {
 			try {
-				logger.config( " * " + d );
-				d.delete();
-				dircount++;
+                if(	d.delete() ) {
+                    dircount++;
+                } else {
+                    logger.warning( "Could not delete " + d );
+                }
 			} catch( SecurityException e ) {
 				logger.fine( "Unable to delete \"" + d + "\". Probably not empty." );
 			}
