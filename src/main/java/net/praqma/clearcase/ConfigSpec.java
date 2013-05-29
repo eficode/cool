@@ -64,7 +64,7 @@ public class ConfigSpec {
             loadRules.add( rootDir );
         } else {
             logger.fine( component.getShortname() + " is rootless" );
-            for( Baseline bl : baseline.getDependant() ) {
+            for( Baseline bl : baseline.getDependent() ) {
                 addLoadRule( bl );
             }
         }

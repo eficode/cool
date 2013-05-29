@@ -306,8 +306,8 @@ public class Baseline extends UCMEntity implements Diffable {
     /**
      * Get the {@link List} of {@link Baseline}'s, that depends on this {@link Baseline}.
      */
-    public List<Baseline> getDependant() throws CleartoolException, UnableToInitializeEntityException {
-        logger.fine( "Finding dependant baselines for " + this.getNormalizedName() );
+    public List<Baseline> getDependent() throws CleartoolException, UnableToInitializeEntityException {
+        logger.fine( "Finding dependent baselines for " + this.getNormalizedName() );
 
         String[] ds = new net.praqma.clearcase.Describe( this ).dependentsOn().describe().get( "depends_on" );
         //String[] ds = new Describe( this ).addModifier( Describe.dependsOn.clone().commaSeparate() ).execute();

@@ -575,7 +575,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		String[] viewsString = null;
 		try {
             viewsString = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" );
-            logger.finest( "Output: " + viewsString );
+            logger.finest( "Output: " + Arrays.asList( viewsString ) );
 		} catch( Exception e ) {
 			throw new CleartoolException( "Unable to list views for " + this, e );
 		}
@@ -583,7 +583,15 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
         List<UCMView> views = new ArrayList<UCMView>( viewsString.length );
 		
 		for( String view : viewsString ) {
-			views.add( UCMView.getView( view ) );
+            if( !view.isEmpty() ) {
+                try {
+                    views.add( UCMView.getView( view ) );
+                } catch( Exception e ) {
+                    logger.log( Level.WARNING, "View failed", e );
+                }
+            } else {
+                logger.finest( "View tag was empty" );
+            }
 		}
 		
 		return views;

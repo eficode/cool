@@ -1,5 +1,7 @@
 package net.praqma.clearcase.util;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,9 +20,11 @@ public class SetupUtils {
 	
 	public static void tearDown( PVob pvob ) throws CleartoolException, UnableToInitializeEntityException, ViewException {
         logger.info( "Tearing down " + pvob );
-        
+
 		/* The pvob needs to be loaded */
 		pvob.load();
+
+        List<UCMView> views = new LinkedList<UCMView>(  );
 
         for( Stream stream : pvob.getStreams() ) {
             for( UCMView view : stream.getViews() ) {
@@ -30,6 +34,7 @@ public class SetupUtils {
                     view.load();
                     view.end();
                     view.remove();
+                    views.add( view );
                 } catch( Exception e ) {
                     logger.log( Level.WARNING, "Unable to remove " + view, e );
                 }
@@ -38,12 +43,15 @@ public class SetupUtils {
                     if( view.exists() ) {
                         logger.info( "The view was not removed, trying ...." );
                         new RemoveView().all().setTag( view.getViewtag() ).execute();
+                        views.add( view );
                     }
                 } catch( Exception e ) {
                     logger.log( Level.WARNING, "Unable to remove(second attempt) " + view, e );
                 }
             }
         }
+
+        logger.fine( "Removed views: " + views );
 
 		Set<Vob> vobs = pvob.getVobs();
 		

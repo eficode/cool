@@ -41,6 +41,7 @@ public class Describe extends Command<List<String>> {
     public static final Property memberOfClosure = new Property( "member_of_closure" );
     public static final Property dependsOn = new Property( "depends_on" );
     public static final Property dependsOnClosure = new Property( "depends_on_closure" );
+    public static final Property initialBaseline = new Property( "initial_bl" ).extended( true );
 
     public static class Property {
 
@@ -48,6 +49,7 @@ public class Describe extends Command<List<String>> {
         private String type = "p";
 
         private boolean commaSeparated = false;
+        private boolean extended = false;
 
         public Property( String name ) {
             this.name = name;
@@ -65,8 +67,18 @@ public class Describe extends Command<List<String>> {
             return this;
         }
 
+        public Property extended( boolean extended ) {
+            this.extended = extended;
+
+            return this;
+        }
+
         public boolean isCommaSeparated() {
             return commaSeparated;
+        }
+
+        public boolean isExtended() {
+            return extended;
         }
 
         public Property setType( String type ) {
@@ -77,6 +89,10 @@ public class Describe extends Command<List<String>> {
 
         public String getModifiers() {
             StringBuilder b = new StringBuilder(  );
+
+            if( extended ) {
+                b.append( "X" );
+            }
 
             if( commaSeparated ) {
                 b.append( "C" );
@@ -120,7 +136,11 @@ public class Describe extends Command<List<String>> {
     }
 
     public Describe addModifier( Property property, boolean commaSeparate ) {
-        properties.add( property.clone().commaSeparate( commaSeparate ) );
+        return addModifier( property, commaSeparate, false );
+    }
+
+    public Describe addModifier( Property property, boolean commaSeparate, boolean extended ) {
+        properties.add( property.clone().commaSeparate( commaSeparate ).extended( extended ) );
         type = Type.FMT;
 
         return this;

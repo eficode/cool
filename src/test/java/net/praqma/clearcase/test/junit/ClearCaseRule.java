@@ -1,15 +1,24 @@
 package net.praqma.clearcase.test.junit;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.praqma.clearcase.api.Describe;
+import net.praqma.clearcase.ucm.entities.Baseline;
+import net.praqma.clearcase.ucm.entities.Component;
+import net.praqma.logging.LoggingUtil;
+import net.praqma.logging.PraqmaticLogHandler;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import net.praqma.clearcase.Environment;
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.test.annotations.ClearCaseFullVobName;
 import net.praqma.clearcase.test.annotations.ClearCaseLess;
 import net.praqma.clearcase.test.annotations.ClearCaseUniqueVobName;
@@ -30,19 +39,40 @@ public class ClearCaseRule extends Environment implements TestRule {
 	protected String uniqueBaseName;
 	protected String uniqueName;
 	protected File setupFile;
+
+    protected File logdir;
 	
 	public ClearCaseRule( String name ) {
 		this.baseName = name;
 		this.uniqueBaseName = name + "_" + Environment.getUniqueTimestamp();
+        logToFile();
 	}
 	
 	public ClearCaseRule( String name, String setupFile ) {
 		this.baseName = name;
 		this.uniqueBaseName = name + "_" + Environment.getUniqueTimestamp();
 		this.setupFile = new File( Environment.class.getClassLoader().getResource( setupFile ).getFile() );
+        logToFile();
 	}
-	
-	public String getVobName() {
+
+    public ClearCaseRule logToFile() {
+        if( System.getenv().containsKey( "BUILD_NUMBER" ) ) {
+            Integer number = new Integer( System.getenv( "BUILD_NUMBER" ) );
+            this.logdir = new File( new File( new File( new File( System.getProperty( "user.dir" ) ), "test-logs" ), number.toString() ), getSafeName( baseName ) );
+            this.logdir.mkdirs();
+        } else {
+            System.out.println( "NO BUILD NUMBER" );
+        }
+
+        return this;
+    }
+
+    public static String getSafeName( String name ) {
+        return name.replaceAll( "[^\\w]", "_" );
+    }
+
+
+    public String getVobName() {
 		return vobName;
 	}
 	
@@ -51,6 +81,18 @@ public class ClearCaseRule extends Environment implements TestRule {
 	}
 
 	protected void before( String name ) throws Exception {
+
+        if( logdir != null ) {
+            File logfile = new File( logdir, name );
+            List<String> loggers = new ArrayList<String>(2);
+            loggers.add( "net.praqma" );
+            try {
+                LoggingUtil.setPraqmaticHandler( Level.ALL, loggers, logfile );
+            } catch( FileNotFoundException e ) {
+                e.printStackTrace();
+            }
+        }
+
 		variables.put( "name", name );
 		
 		this.vobName = name;
@@ -67,7 +109,30 @@ public class ClearCaseRule extends Environment implements TestRule {
 		}
 	}
 
+    public void printComponents() {
+        for( String c : context.components.keySet() ) {
+            try {
+                Component component = context.components.get( c );
+                logger.fine( "Printing " + component.toString() );
+
+                String blname = new Describe( component ).addModifier( Describe.initialBaseline ).execute().get( 0 );
+                logger.info( "Baseline name: " + blname );
+                Baseline baseline = Baseline.get( blname );
+                List<Baseline> dependents = baseline.getDependent();
+                logger.info( "Dependent:" );
+                for( Baseline d : dependents ) {
+                    logger.info( " * " + d.getComponent() );
+                }
+            } catch( Exception e ) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 	protected void after() {
+
+        //printComponents();
+
 		if( System.getProperty( "saveEnv", null ) == null ) {
 			if( getPVob() != null ) {
 				try {
@@ -79,8 +144,23 @@ public class ClearCaseRule extends Environment implements TestRule {
 				/* Not possible to tear down */
 			}
 		} else {
-            logger.fine( "== Saving environment ==" );
+            logger.info( "== Saving environment ==" );
 		}
+
+        if( logdir != null ) {
+            int threadId = (int) Thread.currentThread().getId();
+            Logger logger = Logger.getLogger( "net.praqma" );
+            for( Handler handler : logger.getHandlers() ) {
+                if( handler instanceof PraqmaticLogHandler ) {
+                    PraqmaticLogHandler h = (PraqmaticLogHandler) handler;
+                    if( h.getThreadId() == threadId ) {
+                        logger.removeHandler( handler );
+                        handler.close();
+                    }
+                }
+            }
+
+        }
 	}
 
 	@Override

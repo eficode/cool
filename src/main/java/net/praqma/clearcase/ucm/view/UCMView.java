@@ -68,7 +68,7 @@ public class UCMView extends ClearCase implements Serializable {
 			logger.fine( viewtag + " exists" );
 			return true;
 		} catch( Exception e ) {
-			logger.fine( "View check failed: " + e.getMessage() );
+			logger.fine( e.getMessage() );
 			return false;
 		}
 	}

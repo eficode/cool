@@ -37,6 +37,13 @@ public class APIDescribeTest {
     }
 
     @Test
+    public void testInitialBaseline() {
+        Describe d = new Describe( "object" ).addModifier( Describe.initialBaseline );
+
+        assertThat( d.getCommandLine(), is( "describe -fmt %[initial_bl]Xp object" ) );
+    }
+
+    @Test
     public void testGetResults() throws CleartoolException {
         String s = "1 2 3";
         Describe d = new Describe( "" ).addModifier( Describe.dependsOn.clone() );
