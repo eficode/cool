@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
 public class StreamBasicTest extends BaseClearCaseTest {
 
     @ClassRule
-    public static ClearCaseRule ccenv = new ClearCaseRule( "FB9184", "setup.xml" );
+    public static ClearCaseRule ccenv = new ClearCaseRule( "stream-basic-test", "setup.xml" );
 
     @Test
     public void getViews() throws ViewException, CleartoolException {
