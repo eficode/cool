@@ -10,6 +10,7 @@ import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.util.Labels;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -98,6 +99,9 @@ public class Report extends CLI {
 
         if( oOutput.isUsed() ) {
             File outputFile = new File( oOutput.getString() );
+            if( outputFile.exists() ) {
+                FileUtils.forceDelete( outputFile );
+            }
             dump( new PrintStream( outputFile ), map );
         } else {
             dump( System.out, map );
