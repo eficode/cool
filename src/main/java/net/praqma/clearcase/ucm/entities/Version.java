@@ -131,6 +131,12 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		tmp = tmp.replaceFirst( "(?m)@@.*$", "" );
 		tmp = tmp.replaceFirst( "(?m)^\\s+", "" );
 		this.fullfile = tmp.trim();
+
+        /**/
+        if( fullfile.matches( ".*" + qfsor + "\\.$" ) ) {
+            fullfile = fullfile.substring( 0, fullfile.length() - 1 );
+            logger.fine( "Filename ends with dot, and is now \"" + fullfile + "\"" );
+        }
 		
 		/* Check if this is a newly added element
 		 * Ie this is only shown as a parent folder change 
