@@ -141,15 +141,17 @@ public class ClearCaseRule extends Environment implements TestRule {
 					logger.log( Level.WARNING, "Unable to tear down environment", e );
 				}
 
-                try {
-                    String setupViewTag = getUniqueName() + "_setupview";
+                String setupViewTag = getUniqueName() + "_setupview";
+                if( UCMView.viewExists( setupViewTag ) ) {
                     logger.fine( "Removing setup view " + setupViewTag );
-                    UCMView v = new UCMView( setupViewTag );
-                    v.load();
-                    v.end();
-                    v.remove();
-                } catch( Exception e ) {
-                    logger.log( Level.WARNING, "Unable to remove setup view", e );
+                    try {
+                        UCMView v = new UCMView().setViewTag( setupViewTag );
+                        v.load();
+                        v.end();
+                        v.remove();
+                    } catch( Exception e ) {
+                        logger.log( Level.WARNING, "Unable to remove setup view", e );
+                    }
                 }
             } else {
 				/* Not possible to tear down */
