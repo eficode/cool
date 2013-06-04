@@ -117,13 +117,13 @@ public class VersionTest {
 
     @Test
     public void testExtendedNaming() throws UnableToInitializeEntityException {
-        String s = "M:\\vobadm_view\\kerne2\\.@@\\main\\ker2_work\\3\\01_Domænetest\\main\\ker2_work\\1\\03_Leverancetestrapporter\\main\\ker2_work\\1\\Release 7\\main\\ker2_work\\1\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@\\main\\ker2_work\\1";
+        String s = getOSFileString( "\\vobadm_view\\kerne2\\.@@\\main\\ker2_work\\3\\01_Domænetest\\main\\ker2_work\\1\\03_Leverancetestrapporter\\main\\ker2_work\\1\\Release 7\\main\\ker2_work\\1\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc@@\\main\\ker2_work\\1" );
 
         Version v = Version.get( s );
 
         assertThat( v.getRevision(), is( 1 ) );
         assertThat( v.getBranches().size(), is( 2 ) );
-        assertThat( v.getFile().toString(), is( "M:\\vobadm_view\\kerne2\\01_Domænetest\\03_Leverancetestrapporter\\Release 7\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc" ) );
+        assertThat( v.getFile().toString(), is( getOSFileString( "\\vobadm_view\\kerne2\\01_Domænetest\\03_Leverancetestrapporter\\Release 7\\Kerne2_R7_LeveranceTestRapport 01-03-11.doc" ) ) );
     }
 
     @Test
