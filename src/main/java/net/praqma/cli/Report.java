@@ -207,9 +207,15 @@ public class Report extends CLI {
             Date now = new Date();
             long secs = now.getTime();
 
-            logger.fine( "Version: " + v );
-            logger.fine( "Version: " + v.getDate() );
-            logger.fine( "Version: " + v.getRevision() );
+            logger.finer( "Version: " + v );
+            logger.finer( "Version: " + v.getDate() );
+            logger.finer( "Version: " + v.getRevision() );
+
+            /* Check for main/0 */
+            if( v.getUltimateBranch().getName().equals( "main" ) && v.getRevision().equals( 0 ) ) {
+                logger.finest( "Element was main/0, skipping it." );
+                continue;
+            }
 
             /* Get file */
             if( showFullPath ) {
