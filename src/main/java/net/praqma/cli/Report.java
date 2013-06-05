@@ -37,6 +37,8 @@ public class Report extends CLI {
 
     private DateFormat dateFormatter;
 
+    private boolean verbose = false;
+
     @Override
     public void perform( String[] arguments ) throws Exception {
         Options o = new Options( "1.0.0" );
@@ -46,6 +48,7 @@ public class Report extends CLI {
         Option oshowfull = new Option( "showFull", "f", false, 0, "Show full view path" );
         Option odateFormat = new Option( "dateFormat", "d", false, 1, "Date format, default is \"yyyy.MM.dd\"" );
         Option oOutput = new Option( "outputFile", "o", false, 1, "Output the result to the specified file, otherwise dump it to the console." );
+        Option oIgnore = new Option( "ignore", "i", false, 0, "Ignore this run, if the output file already exists." );
 
 
         o.setOption( opath );
@@ -53,6 +56,7 @@ public class Report extends CLI {
         o.setOption( oshowfull );
         o.setOption( odateFormat );
         o.setOption( oOutput );
+        o.setOption( oIgnore );
 
         o.setDefaultOptions();
 
@@ -72,6 +76,18 @@ public class Report extends CLI {
 
         if( oshowfull.isUsed() ) {
             showFullPath = true;
+        }
+
+        if( o.isVerbose() ) {
+            verbose = true;
+        }
+
+        if( oOutput.isUsed() && oIgnore.isUsed() ) {
+            File outputFile = new File( oOutput.getString() );
+            if( outputFile.exists() ) {
+                System.out.println( oOutput.getString() + " exists." );
+                return;
+            }
         }
 
         if( opath.isUsed() ) {
@@ -198,9 +214,35 @@ public class Report extends CLI {
             throw e;
         }
 
+        logger.fine( "I found " + versions.size() + " versions" );
+
         //List<Entry> rows = new ArrayList<Entry>( versions.size() );
 
-        for( Version v : versions ) {
+        long startTime = System.currentTimeMillis();
+        long elapsedTime = 0;
+
+        //for( Version v : versions ) {
+        int size = versions.size();
+        for( int i = 0 ; i < size ; ++i ) {
+            Version v = versions.get( i );
+
+            if( !verbose ) {
+                elapsedTime = System.currentTimeMillis() - startTime;
+                double minutes = (double)elapsedTime / 60000;
+                //logger.info( "Elapsed: " + elapsedTime + ", minutes: " + minutes );
+                double minutePerVersion = minutes / ( i + 1 );
+                //logger.info( "Minutes per version: " + minutePerVersion );
+                int rest = size - i;
+                double timeLeft = ( rest * minutePerVersion );
+
+                String str = Math.floor( timeLeft ) + " minutes";
+                if( timeLeft <= 1.0 ) {
+                    str = "Within a minute";
+                }
+
+                System.out.print( "\rProcessing version #" + i + " , " + getPercentage( i, size, 10 ) + "% Estimated time left: " + str + "        " );
+            }
+
             StringBuilder sb = new StringBuilder();
             File file = v.getFile();
 
@@ -267,6 +309,9 @@ public class Report extends CLI {
                 branches.put( file, bs );
             }
         }
+        if( !verbose ) {
+            System.out.println( "\rProcessed " + size + " versions [Done]                                           " );
+        }
     }
 
     private List<Integer> compileLabeledVersions( String pathname, Branch branch ) throws UnableToInitializeEntityException, CleartoolException {
@@ -281,6 +326,12 @@ public class Report extends CLI {
         }
 
         return versionNumbers;
+    }
+
+    public static double getPercentage( int n, int m, int precision ) {
+        double r = ( Math.floor( ( (double)n / m ) * 100 * precision ) ) / precision;
+
+        return r;
     }
 
     public class Entry {
