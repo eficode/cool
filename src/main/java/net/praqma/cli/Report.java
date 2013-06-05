@@ -37,6 +37,8 @@ public class Report extends CLI {
 
     private DateFormat dateFormatter;
 
+    private boolean verbose = false;
+
     @Override
     public void perform( String[] arguments ) throws Exception {
         Options o = new Options( "1.0.0" );
@@ -72,6 +74,10 @@ public class Report extends CLI {
 
         if( oshowfull.isUsed() ) {
             showFullPath = true;
+        }
+
+        if( o.isVerbose() ) {
+            verbose = true;
         }
 
         if( opath.isUsed() ) {
@@ -198,9 +204,19 @@ public class Report extends CLI {
             throw e;
         }
 
+        logger.fine( "I found " + versions.size() + " versions" );
+
         //List<Entry> rows = new ArrayList<Entry>( versions.size() );
 
-        for( Version v : versions ) {
+        //for( Version v : versions ) {
+        int size = versions.size();
+        for( int i = 0 ; i < size ; ++i ) {
+            Version v = versions.get( i );
+
+            if( !verbose ) {
+                System.out.print( "\rProcessing version #" + i + " , " + getPercentage( i, size, 10 ) + "% " );
+            }
+
             StringBuilder sb = new StringBuilder();
             File file = v.getFile();
 
@@ -267,6 +283,9 @@ public class Report extends CLI {
                 branches.put( file, bs );
             }
         }
+        if( !verbose ) {
+            System.out.println( "\rProcessed " + size + " versions [Done]" );
+        }
     }
 
     private List<Integer> compileLabeledVersions( String pathname, Branch branch ) throws UnableToInitializeEntityException, CleartoolException {
@@ -281,6 +300,12 @@ public class Report extends CLI {
         }
 
         return versionNumbers;
+    }
+
+    public static double getPercentage( int n, int m, int precision ) {
+        double r = ( Math.floor( ( (double)n / m ) * 100 * precision ) ) / precision;
+
+        return r;
     }
 
     public class Entry {
