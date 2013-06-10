@@ -103,7 +103,7 @@ public class ListType {
 
     public String getCommandLine() {
         StringBuilder sb = new StringBuilder();
-        sb.append( "lstype -short" );
+        sb.append( "lstype -fmt %n\\n" );
 
         if( kind == null ) {
             throw new IllegalStateException( "No kind defined" );
