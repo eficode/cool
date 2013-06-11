@@ -6,6 +6,8 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -36,4 +38,11 @@ public abstract class Command<RT extends Object> {
     public abstract String getCommandLine();
 
     public abstract String getCommand();
+
+    private static Pattern pattern = Pattern.compile( "\\s" );
+
+    public static boolean hasWhiteSpaces( String str ) {
+        Matcher matcher = pattern.matcher( str );
+        return matcher.find();
+    }
 }

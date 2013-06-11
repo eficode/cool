@@ -127,6 +127,8 @@ public class Report extends CLI {
     public <K, V> void dump( PrintStream out, Map<K, V> map ) {
         /* Build header */
         StringBuilder b = new StringBuilder(  ).
+                append( "Element oid" ).append( sep ).
+                append( "Version oid" ).append( sep ).
                 append( "File" ).append( sep ).
                 append( "Type" ).append( sep ).
                 append( "Last user" ).append( sep ).
@@ -257,6 +259,12 @@ public class Report extends CLI {
                 logger.finest( "Element was main/0, skipping it." );
                 continue;
             }
+
+            /* Get version oid */
+            sb.append( v.getElementObjectId() ).append( sep );
+
+            /* Get element oid */
+            sb.append( v.getObjectId() ).append( sep );
 
             /* Get file */
             if( showFullPath ) {
