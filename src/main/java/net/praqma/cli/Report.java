@@ -78,7 +78,7 @@ public class Report extends CLI {
             showFullPath = true;
         }
 
-        if( o.isVerbose() ) {
+        if( o.isVerbose() || o.isDebug() ) {
             verbose = true;
         }
 
