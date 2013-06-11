@@ -128,7 +128,6 @@ public class Report extends CLI {
         /* Build header */
         StringBuilder b = new StringBuilder(  ).
                 append( "File" ).append( sep ).
-                append( "Age in hours" ).append( sep ).
                 append( "Type" ).append( sep ).
                 append( "Last user" ).append( sep ).
                 append( "Branch name" ).append( sep ).
@@ -268,7 +267,6 @@ public class Report extends CLI {
 
             /* Get age */
             long age = secs - v.getDate().getTime();
-            sb.append( age / ( 1000 * 60 * 60 ) ).append( sep ); // Age
 
             /* Get type */
             sb.append( v.isDirectory() ? "directory" : "file" ).append( sep ); // Absolute file
