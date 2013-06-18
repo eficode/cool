@@ -38,6 +38,8 @@ public class Describe extends Command<List<String>> {
 
     private Type type;
 
+    private boolean objectId = false;
+
     public static final Property memberOfClosure = new Property( "member_of_closure" );
     public static final Property dependsOn = new Property( "depends_on" );
     public static final Property dependsOnClosure = new Property( "depends_on_closure" );
@@ -146,11 +148,28 @@ public class Describe extends Command<List<String>> {
         return this;
     }
 
+    public Describe getObjectId() {
+        this.objectId = true;
+        type = Type.FMT;
+
+        return this;
+    }
+
     @Override
     public List<String> execute() throws CleartoolException {
         CmdResult result = runCommand();
 
         return result.stdoutList;
+    }
+
+    public String executeGetFirstLine() throws CleartoolException {
+        CmdResult result = runCommand();
+
+        if( result.stdoutList.size() > 0 ) {
+            return result.stdoutList.get( 0 );
+        } else {
+            throw new CleartoolException( "No results found" );
+        }
     }
 
     /**
@@ -171,14 +190,31 @@ public class Describe extends Command<List<String>> {
         StringBuilder b = new StringBuilder(  );
         b.append( "describe " ).append( type ).append( " " );
 
-        int i = 0;
-        for( ; i < properties.size() - 1 ; ++i ) {
-            b.append( properties.get( i ) ).append( itemSeparator );
+        switch( type ) {
+            case FMT:
+                if( properties.size() > 0 ) {
+                    int i = 0;
+                    for( ; i < properties.size() - 1 ; ++i ) {
+                        b.append( properties.get( i ) ).append( itemSeparator );
+                    }
+
+                    b.append( properties.get( i ) );
+                }
+
+                if( objectId ) {
+                    if( properties.size() > 0 ) {
+                        b.append( itemSeparator );
+                    }
+                    b.append( "%On" );
+                }
+                break;
         }
 
-        b.append( properties.get( i ) );
-
-        b.append( " " ).append( objectSelector );
+        if( hasWhiteSpaces( objectSelector ) ) {
+            b.append( " \"" ).append( objectSelector ).append( "\"" );
+        } else {
+            b.append( " " ).append( objectSelector );
+        }
 
         return b.toString();
     }

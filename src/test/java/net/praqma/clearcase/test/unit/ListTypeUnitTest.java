@@ -18,7 +18,7 @@ public class ListTypeUnitTest {
     @Test
     public void test() {
         ListType ls = new ListType().setBranchType().setLocal();
-        assertThat( ls.getCommandLine(), is( "lstype -short -kind brtype -local" ) );
+        assertThat( ls.getCommandLine(), is( "lstype -fmt %n\\n -kind brtype -local" ) );
     }
 
     @Test

@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.api.Describe;
 import net.praqma.clearcase.changeset.ChangeSet2;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -839,4 +840,8 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	public static Version getVersion( String version ) throws UnableToInitializeEntityException {
 		return (Version) UCMEntity.getEntity( Version.class, version );
 	}
+
+    public String getElementObjectId() throws CleartoolException {
+        return new Describe( qualifiedFilename ).getObjectId().executeGetFirstLine();
+    }
 }

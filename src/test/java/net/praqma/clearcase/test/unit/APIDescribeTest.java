@@ -1,5 +1,6 @@
 package net.praqma.clearcase.test.unit;
 
+import net.praqma.clearcase.api.Command;
 import net.praqma.clearcase.api.Describe;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import org.junit.Test;
@@ -7,6 +8,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -76,5 +78,19 @@ public class APIDescribeTest {
         assertThat( d.get( 0 ), is( "1" ) );
         assertThat( d.get( 1 ), is( "2" ) );
         assertThat( d.get( 2 ), is( "3" ) );
+    }
+
+    @Test
+    public void testObjectId() {
+        String cmd = new Describe( "a" ).getObjectId().getCommandLine();
+
+        assertThat( cmd, is( "describe -fmt %On a" ) );
+    }
+
+    @Test
+    public void testHasWhiteSpaces() {
+        String s = "cleartool describe -fmt %On M:\\vobadm_view\\saminfo\\.@@\\main\\sam_work\\1\\0_Start\\main\\sam_work\\2\\03_Business Case.lnk@@\\main\\sam_work\\";
+
+        assertTrue( Command.hasWhiteSpaces( s ) );
     }
 }

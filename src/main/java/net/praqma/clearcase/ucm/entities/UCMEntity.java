@@ -18,6 +18,7 @@ import net.praqma.clearcase.ClearCase;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
+import net.praqma.clearcase.api.Describe;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
@@ -496,4 +497,12 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	public static String getargIn( String in ) {
 		return "-in " + ( in == null ? "RootFolder" : in );
 	}
+
+    public String getObjectId() throws CleartoolException {
+        return new Describe( this ).getObjectId().executeGetFirstLine();
+    }
+
+    public static String getObjectId( String name ) throws CleartoolException {
+        return new Describe( name ).getObjectId().executeGetFirstLine();
+    }
 }

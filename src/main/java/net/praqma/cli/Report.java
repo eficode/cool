@@ -30,7 +30,7 @@ public class Report extends CLI {
         s.perform( args );
     }
 
-    private String sep = "; ";
+    private String sep = ";";
     private File path;
     private int lengthOfPath = 0;
     private boolean showFullPath = false;
@@ -48,6 +48,7 @@ public class Report extends CLI {
         Option oshowfull = new Option( "showFull", "f", false, 0, "Show full view path" );
         Option odateFormat = new Option( "dateFormat", "d", false, 1, "Date format, default is \"yyyy.MM.dd\"" );
         Option oOutput = new Option( "outputFile", "o", false, 1, "Output the result to the specified file, otherwise dump it to the console." );
+        Option oIgnore = new Option( "ignore", "i", false, 0, "Ignore this run, if the output file already exists." );
 
 
         o.setOption( opath );
@@ -55,6 +56,7 @@ public class Report extends CLI {
         o.setOption( oshowfull );
         o.setOption( odateFormat );
         o.setOption( oOutput );
+        o.setOption( oIgnore );
 
         o.setDefaultOptions();
 
@@ -76,8 +78,16 @@ public class Report extends CLI {
             showFullPath = true;
         }
 
-        if( o.isVerbose() ) {
+        if( o.isVerbose() || o.isDebug() ) {
             verbose = true;
+        }
+
+        if( oOutput.isUsed() && oIgnore.isUsed() ) {
+            File outputFile = new File( oOutput.getString() );
+            if( outputFile.exists() ) {
+                System.out.println( oOutput.getString() + " exists." );
+                return;
+            }
         }
 
         if( opath.isUsed() ) {
@@ -117,8 +127,9 @@ public class Report extends CLI {
     public <K, V> void dump( PrintStream out, Map<K, V> map ) {
         /* Build header */
         StringBuilder b = new StringBuilder(  ).
+                append( "Element oid" ).append( sep ).
+                append( "Version oid" ).append( sep ).
                 append( "File" ).append( sep ).
-                append( "Age in hours" ).append( sep ).
                 append( "Type" ).append( sep ).
                 append( "Last user" ).append( sep ).
                 append( "Branch name" ).append( sep ).
@@ -208,13 +219,29 @@ public class Report extends CLI {
 
         //List<Entry> rows = new ArrayList<Entry>( versions.size() );
 
+        long startTime = System.currentTimeMillis();
+        long elapsedTime = 0;
+
         //for( Version v : versions ) {
         int size = versions.size();
         for( int i = 0 ; i < size ; ++i ) {
             Version v = versions.get( i );
 
             if( !verbose ) {
-                System.out.print( "\rProcessing version #" + i + " , " + getPercentage( i, size, 10 ) + "% " );
+                elapsedTime = System.currentTimeMillis() - startTime;
+                double minutes = (double)elapsedTime / 60000;
+                //logger.info( "Elapsed: " + elapsedTime + ", minutes: " + minutes );
+                double minutePerVersion = minutes / ( i + 1 );
+                //logger.info( "Minutes per version: " + minutePerVersion );
+                int rest = size - i;
+                double timeLeft = ( rest * minutePerVersion );
+
+                String str = Math.floor( timeLeft ) + " minutes";
+                if( timeLeft <= 1.0 ) {
+                    str = "Within a minute";
+                }
+
+                System.out.print( "\rProcessing version #" + i + " , " + getPercentage( i, size, 10 ) + "% Estimated time left: " + str + "        " );
             }
 
             StringBuilder sb = new StringBuilder();
@@ -233,6 +260,12 @@ public class Report extends CLI {
                 continue;
             }
 
+            /* Get version oid */
+            sb.append( v.getElementObjectId() ).append( sep );
+
+            /* Get element oid */
+            sb.append( v.getObjectId() ).append( sep );
+
             /* Get file */
             if( showFullPath ) {
                 sb.append( "\"" + v.getFile().getAbsolutePath() + "\"" ).append( sep ); // Name
@@ -242,7 +275,6 @@ public class Report extends CLI {
 
             /* Get age */
             long age = secs - v.getDate().getTime();
-            sb.append( age / ( 1000 * 60 * 60 ) ).append( sep ); // Age
 
             /* Get type */
             sb.append( v.isDirectory() ? "directory" : "file" ).append( sep ); // Absolute file
@@ -284,7 +316,7 @@ public class Report extends CLI {
             }
         }
         if( !verbose ) {
-            System.out.println( "\rProcessed " + size + " versions [Done]" );
+            System.out.println( "\rProcessed " + size + " versions [Done]                                           " );
         }
     }
 
