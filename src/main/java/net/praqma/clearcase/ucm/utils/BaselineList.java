@@ -241,5 +241,18 @@ public class BaselineList extends ArrayList<Baseline> {
 			return (int) ( ( bl1.getDate().getTime() / 1000 ) - ( bl2.getDate().getTime() / 1000 ) );
 		}
 	}
+    
+    public static class DescendingDateSort implements Comparator<Baseline>, Serializable {
+        @Override
+		public int compare( Baseline bl1, Baseline bl2 ) {
+			if( bl2.getDate() == null ) {
+				return -1;
+			}
+			if( bl1.getDate() == null ) {
+				return 1;
+			}
+			return (int) ( ( bl2.getDate().getTime() / 1000 ) - ( bl1.getDate().getTime() / 1000 ) );
+		}
+    }
 	
 }

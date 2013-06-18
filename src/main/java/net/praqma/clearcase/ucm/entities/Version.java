@@ -792,7 +792,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	 * @throws UCMEntityNotFoundException
 	 * @throws UnableToInitializeEntityException
 	 */
-	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext, boolean versions ) throws CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
+	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext, boolean versions ) throws CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {        
 		String cmd = "diffbl " + ( versions ? "-versions " : "" ) + " -activities " + ( !merge ? "-nmerge " : "" ) + ( d2 == null ? "-pre " : "" ) + d1.getFullyQualifiedName() + ( d2 != null ? " " + d2.getFullyQualifiedName() : "" );
 
 		List<String> lines = null;
