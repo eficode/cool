@@ -66,6 +66,12 @@ public class Find {
      */
     protected boolean print = false;
 
+    /**
+     * If there are any missing objects in ClearCase, the {@link Find} class will fail.
+     * Accepting errors, will overcome this problem.
+     */
+    protected boolean acceptErrors = false;
+
     public Find() {
 
     }
@@ -96,6 +102,12 @@ public class Find {
 
     public Find setVisible() {
         visible = Visibility.visible;
+
+        return this;
+    }
+
+    public Find acceptErrors() {
+        acceptErrors = true;
 
         return this;
     }
@@ -149,7 +161,7 @@ public class Find {
         List<String> lines;
 
         try {
-            lines = Cleartool.run( cmd, viewRoot ).stdoutList;
+            lines = Cleartool.run( cmd, viewRoot, false, acceptErrors ).stdoutList;
         } catch( AbnormalProcessTerminationException e ) {
             throw new CleartoolException( "Error while finding", e );
         }

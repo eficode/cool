@@ -201,7 +201,7 @@ public class Report extends CLI {
     private void findBranch( File path, Branch branch, Map<File, Entry> map ) throws Exception {
         logger.info( "Processing " + branch );
 
-        Find find = new Find().addPathName( "." ).setFindAll().print().setViewRoot( path ).setVersionQuery( "version(.../" + branch.getName() + "/LATEST)" );
+        Find find = new Find().addPathName( "." ).setFindAll().print().setViewRoot( path ).setVersionQuery( "version(.../" + branch.getName() + "/LATEST)" ).acceptErrors();
 
         List<Version> versions = null;
         try {
