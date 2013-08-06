@@ -41,10 +41,7 @@ import net.praqma.util.structure.Tuple;
 import org.apache.commons.io.FileUtils;
 
 /**
- * The OO implementation of the ClearCase entity Snapshot view. The next line
- * 
  * @author wolfgang
- * 
  */
 public class SnapshotView extends UCMView {
 
@@ -59,6 +56,8 @@ public class SnapshotView extends UCMView {
 	public final String rx_co_file = ".*CHECKEDOUT$";
     public final String rx_ctr_file = ".*\\.contrib";
     public final String rx_keep_file = ".*\\.keep$";
+    public final String rx_updt_file = ".updt";
+
 	
 	private static String VIEW_DOT_DAT_FILE = "view.dat";
 	
@@ -503,7 +502,9 @@ public class SnapshotView extends UCMView {
 				if( f.getName().equalsIgnoreCase( VIEW_DOT_DAT_FILE ) ) {
 					continue;
 				}
-				rootVPFiles.add( f );
+                if( !isSpecialFile( f.getName() ) ) {
+                    rootVPFiles.add( f );
+                }
 			}
 		}
 
@@ -533,14 +534,14 @@ public class SnapshotView extends UCMView {
         }
 
 		int total = vpFiles.size();
-        logger.finest( "View private files: " + vpFiles );
+        logger.finest( "Aggregated view private files: " + vpFiles );
 
         if( total == 0 ) {
             logger.fine( "No files to delete" );
             return info;
         }
 
-		logger.fine( "Found " + total + " files, of which " + ( total - vpFiles.size() ) + " were CO, CTR or KEEP's." );
+		logger.fine( "Found " + total + " files, of which " + ( total - vpFiles.size() ) + " were UPDT, CO, CTR or KEEP's." );
 
 		List<File> dirs = new ArrayList<File>();
 		int dircount = 0;
@@ -609,7 +610,7 @@ public class SnapshotView extends UCMView {
         List<File> vpFiles = new ArrayList<File>( result.size() );
 
         for( String vpFile : result ) {
-            if( vpFile.matches( rx_co_file ) || vpFile.matches( rx_keep_file ) || vpFile.matches( rx_ctr_file ) ) {
+            if( isSpecialFile( vpFile ) ) {
                 continue;
             }
 
@@ -617,6 +618,10 @@ public class SnapshotView extends UCMView {
         }
 
         return vpFiles;
+    }
+
+    private boolean isSpecialFile( String file ) {
+        return ( file.matches( rx_co_file ) || file.matches( rx_keep_file ) || file.matches( rx_ctr_file ) || file.endsWith( rx_updt_file ) );
     }
 
 	public Map<String, Integer> swipe( boolean excludeRoot ) throws CleartoolException {
