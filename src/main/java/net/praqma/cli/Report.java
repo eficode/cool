@@ -260,10 +260,10 @@ public class Report extends CLI {
                 continue;
             }
 
-            /* Get version oid */
+            /* Get element oid */
             sb.append( v.getElementObjectId() ).append( sep );
 
-            /* Get element oid */
+            /* Get version oid */
             sb.append( v.getObjectId() ).append( sep );
 
             /* Get file */
