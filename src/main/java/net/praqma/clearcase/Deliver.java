@@ -75,7 +75,7 @@ public class Deliver {
 	}
 
     /**
-     * @deprecated since 0.6.13
+     * @deprecated since 0.6.13 - Should it be?
      */
 	public boolean deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException, CleartoolException {
 		logger.fine( "Delivering " + baseline + " from " + stream + " to " + target + " in " + context + " with tag " + viewtag );

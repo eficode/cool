@@ -152,7 +152,7 @@ public class BaselineList extends ArrayList<Baseline> {
     }
 	
 	/**
-	 * Apply a single filter to the {@link BaselineList}
+	 * Apply a single filter to the {@link BaselineList} after the list has been generated.
 	 * @param filter
 	 * @return
 	 */

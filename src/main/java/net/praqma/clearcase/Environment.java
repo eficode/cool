@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.util.setup.EnvironmentParser;
@@ -85,7 +86,13 @@ public class Environment {
 		
 		Version.addToSourceControl( file, viewpath, null, true );
 	}
-	
+
+    public void addNewContent( File file, File path ) throws ClearCaseException {
+        Version.checkOut( file, path );
+        writeContent( file, "content #" + System.currentTimeMillis() );
+        Version.checkIn( file, false, path );
+    }
+
 	public void addNewElement( Component component, File viewpath, String filename ) throws ClearCaseException {
 		File file = new File( new File( viewpath, component.getShortname() ), filename );
 		
