@@ -4,6 +4,7 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.execute.CmdResult;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,10 +41,12 @@ public class Describe extends Command<List<String>> {
 
     private boolean objectId = false;
 
+    public static final Property activity = new Property( "activity" ).extended( true );
     public static final Property memberOfClosure = new Property( "member_of_closure" );
     public static final Property dependsOn = new Property( "depends_on" );
     public static final Property dependsOnClosure = new Property( "depends_on_closure" );
     public static final Property initialBaseline = new Property( "initial_bl" ).extended( true );
+    public static final Property versions = new Property( "versions" ).commaSeparate();
 
     public static class Property {
 
@@ -152,6 +155,11 @@ public class Describe extends Command<List<String>> {
         this.objectId = true;
         type = Type.FMT;
 
+        return this;
+    }
+
+    public Describe setPath( File path ) {
+        this.root = path;
         return this;
     }
 

@@ -2,20 +2,17 @@ package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.PVob;
+import net.praqma.clearcase.api.Describe;
 import net.praqma.clearcase.cleartool.Cleartool;
-import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.EntityNotLoadedException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToGetEntityException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
-import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
+import net.praqma.clearcase.exceptions.*;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Activity extends UCMEntity {
@@ -171,6 +168,32 @@ public class Activity extends UCMEntity {
 		
 		return headline;
 	}
+
+    public List<Version> getVersions( File path ) throws UnableToInitializeEntityException, CleartoolException {
+        return getVersions( this, path );
+    }
+
+    public static List<Version> getVersions( Activity activity, File path ) throws UnableToInitializeEntityException {
+        logger.fine( "Getting versions for " + activity );
+
+        String output = null;
+        try {
+            output = new Describe( activity ).addModifier( Describe.versions ).setPath( path ).executeGetFirstLine();
+        } catch( CleartoolException e ) {
+            logger.fine( e.getMessage() );
+            return Collections.emptyList();
+        }
+
+        String[] versionNames = output.split( "," );
+
+        List<Version> versions = new ArrayList<Version>( versionNames.length );
+
+        for( String versionName : versionNames ) {
+            versions.add( Version.get( versionName.trim() ) );
+        }
+
+        return versions;
+    }
 	
 	public static Activity get( String name ) throws UnableToInitializeEntityException {
 		if( !name.startsWith( "activity:" ) ) {

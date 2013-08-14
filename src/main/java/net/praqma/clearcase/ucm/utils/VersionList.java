@@ -8,20 +8,73 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import net.praqma.clearcase.exceptions.ClearCaseException;
+import net.praqma.clearcase.exceptions.CleartoolException;
+import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
+import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Version;
 
 public class VersionList extends ArrayList<Version> {
 
 	private static Logger logger = Logger.getLogger( VersionList.class.getName() );
-	
-	public VersionList() {
-		
-	}
-	
-	public VersionList( List<Version> versions ) {
-		this.addAll( versions );
-	}
-	
+
+    private String branchName;
+    private File path;
+
+    public VersionList() {
+
+    }
+
+    public VersionList( List<Version> versions ) {
+        this.addAll( versions );
+    }
+
+    public VersionList addActivities( List<Activity> activities ) {
+        System.out.println( "Adding " + activities.size() + " activities" );
+        for( Activity activity : activities ) {
+            System.out.println( "Adding " + activity.changeset.versions.size() + " versions" );
+            this.addAll( activity.changeset.versions );
+        }
+
+        return this;
+    }
+
+    public VersionList addActivity( Activity activity ) throws ClearCaseException {
+        this.addAll( activity.getVersions( path ) );
+        return this;
+    }
+
+    public VersionList setBranchName( String branchName ) {
+        this.branchName = branchName;
+        return this;
+    }
+
+    public VersionList setPath( File path ) {
+        this.path = path;
+        return this;
+    }
+
+    public Map<Activity, List<Version>> getLatestForActivities() {
+
+        /* Compile the latest versions */
+        Map<File, Version> map = new HashMap<File, Version>();
+        getLatestChanges( this, branchName, map );
+
+        /* Group the versions into activities */
+        Map<Activity, List<Version>> changeSet = new HashMap<Activity, List<Version>>();
+
+        for( Version v : map.values() ) {
+            /* Put in a new activity if doesn't exist */
+            if( !changeSet.containsKey( v.getActivity() ) ) {
+                changeSet.put( v.getActivity(), new ArrayList<Version>(  ) );
+            }
+
+            changeSet.get( v.getActivity() ).add( v );
+        }
+
+        return changeSet;
+    }
+
 	public VersionList getLatest() {
 		VersionList list = new VersionList();
 		
@@ -64,4 +117,28 @@ public class VersionList extends ArrayList<Version> {
 		
 		return list;
 	}
+
+    public static List<Version> getLatestChanges( List<Activity> activities, String branchName ) {
+        Map<File, Version> map = new HashMap<File, Version>();
+
+        for( Activity a : activities ) {
+            getLatestChanges( a.changeset.versions, branchName, map );
+        }
+
+        return new ArrayList<Version>( map.values() );
+    }
+
+    private static void getLatestChanges( List<Version> versions, String branchName, Map<File, Version> map ) {
+        for( Version v : versions ) {
+            if( branchName == null || ( branchName != null && branchName.equals( v.getBranch() ) ) ) {
+                if( map.containsKey( v.getFile() ) ) {
+                    if( v.getRevision() > map.get( v.getFile() ).getRevision() ) {
+                        map.put( v.getFile(), v );
+                    }
+                } else {
+                    map.put( v.getFile(), v );
+                }
+            }
+        }
+    }
 }

@@ -82,6 +82,11 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	
 	private Integer revision = 0;
 
+    /**
+     * Represents the {@link Activity} of the given {@link Version}.
+     */
+    private Activity activity;
+
 	private static String rx_revision = "(\\d+)$";
 	private static Pattern p_revision = Pattern.compile( "@@(.*)$" );
 	
@@ -284,12 +289,27 @@ public class Version extends UCMEntity implements Comparable<Version> {
 				setKind( Kind.DIRECTORY_ELEMENT );
 			}
 
+            activity = getActivity( this );
+
 		} catch( Exception e ) {
 			throw new UnableToLoadEntityException( this, e );
 		}
 		
 		return this;
 	}
+
+    /**
+     * Get the {@link Activity} for a {@link Version}.
+     */
+    public static Activity getActivity( Version version ) throws CleartoolException, UnableToInitializeEntityException {
+        String activityName = new Describe( version ).addModifier( Describe.activity ).executeGetFirstLine();
+        return Activity.get( activityName );
+    }
+
+    public Activity getActivity() {
+        autoLoad();
+        return activity;
+    }
 	
 	public static Version create( File file, boolean mkdir, SnapshotView view ) throws CleartoolException, IOException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException, UnableToInitializeEntityException {
 
