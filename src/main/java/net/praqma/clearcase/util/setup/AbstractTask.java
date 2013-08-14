@@ -60,7 +60,10 @@ public abstract class AbstractTask {
 	public String getValue( String name, Element e, Context context ) {
 		return getValue( name, e, context, "" );
 	}
-	
+
+    /**
+     * Get the attribute "name" for the given {@link Element} in the given {@link Context}. If not found def is returned.
+     */
 	public String getValue( String name, Element e, Context context, String def ) {
 		String value = e.getAttribute( name );
 		

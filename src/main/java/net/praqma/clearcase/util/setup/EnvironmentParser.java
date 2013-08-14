@@ -45,6 +45,7 @@ public class EnvironmentParser extends XML {
 		map.put( "folder", new FolderTask() );
 		map.put( "hlink", new HLinkTask() );
 		map.put( "project", new ProjectTask() );
+        map.put( "rebase", new RebaseTask() );
 		map.put( "vob", new VobTask() );
 		map.put( "setactivity", new SetActivityTask() );
 		map.put( "stream", new StreamTask() );
