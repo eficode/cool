@@ -22,7 +22,7 @@ public class FB9488 {
 	private static Logger logger = Logger.getLogger( FB9488.class.getName() );
 
 	@ClassRule
-	public static ClearCaseRule ccenv = new ClearCaseRule( "FB6497", "setup-9488.xml" );
+	public static ClearCaseRule ccenv = new ClearCaseRule( "FB9488", "setup-9488.xml" );
 	
 	@Test
 	public void fb9488() throws ClearCaseException {
