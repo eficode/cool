@@ -49,7 +49,8 @@ public class FB9488 {
             }
         }
 
-        assertThat( s.size(), is(3) );
+        /*  The third activity */
+        assertThat( s.size(), is(1) );
 	}
 
     @Test
@@ -76,6 +77,7 @@ public class FB9488 {
             }
         }
 
-        assertThat( s.size(), is(4) );
+        /*  The third activity AND the first, containing the Model folder */
+        assertThat( s.size(), is(2) );
     }
 }
