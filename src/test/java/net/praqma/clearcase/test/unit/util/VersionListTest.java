@@ -1,5 +1,6 @@
 package net.praqma.clearcase.test.unit.util;
 
+import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Version;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author cwolfgang
@@ -210,6 +212,14 @@ public class VersionListTest {
         assertThat( versions2.size(), is( 2 ) );
         assertThat( versions2.get( 0 ).getRevision(), is( 3 ) );
         assertThat( versions2.get( 1 ).getRevision(), is( 3 ) );
+    }
+
+    @Test
+    public void testMatchBranchName() {
+        String name = "^.*" + Cool.qfs + "snade.*$";
+        System.out.println("NAME: " + name);
+        String version = "\\main\\one_int\\snade";
+        assertTrue( version.matches( name ) );
     }
 
     private void printVersions( List<Version> versions ) {

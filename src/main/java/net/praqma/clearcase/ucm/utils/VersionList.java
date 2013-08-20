@@ -129,8 +129,9 @@ public class VersionList extends ArrayList<Version> {
     }
 
     private static void getLatestChanges( List<Version> versions, String branchName, Map<File, Version> map ) {
+        logger.fine( "Branch name is " + branchName );
         for( Version v : versions ) {
-            if( branchName == null || ( branchName != null && branchName.equals( v.getBranch() ) ) ) {
+            if( branchName == null || ( branchName != null && v.getBranch().matches( branchName ) ) ) {
                 if( map.containsKey( v.getFile() ) ) {
                     if( v.getRevision() > map.get( v.getFile() ).getRevision() ) {
                         map.put( v.getFile(), v );
