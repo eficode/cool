@@ -1,0 +1,313 @@
+<ccenv>
+    <var name="name" value="praqma"/>
+    <var name="pvobname" value="${name}_PVOB"/>
+    <var name="vobname" value="${name}"/>
+
+    <vob storetag="pvobname" tag="${pvobname}" linuxtag="/vobs/${pvobname}" comment="PVOB" ucmproject="true"
+         stgloc="-auto" mounted="true"/>
+    <vob storetag="vobname" tag="${vobname}" linuxtag="/vobs/${vobname}" stgloc="-auto" mounted="true"/>
+
+    <view tag="${name}_setupview" stgloc="-auto"/>
+    <context mvfs="m:\" linux="/view" view="${name}_setupview" vob="${vobname}"/>
+
+    <component root="" comment="" name="_System" pvob="${pvobname}"/>
+    <component root="" comment="" name="_Server" pvob="${pvobname}"/>
+    <component root="" comment="" name="_Client" pvob="${pvobname}"/>
+    <component root="Service" comment="" name="Service" pvob="${pvobname}"/>
+    <component root="Model" comment="" name="Model" pvob="${pvobname}"/>
+    <component root="Clientapp" comment="" name="Clientapp" pvob="${pvobname}"/>
+
+    <folder name="one-folder" in="RootFolder" pvob="${pvobname}"/>
+
+    <project name="bootstrap" comment="" model="SIMPLE" pvob="${pvobname}" in="one-folder">
+        <components>
+            <component name="Service" pvob="${pvobname}"/>
+            <component name="Model" pvob="${pvobname}"/>
+            <component name="Clientapp" pvob="${pvobname}"/>
+        </components>
+        <policies>
+            <policy>POLICY_INTERPROJECT_DELIVER</policy>
+        </policies>
+    </project>
+
+    <stream name="bootstrap_int" in="bootstrap" comment="" pvob="${pvobname}" type="integration">
+        <baselines>
+            <baseline name="_System_INITIAL" pvob="${pvobname}"/>
+            <baseline name="_Server_INITIAL" pvob="${pvobname}"/>
+            <baseline name="_Client_INITIAL" pvob="${pvobname}"/>
+            <baseline name="Service_INITIAL" pvob="${pvobname}"/>
+            <baseline name="Model_INITIAL" pvob="${pvobname}"/>
+            <baseline name="Clientapp_INITIAL" pvob="${pvobname}"/>
+        </baselines>
+    </stream>
+
+    <view tag="${name}_bootstrap_int" stgloc="-auto">
+        <stream name="bootstrap_int" pvob="${pvobname}"/>
+    </view>
+
+    <context mvfs="m:\" linux="/view" view="${name}_bootstrap_int" vob="${vobname}"/>
+
+    <baseline name="_Server_1.0" label="none" comment="" component="_Server" pvob="${pvobname}">
+        <dependencies>
+            <component name="Service" pvob="${pvobname}"/>
+            <component name="Model" pvob="${pvobname}"/>
+        </dependencies>
+    </baseline>
+
+    <baseline name="_Client_1.0" label="none" comment="" component="_Client" pvob="${pvobname}">
+        <dependencies>
+            <component name="Clientapp" pvob="${pvobname}"/>
+            <component name="Model" pvob="${pvobname}"/>
+        </dependencies>
+    </baseline>
+
+    <baseline name="_System_1.0" label="full" comment="" component="_System" pvob="${pvobname}">
+        <dependencies>
+            <component name="_Server" pvob="${pvobname}"/>
+            <component name="_Client" pvob="${pvobname}"/>
+        </dependencies>
+    </baseline>
+
+
+    <project name="one" comment="" pvob="${pvobname}" in="one-folder">
+        <components>
+            <component name="Service" pvob="${pvobname}"/>
+            <component name="Model" pvob="${pvobname}"/>
+            <component name="Clientapp" pvob="${pvobname}"/>
+        </components>
+        <policies>
+            <policy>POLICY_INTERPROJECT_DELIVER</policy>
+        </policies>
+    </project>
+
+    <stream name="one_int" in="one" comment="" pvob="${pvobname}" type="integration">
+        <baselines>
+            <baseline name="_System_1.0" pvob="${pvobname}"/>
+        </baselines>
+    </stream>
+
+    <project name="jenkins" comment="" pvob="${pvobname}" in="one-folder">
+        <policies>
+            <policy>POLICY_INTERPROJECT_DELIVER</policy>
+        </policies>
+    </project>
+
+    <stream name="jenkins_int" in="jenkins" comment="" pvob="${pvobname}" type="integration">
+    </stream>
+
+    <!-- Dev stream #1 -->
+    <stream name="one_dev" in="one_int" comment="" pvob="${pvobname}">
+        <baselines>
+            <baseline name="_System_1.0" pvob="${pvobname}"/>
+        </baselines>
+    </stream>
+
+    <view tag="${name}_one_dev" stgloc="-auto">
+        <stream name="one_dev" pvob="${pvobname}"/>
+    </view>
+
+    <view tag="${name}_one_int" stgloc="-auto">
+        <stream name="one_int" pvob="${pvobname}"/>
+    </view>
+
+    <context mvfs="m:\" linux="/view" view="${name}_one_int" vob="${vobname}"/>
+
+    <activity comment="" headline="First activity" in="one_int" name="first-activity" pvob="${pvobname}"/>
+    <setactivity activity="first-activity" pvob="${pvobname}"/>
+
+    <!-- Add elements -->
+    <add file="Model/model.h" content="#1"/>
+    <add file="Model/common.h" content="#1"/>
+    <add file="Model/foo.h" content="#1"/>
+    <add file="Model/algorithm.h" content="#1"/>
+
+    <baseline name="model-1" label="full" comment="" component="_System" pvob="${pvobname}"/>
+
+    <!-- FIRST -->
+    <!-- checkin 1 -->
+    <checkout comment="" file="Model/model.h"/>
+    <content file="Model/model.h" content="#2"/>
+    <checkin file="Model/model.h"/>
+
+    <!-- checkin 2 -->
+    <checkout comment="" file="Model/model.h"/>
+    <content file="Model/model.h" content="#3"/>
+    <checkin file="Model/model.h"/>
+
+    <!-- checkin 3 -->
+    <checkout comment="" file="Model/model.h"/>
+    <content file="Model/model.h" content="#4"/>
+    <checkin file="Model/model.h"/>
+
+    <!-- checkin 4 -->
+    <checkout comment="" file="Model/foo.h"/>
+    <content file="Model/foo.h" content="#5"/>
+    <checkin file="Model/foo.h"/>
+
+    <!-- checkin 5 -->
+    <checkout comment="" file="Model/common.h"/>
+    <content file="Model/common.h" content="#6"/>
+    <checkin file="Model/common.h"/>
+
+    <!-- checkin 5 -->
+    <checkout comment="" file="Model/algorithm.h"/>
+    <content file="Model/algorithm.h" content="#7"/>
+    <checkin file="Model/algorithm.h"/>
+
+    <!-- Baseline -->
+    <baseline name="model-2" label="full" comment="" component="_System" pvob="${pvobname}"/>
+
+
+
+    <!-- REBASE ONE -->
+    <context mvfs="m:\" linux="/view" view="${name}_one_dev" vob="${vobname}"/>
+    <rebase stream="one_dev" baseline="model-2" pvob="${pvobname}" />
+
+    <activity comment="" headline="First dev activity" in="one_dev" name="first-dev-activity" pvob="${pvobname}"/>
+    <setactivity activity="first-dev-activity" pvob="${pvobname}"/>
+
+    <!-- FIRST DEV -->
+    <!-- checkin 1 -->
+    <checkout comment="" file="Model/model.h"/>
+    <content file="Model/model.h" content="#2_1"/>
+    <checkin file="Model/model.h"/>
+
+    <!-- checkin 2 -->
+    <checkout comment="" file="Model/model.h"/>
+    <content file="Model/model.h" content="#2_2"/>
+    <checkin file="Model/model.h"/>
+
+    <!-- checkin 3 -->
+    <checkout comment="" file="Model/foo.h"/>
+    <content file="Model/foo.h" content="#2_3"/>
+    <checkin file="Model/foo.h"/>
+
+    <!-- checkin 4 -->
+    <checkout comment="" file="Model/foo.h"/>
+    <content file="Model/foo.h" content="#2_4"/>
+    <checkin file="Model/foo.h"/>
+
+    <!-- checkin 5 -->
+    <checkout comment="" file="Model/common.h"/>
+    <content file="Model/common.h" content="#2_5"/>
+    <checkin file="Model/common.h"/>
+
+    <!-- checkin 6 -->
+    <checkout comment="" file="Model/algorithm.h"/>
+    <content file="Model/algorithm.h" content="#2_6"/>
+    <checkin file="Model/algorithm.h"/>
+
+    <!-- Baseline -->
+    <baseline name="model-dev-1" label="full" comment="" component="_System" pvob="${pvobname}"/>
+
+
+
+    <context mvfs="m:\" linux="/view" view="${name}_one_int" vob="${vobname}"/>
+    <activity comment="" headline="Second activity" in="one_int" name="second-activity" pvob="${pvobname}"/>
+    <setactivity activity="second-activity" pvob="${pvobname}"/>
+
+
+    <!-- SECOND -->
+    <!-- checkin 1 -->
+    <checkout comment="" file="Model/model.h"/>
+    <content file="Model/model.h" content="#2_1"/>
+    <checkin file="Model/model.h"/>
+
+    <!-- checkin 2 -->
+    <checkout comment="" file="Model/model.h"/>
+    <content file="Model/model.h" content="#2_2"/>
+    <checkin file="Model/model.h"/>
+
+    <!-- checkin 3 -->
+    <checkout comment="" file="Model/foo.h"/>
+    <content file="Model/foo.h" content="#2_3"/>
+    <checkin file="Model/foo.h"/>
+
+    <!-- checkin 4 -->
+    <checkout comment="" file="Model/foo.h"/>
+    <content file="Model/foo.h" content="#2_4"/>
+    <checkin file="Model/foo.h"/>
+
+    <!-- checkin 5 -->
+    <checkout comment="" file="Model/common.h"/>
+    <content file="Model/common.h" content="#2_5"/>
+    <checkin file="Model/common.h"/>
+
+    <!-- Baseline -->
+    <baseline name="model-2" label="full" comment="" component="_System" pvob="${pvobname}"/>
+
+
+    <activity comment="" headline="Third activity" in="one_int" name="third-activity" pvob="${pvobname}"/>
+    <setactivity activity="third-activity" pvob="${pvobname}"/>
+
+
+    <!-- THIRD -->
+    <!-- checkin 1 -->
+    <checkout comment="" file="Model/model.h"/>
+    <content file="Model/model.h" content="#3_1"/>
+    <checkin file="Model/model.h"/>
+
+    <!-- checkin 2 -->
+    <checkout comment="" file="Model/foo.h"/>
+    <content file="Model/foo.h" content="#3_2"/>
+    <checkin file="Model/foo.h"/>
+
+    <!-- checkin 3 -->
+    <checkout comment="" file="Model/foo.h"/>
+    <content file="Model/foo.h" content="#3_3"/>
+    <checkin file="Model/foo.h"/>
+
+    <!-- checkin 4 -->
+    <checkout comment="" file="Model/common.h"/>
+    <content file="Model/common.h" content="#3_4"/>
+    <checkin file="Model/common.h"/>
+
+    <!-- checkin 5 -->
+    <checkout comment="" file="Model/common.h"/>
+    <content file="Model/common.h" content="#3_5"/>
+    <checkin file="Model/common.h"/>
+
+    <!-- Baseline -->
+    <baseline name="model-3" label="full" comment="" component="_System" pvob="${pvobname}"/>
+
+
+
+    <!-- REBASE TWO -->
+    <context mvfs="m:\" linux="/view" view="${name}_one_dev" vob="${vobname}"/>
+    <rebase stream="one_dev" baseline="model-3" pvob="${pvobname}" />
+
+    <activity comment="" headline="Second dev activity" in="one_dev" name="second-dev-activity" pvob="${pvobname}"/>
+    <setactivity activity="second-dev-activity" pvob="${pvobname}"/>
+
+    <!-- SECOND DEV -->
+    <!-- checkin 1 -->
+    <checkout comment="" file="Model/model.h"/>
+    <content file="Model/model.h" content="#2_1"/>
+    <checkin file="Model/model.h"/>
+
+    <!-- checkin 2 -->
+    <checkout comment="" file="Model/model.h"/>
+    <content file="Model/model.h" content="#2_2"/>
+    <checkin file="Model/model.h"/>
+
+    <!-- checkin 3 -->
+    <checkout comment="" file="Model/foo.h"/>
+    <content file="Model/foo.h" content="#2_3"/>
+    <checkin file="Model/foo.h"/>
+
+    <!-- checkin 4 -->
+    <checkout comment="" file="Model/foo.h"/>
+    <content file="Model/foo.h" content="#2_4"/>
+    <checkin file="Model/foo.h"/>
+
+    <!-- checkin 5 -->
+    <checkout comment="" file="Model/common.h"/>
+    <content file="Model/common.h" content="#2_5"/>
+    <checkin file="Model/common.h"/>
+
+    <!-- Baseline -->
+    <baseline name="model-dev-2" label="full" comment="" component="_System" pvob="${pvobname}"/>
+
+</ccenv>
+
+
