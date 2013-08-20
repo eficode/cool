@@ -505,4 +505,9 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
     public static String getObjectId( String name ) throws CleartoolException {
         return new Describe( name ).getObjectId().executeGetFirstLine();
     }
+
+    @Override
+    public int hashCode() {
+        return getFullyQualifiedName().hashCode();
+    }
 }
