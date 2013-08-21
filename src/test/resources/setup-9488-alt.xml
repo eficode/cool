@@ -1,5 +1,5 @@
 <ccenv>
-    <var name="name" value="praqma"/>
+    <var name="name" value="praqma9488"/>
     <var name="pvobname" value="${name}_PVOB"/>
     <var name="vobname" value="${name}"/>
 
@@ -196,7 +196,7 @@
     <checkout comment="" file="Model/algorithm.h"/>
     <content file="Model/algorithm.h" content="#2_6"/>
     <checkin file="Model/algorithm.h"/>
-
+	
     <!-- Baseline -->
     <baseline name="model-dev-1" label="full" comment="" component="_System" pvob="${pvobname}"/>
 
@@ -282,28 +282,48 @@
     <!-- SECOND DEV -->
     <!-- checkin 1 -->
     <checkout comment="" file="Model/model.h"/>
-    <content file="Model/model.h" content="#2_1"/>
+    <content file="Model/model.h" content="#4_1"/>
     <checkin file="Model/model.h"/>
 
     <!-- checkin 2 -->
     <checkout comment="" file="Model/model.h"/>
-    <content file="Model/model.h" content="#2_2"/>
+    <content file="Model/model.h" content="#4_2"/>
     <checkin file="Model/model.h"/>
 
     <!-- checkin 3 -->
     <checkout comment="" file="Model/foo.h"/>
-    <content file="Model/foo.h" content="#2_3"/>
+    <content file="Model/foo.h" content="#4_3"/>
     <checkin file="Model/foo.h"/>
 
     <!-- checkin 4 -->
     <checkout comment="" file="Model/foo.h"/>
-    <content file="Model/foo.h" content="#2_4"/>
+    <content file="Model/foo.h" content="#4_4"/>
     <checkin file="Model/foo.h"/>
 
     <!-- checkin 5 -->
     <checkout comment="" file="Model/common.h"/>
-    <content file="Model/common.h" content="#2_5"/>
+    <content file="Model/common.h" content="#4_5"/>
     <checkin file="Model/common.h"/>
+	
+    <!-- checkin 6 -->
+    <checkout comment="" file="Model/algorithm.h"/>
+    <content file="Model/algorithm.h" content="#4_6"/>
+    <checkin file="Model/algorithm.h"/>
+	
+	
+	<!-- Second activity -->
+    <activity comment="" headline="Second dev activity PART II" in="one_dev" name="second-dev-activity-pt-2" pvob="${pvobname}"/>
+    <setactivity activity="second-dev-activity-pt-2" pvob="${pvobname}"/>
+	
+    <!-- checkin 2 -->
+    <checkout comment="" file="Model/model.h"/>
+    <content file="Model/model.h" content="#4_2b"/>
+    <checkin file="Model/model.h"/>
+
+    <!-- checkin 3 -->
+    <checkout comment="" file="Model/foo.h"/>
+    <content file="Model/foo.h" content="#4_4b"/>
+    <checkin file="Model/foo.h"/>
 
     <!-- Baseline -->
     <baseline name="model-dev-2" label="full" comment="" component="_System" pvob="${pvobname}"/>

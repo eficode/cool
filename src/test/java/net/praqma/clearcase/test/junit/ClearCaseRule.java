@@ -268,7 +268,11 @@ public class ClearCaseRule extends Environment implements TestRule {
 
         private Component component;
 
-        private String baselineName = "baseline-for-test";
+        /**
+         * This is the baseline name of the {@link Baseline}.
+         * If it is not set, no baselines will be created.
+         */
+        private String baselineName;
 
         /**
          * The name of the {@link Activity}.
@@ -310,6 +314,9 @@ public class ClearCaseRule extends Environment implements TestRule {
             return this;
         }
 
+        /**
+         * If set, a new {@link Baseline} is created.
+         */
         public ContentCreator setBaselineName( String baselineName ) {
             this.baselineName = baselineName;
             return this;
@@ -335,8 +342,6 @@ public class ClearCaseRule extends Environment implements TestRule {
             return this;
         }
 
-
-
         public File getPath() {
             return path;
         }
@@ -346,11 +351,15 @@ public class ClearCaseRule extends Environment implements TestRule {
         }
 
         public Baseline getBaseline() throws ClearCaseException {
-            if( baseline == null ) {
-                create();
-            }
+            if( baselineName != null ) {
+                if( baseline == null ) {
+                    create();
+                }
 
-            return baseline;
+                return baseline;
+            } else {
+                throw new IllegalStateException( "Cannot create baseline, because the baseline name is not provided." );
+            }
         }
 
         public ContentCreator create() throws ClearCaseException {
@@ -391,7 +400,9 @@ public class ClearCaseRule extends Environment implements TestRule {
                 ExceptionUtils.print( e, System.out, true );
             }
 
-            baseline = Baseline.create( baselineName, context.components.get( "_System" ), path, Baseline.LabelBehaviour.FULL, false );
+            if( baselineName != null ) {
+                baseline = Baseline.create( baselineName, context.components.get( "_System" ), path, Baseline.LabelBehaviour.FULL, false );
+            }
 
             return this;
         }
