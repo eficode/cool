@@ -271,8 +271,6 @@ public class Baseline extends UCMEntity implements Diffable {
 
     /**
      * Set the {@link PromotionLevel}
-     * @param plevel
-     * @throws UnableToPromoteBaselineException
      */
 	public void setPromotionLevel( Project.PromotionLevel plevel ) throws UnableToPromoteBaselineException {
 		this.plevel = plevel;
@@ -284,6 +282,13 @@ public class Baseline extends UCMEntity implements Diffable {
 			throw new UnableToPromoteBaselineException( this, this.plevel );
 		}
 	}
+
+    /**
+     * Set the {@link PromotionLevel} of this {@link Baseline}, without persisting it in ClearCase.
+     */
+    public void setLocalPromotionLevel( Project.PromotionLevel plevel ) throws UnableToPromoteBaselineException {
+        this.plevel = plevel;
+    }
 
 	public Component getComponent() {
 		if( !loaded ) {
