@@ -1,18 +1,12 @@
 package net.praqma.clearcase.test.functional;
 
-import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.test.BaseClearCaseTest;
 import net.praqma.clearcase.test.annotations.ClearCaseUniqueVobName;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
-import net.praqma.clearcase.util.ExceptionUtils;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.io.File;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -45,13 +39,13 @@ public class BaselineDynamicTest extends BaseClearCaseTest {
     }
 
     @Test
-    @ClearCaseUniqueVobName( name = "bl-dyn-test-demote" )
+    @ClearCaseUniqueVobName( name = "bl-dyn-test-reject" )
     public void testDemote() throws Exception {
         Baseline bl = ccenv.context.baselines.get( "model-2" ).load();
 
         assertNotNull( bl );
         assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
-        bl.demote();
+        bl.reject();
         assertEquals( PromotionLevel.REJECTED, bl.getPromotionLevel( false ) );
     }
 

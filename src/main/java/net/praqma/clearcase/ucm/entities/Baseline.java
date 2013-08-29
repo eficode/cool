@@ -252,15 +252,9 @@ public class Baseline extends UCMEntity implements Diffable {
 	}
 
 	/**
-	 * Demotes the Baseline to <code>REJECTED</code>.
-	 * 
-	 * @throws UnableToLoadEntityException
-	 * @throws UnableToPromoteBaselineException
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToCreateEntityException 
-	 * @throws UnableToGetEntityException 
+	 * <code>REJECTED</code> the Baseline.
 	 */
-	public Project.PromotionLevel demote() throws UnableToPromoteBaselineException {
+	public Project.PromotionLevel reject() throws UnableToPromoteBaselineException {
 		if( !loaded ) {
 			try {
 				load();
@@ -269,8 +263,8 @@ public class Baseline extends UCMEntity implements Diffable {
 			}
 		}
 
-		this.plevel = Project.PromotionLevel.REJECTED;
-		setPromotionLevel( this.plevel );
+		setPromotionLevel( PromotionLevel.REJECTED );
+        this.plevel = Project.PromotionLevel.REJECTED;
 
 		return Project.PromotionLevel.REJECTED;
 	}
