@@ -273,20 +273,20 @@ public class Baseline extends UCMEntity implements Diffable {
      * Set the {@link PromotionLevel}
      */
 	public void setPromotionLevel( Project.PromotionLevel plevel ) throws UnableToPromoteBaselineException {
-		this.plevel = plevel;
-
 		String cmd = "chbl -level " + plevel + " " + this;
 		try {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new UnableToPromoteBaselineException( this, this.plevel );
 		}
+
+        this.plevel = plevel;
 	}
 
     /**
      * Set the {@link PromotionLevel} of this {@link Baseline}, without persisting it in ClearCase.
      */
-    public void setLocalPromotionLevel( Project.PromotionLevel plevel ) throws UnableToPromoteBaselineException {
+    public void setLocalPromotionLevel( Project.PromotionLevel plevel ) {
         this.plevel = plevel;
     }
 
