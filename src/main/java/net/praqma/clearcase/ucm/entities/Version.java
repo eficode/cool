@@ -300,10 +300,16 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
     /**
      * Get the {@link Activity} for a {@link Version}.
+     * In base ClearCase the {@link Activity} object does not exist, it must therefore be allowed to return null. See FB case 9988.
      */
     public static Activity getActivity( Version version ) throws CleartoolException, UnableToInitializeEntityException {
-        String activityName = new Describe( version ).addModifier( Describe.activity ).executeGetFirstLine();
-        return Activity.get( activityName );
+        String activityName = new Describe( version ).addModifier( Describe.activity ).doAcceptEmpty().executeGetFirstLine();
+        if( activityName != null ) {
+            return Activity.get( activityName );
+        } else {
+            logger.fine( "No activities for " + version );
+            return null;
+        }
     }
 
     public Activity getActivity() {

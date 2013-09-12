@@ -20,6 +20,8 @@ public class Describe extends Command<List<String>> {
 
     private String itemSeparator = "\n";
 
+    private boolean acceptEmpty = false;
+
     public enum Type {
         SHORT( "-short" ),
         LONG( "-long" ),
@@ -163,6 +165,14 @@ public class Describe extends Command<List<String>> {
         return this;
     }
 
+    /**
+     * Allow the execution of the {@link Describe} to return null instead of an exception. See FB case 9988.
+     */
+    public Describe doAcceptEmpty() {
+        this.acceptEmpty = true;
+        return this;
+    }
+
     @Override
     public List<String> execute() throws CleartoolException {
         CmdResult result = runCommand();
@@ -176,7 +186,11 @@ public class Describe extends Command<List<String>> {
         if( result.stdoutList.size() > 0 ) {
             return result.stdoutList.get( 0 );
         } else {
-            throw new CleartoolException( "No results found" );
+            if( acceptEmpty ) {
+                return null;
+            } else {
+                throw new CleartoolException( "No results found" );
+            }
         }
     }
 
