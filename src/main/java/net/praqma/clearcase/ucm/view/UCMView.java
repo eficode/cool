@@ -3,7 +3,9 @@ package net.praqma.clearcase.ucm.view;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -23,17 +25,20 @@ import net.praqma.util.execute.CmdResult;
 public class UCMView extends ClearCase implements Serializable {
 
 	public static final Pattern rx_view_get_path = Pattern.compile( "^\\s*Global path:\\s*(.*?)\\s*$" );
+    public static final Pattern RX_VIEW_ROOT = Pattern.compile( "^\\s*\\*{0,1}\\s*([\\w\\.-]+)\\s*(.+)$" );
 
 	transient private static Logger logger = Logger.getLogger( UCMView.class.getName() );
 	
 	private static Map<String, UCMView> createdViews = new HashMap<String, UCMView>();
 
+    /** TODO The global storage path name?! */
 	protected String path;
+
 	protected String viewtag = "";
 	protected Stream stream = null;
 	
 	protected String storageLocation = null;
-	
+
 	protected boolean dynamic = false;
 
 	public UCMView() {
@@ -91,8 +96,12 @@ public class UCMView extends ClearCase implements Serializable {
 	}
 	
 	public void remove() throws ViewException {
-		//context.removeView( this );
-		String cmd = "rmview -force " + ( isDynamicView() ? "-tag " + viewtag : ( storageLocation != null ? storageLocation : "-tag " + viewtag ) );
+		String cmd = "rmview -force " + (
+                isDynamicView() ? "-tag " + viewtag : (
+                        storageLocation != null ? storageLocation : (
+                                path != null ? path : "-tag " + viewtag )
+                )
+        );
 
 		try {
 			Cleartool.run( cmd );
@@ -172,11 +181,33 @@ public class UCMView extends ClearCase implements Serializable {
 			throw new ViewException( "Could not start view " + viewtag, null, Type.END_VIEW_FAILED, e );
 		}
 	}
+
+    public static UCMView createViewFromGlobalStoragePath( String tag, String gspath ) {
+        UCMView view = new UCMView( gspath, tag );
+        return view;
+    }
 	
 	public static void getViews( Project project ) {
 		// cleartool lsstream -in project:ava2@\chw_PVOB
 		// http://publib.boulder.ibm.com/infocenter/cchelp/v7r0m0/index.jsp?topic=/com.ibm.rational.clearcase.cc_ref.doc/topics/ct_lsstream.htm
 	}
+
+    public static List<UCMView> getViews() throws CleartoolException {
+        List<UCMView> views = new ArrayList<UCMView>();
+        try {
+            List<String> lines = Cleartool.run( "lsview" ).stdoutList;
+            for( String line : lines ) {
+                Matcher m = RX_VIEW_ROOT.matcher( line );
+                if( m.find() ) {
+                    views.add( new UCMView( m.group( 2 ).trim(), m.group( 1 ).trim() ) );
+                }
+            }
+        } catch( Exception e ) {
+            throw new CleartoolException( "Unable to list views", e );
+        }
+
+        return views;
+    }
 	
 	public static UCMView getView( String viewTag ) throws ViewException {
 		if( viewTag.trim().equals( "" ) ) {
