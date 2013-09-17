@@ -25,9 +25,11 @@ public class RemoveViews extends CLI {
 
         Option oregex = new Option( "regex", "r", true, 1, "Regular expression" );
         Option oregion = new Option( "region", "r", false, 1, "Name of the region" );
+        Option odryrun = new Option( "dry-run", "d", false, 0, "Dry run" );
 
         o.setOption( oregex );
         o.setOption( oregion );
+        o.setOption( odryrun );
 
         o.setDefaultOptions();
 
@@ -39,6 +41,10 @@ public class RemoveViews extends CLI {
             logger.severe( "Incorrect option: " + e.getMessage() );
             o.display();
             System.exit( 1 );
+        }
+
+        if( odryrun.isUsed() ) {
+            logger.info( "Dry run" );
         }
 
         Site site = new Site( "My site" );
@@ -57,7 +63,9 @@ public class RemoveViews extends CLI {
             if( view.getViewtag().matches( oregex.getString() ) ) {
                 try {
                     logger.info( "Removing " + view.getViewtag() );
-                    view.remove();
+                    if( !odryrun.isUsed() ) {
+                        view.remove();
+                    }
                 } catch( ClearCaseException e ) {
                     logger.warning( "Failed to remove " + view.getViewtag() );
                 }
