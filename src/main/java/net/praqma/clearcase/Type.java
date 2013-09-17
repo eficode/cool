@@ -1,10 +1,16 @@
 package net.praqma.clearcase;
 
+import java.io.Serializable;
+
 /**
  * @author cwolfgang
  */
-public abstract class Type {
+public abstract class Type implements Serializable {
     protected String name;
+
+    protected Type() {
+        name = "NA";
+    }
 
     public Type( String name ) {
         this.name = name;

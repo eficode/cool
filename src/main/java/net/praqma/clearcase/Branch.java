@@ -7,6 +7,9 @@ public class Branch extends Type {
 
     private String branchPath;
 
+    public Branch() {
+    }
+
     public Branch( String name ) {
         super( name );
     }

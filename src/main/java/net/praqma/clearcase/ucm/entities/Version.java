@@ -294,6 +294,8 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		} catch( Exception e ) {
 			throw new UnableToLoadEntityException( this, e );
 		}
+
+        this.loaded = true;
 		
 		return this;
 	}

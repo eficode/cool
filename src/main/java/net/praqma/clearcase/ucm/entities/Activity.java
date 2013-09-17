@@ -75,6 +75,7 @@ public class Activity extends UCMEntity {
 		
 		setUser( result[0].trim() );
 		headline = result[1].trim();
+        this.loaded = true;
 		
 		return this;
 	}

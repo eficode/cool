@@ -466,7 +466,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
         if( !loaded ) {
             try {
                 load();
-                loaded = true;
+                loaded = true; // TODO Should not be necessary
             } catch( ClearCaseException e ) {
                 throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
             }
