@@ -268,9 +268,9 @@ public class Report extends CLI {
 
             /* Get file */
             if( showFullPath ) {
-                sb.append( "\"" + v.getFile().getAbsolutePath() + "\"" ).append( sep ); // Name
+                sb.append( v.getFile().getAbsolutePath() ).append( sep ); // Name
             } else {
-                sb.append( "\"" + v.getFile().getAbsolutePath().substring( lengthOfPath ) + "\"" ).append( sep ); // Name
+                sb.append( v.getFile().getAbsolutePath().substring( lengthOfPath ) ).append( sep ); // Name
             }
 
             /* Get age */
