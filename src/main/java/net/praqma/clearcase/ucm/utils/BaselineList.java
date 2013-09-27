@@ -210,7 +210,7 @@ public class BaselineList extends ArrayList<Baseline> {
 	private List<Baseline> _get() throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		List<String> bls_str = null;
 		
-		String cmd = "lsbl -fmt %Xn;%Nd\n -component " + component + " -stream " + stream + ( level != null ? " -level " + level.toString() : "" );
+		String cmd = "lsbl -fmt %Xn;%Nd\\n -component " + component + " -stream " + stream + ( level != null ? " -level " + level.toString() : "" );
 		try {
 			bls_str = Cleartool.run( cmd ).stdoutList;
             logger.fine( "OUTPUT: " + bls_str );
