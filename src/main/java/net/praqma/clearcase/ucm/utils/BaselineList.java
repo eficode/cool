@@ -210,10 +210,12 @@ public class BaselineList extends ArrayList<Baseline> {
 	private List<Baseline> _get() throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		List<String> bls_str = null;
 		
-		String cmd = "lsbl -fmt %Xn&&%Nd -component " + component + " -stream " + stream + ( level != null ? " -level " + level.toString() : "" );
+		String cmd = "lsbl -fmt %Xn;%Nd -component " + component + " -stream " + stream + ( level != null ? " -level " + level.toString() : "" );
 		try {
 			bls_str = Cleartool.run( cmd ).stdoutList;
+            logger.fine( "OUTPUT: " + bls_str );
 		} catch( AbnormalProcessTerminationException e ) {
+            logger.warning( e.getMessage() );
 			throw new UnableToListBaselinesException( stream, component, level, e );
 		}
 
@@ -222,7 +224,7 @@ public class BaselineList extends ArrayList<Baseline> {
 
 		int c = 0;
 		for( String bl : bls_str ) {
-            String[] split = bl.split( "&&" );
+            String[] split = bl.split( ";" );
             Baseline baseline = Baseline.get( split[0], stream.getPVob() );
             try {
                 baseline.setDate( split[1] );
