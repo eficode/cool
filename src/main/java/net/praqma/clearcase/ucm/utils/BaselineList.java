@@ -225,8 +225,7 @@ public class BaselineList extends ArrayList<Baseline> {
 		int c = 0;
 		for( String bl : bls_str ) {
             String[] split = bl.split( ";" );
-            logger.fine( "0: " + split[0] + ", 1: " + split[1] );
-            Baseline baseline = Baseline.get( split[0], stream.getPVob() );
+            Baseline baseline = Baseline.get( split[0] );
             try {
                 baseline.setDate( split[1] );
             } catch( ParseException e ) {
