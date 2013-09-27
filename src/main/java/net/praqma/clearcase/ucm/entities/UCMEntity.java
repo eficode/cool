@@ -356,8 +356,12 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	}
 
 	public Date getDate() {
-		autoLoad();
+        /* First try to do auto load */
+        if( date == null ) {
+		    autoLoad();
+        }
 
+        /* If auto load doesn't include the date, load it separately */
         if( date == null ) {
             try {
                 loadDate();
@@ -388,6 +392,17 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
         } catch( ParseException e ) {
             logger.fine( "Unable to parse date: " + e.getMessage() );
             this.date = null;
+        }
+    }
+
+    public void setDate( Date date ) {
+        this.date = date;
+    }
+
+    public void setDate( String date ) throws ParseException {
+        logger.fine( "Date string is " + date );
+        synchronized( dateFormatter ) {
+            this.date = dateFormatter.parse( date );
         }
     }
 

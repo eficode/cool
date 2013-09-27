@@ -1,6 +1,7 @@
 package net.praqma.clearcase.ucm.utils;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -209,7 +210,7 @@ public class BaselineList extends ArrayList<Baseline> {
 	private List<Baseline> _get() throws UnableToInitializeEntityException, UnableToListBaselinesException {
 		List<String> bls_str = null;
 		
-		String cmd = "lsbl -s -component " + component + " -stream " + stream + ( level != null ? " -level " + level.toString() : "" );
+		String cmd = "lsbl -fmt %Xn&&%Nd -component " + component + " -stream " + stream + ( level != null ? " -level " + level.toString() : "" );
 		try {
 			bls_str = Cleartool.run( cmd ).stdoutList;
 		} catch( AbnormalProcessTerminationException e ) {
@@ -221,7 +222,14 @@ public class BaselineList extends ArrayList<Baseline> {
 
 		int c = 0;
 		for( String bl : bls_str ) {
-			bls.add( Baseline.get( bl, stream.getPVob() ) );
+            String[] split = bl.split( "&&" );
+            Baseline baseline = Baseline.get( split[0], stream.getPVob() );
+            try {
+                baseline.setDate( split[1] );
+            } catch( ParseException e ) {
+                throw new UnableToInitializeEntityException( baseline.getClass(), e );
+            }
+            bls.add( baseline );
 			c++;
 		}
 		
