@@ -260,7 +260,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	/* Getters */
 
 	public String getUser() {
-		if( !loaded ) {
+		if( user == null && !loaded ) {
 			try {
 				load();
 			} catch( ClearCaseException e ) {
