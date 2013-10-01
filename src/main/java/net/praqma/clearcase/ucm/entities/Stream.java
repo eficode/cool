@@ -540,6 +540,21 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return bls;
 	}
 
+    /**
+     * Get the latest {@link Baseline} from this {@link Stream} and a {@link Component}.
+     */
+    public Baseline getLatestBaseline( Component component ) throws UnableToInitializeEntityException, CleartoolException {
+        List<Baseline> baselines = getLatestBaselines();
+
+        for( Baseline baseline : baselines ) {
+            if( baseline.getComponent().equals( component ) ) {
+                return baseline;
+            }
+        }
+
+        return null;
+    }
+
 	public Component getSingleTopComponent() throws NoSingleTopComponentException, UnableToInitializeEntityException {
 		List<Baseline> bls;
 		try {
