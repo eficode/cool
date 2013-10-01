@@ -213,7 +213,7 @@ public class BaselineList extends ArrayList<Baseline> {
 		String cmd = "lsbl -fmt %Xn;%Nd\\n -component " + component + " -stream " + stream + ( level != null ? " -level " + level.toString() : "" );
 		try {
 			bls_str = Cleartool.run( cmd ).stdoutList;
-            logger.fine( "OUTPUT: " + bls_str );
+            logger.finest( "The output: " + bls_str );
 		} catch( AbnormalProcessTerminationException e ) {
             logger.warning( e.getMessage() );
 			throw new UnableToListBaselinesException( stream, component, level, e );
@@ -222,7 +222,6 @@ public class BaselineList extends ArrayList<Baseline> {
 		logger.fine( "I got " + bls_str.size() + " baselines." );
 		List<Baseline> bls = new ArrayList<Baseline>();
 
-		int c = 0;
 		for( String bl : bls_str ) {
             String[] split = bl.split( ";" );
             Baseline baseline = Baseline.get( split[0] );
@@ -232,7 +231,6 @@ public class BaselineList extends ArrayList<Baseline> {
                 throw new UnableToInitializeEntityException( baseline.getClass(), e );
             }
             bls.add( baseline );
-			c++;
 		}
 		
 		return bls;

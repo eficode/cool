@@ -400,7 +400,6 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
     }
 
     public void setDate( String date ) throws ParseException {
-        logger.fine( "Date string is " + date );
         synchronized( dateFormatter ) {
             this.date = dateFormatter.parse( date );
         }

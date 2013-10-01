@@ -832,7 +832,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			throw new CleartoolException( "Could not get difference between " + d1 + " and " + d2 + ": " + e.getMessage(), e );
 		}
 		
-		logger.finer( "LINES: " + lines );
+		logger.finest( "LINES: " + lines );
 		
 		return Activity.parseActivityStrings( lines, viewContext.getAbsoluteFile().toString().length() );
 	}
