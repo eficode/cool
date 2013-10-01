@@ -161,46 +161,49 @@ public class Activity extends UCMEntity {
 
     public static class Parser {
         public enum Direction {
-            LEFT,  // <<
-            RIGHT, // >>
-            BOTH;  // << >>
+            /** The item is present only in baseline-selector1 or stream-selector1. */
+            LEFT( "<<" ),
+            /** The activity is present in both of the items being compared and is newer in baseline-selector1 or stream-selector1. */
+            LEFTI( "<-" ),
+            /** The item is present only in baseline-selector2 or stream-selector2. */
+            RIGHT( ">>" ),
+            /** The activity is present in both of the items being compared and is newer in baseline-selector2 or stream-selector2. */
+            RIGHTI( "->" );
 
-            public boolean matches( String d ) {
-                switch( this.ordinal() ) {
-                    case 0:
-                        return d.equals( "<<" );
-                    case 1:
-                        return d.equals( ">>" );
-                    case 2:
-                        return d.equals( "<<" ) || d.equals( ">>" );
-                    default:
-                        return false;
-                }
+            private String symbol;
+
+            private Direction( String symbol ) {
+                this.symbol = symbol;
             }
 
+            public boolean matches( String symbol ) {
+                return this.symbol.equals( symbol );
+            }
         }
 
-        private Direction direction = Direction.BOTH;
+        private List<Direction> directions = new ArrayList<Direction>( 4 );
 
         private DiffBl diffBl;
 
         private boolean activityUserAsVersionUser = false;
 
-        private int length;
+        private int length = 0;
 
         private List<Activity> activities = new ArrayList<Activity>(  );
 
         public Parser( DiffBl diffBl ) {
             this.diffBl = diffBl;
-            length = diffBl.getViewRoot().getAbsoluteFile().toString().length();
+            if( diffBl.getViewRoot() != null ) {
+                length = diffBl.getViewRoot().getAbsoluteFile().toString().length();
+            }
         }
 
         public List<Activity> getActivities() {
             return activities;
         }
 
-        public Parser setDirection( Direction direction ) {
-            this.direction = direction;
+        public Parser addDirection( Direction direction ) {
+            this.directions.add( direction );
 
             return this;
         }
@@ -211,22 +214,33 @@ public class Activity extends UCMEntity {
             return this;
         }
 
+        private boolean hasDirection( String symbol ) {
+            for( Direction direction : directions ) {
+                if( direction.matches( symbol ) ) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public Parser parse() throws ClearCaseException {
             Activity current = null;
             boolean include = false;
 
             List<String> lines = diffBl.execute();
 
-            for( String s : lines ) {
+            for( String line : lines ) {
+                logger.finest( "Line: " + line );
+
 			    /* Get activity */
-                Matcher match = pattern_activity.matcher( s );
+                Matcher match = pattern_activity2.matcher( line );
 
                 /* This line is a new activity */
                 if( match.find() ) {
-
                     /* Test direction */
-                    String d = match.group( 1 );
-                    if( direction.matches( d ) ) {
+                    String symbol = match.group( 1 );
+                    if( hasDirection( symbol ) ) {
                         current = get( match.group( 2 ) );
 
                         /* A special case? */
@@ -245,12 +259,12 @@ public class Activity extends UCMEntity {
 
                 if( include ) {
                     if( current == null ) {
-                        logger.fine( "Current is not an activity: " + s );
+                        logger.fine( "Current is not an activity: " + line );
                         continue;
                     }
 
                     /* If not an activity, it must be a version */
-                    String f = s.trim();
+                    String f = line.trim();
 
                     Version v = (Version) UCMEntity.getEntity( Version.class, f );
                     v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
