@@ -11,14 +11,17 @@ import java.util.regex.Pattern;
 
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.api.Describe;
+import net.praqma.clearcase.api.DiffBl;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
+import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Activity extends UCMEntity {
 	
 	//private final static Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
 	private final static Pattern pattern_activity = Pattern.compile( "^[<>-]{2}\\s*(\\S+)\\s*.*$" );
+    private final static Pattern pattern_activity2 = Pattern.compile( "^([<>-]{2})\\s*(\\S+)\\s*.*$" );
 	
 	private static Logger logger = Logger.getLogger( Activity.class.getName() );
 
@@ -116,9 +119,7 @@ public class Activity extends UCMEntity {
 		
 		return activity;
 	}
-	
-	
-	
+
 	public static List<Activity> parseActivityStrings( List<String> result, int length ) throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		Activity current = null;
@@ -157,6 +158,115 @@ public class Activity extends UCMEntity {
 
 		return activities;
 	}
+
+    public static class Parser {
+        public enum Direction {
+            LEFT,  // <<
+            RIGHT, // >>
+            BOTH;  // << >>
+
+            public boolean matches( String d ) {
+                switch( this.ordinal() ) {
+                    case 0:
+                        return d.equals( "<<" );
+                    case 1:
+                        return d.equals( ">>" );
+                    case 2:
+                        return d.equals( "<<" ) || d.equals( ">>" );
+                    default:
+                        return false;
+                }
+            }
+
+        }
+
+        private Direction direction = Direction.BOTH;
+
+        private DiffBl diffBl;
+
+        private boolean activityUserAsVersionUser = false;
+
+        private int length;
+
+        private List<Activity> activities = new ArrayList<Activity>(  );
+
+        public Parser( DiffBl diffBl ) {
+            this.diffBl = diffBl;
+            length = diffBl.getViewRoot().getAbsoluteFile().toString().length();
+        }
+
+        public List<Activity> getActivities() {
+            return activities;
+        }
+
+        public Parser setDirection( Direction direction ) {
+            this.direction = direction;
+
+            return this;
+        }
+
+        public Parser setActivityUserAsVersionUser( boolean b ) {
+            activityUserAsVersionUser = b;
+
+            return this;
+        }
+
+        public Parser parse() throws ClearCaseException {
+            Activity current = null;
+            boolean include = false;
+
+            List<String> lines = diffBl.execute();
+
+            for( String s : lines ) {
+			    /* Get activity */
+                Matcher match = pattern_activity.matcher( s );
+
+                /* This line is a new activity */
+                if( match.find() ) {
+
+                    /* Test direction */
+                    String d = match.group( 1 );
+                    if( direction.matches( d ) ) {
+                        current = get( match.group( 2 ) );
+
+                        /* A special case? */
+                        if( current.getShortname().equals( "no_activity" ) ) {
+                            logger.fine( "Recorded a special activity case" );
+                            current.setSpecialCase( true );
+                        }
+                        activities.add( current );
+                        include = true;
+                    } else {
+                        include = false;
+                    }
+
+                    continue;
+                }
+
+                if( include ) {
+                    if( current == null ) {
+                        logger.fine( "Current is not an activity: " + s );
+                        continue;
+                    }
+
+                    /* If not an activity, it must be a version */
+                    String f = s.trim();
+
+                    Version v = (Version) UCMEntity.getEntity( Version.class, f );
+                    v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
+                    if( activityUserAsVersionUser ) {
+                        v.setUser( current.getUser() );
+                    } else {
+                        v.load();
+                    }
+
+                    current.changeset.versions.add( v );
+                }
+            }
+
+            return this;
+        }
+    }
 	
 	public String getHeadline() {
 		if( !loaded ) {
