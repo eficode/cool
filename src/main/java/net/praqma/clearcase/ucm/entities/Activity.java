@@ -1,9 +1,7 @@
 package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -280,6 +278,29 @@ public class Activity extends UCMEntity {
 
             return this;
         }
+    }
+
+    /**
+     * Trim the change set to the latest.
+     * @param branchName If given, only the {@link Version}s on this branch will be included.
+     */
+    public List<Version> getTrimmedChangeSet( String branchName ) {
+        logger.fine( "Trimming change set to latest from " + branchName );
+
+        Map<File, Version> versions = new HashMap<File, Version>(  );
+        for( Version v : changeset.versions ) {
+            if( branchName == null || ( branchName != null && v.getBranch().matches( branchName ) ) ) {
+                if( versions.containsKey( v.getFile() ) ) {
+                    if( v.getRevision() > versions.get( v.getFile() ).getRevision() ) {
+                        versions.put( v.getFile(), v );
+                    }
+                } else {
+                    versions.put( v.getFile(), v );
+                }
+            }
+        }
+
+        return new ArrayList( versions.values() );
     }
 	
 	public String getHeadline() {
