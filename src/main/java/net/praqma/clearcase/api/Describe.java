@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -179,19 +180,52 @@ public class Describe extends Command<List<String>> {
 
         return result.stdoutList;
     }
+    
+    public String executeGetFirstLine(boolean robust) throws CleartoolException {
+        int retryCnt = 3;
+        long retryInterval = 30*1000;
+        String res = null;
+        
+        if (!robust) {
+            CmdResult result = runCommand();
 
-    public String executeGetFirstLine() throws CleartoolException {
-        CmdResult result = runCommand();
-
-        if( result.stdoutList.size() > 0 ) {
-            return result.stdoutList.get( 0 );
-        } else {
-            if( acceptEmpty ) {
+            if( result.stdoutList.size() > 0 ) {
+                return result.stdoutList.get( 0 );
+            } else {
+                if( acceptEmpty ) {
+                    return null;
+                } else {
+                    throw new CleartoolException( "No results found" );
+                }
+            }
+        } else {            
+            for (int i = 0; i<retryCnt; i++) {
+                try {
+                    return executeGetFirstLine(false);
+                } catch (CleartoolException ex) {
+                    if (ex.getMessage().contains("No results found")) {
+                        logger.log(Level.WARNING, String.format("Failed to describe revision. Attempt number %s. Retrying in 30 seconds", i+1 ));
+                    } else {
+                        throw ex;
+                    }
+                }                
+                try {
+                    Thread.sleep(retryInterval);
+                } catch (InterruptedException ex) {
+                   throw new CleartoolException("Thread sleep failed.");
+                }
+            }
+            
+            if(acceptEmpty) {
                 return null;
             } else {
                 throw new CleartoolException( "No results found" );
-            }
+            } 
         }
+    }
+ 
+    public String executeGetFirstLine() throws CleartoolException {
+        return executeGetFirstLine(false);
     }
 
     /**

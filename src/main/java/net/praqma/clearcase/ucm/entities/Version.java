@@ -870,6 +870,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 
     public String getElementObjectId() throws CleartoolException {
-        return new Describe( qualifiedFilename ).getObjectId().executeGetFirstLine();
+        return new Describe( qualifiedFilename ).getObjectId().executeGetFirstLine(true);
     }
 }
