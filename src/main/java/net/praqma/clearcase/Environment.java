@@ -43,7 +43,7 @@ public class Environment {
 	}
 	
 	public static long getUniqueTimestamp() {
-		return System.currentTimeMillis() / 60000;
+		return System.currentTimeMillis() / 1000;
 	}
 
 	public void bootStrap() throws Exception {
