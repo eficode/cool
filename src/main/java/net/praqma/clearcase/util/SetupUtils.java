@@ -68,6 +68,11 @@ public class SetupUtils {
 		
 		logger.info( "Removing pvob" );
 		pvob.unmount();
+        try {
+        Thread.sleep(5000); // Give time for process to end
+        }catch (InterruptedException e) {
+
+        }
 		pvob.remove();
 		
 		/* For Jens' sake */
