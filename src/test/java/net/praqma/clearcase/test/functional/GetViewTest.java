@@ -107,7 +107,10 @@ public class GetViewTest extends GetViewTestBase {
     @Test( expected = ViewException.class )
     public void testNonExistent() throws IOException, ClearCaseException {
         File path = createTempPath();
-        String viewTag = ccenv.getUniqueName() + "_TAG3";
+        
+        String uniqueName = ccenv.getUniqueName();
+        
+        String viewTag = uniqueName + "_TAG3";
 
         Stream oneInt = ccenv.context.streams.get( "one_int" );
         Baseline model1 = ccenv.context.baselines.get( "model-1" );
@@ -122,11 +125,21 @@ public class GetViewTest extends GetViewTestBase {
 
         /* Verify first */
         listFiles( view.getViewRoot() );
-        verifyView( gv, ccenv.getUniqueName() + "/Model/model.h", "#1" );
+        verifyView( gv, uniqueName + "/Model/model.h", "#1" );
 
         /* Verify second */
+        try {
+            if(new File( path.getParent(), "98u2n918u2n9831u2n3981nu23981u2398/hahahaha").mkdirs()) {
+                logger.fine("Created bogus temp directory");
+            }
+            
+        } catch (Exception ex) {
+            logger.fine("Failed to create bogus temp direcotory");
+        }
+        
+        
         GetView gv2 = new GetView( new File( path.getParent(), "98u2n918u2n9831u2n3981nu23981u2398/hahahaha" ), viewTag );
-        gv2.get();
+        gv2.get();        
     }
 
     @Test
