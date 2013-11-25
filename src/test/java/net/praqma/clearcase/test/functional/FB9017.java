@@ -7,7 +7,6 @@ import net.praqma.clearcase.ucm.entities.*;
 import net.praqma.util.test.junit.LoggingRule;
 import org.junit.ClassRule;
 import org.junit.Rule;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.FileWriter;
