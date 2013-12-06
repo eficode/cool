@@ -16,6 +16,7 @@ import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.UCMView;
+import org.apache.commons.lang.SystemUtils;
 
 public class PVob extends Vob {
 	
@@ -53,7 +54,13 @@ public class PVob extends Vob {
 	}
 
     public List<Stream> getStreams() throws CleartoolException, UnableToInitializeEntityException {
-        String cmd = "lsstream -fmt %Xn\\n -invob " + this;
+        String cmd = null;
+        
+        if(SystemUtils.IS_OS_WINDOWS) {
+            cmd = "lsstream -fmt %Xn\\n -invob " + this;
+        } else {
+            cmd = "lsstream -fmt %Xn\\\\n -invob " + this;
+        }
         List<String> lines = null;
         try {
             lines = Cleartool.run( cmd ).stdoutList;

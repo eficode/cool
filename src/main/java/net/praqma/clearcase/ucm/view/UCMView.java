@@ -186,11 +186,6 @@ public class UCMView extends ClearCase implements Serializable {
         UCMView view = new UCMView( gspath, tag );
         return view;
     }
-	
-	public static void getViews( Project project ) {
-		// cleartool lsstream -in project:ava2@\chw_PVOB
-		// http://publib.boulder.ibm.com/infocenter/cchelp/v7r0m0/index.jsp?topic=/com.ibm.rational.clearcase.cc_ref.doc/topics/ct_lsstream.htm
-	}
 
     public static List<UCMView> getViews() throws CleartoolException {
         List<UCMView> views = new ArrayList<UCMView>();
