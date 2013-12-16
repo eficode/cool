@@ -30,12 +30,9 @@ public class Tag extends UCMEntity {
      * The tag name in ClearCase
      */
 	public static final String __TAG_NAME = "tag";
-
 	private static final Pattern pattern_hlink_type_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB \"(\\S+)\" .*" );
 	private static final Pattern pattern_remove_verbose_tag = Pattern.compile( "^.*?\"(.*)\".*?$" );
-
 	private static final Pattern pattern_tags = Pattern.compile( "^\\s*(.*?)\\s*->\\s*\"(.*?)\"\\s*$" );
-
 	transient private static Logger logger = Logger.getLogger( Tag.class.getName() );
 
     /**
@@ -57,10 +54,7 @@ public class Tag extends UCMEntity {
      *  Indicates that the tag is newly created
      */
 	private boolean created = false;
-
 	private UCMEntity entity = null;
-
-	// private static final Pattern pattern_cgi = Pattern.compile( "" );
 
 	private Map<String, String> keyval = new HashMap<String, String>();
 
@@ -81,7 +75,6 @@ public class Tag extends UCMEntity {
 
 	public static Map<String, String> CGIToHash( String cgi ) {
 		HashMap<String, String> hash = new HashMap<String, String>();
-		logger.fine( "cgi=" + cgi );
 
 		String[] entries = cgi.split( "&" );
 		for( String e : entries ) {
@@ -102,8 +95,6 @@ public class Tag extends UCMEntity {
 
 				Pattern pattern = Pattern.compile( t.t2 );
 				Matcher match = pattern.matcher( this.keyval.get( t.t1 ) );
-
-				// if( !this.keyval.get( t.t1 ).matches( t.t2 ) )
 				if( !match.find() ) {
 					return false;
 				}
@@ -150,14 +141,8 @@ public class Tag extends UCMEntity {
 	 * 
 	 * @return
 	 */
+        @Override
 	public Tag load() {
-		// TODO This method was not implemented????
-		//Tuple<String, String> t = context.getTag( this );
-		// this.OID = t.t1;
-
-		// System.out.println( "CGI=" + t.t2 );
-
-		//keyval = Tag.CGIToHash( t.t2 );
 		this.tagType = keyval.get( "tagtype" );
 		this.tagID = keyval.get( "tagid" );
 
@@ -250,26 +235,16 @@ public class Tag extends UCMEntity {
 			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
 			logger.warning( "Unable to get tags: " + e.getMessage() );
 			if( match.find() ) {
-				logger.fine( "Tag type not found" );
-				//UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + __TAG_NAME + " -c \"Hyperlink type for tagging entities\"\"" );
-				//throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e.getMessage(), UCMType.UNKNOWN_HLINK_TYPE );
-				//UCMException ucme = new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e, UCMType.UNKNOWN_HLINK_TYPE );
-				//ucme.addInformation(  "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -c \"Hyperlink type for tagging entities\" " + __TAG_NAME + "@" + match.group( 2 ) );
 				TagException te = new TagException( entity, "", __TAG_NAME, Type.NO_SUCH_HYPERLINK, e );
-				te.addInformation( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -c \"Hyperlink type for tagging entities\" " + __TAG_NAME + "@" + match.group( 2 ) );
+				te.addInformation( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -shared -global -c \"Hyperlink type for tagging entities\" " + __TAG_NAME + "@" + match.group( 2 ) );
 				throw te;
 			} else {
-				logger.fine( "Something else" );
 				throw new TagException( entity, "", __TAG_NAME, Type.CREATION_FAILED, e );
 			}
 		}
 
 		List<String> list = res.stdoutList;
-
-		// List<Tuple<String, String>> tags = new ArrayList<Tuple<String,
-		// String>>();
-		//List<String[]> tags = new ArrayList<String[]>();
-		
+                
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 
 		/* There are tags */
@@ -279,10 +254,6 @@ public class Tag extends UCMEntity {
 				
 				Matcher match = pattern_tags.matcher( list.get( i ) );
 				if( match.find() ) {
-					// tags.add( new Tuple<String, String>( match.group( 1 ),
-					// match.group( 2 ) ) );
-					//tags.add( new String[] { match.group( 1 ), match.group( 2 ) } );
-					
 					Tag tag = (Tag) UCMEntity.getEntity( Tag.class, match.group( 1 ).trim() );
 					tag.setKeyValue( match.group( 2 ) );
 					tags.add( tag );
@@ -307,7 +278,6 @@ public class Tag extends UCMEntity {
 				try {
 					Cleartool.run( cmd );
 				} catch( AbnormalProcessTerminationException e ) {
-					//throw new UCMException( "Unable to delete tag with " + tagID + ": " + e.getMessage() );
 					throw new TagException( entity, "", __TAG_NAME, Type.DELETION_FAILED, e );
 				}
 			}
@@ -340,32 +310,19 @@ public class Tag extends UCMEntity {
 	
 	private static Tag newTag( UCMEntity entity, String tagType, String tagID ) throws UnableToInitializeEntityException {
 		Tag tag = (Tag) UCMEntity.getEntity( Tag.class, "tag@0@" + entity.getPVob().getName() );
-		// tag.SetEntry( "tagtype", tagType );
-		// tag.SetEntry( "tagid", tagID );
 		String cgi = "tagtype=" + tagType + "&tagid=" + tagID;
 		tag.setKeyValue( cgi );
 		tag.setTagEntity( entity );
-
 		tag.setCreated( true );
-
 		return tag;
 	}
 
 	private static Tag newTag( String tagType, String tagID, UCMEntity entity, String cgi ) throws TagException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
-		logger.fine( "ENTITY=" + entity.toString() );
-		logger.fine( "CGI FOR NEW = " + cgi );
-		// System.out.println( "CGI==="+cgi );
-
-		/* Delete any existing Tags with the unique ID */
 		logger.fine( "Deleting Tags with ID: " + tagType + tagID + " for entity " + entity.getFullyQualifiedName() );
 		deleteTagsWithID( tagType, tagID, entity );
-
 		cgi = "tagtype=" + tagType + "&tagid=" + tagID + ( cgi.length() > 0 ? "&" + cgi : "" );
 		String fqname = storeTag( entity, cgi );
-
 		Tag tag = (Tag) UCMEntity.getEntity( Tag.class, fqname );
-		// tag.SetEntry( "tagtype", tagType );
-		// tag.SetEntry( "tagid", tagID );
 		tag.setKeyValue( cgi );
 		tag.setTagEntity( entity );
 
@@ -383,18 +340,11 @@ public class Tag extends UCMEntity {
 		} catch( AbnormalProcessTerminationException e ) {
 			logger.warning( "Unable add tag: " + e.getMessage() );
 			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
-			if( match.find() ) {
-				logger.fine( "Found match" );
-				//UCM.addMessage( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype " + __TAG_NAME + " -c \"Hyperlink type for tagging entities\"\"" );
-				//throw new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found.", e.getMessage(), UCMType.UNKNOWN_HLINK_TYPE );
-
-				//UCMException ucme = new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e, UCMType.UNKNOWN_HLINK_TYPE );
-				//ucme.addInformation(  "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -c \"Hyperlink type for tagging entities\" " + __TAG_NAME + "@" + match.group( 2 ) );
+			if( match.find() ) {                           
 				TagException te = new TagException( entity, cgi, __TAG_NAME, Type.NO_SUCH_HYPERLINK, e );
-				te.addInformation( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -c \"Hyperlink type for tagging entities\" " + __TAG_NAME + "@" + match.group( 2 ) );
+				te.addInformation( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -shared -global -c \"Hyperlink type for tagging entities\" " + __TAG_NAME + "@" + match.group( 2 ) );
 				throw te;
 			} else {
-				//throw new UCMException( e );
 				throw new TagException( entity, cgi, __TAG_NAME, Type.CREATION_FAILED, e );
 			}
 		}
@@ -403,17 +353,18 @@ public class Tag extends UCMEntity {
 
 		Matcher match = pattern_remove_verbose_tag.matcher( tag );
 		if( !match.find() ) {
-			//throw new UCMException( "Could not create tag", UCMType.TAG_CREATION_FAILED );
 			throw new TagException( entity, cgi, __TAG_NAME, Type.CREATION_FAILED );
 		}
 
 		return match.group( 1 );
 	}
 
+        @Override
 	public void setCreated( boolean created ) {
 		this.created = created;
 	}
-
+        
+        @Override
 	public boolean isCreated() {
 		return this.created;
 	}
@@ -426,6 +377,7 @@ public class Tag extends UCMEntity {
 		return this.tagID;
 	}
 
+        @Override
 	public String stringify() {
 		StringBuffer sb = new StringBuffer();
 
@@ -450,13 +402,13 @@ public class Tag extends UCMEntity {
 		} catch( Exception e ) {
 
 		} finally {
-			//sb.append( super.stringify() );
 			sb.insert( 0, super.stringify() );
 		}
 
 		return sb.toString();
 	}
 	
+        @Override
 	public String toString() {
 		return tagType + "::" + tagID;
 	}

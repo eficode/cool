@@ -9,15 +9,12 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Version;
 
 public class VersionList extends ArrayList<Version> {
 
-	private static Logger logger = Logger.getLogger( VersionList.class.getName() );
-
+    private static Logger logger = Logger.getLogger( VersionList.class.getName() );
     private String branchName;
     private File path;
 

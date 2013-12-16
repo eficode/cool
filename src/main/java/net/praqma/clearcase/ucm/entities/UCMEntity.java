@@ -47,7 +47,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	transient private static Logger logger = Logger.getLogger( UCMEntity.class.getName() );
 
 	//protected static final String rx_ccdef_allowed = "[\\w\\.-]";
-    protected static final String rx_ccdef_allowed = "[.[^@:\\s]]";
+        protected static final String rx_ccdef_allowed = "[.[^@:\\s]]";
 	protected static final String rx_ccdef_vob = "[\\\\\\w\\./-]";
 	protected static final Pattern pattern_std_fqname = Pattern.compile( "^(\\w+):(" + rx_ccdef_allowed + "+)@(" + rx_ccdef_allowed + "+)$" );
 	/* TODO Make a better character class definition for files(Version) */
@@ -224,10 +224,8 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 		} catch( AbnormalProcessTerminationException e ) {
 			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
 			if( match.find() ) {
-				//UCMException ucme = new UCMException( "ClearCase hyperlink type \"" + match.group( 1 ) + "\" was not found. ", e, UCMType.UNKNOWN_HLINK_TYPE );
-				//ucme.addInformation(  "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -nc " + match.group( 1 ) + "@" + match.group( 2 ) );
 				HyperlinkException ex = new HyperlinkException( this, context, match.group( 1 ), e );
-				ex.addInformation( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -global -nc " + match.group( 1 ) + "@" + match.group( 2 ) );
+				ex.addInformation( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -shared -global -nc " + match.group( 1 ) + "@" + match.group( 2 ) );
 				throw ex;
 			} else {
 				HyperlinkException ex = new HyperlinkException( this, context, hyperlinkType, e );
@@ -236,19 +234,14 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 
 		List<String> list = res.stdoutList;
 
-		//List<Tuple<String, String>> hlinks = new ArrayList<Tuple<String, String>>();
 		List<HyperLink> hlinks = new ArrayList<HyperLink>();
 
 		/* There are elements */
 		if( list.size() > 2 ) {
 			for( int i = 2; i < list.size(); i++ ) {
-				logger.fine( "[" + i + "]" + list.get( i ) );
 				Matcher match = pattern_hlink.matcher( list.get( i ) );
 				if( match.find() ) {
-					//hlinks.add( new Tuple<String, String>( match.group( 1 ).trim(), match.group( 2 ).trim() ) );
-
 					HyperLink h = HyperLink.getHyperLink( match.group( 1 ).trim(), match.group( 2 ).trim() );
-
 					hlinks.add( h );
 				}
 			}
