@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
  */
 public class UpdateView {
 
-    private static Logger logger = Logger.getLogger( UpdateView.class.getName() );
+    private static final Logger logger = Logger.getLogger( UpdateView.class.getName() );
 
     private boolean swipe = false;
     private boolean generate = false;
@@ -57,7 +57,7 @@ public class UpdateView {
     }
 
     public UpdateView overwrite() {
-        this.overwrite = overwrite;
+        this.overwrite = true;
 
         return this;
     }
