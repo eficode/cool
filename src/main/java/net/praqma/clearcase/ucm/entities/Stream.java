@@ -300,7 +300,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 			String childMastership = stream.getMastership();
 			logger.fine( "Child Mastership = " + childMastership );
 
-			if( stream.hasPostedDelivery() && !multisitePolling ) {
+			if( !multisitePolling && stream.hasPostedDelivery() ) {
 				logger.fine( "Removing [" + stream.getShortname() + "] due to non-supported posted delivery" );
 				it.remove();
 			} else if( !mastership.equals( childMastership ) ) {
