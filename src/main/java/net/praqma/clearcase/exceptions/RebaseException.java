@@ -5,6 +5,7 @@ import net.praqma.clearcase.Rebase;
 public class RebaseException extends ClearCaseException {
 
 	private Rebase rebase;
+    
 	
 	public RebaseException( Rebase rebase, Exception e ) {
 		super( e );
@@ -14,6 +15,10 @@ public class RebaseException extends ClearCaseException {
 	public Rebase getRebase() {
 		return rebase;
 	}
-
+    
+    public RebaseException ( String message, Rebase rebase, Exception e ) {        
+        super(message, e);
+        this.rebase = rebase;
+    }
 	
 }

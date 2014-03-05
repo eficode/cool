@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.api.Describe;
@@ -14,12 +13,11 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
-
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Baseline extends UCMEntity implements Diffable {
 
-	transient static private Logger logger = Logger.getLogger( Baseline.class.getName()  );
+	transient static final private Logger logger = Logger.getLogger( Baseline.class.getName()  );
 
     /**
      * The {@link Component} of the {@link Baseline}
@@ -35,11 +33,6 @@ public class Baseline extends UCMEntity implements Diffable {
      * The {@link Stream} of the {@link Baseline}
      */
 	private Stream stream = null;
-
-    /**
-     * The {@link Activity}ies of the {@link Baseline}
-     */
-	private ArrayList<Activity> activities = new ArrayList<Activity>();
 	
 	public enum LabelBehaviour {
 		NOLABEL,
@@ -85,6 +78,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToCreateEntityException 
 	 * @throws UnableToGetEntityException 
 	 */
+    @Override
 	public Baseline load() throws UnableToLoadEntityException, UnableToInitializeEntityException {
 
 		String result = "";
@@ -177,7 +171,7 @@ public class Baseline extends UCMEntity implements Diffable {
 			} else {
 				out = Cleartool.run( cmd ).stdoutBuffer.toString();
 			}
-			logger.fine( "Baseline output: " + out );
+			logger.fine( String.format( "Baseline output: " + out ) );
 
 			created = out.matches( "(?s).*Created baseline \".*?\" in component \".*?\".*" ); // Created baseline
 		} catch( AbnormalProcessTerminationException e ) {
@@ -309,8 +303,7 @@ public class Baseline extends UCMEntity implements Diffable {
         logger.fine( "Finding dependent baselines for " + this.getNormalizedName() );
 
         String[] ds = new net.praqma.clearcase.Describe( this ).dependentsOn().describe().get( "depends_on" );
-        //String[] ds = new Describe( this ).addModifier( Describe.dependsOn.clone().commaSeparate() ).execute();
-
+        
         List<Baseline> baselines = new ArrayList<Baseline>( ds.length );
         for( String bl : ds ) {
             baselines.add( Baseline.get( bl ) );
@@ -342,6 +335,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		this.setMastership( this.getStream().getOriginalMastership() );
 	} 
 
+    @Override
 	public String stringify() {
 		if( !loaded ) {
 			try {
@@ -354,7 +348,9 @@ public class Baseline extends UCMEntity implements Diffable {
 		StringBuffer sb = new StringBuffer();
 
 		try {
-			if( !this.loaded ) load();
+			if( !this.loaded ) {
+                load();
+            }
 
 			sb.append( " * Level    : " + this.plevel + linesep );
 			sb.append( " * Component: " + this.component.toString() + linesep );
