@@ -42,7 +42,7 @@ public class Report extends CLI {
     @Override
     public void perform( String[] arguments ) throws Exception {
         Options o = new Options( "1.0.0" );
-
+        //TODO:The path parameter assumes that the format is view/vobtag. This should be checked prior to running it.
         Option opath = new Option( "path", "p", false, 1, "The path to report" );
         Option osep = new Option( "separator", "s", false, 1, "The separator to use, default is \";\"" );
         Option oshowfull = new Option( "showFull", "f", false, 0, "Show full view path" );
