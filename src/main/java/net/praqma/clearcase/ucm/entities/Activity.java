@@ -2,7 +2,6 @@ package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,7 +11,6 @@ import net.praqma.clearcase.api.Describe;
 import net.praqma.clearcase.api.DiffBl;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
-import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Activity extends UCMEntity {
@@ -104,15 +102,22 @@ public class Activity extends UCMEntity {
 									( name != null ? " " + name + "@" + pvob : "" );
 
 		try {
+            System.out.println("Cleartool-run");
+            System.out.println("Running this command: "+cmd );
+            System.out.println("In this view: "+view);
 			Cleartool.run( cmd, view );
+            System.out.println("Cleartool-run-done");
 		} catch( Exception e ) {
+            System.out.println("Cleartool-exception");
 			throw new UnableToCreateEntityException( Activity.class, e );
 		}
 		
 		Activity activity = null;
-		
+		System.out.println("Cleartool-before-namenullcheck");
 		if( name != null ) {
+            System.out.println("Getting...");
 			activity = get( name, pvob );
+            System.out.println("Done getting...");
 		}
 		
 		return activity;
@@ -326,7 +331,7 @@ public class Activity extends UCMEntity {
         try {
             output = new Describe( activity ).addModifier( Describe.versions ).setPath( path ).executeGetFirstLine();
         } catch( CleartoolException e ) {
-            logger.fine( e.getMessage() );
+            logger.fine("getVersions() error: "+ e.getMessage() );
             return Collections.emptyList();
         }
 
@@ -353,6 +358,7 @@ public class Activity extends UCMEntity {
 		if( !name.startsWith( "activity:" ) ) {
 			name = "activity:" + name;
 		}
+        System.out.println("In get (ACTIVITY)...");
 		Activity entity = (Activity) UCMEntity.getEntity( Activity.class, name + "@" + pvob );
 		return entity;
 	}

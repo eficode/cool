@@ -2,6 +2,7 @@ package net.praqma.clearcase;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,9 +19,8 @@ import net.praqma.util.execute.CmdResult;
 
 public class Rebase {
 	
-	private static final String rx_rebase_in_progress = "^Rebase operation in progress on stream";
-	
-	private static Logger logger = Logger.getLogger( Rebase.class.getName() );
+	private static final String rx_rebase_in_progress = "^Rebase operation in progress on stream\\s+\\.*";
+	private static final Logger logger = Logger.getLogger( Rebase.class.getName() );
 	
 	private Stream stream;
     private UCMView view;
@@ -63,12 +63,6 @@ public class Rebase {
         this.viewTag = viewTag;
     }
 
-    /*
-    public Rebase( File viewPath ) {
-        this.viewPath = viewPath;
-    }
-    */
-
     public Rebase setViewTag( String viewTag ) {
         this.viewTag = viewTag;
 
@@ -95,7 +89,6 @@ public class Rebase {
 
     public Rebase dropBaselines( List<Baseline> baselines ) {
         this.droppedBaselines.addAll( baselines );
-
         return this;
     }
 
@@ -112,28 +105,48 @@ public class Rebase {
 
         return this;
     }
-
-	public boolean rebase( boolean complete ) throws RebaseException {
-		logger.fine( "Rebasing" );
-
+    
+    /**
+     * Rebases the current stream. As of version 0.6.29 we now have the cancelAndTryResume switch
+     * This switch, if true, will check to see if a rebase is ongoing int the current stream, if it is, then the rebase is cancelled 
+     * and restarted.
+     * @param complete
+     * @param cancelAndTryResume
+     * @return true if rebase is succesful, false otherwise
+     * @throws RebaseException 
+     */
+    public boolean rebase( boolean complete, boolean cancelAndTryResume) throws RebaseException {
+        logger.fine( "Rebasing" );
+        try {
+            if(cancelAndTryResume && isInProgress(this.stream)) {
+                logger.fine("Cancel and try enabled. Rebase in progress. Cancelling.");
+                Rebase.cancelRebase(this.stream);
+                logger.fine("Rebase cancelled.");
+            } else if(cancelAndTryResume) {
+                logger.fine(String.format( "Cancel and retry enabled. No rebase in progress for %s", this.stream) ) ;
+            } else {
+                logger.fine("Cancel and retry disabled. No rebase in progress.");
+            }
+        } catch (CleartoolException cle) {
+            throw new RebaseException("Failed to cancel old rebase in rebase", this, cle);
+        }
+        
 		String cmd = "rebase " + ( complete ? "-complete " : "" ) + " -force";
 
         if( view != null ) {
             cmd += " -view " + view.getViewtag();
         } else if( stream != null ) {
             cmd +=  " -stream " + stream;
-
             if( dropFromStream ) {
                 List<Baseline> fbls = stream.getFoundationBaselines();
-                logger.fine( "Dropping unselected foundation baselines. " + fbls );
+                logger.fine( String.format( "Dropping unselected foundation baselines. %s", fbls ) );
                 for( Baseline fbl : fbls ) {
                     if( !baselines.contains( fbl ) ) {
-                        logger.finest( "Dropping " + fbl );
+                        logger.finest( String.format( "Dropping %s", fbl ) );
                         droppedBaselines.add( fbl );
                     }
                 }
             }
-
             if( viewTag != null ) {
                 cmd += " -view " + viewTag;
             }
@@ -170,26 +183,35 @@ public class Rebase {
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new RebaseException( this, e );
 		}
+    }
+
+	public boolean rebase( boolean complete ) throws RebaseException {
+        return rebase(complete, false);
 	}
 	
 	public boolean isInProgress() throws CleartoolException {
 		return Rebase.isInProgress( stream );
 	}
-	
+    
 	public static boolean isInProgress( Stream stream ) throws CleartoolException {
 		String cmd = "rebase -status -stream " + stream;
+        logger.fine( String.format( "Checking rebase status on %s", stream) );
 		try {
+            logger.info( String.format( "Checking rebase status on %s with command %s", stream, cmd) );
 			String result = Cleartool.run( cmd ).stdoutBuffer.toString();
-			if( result.matches( rx_rebase_in_progress ) ) {
+            logger.fine(result);
+			if( result.contains("Rebase operation in progress on stream") ) {                
+                logger.fine( String.format( "Rebase in progress on ", stream) );
 				return true;
 			} else {
+                logger.fine( String.format( "No rebase in progress on ", stream) );
 				return false;
 			}
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Unable to determine progress of " + stream, e );
 		}
 	}
-	
+    
 	public void cancel() throws CleartoolException {
 		Rebase.cancelRebase( stream );
 	}

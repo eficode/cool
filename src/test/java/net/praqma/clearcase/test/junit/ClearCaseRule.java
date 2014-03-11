@@ -30,7 +30,7 @@ import net.praqma.clearcase.util.SetupUtils;
 
 public class ClearCaseRule extends Environment implements TestRule {
 
-    private static Logger logger = Logger.getLogger( ClearCaseRule.class.getName() );
+    private static final Logger logger = Logger.getLogger( ClearCaseRule.class.getName() );
 
 	protected Description testDescription;
 	
@@ -130,9 +130,7 @@ public class ClearCaseRule extends Environment implements TestRule {
     }
 
 	protected void after() {
-
-        //printComponents();
-
+        
 		if( System.getProperty( "saveEnv", null ) == null ) {
 			if( getPVob() != null ) {
 				try {

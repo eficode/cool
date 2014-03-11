@@ -31,7 +31,7 @@ public class EnvironmentParser extends XML {
 	
 	private static Logger logger = Logger.getLogger( EnvironmentParser.class.getName() );
 	
-	private static Map<String, AbstractTask> map = new HashMap<String, AbstractTask>();
+	private static final Map<String, AbstractTask> map = new HashMap<String, AbstractTask>();
 	
 	static {
 		map.put( "activity", new ActivityTask() );
@@ -115,6 +115,7 @@ public class EnvironmentParser extends XML {
 			this.fixed = fixed;
 		}
 		
+        @Override
 		public String toString() {
 			return value + "(" + fixed + ")";
 		}
