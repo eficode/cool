@@ -14,6 +14,7 @@ import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
+import org.apache.commons.lang.StringUtils;
 
 public class Baseline extends UCMEntity implements Diffable {
 
@@ -449,9 +450,11 @@ public class Baseline extends UCMEntity implements Diffable {
 
         for( String bl : bls_str.get( "depends_on_closure" ) ) {
             logger.fine( "Baseline " + bl );
-            Baseline b = Baseline.get( bl );
-            if( component == null || b.getComponent().equals( component ) ) {
-                bls.add( b );
+            if(!StringUtils.isBlank(bl)) {
+                Baseline b = Baseline.get( bl );
+                if( component == null || b.getComponent().equals( component ) ) {
+                    bls.add( b );
+                }
             }
         }
 
