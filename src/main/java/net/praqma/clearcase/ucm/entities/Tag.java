@@ -377,9 +377,9 @@ public class Tag extends UCMEntity {
 		return this.tagID;
 	}
 
-        @Override
+    @Override
 	public String stringify() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		try {
 			if( !this.loaded ) load();

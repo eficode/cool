@@ -14,7 +14,6 @@ import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.interfaces.StreamContainable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
-import net.praqma.clearcase.ucm.utils.Baselines;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
@@ -224,42 +223,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return this;
 	}
 
-    @Deprecated
-	public List<Baseline> getBaselines( PromotionLevel plevel ) throws UnableToInitializeEntityException, UnableToListBaselinesException, NoSingleTopComponentException {
-		return Baselines.get( this, getSingleTopComponent(), plevel );
-	}
-
-    @Deprecated
-	public List<Baseline> getBaselines( Component component, PromotionLevel plevel ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
-		return Baselines.get( this, component, plevel );
-	}
-
-    /**
-     * @deprecated functionality found in {@link net.praqma.clearcase.ucm.utils.BaselineList}
-     */
-    @Deprecated
-	public List<Baseline> getBaselines( Component component, PromotionLevel plevel, Date date ) throws UnableToInitializeEntityException, UnableToListBaselinesException {
-		List<Baseline> baselines = Baselines.get( this, component, plevel );
-
-		if( date == null ) {
-			return baselines;
-		}
-
-		Iterator<Baseline> it = baselines.iterator();
-		while( it.hasNext() ) {
-			Baseline baseline = it.next();
-
-			if( date.after( baseline.getDate() ) ) {
-				logger.fine( "Removing [" + baseline.getShortname() + " " + baseline.getDate() + "/" + date + "]" );
-				it.remove();
-			}
-		}
-
-		return baselines;
-	}
-
-
-
 	public List<Stream> getChildStreams( boolean multisitePolling ) throws UnableToInitializeEntityException, CleartoolException {
 		/* We need to load this, because we need the mastership */
 		if( !loaded ) {
@@ -344,9 +307,11 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 	
 	public boolean hasPostedDelivery() throws UnableToInitializeEntityException {
-		try {
-			logger.fine( "Status: " + Deliver.getStatus( this ) );
-			return Deliver.getStatus( this ).contains( "Operation posted from" );
+		try {			
+            String statustext = Deliver.getStatus(this);
+            boolean hasPostedDelivery = statustext.contains( "Operation posted from" );
+            logger.fine("Posted deliver: " + hasPostedDelivery +"\n"+statustext);
+			return hasPostedDelivery;
 		} catch( Exception e ) {
 			throw new UnableToInitializeEntityException( Stream.class, e );
 		}
@@ -442,8 +407,13 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
         return s;
     }
 
+    /**
+     * @param isMultiSite
+     * @param streams
+     * @return
+     * @throws ClearCaseException 
+     */
     public Stream getDeliveringStream( boolean isMultiSite, List<Stream> streams ) throws ClearCaseException {
-
 
         for( Stream stream : streams ) {
             Deliver.Status status = stream.getDeliverStatus();

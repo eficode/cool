@@ -1,11 +1,9 @@
 package net.praqma.clearcase.api;
 
 import net.praqma.clearcase.Branch;
-import net.praqma.clearcase.Label;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.util.execute.CmdResult;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

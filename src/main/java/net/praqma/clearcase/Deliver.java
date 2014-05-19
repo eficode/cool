@@ -258,7 +258,7 @@ public class Deliver {
 	}
 	
 	public static String getStatus( Stream stream ) throws CleartoolException {
-		try {
+		try {            
 			String cmd = "deliver -status -stream " + stream;
 			return Cleartool.run( cmd ).stdoutBuffer.toString();
 		} catch( AbnormalProcessTerminationException e ) {

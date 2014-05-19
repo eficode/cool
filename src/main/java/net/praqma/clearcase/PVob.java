@@ -20,7 +20,7 @@ import org.apache.commons.lang.SystemUtils;
 
 public class PVob extends Vob {
 	
-	private static Logger logger = Logger.getLogger( PVob.class.getName() );
+	private static final Logger logger = Logger.getLogger( PVob.class.getName() );
 
 	private String localPath;
 	private String globalPath;

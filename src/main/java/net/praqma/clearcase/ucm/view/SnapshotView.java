@@ -93,7 +93,7 @@ public class SnapshotView extends UCMView {
 
 			if( components.equals( Components.ALL ) ) {
 				logger.fine( "All components" );
-
+                
 				List<Baseline> bls = view.stream.getLatestBaselines();
 				for( Baseline b : bls ) {
 					String rule = b.load().getComponent().getRootDir();

@@ -261,12 +261,19 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
     /**
      * Get the fully qualified branch name.
+     * @return 
      */
 	public String getBranch() {
 		return branch;
 	}
 	
+    @Override
 	public Version load() throws UnableToLoadEntityException {
+        
+        if(loaded) {
+            return this;
+        }
+        
 		try {
 			String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + this + "\"";
 			String[] list = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\}\\{" );
@@ -751,21 +758,21 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return ( oldFile != null );
 	}
 
+    @Override
 	public String stringify() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		try {
 			if( !this.loaded ) load();
 
 			sb.append( super.stringify() );
-			sb.append( super.stringify() + linesep );
+			sb.append(super.stringify()).append(linesep);
 
-			sb.append( "Filename: " + this.fullfile + linesep );
-			sb.append( "Revision: " + this.version + linesep );
-		} catch( Exception e ) {
-
+			sb.append("Filename: ").append(this.fullfile).append(linesep);
+			sb.append("Revision: ").append(this.version).append(linesep);
+		} catch( UnableToLoadEntityException e ) {
+            logger.info("Failed to stringify Version");
 		} finally {
-			//sb.append( super.stringify() );
 			sb.insert( 0, super.stringify() );
 		}
 
