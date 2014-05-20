@@ -178,6 +178,7 @@ public class SnapshotView extends UCMView {
                         String key = m.group(2) + m.group(3);
                         //remove the leading backward slash from vobtag and remove the leftover forward slash from the path
                         key = key.substring(1, key.length()-1);
+                        key = key.replace("/", "\\");
                         logger.info("config spec line: "+key);
                         Boolean readOnly = s.contains("-nocheckout");
                         rootFolders.put(key, readOnly);
