@@ -52,6 +52,7 @@ public class SnapshotView extends UCMView {
 	protected static final Pattern rx_view_uuid = Pattern.compile( "View uuid:(.*)" );
 	public static final Pattern rx_view_rebasing = Pattern.compile( "^\\.*Error: This view is currently being used to rebase stream \"(.+)\"\\.*$" );
 	public static final Pattern pattern_cache = Pattern.compile( "^\\s*log has been written to\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE );
+    public static final Pattern pattern_catcs = Pattern.compile("(.*=)(\\S+)\\](\\S+)(\\.\\.\\.\" )(\\S+)(.*)");    
 	
 	public final String rx_co_file = ".*CHECKEDOUT$";
     public final String rx_ctr_file = ".*\\.contrib";
@@ -126,6 +127,94 @@ public class SnapshotView extends UCMView {
 			return loadRules;
 		}
 	}
+    
+    public static class LoadRules2 {
+		private String loadRules;
+		/**
+		 * Create load rules based on {@link Components}
+		 * @throws UnableToLoadEntityException 
+		 * 
+		 */
+		public LoadRules2( SnapshotView view, Components components ) throws UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException {
+            
+            /**
+             * Read current configuration
+             */
+            List<String> configLines = Cleartool.run("catcs", view.getViewRoot()).stdoutList;
+            HashMap<String, Boolean> all = parseProjectRootFolders(configLines);
+            
+			loadRules = " -add_loadrules ";
+
+			if( components.equals( Components.ALL ) ) {
+				logger.fine( "All components" );
+                for(String componentRoot : all.keySet()) {
+                    loadRules += componentRoot + " ";
+                }
+			} else {
+				logger.fine( "Modifiable components" );
+                HashMap<String, Boolean> modifiables = getModifiableOnly(all);
+	
+				for( String modifiable : modifiables.keySet() ) {                    
+					loadRules += modifiable + " ";
+				}
+			}
+		}
+        /**
+         * Returns a set of tuples from the parsed console input string
+         * @param consoleinput
+         * @return 
+         */
+        private HashMap<String, Boolean> parseProjectRootFolders(List<String> consoleinput) {
+            HashMap<String, Boolean> rootFolders = new HashMap<String, Boolean>();
+            
+            for(String s : consoleinput) {
+                if(!s.startsWith("element")) {
+                    continue;
+                }
+                
+                Matcher m = pattern_catcs.matcher(s);
+                if(m.matches()) {
+                    try {
+                        String key = m.group(2) + m.group(3);
+                        //remove the leading backward slash from vobtag and remove the leftover forward slash from the path
+                        key = key.substring(1, key.length()-1);
+                        logger.info("config spec line: "+key);
+                        Boolean readOnly = s.contains("-nocheckout");
+                        rootFolders.put(key, readOnly);
+                    } catch (Exception ex) {
+                        logger.log(Level.SEVERE, "Error in determining config spec for line: \n "+s ,ex);
+                    }
+                }                 
+            }
+            
+            return rootFolders;
+        }
+        
+        private HashMap<String, Boolean> getModifiableOnly(HashMap<String, Boolean> rootFolders) {
+            HashMap<String, Boolean> modifiable = new HashMap<String, Boolean>();
+            for(String key : rootFolders.keySet()) {
+                if(!rootFolders.get(key)) {
+                    modifiable.put(key, rootFolders.get(key));
+                }
+            }
+            
+            return modifiable;
+        }
+
+		/**
+		 * Create load rules based on a string
+		 * 
+		 * @param loadRules
+		 */
+		public LoadRules2( String loadRules ) {
+			this.loadRules = loadRules = " -add_loadrules " + loadRules;
+		}
+
+		public String getLoadRules() {
+			return loadRules;
+		}
+	}
+    
 
 	public SnapshotView() {
 
@@ -400,6 +489,14 @@ public class SnapshotView extends UCMView {
 	public UpdateInfo Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules loadRules ) throws CleartoolException, ViewException {
         return update( swipe, generate, overwrite, excludeRoot, loadRules );
     }
+    
+    /**
+     * TODO: Use this..should be used now..Refactor away once confirmed working
+     * @deprecated since 0.6.13
+     */
+	public UpdateInfo Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules2 loadRules ) throws CleartoolException, ViewException {
+        return update( swipe, generate, overwrite, excludeRoot, loadRules );
+    }
 
     /**
      * @deprecated since 0.6.13
@@ -408,7 +505,37 @@ public class SnapshotView extends UCMView {
 
 		UpdateInfo info = new UpdateInfo();
 
-		// TODO generate the streams config spec if required
+		if( generate ) {
+			this.stream.generate();
+		}
+
+		logger.fine( "STREAM GENERATES" );
+
+		if( swipe ) {
+			Map<String, Integer> sinfo = swipe( this.viewroot, excludeRoot );
+			info.success = sinfo.get( "success" ) == 1 ? true : false;
+			info.totalFilesToBeDeleted = sinfo.get( "total" );
+			info.dirsDeleted = sinfo.get( "dirs_deleted" );
+			info.filesDeleted = sinfo.get( "files_deleted" );
+		}
+
+		logger.fine( "SWIPED" );
+
+		// Cache current directory and chdir into the viewroot
+		String result = updateView( this, overwrite, loadRules.getLoadRules() );
+		logger.fine( result );
+
+		return info;
+	}
+    
+    /**
+     * TODO: This one should be used for new method of updating
+     * @deprecated since 0.6.13
+     */
+    public UpdateInfo update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules2 loadRules ) throws CleartoolException, ViewException {
+
+		UpdateInfo info = new UpdateInfo();
+
 		if( generate ) {
 			this.stream.generate();
 		}
@@ -473,6 +600,8 @@ public class SnapshotView extends UCMView {
 
 		return "";
 	}
+    
+    
 
 	public Map<String, Integer> swipe( File viewroot, boolean excludeRoot ) throws CleartoolException {
 		logger.fine( viewroot.toString() );
