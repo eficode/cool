@@ -20,9 +20,6 @@ import net.praqma.clearcase.api.ListVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToGetEntityException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToListViewsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
@@ -32,20 +29,17 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 import net.praqma.util.io.IO;
-import net.praqma.util.structure.Printer;
 import net.praqma.util.structure.Tuple;
-import org.apache.commons.io.FileUtils;
 
 /**
  * @author wolfgang
  */
 public class SnapshotView extends UCMView {
 
-	transient private static Logger logger = Logger.getLogger( SnapshotView.class.getName() );
+	transient private static final Logger logger = Logger.getLogger( SnapshotView.class.getName() );
 
 	//protected static final String rx_view_uuid = "view_uuid:(.*)";
 	protected static final Pattern rx_view_uuid_file = Pattern.compile( "view_uuid:(.*)" );
@@ -54,10 +48,10 @@ public class SnapshotView extends UCMView {
 	public static final Pattern pattern_cache = Pattern.compile( "^\\s*log has been written to\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE );
     public static final Pattern pattern_catcs = Pattern.compile("(.*=)(\\S+)\\](\\S+)(\\.\\.\\.\" )(\\S+)(.*)");    
 	
-	public final String rx_co_file = ".*CHECKEDOUT$";
-    public final String rx_ctr_file = ".*\\.contrib";
-    public final String rx_keep_file = ".*\\.keep$";
-    public final String rx_updt_file = ".updt";
+	public static final String rx_co_file = ".*CHECKEDOUT$";
+    public static final String rx_ctr_file = ".*\\.contrib";
+    public static final String rx_keep_file = ".*\\.keep$";
+    public static final String rx_updt_file = ".updt";
 
 	
 	private static String VIEW_DOT_DAT_FILE = "view.dat";
@@ -80,15 +74,29 @@ public class SnapshotView extends UCMView {
 	public enum Components {
 		ALL, MODIFIABLE
 	}
+    
+    public static boolean isSpecialFile(String file) {
+        return ( file.matches( rx_co_file ) || file.matches( rx_keep_file ) || file.matches( rx_ctr_file ) || file.endsWith( rx_updt_file ) );
+    }
+    
+    public static class ViewPrivateFileFilter implements FileFilter {
 
+        @Override
+        public boolean accept(File file) {            
+            return !SnapshotView.isSpecialFile(file.getName()) && file.isFile() && file.canWrite() && !file.getName().equals( VIEW_DOT_DAT_FILE );
+        }        
+    }
+
+    /**
+    * Create load rules based on {@link Components}
+    * @throws UnableToLoadEntityException 
+    * @deprecated As of cool 0.6.30, replaced by {@link net.praqma.clearcase.ucm.view.SnapshotView.LoadRules2}
+    * @since 0.6.30
+    */
+    @Deprecated
 	public static class LoadRules {
 		private String loadRules;
 
-		/**
-		 * Create load rules based on {@link Components}
-		 * @throws UnableToLoadEntityException 
-		 * 
-		 */
 		public LoadRules( SnapshotView view, Components components ) throws UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException {
 			loadRules = " -add_loadrules ";
 
@@ -130,16 +138,16 @@ public class SnapshotView extends UCMView {
     
     public static class LoadRules2 {
 		private String loadRules;
+        
 		/**
 		 * Create load rules based on {@link Components}
-		 * @throws UnableToLoadEntityException 
-		 * 
+         * @param view
+         * @param components
+		 * @throws UnableToLoadEntityException
+         * @throws UnableToInitializeEntityException
+		 * @throws CleartoolException
 		 */
 		public LoadRules2( SnapshotView view, Components components ) throws UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException {
-            
-            /**
-             * Read current configuration
-             */
             List<String> configLines = Cleartool.run("catcs", view.getViewRoot()).stdoutList;
             HashMap<String, Boolean> all = parseProjectRootFolders(configLines);
             
@@ -178,6 +186,7 @@ public class SnapshotView extends UCMView {
                         String key = m.group(2) + m.group(3);
                         //remove the leading backward slash from vobtag and remove the leftover forward slash from the path
                         key = key.substring(1, key.length()-1);
+                        key = key.replace("/", "\\");
                         logger.info("config spec line: "+key);
                         Boolean readOnly = s.contains("-nocheckout");
                         rootFolders.put(key, readOnly);
@@ -543,7 +552,7 @@ public class SnapshotView extends UCMView {
 		logger.fine( "STREAM GENERATES" );
 
 		if( swipe ) {
-			Map<String, Integer> sinfo = swipe( this.viewroot, excludeRoot );
+			Map<String, Integer> sinfo = swipe( this.viewroot, excludeRoot, loadRules.getLoadRules() );
 			info.success = sinfo.get( "success" ) == 1 ? true : false;
 			info.totalFilesToBeDeleted = sinfo.get( "total" );
 			info.dirsDeleted = sinfo.get( "dirs_deleted" );
@@ -601,12 +610,16 @@ public class SnapshotView extends UCMView {
 		return "";
 	}
     
-    
+    public Map<String, Integer> swipe ( File viewroot, boolean excludeRoot ) throws CleartoolException {
+        return swipe(viewroot, excludeRoot, null);
+    }
 
-	public Map<String, Integer> swipe( File viewroot, boolean excludeRoot ) throws CleartoolException {
+	public Map<String, Integer> swipe( File viewroot, boolean excludeRoot, String loadrules) throws CleartoolException {
 		logger.fine( viewroot.toString() );
 
 		File[] files = viewroot.listFiles();
+        
+        
 		List<File> notVobs = new ArrayList<File>();
 		List<File> rootVPFiles = new ArrayList<File>();
         List<File> vobfolders = new LinkedList<File>(  );
@@ -622,16 +635,24 @@ public class SnapshotView extends UCMView {
 			}
 
 			if( f.isDirectory() ) {
-				if( Vob.isVob( f ) ) {
-                    vobfolders.add( f );
-				} else {
-					notVobs.add( f );
-				}
+                if(loadrules == null) {
+                    if( Vob.isVob( f ) ) {
+                        vobfolders.add( f );
+                    } else {
+                        notVobs.add( f );
+                    } 
+                } else {
+                    if(loadrules.contains(f.getName())) {
+                        vobfolders.add(f);
+                    } else {
+                        notVobs.add(f);
+                    }
+                } 
 			} else {
 				if( f.getName().equalsIgnoreCase( VIEW_DOT_DAT_FILE ) ) {
 					continue;
 				}
-                if( !isSpecialFile( f.getName() ) ) {
+                if( !SnapshotView.isSpecialFile( f.getName() ) ) {
                     rootVPFiles.add( f );
                 }
 			}
@@ -641,7 +662,6 @@ public class SnapshotView extends UCMView {
 		for( File notVob : notVobs ) {
 			logger.fine( "Removing " + notVob );
 			net.praqma.util.io.IO.deleteDirectory( notVob );
-            //FileUtils.deleteQuietly( notVob );
 		}
 
 		Map<String, Integer> info = new HashMap<String, Integer>();
@@ -655,7 +675,11 @@ public class SnapshotView extends UCMView {
 
         for( File folder : vobfolders ) {
             logger.fine( "Finding view private files for " + folder );
-            vpFiles.addAll( findViewPrivateFilesFromVob( folder ) );
+            if(loadrules == null) {
+                vpFiles.addAll( findViewPrivateFilesFromVob( folder ) );
+            } else {
+                vpFiles.addAll( findViewPrivateFilesFromVobUsingFileFilter( folder ));
+            }
         }
 
         if( !excludeRoot ) {
@@ -739,18 +763,25 @@ public class SnapshotView extends UCMView {
         List<File> vpFiles = new ArrayList<File>( result.size() );
 
         for( String vpFile : result ) {
-            if( isSpecialFile( vpFile ) ) {
+            if( SnapshotView.isSpecialFile( vpFile ) ) {
                 continue;
             }
-
             vpFiles.add( new File( vpFile ) );
         }
 
         return vpFiles;
     }
 
-    private boolean isSpecialFile( String file ) {
-        return ( file.matches( rx_co_file ) || file.matches( rx_keep_file ) || file.matches( rx_ctr_file ) || file.endsWith( rx_updt_file ) );
+    /**
+     * Filters files in any given VOB folder, based on the assumption that all files that are writable (Not-read-only)
+     * in a given vob folder are are view-private and can be safely deleted. We also exclude all the special cases like view update
+     * and other files.
+     * @param vobFolder
+     * @return 
+     */
+    private List<File> findViewPrivateFilesFromVobUsingFileFilter( File vobFolder ) {
+        ViewPrivateFileFilter roff = new ViewPrivateFileFilter();
+        return Arrays.asList(vobFolder.listFiles(roff));
     }
 
 	public Map<String, Integer> swipe( boolean excludeRoot ) throws CleartoolException {
