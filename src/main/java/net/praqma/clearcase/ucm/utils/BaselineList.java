@@ -71,8 +71,10 @@ public class BaselineList extends ArrayList<Baseline> {
         logger.fine("Multisite: " + multisitePolling);
         logger.finest("Requiring: " + required);
 
-        if(multisitePolling && stream.hasPostedDelivery()) {                    
-            this.addAll(stream.getPostedBaselines(component, level));            
+        if(multisitePolling) {
+            if(stream.hasPostedDelivery()) {                    
+                this.addAll(stream.getPostedBaselines(component, level));            
+            }
         } else {
             this.addAll(_get());
         }
