@@ -39,6 +39,7 @@ import net.praqma.util.io.IO;
 import net.praqma.util.structure.Printer;
 import net.praqma.util.structure.Tuple;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.SystemUtils;
 
 /**
  * @author wolfgang
@@ -129,36 +130,53 @@ public class SnapshotView extends UCMView {
 	}
     
     public static class LoadRules2 {
-		private String loadRules;
-		/**
+		private String loadRules = "Hello";
+        
+        public LoadRules2() { }
+        /**
 		 * Create load rules based on {@link Components}
 		 * @throws UnableToLoadEntityException 
 		 * 
 		 */
 		public LoadRules2( SnapshotView view, Components components ) throws UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException {
-            
-            /**
-             * Read current configuration
-             */
+            apply(view, components);
+		}
+                        
+        public List<String> getConsoleOutput(SnapshotView view) {
             List<String> configLines = Cleartool.run("catcs", view.getViewRoot()).stdoutList;
+            return configLines;
+        }
+        
+        public String loadRuleSequence( SnapshotView view, Components components ) {
+            String loadRuleSequence = "";           
+            List<String> configLines = getConsoleOutput(view);
             HashMap<String, Boolean> all = parseProjectRootFolders(configLines);
-            
-			loadRules = " -add_loadrules ";
 
 			if( components.equals( Components.ALL ) ) {
 				logger.fine( "All components" );
                 for(String componentRoot : all.keySet()) {
-                    loadRules += componentRoot + " ";
+                    loadRuleSequence += componentRoot + " ";
                 }
 			} else {
 				logger.fine( "Modifiable components" );
                 HashMap<String, Boolean> modifiables = getModifiableOnly(all);
 	
 				for( String modifiable : modifiables.keySet() ) {                    
-					loadRules += modifiable + " ";
+					loadRuleSequence += modifiable + " ";
 				}
 			}
-		}
+            
+            return loadRuleSequence;
+        }
+               
+        public void apply(SnapshotView view, Components components) {                        
+            /**
+             * Read current configuration
+             */
+			loadRules = " -add_loadrules "+ loadRuleSequence(view, components);
+        }
+        
+        
         /**
          * Returns a set of tuples from the parsed console input string
          * @param consoleinput
@@ -178,7 +196,9 @@ public class SnapshotView extends UCMView {
                         String key = m.group(2) + m.group(3);
                         //remove the leading backward slash from vobtag and remove the leftover forward slash from the path
                         key = key.substring(1, key.length()-1);
-                        key = key.replace("/", "\\");
+                        if(SystemUtils.IS_OS_UNIX) {
+                            key = key.replace("/", "\\");
+                        }
                         logger.info("config spec line: "+key);
                         Boolean readOnly = s.contains("-nocheckout");
                         rootFolders.put(key, readOnly);
