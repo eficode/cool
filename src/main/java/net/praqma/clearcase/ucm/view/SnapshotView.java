@@ -162,7 +162,6 @@ public class SnapshotView extends UCMView {
             String loadRuleSequence = "";           
             List<String> configLines = getConsoleOutput(view);
             HashMap<String, Boolean> all = parseProjectRootFolders(configLines);
-            
 
 			if( components.equals( Components.ALL ) ) {
 				logger.fine( "All components" );
@@ -176,10 +175,7 @@ public class SnapshotView extends UCMView {
             return loadRuleSequence;
         }
                
-        public void apply(SnapshotView view, Components components) {                        
-            /**
-             * Read current configuration
-             */
+        public void apply(SnapshotView view, Components components) {                                   
 			loadRules = " -add_loadrules " + loadRuleSequence(view, components);
         }
         
