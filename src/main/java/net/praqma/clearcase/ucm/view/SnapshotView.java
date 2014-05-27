@@ -39,6 +39,7 @@ import net.praqma.util.io.IO;
 import net.praqma.util.structure.Printer;
 import net.praqma.util.structure.Tuple;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 
 /**
@@ -71,11 +72,9 @@ public class SnapshotView extends UCMView {
 		 
 
 	private File viewroot = null;
-
 	private PVob pvob;
 	private String uuid = "";
 	private String globalPath = "";
-
 	private Stream stream;
 
 	public enum Components {
@@ -130,7 +129,7 @@ public class SnapshotView extends UCMView {
 	}
     
     public static class LoadRules2 {
-		private String loadRules = "Hello";
+		private String loadRules;
         
         public LoadRules2() { }
         /**
@@ -151,19 +150,15 @@ public class SnapshotView extends UCMView {
             String loadRuleSequence = "";           
             List<String> configLines = getConsoleOutput(view);
             HashMap<String, Boolean> all = parseProjectRootFolders(configLines);
+            
 
 			if( components.equals( Components.ALL ) ) {
 				logger.fine( "All components" );
-                for(String componentRoot : all.keySet()) {
-                    loadRuleSequence += componentRoot + " ";
-                }
+                loadRuleSequence = StringUtils.join(all.keySet(), " ");
 			} else {
 				logger.fine( "Modifiable components" );
                 HashMap<String, Boolean> modifiables = getModifiableOnly(all);
-	
-				for( String modifiable : modifiables.keySet() ) {                    
-					loadRuleSequence += modifiable + " ";
-				}
+                loadRuleSequence = StringUtils.join(modifiables.keySet(), " ");
 			}
             
             return loadRuleSequence;
@@ -173,7 +168,7 @@ public class SnapshotView extends UCMView {
             /**
              * Read current configuration
              */
-			loadRules = " -add_loadrules "+ loadRuleSequence(view, components);
+			loadRules = " -add_loadrules " + loadRuleSequence(view, components);
         }
         
         
@@ -182,7 +177,7 @@ public class SnapshotView extends UCMView {
          * @param consoleinput
          * @return 
          */
-        private HashMap<String, Boolean> parseProjectRootFolders(List<String> consoleinput) {
+        public HashMap<String, Boolean> parseProjectRootFolders(List<String> consoleinput) {
             HashMap<String, Boolean> rootFolders = new HashMap<String, Boolean>();
             
             for(String s : consoleinput) {
@@ -196,7 +191,7 @@ public class SnapshotView extends UCMView {
                         String key = m.group(2) + m.group(3);
                         //remove the leading backward slash from vobtag and remove the leftover forward slash from the path
                         key = key.substring(1, key.length()-1);
-                        if(SystemUtils.IS_OS_UNIX) {
+                        if(SystemUtils.IS_OS_WINDOWS) {
                             key = key.replace("/", "\\");
                         }
                         logger.info("config spec line: "+key);
@@ -228,7 +223,7 @@ public class SnapshotView extends UCMView {
 		 * @param loadRules
 		 */
 		public LoadRules2( String loadRules ) {
-			this.loadRules = loadRules = " -add_loadrules " + loadRules;
+			this.loadRules = " -add_loadrules " + loadRules;
 		}
 
 		public String getLoadRules() {
