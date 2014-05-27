@@ -640,6 +640,7 @@ public class SnapshotView extends UCMView {
                         notVobs.add( f );
                     } 
                 } else {
+                    logger.info( String.format( "The loadrule: %s%nContains %s", loadrules, f.getName() ) );
                     if(loadrules.contains(f.getName())) {
                         vobfolders.add(f);
                     } else {
@@ -779,14 +780,22 @@ public class SnapshotView extends UCMView {
      */
     private List<File> findViewPrivateFilesFromVobUsingFileFilter( File vobFolder ) {
         ViewPrivateFileFilter roff = new ViewPrivateFileFilter();
-        return Arrays.asList(vobFolder.listFiles(roff));
+        List<File> files = Arrays.asList(vobFolder.listFiles(roff));
+        logger.info(String.format( "Found %s view private files in folder %s", files.size(), vobFolder.getName() ));
+        return files;
     }
 
+    /**
+     * 
+     * @param excludeRoot
+     * @return
+     * @throws CleartoolException
+     * @deprecated Use this method instead. The loadrules is the string you create you view context with {@link #swipe( File viewroot, boolean excludeRoot, String loadrules)}  
+     */
+    @Deprecated
 	public Map<String, Integer> swipe( boolean excludeRoot ) throws CleartoolException {
 		logger.fine( "Swiping " + this.getViewRoot() );
 		Map<String, Integer> sinfo = swipe( viewroot, excludeRoot );
-		//Printer.mapPrinter( sinfo );
-
 		return sinfo;
 	}
 	
