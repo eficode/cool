@@ -13,21 +13,19 @@ import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.clearcase.ucm.utils.filters.AfterBaseline;
 import net.praqma.clearcase.ucm.utils.filters.AfterDate;
 import net.praqma.clearcase.util.ExceptionUtils;
-import net.praqma.util.debug.Logger;
 import net.praqma.util.test.junit.TestDescription;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class BaselineListDynamicTest extends BaseClearCaseTest {
 	
-	private static Logger logger = Logger.getLogger();
+	private static final Logger logger = Logger.getLogger(BaselineListDynamicTest.class.getName());
 
 	@Rule
 	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-baselinelist-dynamic" );
@@ -41,7 +39,7 @@ public class BaselineListDynamicTest extends BaseClearCaseTest {
 		
 		Date date = new Date();
 		
-		logger.debug( "Date " + net.praqma.clearcase.ucm.entities.UCMEntity.dateFormatter.format( date ) );
+		logger.fine( "Date " + net.praqma.clearcase.ucm.entities.UCMEntity.dateFormatter.format( date ) );
 		
 		/* We need to make sure the baseline is created at least one second after the date */
 		try {
@@ -50,12 +48,8 @@ public class BaselineListDynamicTest extends BaseClearCaseTest {
 			/* Try anyway */
 		}
 		
-		String viewtag = ccenv.getUniqueName() + "_one_int";
-		System.out.println( "VIEW: " + ccenv.context.views.get( viewtag ) );
-		File path = new File( ccenv.context.mvfs + "/" + ccenv.getUniqueName() + "_one_int/" + ccenv.getVobName() );
-		
-		System.out.println( "PATH: " + path );
-		
+        String uniq = ccenv.getUniqueName();
+		File path = new File( ccenv.context.mvfs + "/" + uniq + "_one_int/" + ccenv.getVobName() );
 		try {
 			ccenv.addNewContent( ccenv.context.components.get( "Model" ), path, "test.txt" );
 		} catch( ClearCaseException e ) {
@@ -83,7 +77,7 @@ public class BaselineListDynamicTest extends BaseClearCaseTest {
 
         BaselineList baselines = new BaselineList( stream, component, PromotionLevel.INITIAL ).addFilter( new AfterBaseline( model1 ) ).apply();
 
-        logger.info( "List is: " + baselines );
+        logger.fine( "List is: " + baselines );
 
         assertEquals( 5, baselines.size() );
     }
