@@ -63,7 +63,7 @@ public abstract class Cleartool extends Cool {
 				throw new NoLicensesException( "No licenses available", e );
 			} else if( e.getMessage().contains( "There are no valid licenses in the NT registry for ClearCase" )) {
 				throw new NoLicensesException( "No licenses available", e );
-			} else {
+            } else {
                 log.log(Level.SEVERE, "Unspecified cleartool error", e);
 				throw e;
 			}
