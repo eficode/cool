@@ -83,7 +83,7 @@ public class SnapshotView extends UCMView {
 
         @Override
         public boolean accept(File file) {            
-            return !SnapshotView.isSpecialFile(file.getName()) && file.isFile() && file.canWrite() && !file.getName().equals( VIEW_DOT_DAT_FILE );
+            return file.isFile() && !SnapshotView.isSpecialFile(file.getName()) && file.canWrite() && !file.getName().equals( VIEW_DOT_DAT_FILE );
         }        
     }
 
@@ -618,8 +618,6 @@ public class SnapshotView extends UCMView {
 		logger.fine( viewroot.toString() );
 
 		File[] files = viewroot.listFiles();
-        
-        
 		List<File> notVobs = new ArrayList<File>();
 		List<File> rootVPFiles = new ArrayList<File>();
         List<File> vobfolders = new LinkedList<File>(  );
