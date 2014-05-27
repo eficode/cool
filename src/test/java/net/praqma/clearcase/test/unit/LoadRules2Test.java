@@ -8,14 +8,13 @@ package net.praqma.clearcase.test.unit;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import static junit.framework.Assert.assertNotNull;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import org.apache.commons.lang.SystemUtils;
 import static org.junit.Assert.assertEquals;
 import org.mockito.Mockito;
+import org.junit.Test;
 
 /**
  *
@@ -23,7 +22,7 @@ import org.mockito.Mockito;
  */
 public class LoadRules2Test {
     
-    @org.junit.Test
+    @Test
     public void testLoadRules2() throws Exception {
         
         String windows = " -add_loadrules " + "2Cool\\Model "+"2Cool\\Trace "+"2Cool\\Gui "+ "2Cool\\ServerTest";
