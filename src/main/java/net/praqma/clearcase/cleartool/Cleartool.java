@@ -65,7 +65,7 @@ public abstract class Cleartool extends Cool {
 				throw new NoLicensesException( "No licenses available", e );
             } else if (e.getMessage().contains( "No matching entries found for view tag" )) {
                 //This is an exception, when we fail to get view, it usually means we just create it afterwards
-                log.log(Level.WARNING, String.format( "Failed to execute command %s%nMessage is: %s", e.getCommand(),e.getMessage() ) );
+                log.log(Level.WARNING, e.getMessage());
                 throw e;
             } else {
                 log.log(Level.SEVERE, "Unspecified cleartool error", e);
