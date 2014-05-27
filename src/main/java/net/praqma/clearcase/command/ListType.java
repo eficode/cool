@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.lang.SystemUtils;
 
 /**
  * @author cwolfgang
@@ -103,7 +104,11 @@ public class ListType {
 
     public String getCommandLine() {
         StringBuilder sb = new StringBuilder();
-        sb.append( "lstype -fmt %n\\n" );
+        if(SystemUtils.IS_OS_WINDOWS) {
+            sb.append( "lstype -fmt %n\\n" );
+        } else {
+            sb.append( "lstype -fmt %n\\\\n" );
+        }
 
         if( kind == null ) {
             throw new IllegalStateException( "No kind defined" );
