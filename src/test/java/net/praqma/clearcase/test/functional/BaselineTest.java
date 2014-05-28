@@ -4,6 +4,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -104,6 +106,19 @@ public class BaselineTest extends BaseClearCaseTest {
         Component componentSystem = ccenv.context.components.get( "_System" );
 
         assertThat( members.size(), is( 7 ) );
+        List<Component> allComponents = new ArrayList<Component>();
+        for(Baseline bl : members) {
+            allComponents.add(bl.getComponent());
+        }
+        
+        int occuranceServer = Collections.frequency(allComponents, componentServer);
+        int occuranceSystem = Collections.frequency(allComponents, componentSystem);
+        int occuranceClient = Collections.frequency(allComponents, componentClient);
+        
+        assertEquals(1, occuranceServer);
+        assertEquals(4, occuranceSystem);
+        assertEquals(2, occuranceClient);
+        /*
         assertThat( members.get( 0 ).getComponent(), is( componentServer ) );
         assertThat( members.get( 1 ).getComponent(), is( componentSystem ) );
         assertThat( members.get( 2 ).getComponent(), is( componentSystem ) );
@@ -111,6 +126,7 @@ public class BaselineTest extends BaseClearCaseTest {
         assertThat( members.get( 4 ).getComponent(), is( componentSystem ) );
         assertThat( members.get( 5 ).getComponent(), is( componentClient ) );
         assertThat( members.get( 6 ).getComponent(), is( componentSystem ) );
+        */
     }
 
     @Test
@@ -123,14 +139,18 @@ public class BaselineTest extends BaseClearCaseTest {
 
         Component system = ccenv.context.components.get( "_System" );
 
-        List<Baseline> posted = b.getPostedBaselinesFor( system );
-
+        List<Baseline> posted = b.getPostedBaselinesFor( system );        
         assertNotNull( posted );
         assertThat( posted.size(), is( 4 ) );
+        
+        assertEquals(2, Collections.frequency(posted, model));
+        assertEquals(2, Collections.frequency(posted, client));
+        /*
         assertThat( posted.get( 0 ), is( model ) );
         assertThat( posted.get( 1 ), is( client ) );
         assertThat( posted.get( 2 ), is( model ) );
         assertThat( posted.get( 3 ), is( client ) );
+        */
     }
 
     @Test
@@ -146,8 +166,6 @@ public class BaselineTest extends BaseClearCaseTest {
 
         assertNotNull( posted );
         assertThat( posted.size(), is( 1 ) );
-        assertThat( posted.get( 0 ), is( client ) );
+
     }
-
-
 }
