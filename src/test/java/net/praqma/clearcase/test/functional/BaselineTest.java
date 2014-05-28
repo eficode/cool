@@ -21,7 +21,7 @@ import org.junit.Test;
 
 public class BaselineTest extends BaseClearCaseTest {
 
-    private static Logger logger = Logger.getLogger( BaselineTest.class.getName() );
+    private static final Logger logger = Logger.getLogger( BaselineTest.class.getName() );
 
 	@ClassRule
 	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-baseline" );

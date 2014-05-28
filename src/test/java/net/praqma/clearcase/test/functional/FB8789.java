@@ -42,7 +42,7 @@ public class FB8789 {
         Baseline model1 = ccenv.context.baselines.get( "model-1" );
         model1.setPromotionLevel( Project.PromotionLevel.BUILT );
 
-        BaselineList list = new BaselineList( stream, component, level, true ).
+        BaselineList list = new BaselineList( stream, component, level ).
                 addFilter( new AfterBaseline( model1 ) ).
                 addFilter( new NoDeliver() ).
                 addFilter( new NoLabels() ).

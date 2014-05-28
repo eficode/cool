@@ -70,6 +70,7 @@ public class BaselineList extends ArrayList<Baseline> {
         logger.fine("Filters  : " + filters);
         logger.fine("Multisite: " + multisitePolling);
         logger.finest("Requiring: " + required);
+              
 
         //Asking for posted deliveries only makes sense when you have multisite enabled.
         if(multisitePolling) {
