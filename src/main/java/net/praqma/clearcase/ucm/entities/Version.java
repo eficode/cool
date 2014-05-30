@@ -265,20 +265,28 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	public String getBranch() {
 		return branch;
 	}
+    
+    public String versionLoadString(File view) {
+        if(view == null) {
+            return this.getFullyQualifiedName();
+        } else {
+            String fqdnShortened = this.getFullyQualifiedName().replaceFirst(view.getAbsolutePath(), "");            
+            return fqdnShortened;
+        }
+    }
 	
 	public Version load() throws UnableToLoadEntityException {
 		try {            
             logger.fine( String.format( "We are in view %s%nLength of version path is %s", view != null ? view.getAbsolutePath() : null, this.getFullyQualifiedName().length() ) ) ;		
-            String fqdn = this.getFullyQualifiedName();
-            String fqdnShortened = fqdn.replaceFirst(view.getAbsolutePath(), "");
+            String versionString = versionLoadString(view);
             
-            logger.finest("Version describe path: "+fqdnShortened);
+            logger.fine("Version describe path: "+versionString);
             
-            String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + fqdnShortened + "\"";
+            String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + versionString + "\"";
             
 			String[] list = Cleartool.run( cmd, view ).stdoutBuffer.toString().split( "\\}\\{" );
 
-            logger.finest( "Elements: " + Arrays.asList( list ) );
+            logger.fine( "Elements: " + Arrays.asList( list ) );
 
 			/* First line, user */
 			setUser( list[0] );
