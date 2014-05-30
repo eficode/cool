@@ -849,7 +849,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		
 		logger.finest( "LINES: " + lines );
 		
-		return Activity.parseActivityStrings( lines, viewContext.getAbsoluteFile().toString().length() );
+		return Activity.parseActivityStrings( lines, viewContext );
 	}
 
 	@Override
