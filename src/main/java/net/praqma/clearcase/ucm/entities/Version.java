@@ -267,11 +267,13 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 	
 	public Version load() throws UnableToLoadEntityException {
-		try {
-            
+		try {            
             logger.fine( String.format( "We are in view %s%nLength of version path is %s", view != null ? view.getAbsolutePath() : null, this.getFullyQualifiedName().length() ) ) ;		
             String fqdn = this.getFullyQualifiedName();
-            String fqdnShortened = fqdn.replaceFirst(view.getAbsolutePath(), "");            
+            String fqdnShortened = fqdn.replaceFirst(view.getAbsolutePath(), "");
+            
+            logger.finest("Version describe path: "+fqdnShortened);
+            
             String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + fqdnShortened + "\"";
             
 			String[] list = Cleartool.run( cmd, view ).stdoutBuffer.toString().split( "\\}\\{" );
