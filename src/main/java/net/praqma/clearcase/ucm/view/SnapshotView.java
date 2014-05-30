@@ -139,8 +139,9 @@ public class SnapshotView extends UCMView {
     
     public static class LoadRules2 {
 		private String loadRules;
-        	
+
         public LoadRules2() { }
+        
         /*
 		 * Create load rules based on {@link Components}
          * @param view
@@ -175,7 +176,7 @@ public class SnapshotView extends UCMView {
             return loadRuleSequence;
         }
                
-        public void apply(SnapshotView view, Components components) {                                   
+        public void apply(SnapshotView view, Components components) {                        
 			loadRules = " -add_loadrules " + loadRuleSequence(view, components);
         }
         
