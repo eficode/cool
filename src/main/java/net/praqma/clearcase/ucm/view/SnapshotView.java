@@ -724,6 +724,7 @@ public class SnapshotView extends UCMView {
 					dirs.add( f );
 				} else {
                     if(	f.delete() ) {
+                        logger.finest(String.format( "Deleted file: %s", f.getAbsolutePath() ));
 					    filecount++;
                     } else {
                         logger.warning( "Could not delete " + f );
