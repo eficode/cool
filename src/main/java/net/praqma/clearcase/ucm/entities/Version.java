@@ -272,7 +272,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
      * This function was made because of FB11125. Basically we could wound up in situations where the version FQDN was too
      * long for windows to handle.
      * @param view
-     * @return The versions FQD ~ minus the view folder.
+     * @return The versions FQN ~ minus the path to root context.
      */
     public String versionLoadString(File view) {
         if(view == null) {
@@ -290,9 +290,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		try {            
             logger.fine( String.format( "We are in view %s%nLength of version path is %s", view != null ? view.getAbsolutePath() : null, this.getFullyQualifiedName().length() ) ) ;		
             String versionString = versionLoadString(view);
-            
-            logger.fine("Version describe path: "+versionString);
-            
             String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + versionString + "\"";
             
 			String[] list = Cleartool.run( cmd, view ).stdoutBuffer.toString().split( "\\}\\{" );
