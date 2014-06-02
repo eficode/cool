@@ -281,7 +281,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
             String escaped = Pattern.quote(view.getAbsolutePath());            
             Pattern p = Pattern.compile(escaped, Pattern.CASE_INSENSITIVE);
             
-            String fqdnShortened = this.getFullyQualifiedName().replaceFirst(escaped, "");            
+            String fqdnShortened = p.matcher(this.getFullyQualifiedName()).replaceAll("");
             return fqdnShortened;
         }
     }
