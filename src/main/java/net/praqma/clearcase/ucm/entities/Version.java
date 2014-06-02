@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.Cool;
@@ -29,6 +30,7 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
+import sun.misc.Regexp;
 
 public class Version extends UCMEntity implements Comparable<Version> {
 	
@@ -276,7 +278,10 @@ public class Version extends UCMEntity implements Comparable<Version> {
         if(view == null) {
             return this.getFullyQualifiedName();
         } else {
-            String fqdnShortened = this.getFullyQualifiedName().replace(view.getAbsolutePath(), "");            
+            String escaped = Pattern.quote(view.getAbsolutePath());            
+            Pattern p = Pattern.compile(escaped, Pattern.CASE_INSENSITIVE);
+            
+            String fqdnShortened = this.getFullyQualifiedName().replaceFirst(escaped, "");            
             return fqdnShortened;
         }
     }
