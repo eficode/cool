@@ -270,7 +270,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
         if(view == null) {
             return this.getFullyQualifiedName();
         } else {
-            String fqdnShortened = this.getFullyQualifiedName().replaceFirst(view.getAbsolutePath(), "");            
+            String fqdnShortened = this.getFullyQualifiedName().replace(view.getAbsolutePath(), "");            
             return fqdnShortened;
         }
     }
