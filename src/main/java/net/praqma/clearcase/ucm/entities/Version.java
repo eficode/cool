@@ -278,14 +278,14 @@ public class Version extends UCMEntity implements Comparable<Version> {
         if(view == null) {
             return this.getFullyQualifiedName();
         } else {
-            String escaped = Pattern.quote(view.getAbsolutePath());            
-            Pattern p = Pattern.compile(escaped, Pattern.CASE_INSENSITIVE);
-            
+            String escaped = Pattern.quote(view.getAbsolutePath()+Cool.filesep);            
+            Pattern p = Pattern.compile(escaped, Pattern.CASE_INSENSITIVE);            
             String fqdnShortened = p.matcher(this.getFullyQualifiedName()).replaceAll("");
             return fqdnShortened;
         }
     }
 	
+    @Override
 	public Version load() throws UnableToLoadEntityException {
 		try {            
             logger.fine( String.format( "We are in view %s%nLength of version path is %s", view != null ? view.getAbsolutePath() : null, this.getFullyQualifiedName().length() ) ) ;		
