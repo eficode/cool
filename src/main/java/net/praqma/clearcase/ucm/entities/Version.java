@@ -266,6 +266,12 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return branch;
 	}
     
+    /**
+     * This function was made because of FB11125. Basically we could wound up in situations where the version FQDN was too
+     * long for windows to handle.
+     * @param view
+     * @return The versions FQD ~ minus the view folder.
+     */
     public String versionLoadString(File view) {
         if(view == null) {
             return this.getFullyQualifiedName();
