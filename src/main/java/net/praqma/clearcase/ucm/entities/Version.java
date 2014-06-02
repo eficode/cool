@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.Cool;
@@ -29,6 +30,7 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
+import sun.misc.Regexp;
 
 public class Version extends UCMEntity implements Comparable<Version> {
 	
@@ -266,19 +268,40 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	public String getBranch() {
 		return branch;
 	}
+    
+    /**
+     * This function was made because of FB11125. Basically we could wound up in situations where the version FQDN was too
+     * long for windows to handle.
+     * @param view
+     * @return The versions FQN ~ minus the path to root context.
+     */
+    public String versionLoadString(File view) {
+        if(view == null) {
+            return this.getFullyQualifiedName();
+        } else {
+            String escaped = Pattern.quote(view.getAbsolutePath()+Cool.filesep);            
+            Pattern p = Pattern.compile(escaped, Pattern.CASE_INSENSITIVE);            
+            String fqdnShortened = p.matcher(this.getFullyQualifiedName()).replaceAll("");
+            return fqdnShortened;
+        }
+    }
 	
     @Override
 	public Version load() throws UnableToLoadEntityException {
-        
+
         if(loaded) {
             return this;
         }
         
-		try {
-			String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + this + "\"";
-			String[] list = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\}\\{" );
+		try {            
+            logger.fine( String.format( "We are in view %s%nLength of version path is %s", view != null ? view.getAbsolutePath() : null, this.getFullyQualifiedName().length() ) ) ;		
+            String versionString = versionLoadString(view);
+            
+            String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + versionString + "\"";
+            
+			String[] list = Cleartool.run( cmd, view ).stdoutBuffer.toString().split( "\\}\\{" );
 
-            logger.finest( "Elements: " + Arrays.asList( list ) );
+            logger.fine( "Elements: " + Arrays.asList( list ) );
 
 			/* First line, user */
 			setUser( list[0] );
@@ -841,7 +864,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		
 		logger.finest( "LINES: " + lines );
 		
-		return Activity.parseActivityStrings( lines, viewContext.getAbsoluteFile().toString().length() );
+		return Activity.parseActivityStrings( lines, viewContext );
 	}
 
 	@Override
