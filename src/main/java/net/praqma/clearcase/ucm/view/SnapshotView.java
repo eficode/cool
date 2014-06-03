@@ -352,14 +352,10 @@ public class SnapshotView extends UCMView {
 			throw new IOException( "Could not create " + VIEW_DOT_DAT_FILE, e );
 		}
 
-		/* TODO Too much windows.... */
-		// cmd = "attrib +h +r " + viewdat;
 		if( !viewdat.setReadOnly() ) {
 			logger.warning( "Could not set " + VIEW_DOT_DAT_FILE + " as read only" );
 			throw new IOException( "Could not set " + VIEW_DOT_DAT_FILE + " as read only" );
 		}
-		// viewdat.set
-		// Command.run( cmd );
 	}
 
 	public File getViewRoot() {
@@ -371,6 +367,7 @@ public class SnapshotView extends UCMView {
 		return this.viewroot.toString();
 	}
 
+    @Override
 	public Stream getStream() throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
 		if( this.stream == null ) {
 			Stream stream = getStreamFromView( getViewRoot() ).getFirst();
@@ -648,6 +645,7 @@ public class SnapshotView extends UCMView {
 			}
 
 			if( f.isDirectory() ) {
+                //TODO: The clearcase functionality should be removed once swipe 2.0 is ready. We should only use the one that checks with loadrules.
                 if(loadrules == null) {
                     if( Vob.isVob( f ) ) {
                         vobfolders.add( f );
@@ -689,6 +687,7 @@ public class SnapshotView extends UCMView {
 
         for( File folder : vobfolders ) {
             logger.fine( "Finding view private files for " + folder );
+            //TODO: Once swipe 2.0 has been verified, this check needs to be removed, we only need to use the findViewPrivateFilesFromVobUsingFileFilter method.
             if(loadrules == null) {
                 vpFiles.addAll( findViewPrivateFilesFromVob( folder ) );
             } else {
