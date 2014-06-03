@@ -33,7 +33,6 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 import net.praqma.util.io.IO;
 import net.praqma.util.structure.Tuple;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 
@@ -83,7 +82,7 @@ public class SnapshotView extends UCMView {
     public static class ViewPrivateFileFilter implements FileFilter {
 
         @Override
-        public boolean accept(File file) {            
+        public boolean accept(File file) {
             return file.isFile() && !SnapshotView.isSpecialFile(file.getName()) && file.canWrite() && !file.getName().equals( VIEW_DOT_DAT_FILE );
         }        
     }
@@ -796,10 +795,29 @@ public class SnapshotView extends UCMView {
      * @return 
      */
     private List<File> findViewPrivateFilesFromVobUsingFileFilter( File vobFolder ) {
+        ArrayList<File> foldersToCheck = new ArrayList<File>();
+        findAllSubDirs(vobFolder, foldersToCheck);
+        
         ViewPrivateFileFilter roff = new ViewPrivateFileFilter();
-        List<File> files = Arrays.asList(vobFolder.listFiles(roff));
-        logger.info(String.format( "Found %s view private files in folder %s", files.size(), vobFolder.getName() ));
+        List<File> files = new ArrayList<File>(Arrays.asList(vobFolder.listFiles(roff)));
+        for(File f : foldersToCheck) {
+            files.addAll(Arrays.asList(f.listFiles(roff)));
+        }
+        
+        
+        logger.info(String.format( "Found %s view private files in vob folder %s", files.size(), vobFolder.getName() ));
         return files;
+    }
+    
+    private List<File> findAllSubDirs(File rootFolder, List<File> folders) {
+        File[] allfiles = rootFolder.listFiles();
+        for (File file : allfiles) {
+            if (file.isDirectory()) {
+                folders.add(file);
+                findAllSubDirs(file, folders);
+            }
+        }
+        return folders;
     }
 
     /**
