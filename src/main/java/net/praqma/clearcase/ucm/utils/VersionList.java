@@ -14,13 +14,12 @@ import net.praqma.clearcase.ucm.entities.Version;
 
 public class VersionList extends ArrayList<Version> {
 
-    private static Logger logger = Logger.getLogger( VersionList.class.getName() );
+    private static final Logger logger = Logger.getLogger( VersionList.class.getName() );
+    private List<VersionFilter> filters = new ArrayList<VersionFilter>();
     private String branchName;
-    private File path;
+    private File path;    
 
-    public VersionList() {
-
-    }
+    public VersionList() { }
 
     public VersionList( List<Version> versions ) {
         this.addAll( versions );
@@ -88,12 +87,10 @@ public class VersionList extends ArrayList<Version> {
 					if( iv.getRevision().intValue() < v.getRevision().intValue() ) {
 						logger.fine( "Updating branch: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
 						bmap.put( v.getBranch(), v );
-						//fmap.put( v.getFile(), nbmap );
 					}
 				} else {
 					logger.fine( "New branch: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
 					bmap.put( v.getBranch(), v );
-					//fmap.put( v.getFile(), nbmap );
 				}
 
 			} else {
@@ -124,6 +121,15 @@ public class VersionList extends ArrayList<Version> {
 
         return new ArrayList<Version>( map.values() );
     }
+    
+    public VersionList apply() {
+        
+        for(VersionFilter f : filters) {
+            f.filter(this);
+        }
+        
+        return this;
+    }
 
     private static void getLatestChanges( List<Version> versions, String branchName, Map<File, Version> map ) {
         logger.fine( "Branch name is " + branchName );
@@ -138,5 +144,10 @@ public class VersionList extends ArrayList<Version> {
                 }
             }
         }
+    }
+    
+    public VersionList addFilter(VersionFilter filter) {
+        filters.add(filter);
+        return this;
     }
 }
