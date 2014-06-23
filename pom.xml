@@ -11,7 +11,14 @@
     <packaging>jar</packaging>
     <name>ClearCase Oriented Open Library Core</name>
     <url>http://www.praqma.org</url>
-	<version>0.6.30-SNAPSHOT</version>
+    <version>0.6.30-SNAPSHOT</version>
+
+    <developers>
+        <developer>
+            <id>praqma_josra</id>
+            <name>Praqma Josra</name>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -197,8 +204,6 @@
 
         </plugins>
     </build>
-
-
 
     <dependencies>
         <dependency>
