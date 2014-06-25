@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -66,6 +67,8 @@ public class SnapshotView extends UCMView {
 		 
 
 	private File viewroot = null;
+    private List<String> readOnlyLoadLines = new ArrayList<String>();
+    private List<String> allLoadLines = new ArrayList<String>();
 	private PVob pvob;
 	private String uuid = "";
 	private String globalPath = "";
@@ -74,6 +77,54 @@ public class SnapshotView extends UCMView {
 	public enum Components {
 		ALL, MODIFIABLE
 	}
+    
+    public static List<String> catcs(File viewRoot) {
+        List<String> configLines = Cleartool.run("catcs", viewRoot).stdoutList;
+        return configLines;
+    }
+    
+    public List<String> getReadOnlyLoadString(File viewRoot) {
+        ArrayList<String> readOnly = new ArrayList<String>();
+        HashMap<String,Boolean> all = getAllLoadStrings(viewRoot);
+        
+        for(String key : all.keySet()) {
+            if(all.get(key)) {
+                readOnly.add(key);
+            }
+        }
+        
+        return readOnly;
+    }
+    
+    public static HashMap<String, Boolean> getAllLoadStrings(File viewRoot) {
+        List<String> consoleInput = SnapshotView.catcs(viewRoot);
+        HashMap<String, Boolean> rootFolders = new HashMap<String, Boolean>();
+            
+        for(String s : consoleInput) {
+            if(!s.startsWith("element")) {
+                continue;
+            }
+
+            Matcher m = pattern_catcs.matcher(s);
+            if(m.matches()) {
+                try {
+                    String key = m.group(2) + m.group(3);
+                    //remove the leading backward slash from vobtag and remove the leftover forward slash from the path
+                    key = key.substring(1, key.length()-1);
+                    if(SystemUtils.IS_OS_WINDOWS) {
+                        key = key.replace("/", "\\");
+                    }
+                    logger.info("config spec line: "+key);
+                    Boolean readOnly = s.contains("-nocheckout");
+                    rootFolders.put(key, readOnly);
+                } catch (Exception ex) {
+                    logger.log(Level.SEVERE, "Error in determining config spec for line: \n "+s ,ex);
+                }
+            }                 
+        }
+
+        return rootFolders;
+    }
     
     public static boolean isSpecialFile(String file) {
         return ( file.matches( rx_co_file ) || file.matches( rx_keep_file ) || file.matches( rx_ctr_file ) || file.endsWith( rx_updt_file ) );
@@ -357,6 +408,22 @@ public class SnapshotView extends UCMView {
 			throw new IOException( "Could not set " + VIEW_DOT_DAT_FILE + " as read only" );
 		}
 	}
+    
+    public List<String> getReadOnlyLoadLines() {
+        return readOnlyLoadLines;
+    }
+    
+    public void setReadOnlyLoadLines(List<String> readOnlyLoadLines) {
+        this.readOnlyLoadLines = readOnlyLoadLines;
+    }
+    
+    public List<String> getAllLoadLines() {
+        return allLoadLines;
+    }
+    
+    public void setAllLoadLines(List<String> allLoadLines) {
+        this.allLoadLines = allLoadLines;
+    }
 
 	public File getViewRoot() {
 		return this.viewroot;
@@ -370,8 +437,7 @@ public class SnapshotView extends UCMView {
     @Override
 	public Stream getStream() throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
 		if( this.stream == null ) {
-			Stream stream = getStreamFromView( getViewRoot() ).getFirst();
-			this.stream = stream;
+			this.stream = getStreamFromView( getViewRoot() ).getFirst();
 		}
 		return stream;
 	}
@@ -575,6 +641,23 @@ public class SnapshotView extends UCMView {
 
 		// Cache current directory and chdir into the viewroot
 		String result = updateView( this, overwrite, loadRules.getLoadRules() );
+        
+        //Store the load lines
+        HashMap<String, Boolean> loadString = SnapshotView.getAllLoadStrings(viewroot);
+        
+        ArrayList<String> readOnly = new ArrayList<String>();
+        ArrayList<String> all = new ArrayList<String>();
+        
+        for(Entry<String, Boolean> entry : loadString.entrySet()) {
+            if(entry.getValue()) {
+                readOnly.add(entry.getKey());
+            }
+            all.add(entry.getKey());            
+        }
+        
+        this.setAllLoadLines(all);
+        this.setReadOnlyLoadLines(readOnly);
+        
 		logger.fine( result );
 
 		return info;
