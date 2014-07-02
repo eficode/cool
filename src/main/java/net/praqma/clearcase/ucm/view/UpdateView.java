@@ -3,7 +3,6 @@ package net.praqma.clearcase.ucm.view;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -30,7 +29,7 @@ public class UpdateView {
 
     private boolean removeDanglingComponentFolders = false;
 
-    private SnapshotView.LoadRules loadRules;
+    private SnapshotView.LoadRules2 loadRules;
 
     private SnapshotView view;
 
@@ -68,9 +67,8 @@ public class UpdateView {
         return this;
     }
 
-    public UpdateView setLoadRules( SnapshotView.LoadRules loadRules ) {
+    public UpdateView setLoadRules( SnapshotView.LoadRules2 loadRules ) {
         this.loadRules = loadRules;
-
         return this;
     }
 
@@ -119,7 +117,7 @@ public class UpdateView {
         return this;
     }
 
-    private static String updateView( SnapshotView view, boolean overwrite, SnapshotView.LoadRules loadrules ) throws CleartoolException, ViewException {
+    private static String updateView( SnapshotView view, boolean overwrite, SnapshotView.LoadRules2 loadrules ) throws CleartoolException, ViewException {
         String result = "";
 
         logger.fine( view.getViewRoot().getAbsolutePath() );
