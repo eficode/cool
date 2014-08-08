@@ -40,6 +40,10 @@ public abstract class Command<RT extends Object> {
     public abstract String getCommand();
 
     private static Pattern pattern = Pattern.compile( "\\s" );
+    
+    public static boolean hasSpecialCharacters( String str ) {
+        return str.contains("&");
+    }
 
     public static boolean hasWhiteSpaces( String str ) {
         Matcher matcher = pattern.matcher( str );

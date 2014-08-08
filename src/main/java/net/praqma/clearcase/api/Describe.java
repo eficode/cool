@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class Describe extends Command<List<String>> {
 
-    private static Logger logger = Logger.getLogger( Describe.class.getName() );
+    private static final Logger logger = Logger.getLogger( Describe.class.getName() );
 
     private String itemSeparator = "\n";
 
@@ -266,7 +266,7 @@ public class Describe extends Command<List<String>> {
                 break;
         }
 
-        if( hasWhiteSpaces( objectSelector ) ) {
+        if( hasWhiteSpaces( objectSelector ) || hasSpecialCharacters( objectSelector ) ) {
             b.append( " \"" ).append( objectSelector ).append( "\"" );
         } else {
             b.append( " " ).append( objectSelector );
