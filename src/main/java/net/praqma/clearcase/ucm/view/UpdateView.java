@@ -97,7 +97,7 @@ public class UpdateView {
 
         if( swipe ) {
             logger.fine( "Swipe view" );
-            Map<String, Integer> sinfo = view.swipe( excludeRoot );
+            Map<String, Integer> sinfo = view.swipe( excludeRoot, loadRules.getLoadRules() );
             success = sinfo.get( "success" ) == 1 ? true : false;
             totalFilesToBeDeleted = sinfo.containsKey( "total" ) ? sinfo.get( "total" ) : 0;
             dirsDeleted = sinfo.containsKey( "dirs_deleted" ) ? sinfo.get( "dirs_deleted" ) : 0;

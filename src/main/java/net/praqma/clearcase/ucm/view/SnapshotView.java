@@ -915,6 +915,12 @@ public class SnapshotView extends UCMView {
 		Map<String, Integer> sinfo = swipe( viewroot, excludeRoot );
 		return sinfo;
 	}
+    
+    public Map<String, Integer> swipe( boolean excludeRoot, String loadRules ) throws CleartoolException {
+		logger.fine( "Swiping " + this.getViewRoot() );
+		Map<String, Integer> sinfo = swipe( viewroot, excludeRoot, loadRules );
+		return sinfo;
+	}
 	
 	public static SnapshotView get( File viewroot ) throws IOException, ViewException, UnableToInitializeEntityException, CleartoolException {
 		String viewtag = getViewtag( viewroot );
