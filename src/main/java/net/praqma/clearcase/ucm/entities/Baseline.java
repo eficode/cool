@@ -14,6 +14,7 @@ import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
+import org.apache.commons.lang.StringUtils;
 
 public class Baseline extends UCMEntity implements Diffable {
 
@@ -33,6 +34,9 @@ public class Baseline extends UCMEntity implements Diffable {
      * The {@link Stream} of the {@link Baseline}
      */
 	private Stream stream = null;
+    
+    //TODO: Usage of this? See FB case 
+    private ArrayList<Activity> activities = new ArrayList<Activity>();
 	
 	public enum LabelBehaviour {
 		NOLABEL,
@@ -74,13 +78,17 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * 
 	 * @throws UnableToLoadEntityException
 	 * @throws UnableToInitializeEntityException 
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToCreateEntityException 
-	 * @throws UnableToGetEntityException 
+     * @return The baseline in question, with stream and component data
 	 */
     @Override
 	public Baseline load() throws UnableToLoadEntityException, UnableToInitializeEntityException {
-
+        /**
+         * [FB11107] Performance tweaks. Avoid unnecssary load of baseline if already loaded. If it is loaded then return immediately return
+         */
+        if(loaded) {
+            return this;
+        }
+        
 		String result = "";
 
 		String cmd = "desc -fmt %n" + Cool.delim + "%X[component]p" + Cool.delim + "%X[bl_stream]p" + Cool.delim + "%[plevel]p" + Cool.delim + "%u" + Cool.delim + "%Nd" + Cool.delim + "%[label_status]p" + Cool.delim + "%[master]p " + this;
@@ -108,7 +116,6 @@ public class Baseline extends UCMEntity implements Diffable {
 		this.plevel = Project.getPlevelFromString( rs[3] );
 		this.user = rs[4];
 		try {
-            logger.fine( "Result[5]:" + rs[5] );
             synchronized( dateFormatter ) {
             	this.date = dateFormatter.parse( rs[5] );
             }
@@ -134,6 +141,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	/**
 	 * Given a baseline basename, a component and a view, the baseline is
 	 * created.
+     * @return Created baselines with the given arguments
 	 */
 	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical, List<Activity> activities, List<Component> depends ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException {
 		/* Remove prefixed baseline: */
@@ -220,11 +228,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * If the promotion level is not set, it is set to <code>INITAL</code>.
 	 * 
 	 * @return The new promotion level.
-	 * @throws UnableToLoadEntityException
 	 * @throws UnableToPromoteBaselineException
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToCreateEntityException 
-	 * @throws UnableToGetEntityException 
 	 */
 	public Project.PromotionLevel promote() throws UnableToPromoteBaselineException {
 		if( !loaded ) {
@@ -247,6 +251,8 @@ public class Baseline extends UCMEntity implements Diffable {
 
 	/**
 	 * <code>REJECTED</code> the Baseline.
+     * @return 
+     * @throws net.praqma.clearcase.exceptions.UnableToPromoteBaselineException
 	 */
 	public Project.PromotionLevel reject() throws UnableToPromoteBaselineException {
 		if( !loaded ) {
@@ -265,6 +271,8 @@ public class Baseline extends UCMEntity implements Diffable {
 
     /**
      * Set the {@link PromotionLevel}
+     * @param plevel
+     * @throws net.praqma.clearcase.exceptions.UnableToPromoteBaselineException
      */
 	public void setPromotionLevel( Project.PromotionLevel plevel ) throws UnableToPromoteBaselineException {
 		String cmd = "chbl -level " + plevel + " " + this;
@@ -279,6 +287,7 @@ public class Baseline extends UCMEntity implements Diffable {
 
     /**
      * Set the {@link PromotionLevel} of this {@link Baseline}, without persisting it in ClearCase.
+     * @param plevel
      */
     public void setLocalPromotionLevel( Project.PromotionLevel plevel ) {
         this.plevel = plevel;
@@ -298,6 +307,9 @@ public class Baseline extends UCMEntity implements Diffable {
 
     /**
      * Get the {@link List} of {@link Baseline}'s, that depends on this {@link Baseline}.
+     * @return A list of dependant baselines
+     * @throws net.praqma.clearcase.exceptions.CleartoolException
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException
      */
     public List<Baseline> getDependent() throws CleartoolException, UnableToInitializeEntityException {
         logger.fine( "Finding dependent baselines for " + this.getNormalizedName() );
@@ -449,9 +461,11 @@ public class Baseline extends UCMEntity implements Diffable {
 
         for( String bl : bls_str.get( "depends_on_closure" ) ) {
             logger.fine( "Baseline " + bl );
-            Baseline b = Baseline.get( bl );
-            if( component == null || b.getComponent().equals( component ) ) {
-                bls.add( b );
+            if(!StringUtils.isBlank(bl)) {
+                Baseline b = Baseline.get( bl );
+                if( component == null || b.getComponent().equals( component ) ) {
+                    bls.add( b );
+                }
             }
         }
 

@@ -22,7 +22,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <powermock.version>1.5</powermock.version>
+        <powermock.version>1.5.4</powermock.version>
     </properties>
 
     <repositories>

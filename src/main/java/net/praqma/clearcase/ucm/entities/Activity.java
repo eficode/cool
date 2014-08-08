@@ -118,15 +118,14 @@ public class Activity extends UCMEntity {
             System.out.println("Getting...");
 			activity = get( name, pvob );
             System.out.println("Done getting...");
-		}
-		
+		}		
 		return activity;
 	}
 
-	public static List<Activity> parseActivityStrings( List<String> result, int length ) throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
+	public static List<Activity> parseActivityStrings( List<String> result, File view ) throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
+        int length = view.getAbsoluteFile().toString().length();
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		Activity current = null;
-		//System.out.println("PARSING:");
 		for( String s : result ) {
 			/* Get activity */
 			Matcher match = pattern_activity.matcher( s );
@@ -152,7 +151,10 @@ public class Activity extends UCMEntity {
 			/* If not an activity, it must be a version */
 			String f = s.trim();
 
-			Version v = (Version) UCMEntity.getEntity( Version.class, f ).load();
+			Version v = (Version) UCMEntity.getEntity( Version.class, f );
+            v.setView(view);
+            v.load();
+            
 			v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
 
 			current.changeset.versions.add( v );
@@ -269,7 +271,7 @@ public class Activity extends UCMEntity {
                     /* If not an activity, it must be a version */
                     String f = line.trim();
 
-                    Version v = (Version) UCMEntity.getEntity( Version.class, f );
+                    Version v = (Version) UCMEntity.getEntity( Version.class, f );                    
                     v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
                     if( activityUserAsVersionUser ) {
                         v.setUser( current.getUser() );

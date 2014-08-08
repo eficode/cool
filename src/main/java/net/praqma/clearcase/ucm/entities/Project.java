@@ -168,7 +168,13 @@ public class Project extends UCMEntity implements StreamContainable {
 		return get( name, pvob );
 	}
 
+    @Override
 	public Project load() throws UnableToLoadEntityException, UnableToInitializeEntityException {
+        
+        if(loaded) {
+            return this;
+        }
+        
 		String result = "";
 
 		String cmd = "lsproj -fmt %[istream]Xp " + this;
@@ -278,6 +284,24 @@ public class Project extends UCMEntity implements StreamContainable {
 	public List<Component> getModifiableComponents() throws UnableToInitializeEntityException, CleartoolException {
 		String[] cs;
 		String cmd = "desc -fmt %[mod_comps]p " + this;
+		try {
+			cs = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" );
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new CleartoolException( "Unable to modifiable components", e );
+		}
+		
+		List<Component> comps = new ArrayList<Component>();
+
+		for( String c : cs ) {
+			comps.add( Component.get( c, pvob ) );
+		}
+
+		return comps;
+	}
+    
+    public List<Component> getNonModifiableComponents() throws UnableToInitializeEntityException, CleartoolException {
+		String[] cs;
+		String cmd = "desc -fmt %[non_mod_comps]p " + this;
 		try {
 			cs = Cleartool.run( cmd ).stdoutBuffer.toString().split( "\\s+" );
 		} catch( AbnormalProcessTerminationException e ) {

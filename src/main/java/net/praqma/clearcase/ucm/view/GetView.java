@@ -1,8 +1,6 @@
 package net.praqma.clearcase.ucm.view;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.ucm.entities.Stream;
 import org.apache.commons.io.FileUtils;
@@ -16,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class GetView {
 
-    private static Logger logger = Logger.getLogger( GetView.class.getName() );
+    private static final Logger logger = Logger.getLogger( GetView.class.getName() );
     private static final String LOGGER_PREFIX = "[" + GetView.class.getSimpleName() + "] ";
 
     private SnapshotView snapview;

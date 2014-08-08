@@ -1,6 +1,7 @@
 package net.praqma.clearcase.cleartool;
 
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.praqma.clearcase.*;
@@ -63,6 +64,7 @@ public abstract class Cleartool extends Cool {
 			} else if( e.getMessage().contains( "There are no valid licenses in the NT registry for ClearCase" )) {
 				throw new NoLicensesException( "No licenses available", e );
 			} else {
+                log.log(Level.SEVERE, "Unspecified cleartool error", e);
 				throw e;
 			}
 		}
