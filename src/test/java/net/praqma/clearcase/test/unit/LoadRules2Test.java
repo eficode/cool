@@ -26,10 +26,10 @@ public class LoadRules2Test {
     public void testLoadRules2() throws Exception {
         
         String windows = " -add_loadrules " + "2Cool\\Model "+"2Cool\\Trace "+"2Cool\\Gui "+ "2Cool\\ServerTest";
-        String unix = " -add_loadrules " + "2Cool/ServerTest "+"2Cool/Gui "+"2Cool/Model "+ "2Cool/Trace";
+        String unix = " -add_loadrules " + "vobs/2Cool/ServerTest "+"vobs/2Cool/Gui "+"vobs/2Cool/Model "+ "vobs/2Cool/Trace";
         
         String loadModWindows = " -add_loadrules "+ "2Cool\\Gui";
-        String loadModUnix = " -add_loadrules "+ "2Cool/Gui";
+        String loadModUnix = " -add_loadrules "+ "/vobs/2Cool/Gui";
         
         String expectedLoadRuleMod = SystemUtils.IS_OS_UNIX ? loadModUnix : loadModWindows;
         String expectedLoadRuleString = SystemUtils.IS_OS_UNIX ? unix : windows;  
