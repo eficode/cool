@@ -97,7 +97,8 @@ public class UpdateView {
 
         if( swipe ) {
             logger.fine( "Swipe view" );
-            Map<String, Integer> sinfo = view.swipe( excludeRoot, loadRules.getLoadRules() );
+            
+            Map<String, Integer> sinfo = view.swipe( excludeRoot, loadRules != null ? loadRules.getLoadRules() : null );
             success = sinfo.get( "success" ) == 1 ? true : false;
             totalFilesToBeDeleted = sinfo.containsKey( "total" ) ? sinfo.get( "total" ) : 0;
             dirsDeleted = sinfo.containsKey( "dirs_deleted" ) ? sinfo.get( "dirs_deleted" ) : 0;
@@ -128,8 +129,10 @@ public class UpdateView {
         } catch( AbnormalProcessTerminationException e ) {
             throw new CleartoolException( "Unable to set cs stream: " + view.getViewRoot() , e );
         }
-
-        logger.fine( "Updating view with " + loadrules );
+        
+        if(loadrules != null) {
+            logger.fine( "Updating view with " + loadrules );
+        }
 
         cmd = "update -force " + ( overwrite ? " -overwrite " : "" );
         if( loadrules != null ) {
