@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import net.praqma.clearcase.ucm.view.SnapshotView;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -33,12 +33,14 @@ public class LoadRules2Test {
         String loadModWindows = " -add_loadrules "+ "2Cool\\Gui";
         String loadModUnix = " -add_loadrules "+ "/vobs/2Cool/Gui";
         
+        String linuxWindowsSwitch = SystemUtils.IS_OS_UNIX ? "catcs_unix.txt" : "catcs.txt";
+        
         String expectedLoadRuleMod = SystemUtils.IS_OS_UNIX ? loadModUnix : loadModWindows;
         String expectedLoadRuleString = SystemUtils.IS_OS_UNIX ? unix : windows;  
         //TODO: Implement a test
         SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2();        
         SnapshotView.LoadRules2 spy = Mockito.spy(lr);
-        Mockito.doReturn(mockConsoleOut()).when(spy).getConsoleOutput(Mockito.any(SnapshotView.class));
+        Mockito.doReturn(mockConsoleOut(linuxWindowsSwitch)).when(spy).getConsoleOutput(Mockito.any(SnapshotView.class));
         String sequence = spy.loadRuleSequence(new SnapshotView(), SnapshotView.Components.ALL);
         if(!SystemUtils.IS_OS_UNIX) {
             spy.apply(new SnapshotView(), SnapshotView.Components.ALL);
@@ -50,16 +52,56 @@ public class LoadRules2Test {
             //TODO FIX Unit tests for unix, the ordering is different on unix
             assertTrue(true);
         }
-    } 
+    }
     
-    public List<String> mockConsoleOut() throws Exception {        
-        InputStream is;
+    
+    @Test
+    public void FB11710() throws Exception {        
+                
+        String expectedAll = StringUtils.join(new String[] { 
+            " -add_loadrules", 
+            "appTemplate_RelDocs\\appTemplate_RelDocs",
+            "bbRTE_RelDocs\\RTE_RelDocs",
+            "bbRTE_Source\\RTE_Source",
+            "appTemplate_Tools\\appTemplate_Tools",
+            "appTemplate_Dev\\appTemplate_Dev",
+            "appTemplate_Release\\appTemplate_Release",
+            "rwScript_Tools\\Script_Release",
+            "bbRTE_Release\\RTE_Release",
+            "rwScript_Tools\\Script_RelDocs", 
+            "appTemplate_Source\\appTemplate_Source"
+        }, " ");
+ 
         
-        if(SystemUtils.IS_OS_LINUX) {
-            is = LoadRules2Test.class.getResourceAsStream("catcs_unix.txt");
+        String modifiableLoadLines = StringUtils.join(new String[] { 
+            " -add_loadrules", 
+            "appTemplate_RelDocs\\appTemplate_RelDocs",
+            "appTemplate_Tools\\appTemplate_Tools",            
+            "appTemplate_Dev\\appTemplate_Dev",
+            "appTemplate_Release\\appTemplate_Release",
+            "appTemplate_Source\\appTemplate_Source",            
+        }, " ");
+        
+        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2();        
+        SnapshotView.LoadRules2 spy = Mockito.spy(lr);
+        Mockito.doReturn(mockConsoleOut("ucm-config-spec-with-readonly.txt")).when(spy).getConsoleOutput(Mockito.any(SnapshotView.class));
+        
+        if(SystemUtils.IS_OS_UNIX) {
+            //TODO: Implement me when possible
+            assertTrue(true);
         } else {
-            is = LoadRules2Test.class.getResourceAsStream("catcs.txt");
+            SnapshotView view = new SnapshotView();
+            spy.apply(new SnapshotView(), SnapshotView.Components.ALL);
+            assertEquals(expectedAll, spy.getLoadRules());            
+            spy.apply(view, SnapshotView.Components.MODIFIABLE);
+            assertEquals(modifiableLoadLines, spy.getLoadRules());
         }
+    }
+    
+    
+    public List<String> mockConsoleOut(String filename) throws Exception {        
+        InputStream is;
+        is = LoadRules2Test.class.getResourceAsStream(filename);
         
         List<String> lines = new ArrayList<String>();
         try {                

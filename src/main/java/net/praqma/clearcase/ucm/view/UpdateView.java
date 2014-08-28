@@ -9,6 +9,8 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -114,7 +116,22 @@ public class UpdateView {
         if( removeDanglingComponentFolders ) {
             removeComponentFolders();
         }
-
+        
+        //Store the load lines
+        HashMap<String, Boolean> loadString = SnapshotView.getAllLoadStrings(view.getViewRoot());
+        
+        ArrayList<String> readOnly = new ArrayList<String>();
+        ArrayList<String> all = new ArrayList<String>();
+        
+        for(Map.Entry<String, Boolean> entry : loadString.entrySet()) {
+            if(entry.getValue()) {
+                readOnly.add(entry.getKey());
+            }
+            all.add(entry.getKey());            
+        }
+        
+        view.setAllLoadLines(all);
+        view.setReadOnlyLoadLines(readOnly);
         return this;
     }
 

@@ -215,10 +215,10 @@ public class SnapshotView extends UCMView {
             HashMap<String, Boolean> all = parseProjectRootFolders(configLines);
 
 			if( components.equals( Components.ALL ) ) {
-				logger.fine( "All components" );
+				logger.info("All components - "+all.keySet() );
                 loadRuleSequence = StringUtils.join(all.keySet(), " ");
 			} else {
-				logger.fine( "Modifiable components" );
+				logger.info("Modifiable components" );
                 HashMap<String, Boolean> modifiables = getModifiableOnly(all);
                 loadRuleSequence = StringUtils.join(modifiables.keySet(), " ");
 			}
