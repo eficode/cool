@@ -105,7 +105,6 @@ public class UpdateView {
             totalFilesToBeDeleted = sinfo.containsKey( "total" ) ? sinfo.get( "total" ) : 0;
             dirsDeleted = sinfo.containsKey( "dirs_deleted" ) ? sinfo.get( "dirs_deleted" ) : 0;
             filesDeleted = sinfo.containsKey( "files_deleted") ? sinfo.get( "files_deleted" ) : 0;
-
             logger.fine( "SWIPED" );
         }
 
@@ -117,6 +116,10 @@ public class UpdateView {
             removeComponentFolders();
         }
         
+        return this;
+    }
+
+    public static void findReadOnlyComponents(SnapshotView view) {
         //Store the load lines
         HashMap<String, Boolean> loadString = SnapshotView.getAllLoadStrings(view.getViewRoot());
         
@@ -132,7 +135,6 @@ public class UpdateView {
         
         view.setAllLoadLines(all);
         view.setReadOnlyLoadLines(readOnly);
-        return this;
     }
 
     private static String updateView( SnapshotView view, boolean overwrite, SnapshotView.LoadRules2 loadrules ) throws CleartoolException, ViewException {
