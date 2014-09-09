@@ -82,20 +82,7 @@ public class SnapshotView extends UCMView {
         List<String> configLines = Cleartool.run("catcs", viewRoot).stdoutList;
         return configLines;
     }
-    
-    public List<String> getReadOnlyLoadString(File viewRoot) {
-        ArrayList<String> readOnly = new ArrayList<String>();
-        HashMap<String,Boolean> all = getAllLoadStrings(viewRoot);
-        
-        for(String key : all.keySet()) {
-            if(all.get(key)) {
-                readOnly.add(key);
-            }
-        }
-        
-        return readOnly;
-    }
-    
+
     public static HashMap<String, Boolean> getAllLoadStrings(File viewRoot) {
         List<String> consoleInput = SnapshotView.catcs(viewRoot);
         HashMap<String, Boolean> rootFolders = new HashMap<String, Boolean>();
@@ -111,12 +98,12 @@ public class SnapshotView extends UCMView {
                     String key = m.group(2) + m.group(3);
                     //remove the leading backward slash from vobtag and remove the leftover forward slash from the path
                     key = key.substring(1, key.length()-1);
+                    
                     if(SystemUtils.IS_OS_WINDOWS) {
                         key = key.replace("/", "\\");
-                    }
-                    
+                    }                    
                     Boolean readOnly = s.contains("-nocheckout");
-                    logger.info("config spec line: "+key + " read-only = "+readOnly);
+                    logger.info(String.format("Config spec line: %s  read-only = %s", key, readOnly));
                     rootFolders.put(key, readOnly);
                 } catch (Exception ex) {
                     logger.log(Level.SEVERE, "Error in determining config spec for line: \n "+s ,ex);
@@ -212,8 +199,7 @@ public class SnapshotView extends UCMView {
         
         public String loadRuleSequence( SnapshotView view, Components components ) {
             String loadRuleSequence = "";           
-            List<String> configLines = getConsoleOutput(view);
-            HashMap<String, Boolean> all = parseProjectRootFolders(configLines);
+            HashMap<String, Boolean> all = SnapshotView.getAllLoadStrings(view.getViewRoot());
 
 			if( components.equals( Components.ALL ) ) {
 				logger.info("All components - "+all.keySet() );
@@ -230,42 +216,7 @@ public class SnapshotView extends UCMView {
         public void apply(SnapshotView view, Components components) {                        
 			loadRules = " -add_loadrules " + loadRuleSequence(view, components);
         }
-        
-        
-        /**
-         * Returns a set of tuples from the parsed console input string
-         * @param consoleinput
-         * @return 
-         */
-        public HashMap<String, Boolean> parseProjectRootFolders(List<String> consoleinput) {
-            HashMap<String, Boolean> rootFolders = new HashMap<String, Boolean>();
-            
-            for(String s : consoleinput) {
-                if(!s.startsWith("element")) {
-                    continue;
-                }
-                
-                Matcher m = pattern_catcs.matcher(s);
-                if(m.matches()) {
-                    try {
-                        String key = m.group(2) + m.group(3);
-                        //remove the leading backward slash from vobtag and remove the leftover forward slash from the path
-                        key = key.substring(1, key.length()-1);
-                        if(SystemUtils.IS_OS_WINDOWS) {
-                            key = key.replace("/", "\\");
-                        }
-                        logger.info("config spec line: "+key);
-                        Boolean readOnly = s.contains("-nocheckout");
-                        rootFolders.put(key, readOnly);
-                    } catch (Exception ex) {
-                        logger.log(Level.SEVERE, "Error in determining config spec for line: \n "+s ,ex);
-                    }
-                }                 
-            }
-            
-            return rootFolders;
-        }
-        
+
         private HashMap<String, Boolean> getModifiableOnly(HashMap<String, Boolean> rootFolders) {
             HashMap<String, Boolean> modifiable = new HashMap<String, Boolean>();
             for(String key : rootFolders.keySet()) {
