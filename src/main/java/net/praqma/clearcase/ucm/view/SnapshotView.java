@@ -116,7 +116,7 @@ public class SnapshotView extends UCMView {
                     }
                     
                     Boolean readOnly = s.contains("-nocheckout");
-                    logger.info("config spec line: "+key + "read-only = "+readOnly);
+                    logger.info("config spec line: "+key + " read-only = "+readOnly);
                     rootFolders.put(key, readOnly);
                 } catch (Exception ex) {
                     logger.log(Level.SEVERE, "Error in determining config spec for line: \n "+s ,ex);
