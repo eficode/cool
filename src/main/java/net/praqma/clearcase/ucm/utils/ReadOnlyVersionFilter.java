@@ -38,6 +38,7 @@ public class ReadOnlyVersionFilter extends VersionFilter {
     @Override
     public int filter(VersionList versions) {
         log.fine(String.format( "In ReadOnlyVersionFilter, View = %s, ReadOnlyComponents = %s", view, readOnlyLoadLines) );
+        log.fine(String.format( "%s versions before ReadOnlyVersionFilter", versions.size()) );
         
         int filterCount = 0;
         Iterator<Version> vers = versions.iterator();
@@ -50,12 +51,13 @@ public class ReadOnlyVersionFilter extends VersionFilter {
                 log.fine( String.format( "Matching %s to see if it begins with %s", curVer.getFile().getAbsolutePath(), filePathToTest.getAbsolutePath()) );
                 
                 if(curVer.getFile().getAbsolutePath().startsWith(filePathToTest.getAbsolutePath())) {
-                    log.fine( String.format( "%s begins with %s", curVer.getFile().getAbsolutePath(), filePathToTest.getAbsolutePath()) );
+                    log.fine( String.format( "Removing version %s as it is read only", curVer.getFullyQualifiedName() ) ) ;
                     vers.remove();
                     filterCount++;
                 }
             }
         }
+        log.fine(String.format( "%s versions after ReadOnlyVersionFilter", versions.size()) );
         return filterCount;
     }
     

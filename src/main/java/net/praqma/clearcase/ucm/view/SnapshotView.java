@@ -114,8 +114,9 @@ public class SnapshotView extends UCMView {
                     if(SystemUtils.IS_OS_WINDOWS) {
                         key = key.replace("/", "\\");
                     }
-                    logger.info("config spec line: "+key);
+                    
                     Boolean readOnly = s.contains("-nocheckout");
+                    logger.info("config spec line: "+key + "read-only = "+readOnly);
                     rootFolders.put(key, readOnly);
                 } catch (Exception ex) {
                     logger.log(Level.SEVERE, "Error in determining config spec for line: \n "+s ,ex);
