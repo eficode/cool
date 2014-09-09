@@ -65,7 +65,6 @@ public class SnapshotView extends UCMView {
 		}
 	}
 		 
-
 	private File viewroot = null;
     private List<String> readOnlyLoadLines = new ArrayList<String>();
     private List<String> allLoadLines = new ArrayList<String>();
@@ -82,12 +81,12 @@ public class SnapshotView extends UCMView {
         List<String> configLines = Cleartool.run("catcs", viewRoot).stdoutList;
         return configLines;
     }
-
-    public static HashMap<String, Boolean> getAllLoadStrings(File viewRoot) {
-        List<String> consoleInput = SnapshotView.catcs(viewRoot);
+    
+    public static HashMap<String, Boolean> getAllLoadStrings(List<String> consoleIn) {
+        
         HashMap<String, Boolean> rootFolders = new HashMap<String, Boolean>();
             
-        for(String s : consoleInput) {
+        for(String s : consoleIn) {
             if(!s.startsWith("element")) {
                 continue;
             }
@@ -112,6 +111,11 @@ public class SnapshotView extends UCMView {
         }
 
         return rootFolders;
+    }
+
+    public static HashMap<String, Boolean> getAllLoadStrings(File viewRoot) {
+        List<String> consoleInput = SnapshotView.catcs(viewRoot);
+        return SnapshotView.getAllLoadStrings(consoleInput);
     }
     
     public static boolean isSpecialFile(String file) {
@@ -197,9 +201,10 @@ public class SnapshotView extends UCMView {
             return configLines;
         }
         
+        
         public String loadRuleSequence( SnapshotView view, Components components ) {
             String loadRuleSequence = "";           
-            HashMap<String, Boolean> all = SnapshotView.getAllLoadStrings(view.getViewRoot());
+            HashMap<String, Boolean> all = SnapshotView.getAllLoadStrings(getConsoleOutput(view));
 
 			if( components.equals( Components.ALL ) ) {
 				logger.info("All components - "+all.keySet() );
