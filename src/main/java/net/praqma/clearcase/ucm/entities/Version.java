@@ -283,6 +283,8 @@ public class Version extends UCMEntity implements Comparable<Version> {
         }
     }
 	
+    //TODO: Did i make some logical error here? We had attempted to solve the issue by 
+    //CHECK FB11125 [JENKINS-23268 ]
     @Override
 	public Version load() throws UnableToLoadEntityException {
 
