@@ -7,6 +7,7 @@ package net.praqma.cli;
 
 import java.util.List;
 import net.praqma.clearcase.api.DiffBl;
+import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.interfaces.Diffable;
 
@@ -18,15 +19,24 @@ public class DiffBaselines {
     
 	public static void main( String[] args ) throws ClearCaseException {
         //stream:XXXX
-        StringDiffable d1 = new StringDiffable(args[0]);
         
-        //baseline:XXXX
-        StringDiffable d2 = new StringDiffable(args[1]);
+        String method = args[0];
         
-        DiffBl diffbl = new DiffBl(d1, d2).setVersions(true).setActivities(true);
-        List<String> consoleOut = diffbl.execute();
-        for(String s : consoleOut) {
-            System.out.println(s);
+        if(method.equals("cool")) {
+            StringDiffable d1 = new StringDiffable(args[1]);
+            //baseline:XXXX
+            StringDiffable d2 = new StringDiffable(args[2]);
+
+            DiffBl diffbl = new DiffBl(d1, d2).setVersions(true).setActivities(true);
+            List<String> consoleOut = diffbl.execute();
+            for(String s : consoleOut) {
+                System.out.println(s);
+            }
+        } else {
+            List<String> stdOutList = Cleartool.run( String.format( "diffbl -versions -activities %s %s",args[0], args[1]) ).stdoutList;
+            for(String str : stdOutList)  {
+                System.out.println(str);
+            }
         }
         
 	}
