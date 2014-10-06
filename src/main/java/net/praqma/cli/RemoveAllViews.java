@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.Site;
 import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
