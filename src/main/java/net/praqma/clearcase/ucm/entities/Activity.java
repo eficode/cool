@@ -273,12 +273,14 @@ public class Activity extends UCMEntity {
 
                     Version v = (Version) UCMEntity.getEntity( Version.class, f );                    
                     v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
+                    v.setView(diffBl.getViewRoot());
+                    
                     if( activityUserAsVersionUser ) {
                         v.setUser( current.getUser() );
                     } else {
                         v.load();
-                    }
-
+                    }                    
+                    
                     current.changeset.versions.add( v );
                 }
             }
@@ -360,7 +362,6 @@ public class Activity extends UCMEntity {
 		if( !name.startsWith( "activity:" ) ) {
 			name = "activity:" + name;
 		}
-        System.out.println("In get (ACTIVITY)...");
 		Activity entity = (Activity) UCMEntity.getEntity( Activity.class, name + "@" + pvob );
 		return entity;
 	}

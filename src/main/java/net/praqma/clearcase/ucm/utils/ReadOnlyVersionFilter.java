@@ -7,6 +7,7 @@
 package net.praqma.clearcase.ucm.utils;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -16,7 +17,7 @@ import net.praqma.clearcase.ucm.entities.Version;
  *
  * @author Mads
  */
-public class ReadOnlyVersionFilter extends VersionFilter {
+public class ReadOnlyVersionFilter extends VersionFilter implements Serializable {
     
     private static final Logger log = Logger.getLogger(ReadOnlyVersionFilter.class.getName());
     

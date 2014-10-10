@@ -265,40 +265,14 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	public String getBranch() {
 		return branch;
 	}
-    
-    /**
-     * This function was made because of FB11125. Basically we could wound up in situations where the version FQDN was too
-     * long for windows to handle.
-     * @param view
-     * @return The versions FQN ~ minus the path to root context.
-     */
-    public String versionLoadString(File view) {
-        if(view == null) {
-            return this.getFullyQualifiedName();
-        } else {
-            String escaped = Pattern.quote(view.getAbsolutePath()+Cool.filesep);            
-            Pattern p = Pattern.compile(escaped, Pattern.CASE_INSENSITIVE);            
-            String fqdnShortened = p.matcher(this.getFullyQualifiedName()).replaceAll("");
-            return fqdnShortened;
-        }
-    }
 	
     @Override
 	public Version load() throws UnableToLoadEntityException {
-
-        if(loaded) {
-            return this;
-        }
         
 		try {            
             logger.fine( String.format( "We are in view %s%nLength of version path is %s", view != null ? view.getAbsolutePath() : null, this.getFullyQualifiedName().length() ) ) ;		
-            String versionString = versionLoadString(view);
-            
-            String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + versionString + "\"";
-            
+            String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + this + "\"";            
 			String[] list = Cleartool.run( cmd, view ).stdoutBuffer.toString().split( "\\}\\{" );
-
-            logger.fine( "Elements: " + Arrays.asList( list ) );
 
 			/* First line, user */
 			setUser( list[0] );
@@ -831,11 +805,24 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		return changeset;
 	}
 	
+    /**
+     * ONLY USED IN TEST
+     * @param d1
+     * @param d2
+     * @param merge
+     * @param viewContext
+     * @return
+     * @throws CleartoolException
+     * @throws UnableToLoadEntityException
+     * @throws UCMEntityNotFoundException
+     * @throws UnableToInitializeEntityException 
+     */
 	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
 		return getBaselineDiff( d1, d2, merge, viewContext, true );
 	}
 	
 	/**
+     * ONLY USED IN TEST
 	 * Activity based baseline diff method
 	 * @param d1
 	 * @param d2
