@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -26,9 +25,6 @@ import net.praqma.clearcase.exceptions.UnableToListViewsException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.exceptions.ViewException.Type;
-import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.Component;
-import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
@@ -129,55 +125,6 @@ public class SnapshotView extends UCMView {
             return file.isFile() && !SnapshotView.isSpecialFile(file.getName()) && file.canWrite() && !file.getName().equals( VIEW_DOT_DAT_FILE );
         }        
     }
-
-    /**
-    * Create load rules based on {@link Components}
-    * @throws UnableToLoadEntityException 
-    * @deprecated As of cool 0.6.30, replaced by {@link net.praqma.clearcase.ucm.view.SnapshotView.LoadRules2}
-    * @since 0.6.30
-    */
-    @Deprecated
-	public static class LoadRules {
-		private String loadRules;
-
-		public LoadRules( SnapshotView view, Components components ) throws UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException {
-			loadRules = " -add_loadrules ";
-
-			if( components.equals( Components.ALL ) ) {
-				logger.fine( "All components" );
-                
-				List<Baseline> bls = view.stream.getLatestBaselines();
-				for( Baseline b : bls ) {
-					String rule = b.load().getComponent().getRootDir();
-					rule = rule.replaceFirst( "^[\\\\/]", " " );
-					loadRules += rule;
-				}
-			} else {
-				logger.fine( "Modifiable components" );
-
-				Project project = view.stream.getProject();
-				List<Component> comps = project.getModifiableComponents();
-				for( Component c : comps ) {
-					String rule = c.getRootDir();
-					rule = rule.replaceFirst( "^\\\\/", " " );
-					loadRules += rule;
-				}
-			}
-		}
-
-		/**
-		 * Create load rules based on a string
-		 * 
-		 * @param loadRules
-		 */
-		public LoadRules( String loadRules ) {
-			this.loadRules = loadRules = " -add_loadrules " + loadRules;
-		}
-
-		public String getLoadRules() {
-			return loadRules;
-		}
-	}
     
     public static class LoadRules2 {
 		private String loadRules;
@@ -215,11 +162,24 @@ public class SnapshotView extends UCMView {
                 loadRuleSequence = StringUtils.join(modifiables.keySet(), " ");
 			}
             
+            //We should set the view properties here
+            view.setReadOnlyLoadLines(getOnlyReadOnly(all));
+            
             return loadRuleSequence;
         }
                
         public void apply(SnapshotView view, Components components) {                        
 			loadRules = " -add_loadrules " + loadRuleSequence(view, components);
+        }
+        
+        private List<String> getOnlyReadOnly(HashMap<String, Boolean> rootFolders) {
+            List<String> readOnly = new ArrayList<String>();
+            for(String key : rootFolders.keySet()) {
+                if(rootFolders.get(key)) {
+                    readOnly.add(key);
+                }
+            }            
+            return readOnly;
         }
 
         private HashMap<String, Boolean> getModifiableOnly(HashMap<String, Boolean> rootFolders) {
@@ -228,8 +188,7 @@ public class SnapshotView extends UCMView {
                 if(!rootFolders.get(key)) {
                     modifiable.put(key, rootFolders.get(key));
                 }
-            }
-            
+            }            
             return modifiable;
         }
 
@@ -521,56 +480,6 @@ public class SnapshotView extends UCMView {
 			throw new ViewException( "Unable to get stream from view " + viewtag, path, Type.INFO_FAILED, e );
 		}
 	}
-
-	/*
-	 * public void cancel() throws UCMException { context.cancelDeliver(
-	 * viewroot, null ); }
-	 */
-
-    /**
-     * @deprecated since 0.6.13
-     */
-	public UpdateInfo Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules loadRules ) throws CleartoolException, ViewException {
-        return update( swipe, generate, overwrite, excludeRoot, loadRules );
-    }
-    
-    /**
-     * TODO: Use this..should be used now..Refactor away once confirmed working
-     * @deprecated since 0.6.13
-     */
-	public UpdateInfo Update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules2 loadRules ) throws CleartoolException, ViewException {
-        return update( swipe, generate, overwrite, excludeRoot, loadRules );
-    }
-
-    /**
-     * @deprecated since 0.6.13
-     */
-    public UpdateInfo update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules loadRules ) throws CleartoolException, ViewException {
-
-		UpdateInfo info = new UpdateInfo();
-
-		if( generate ) {
-			this.stream.generate();
-		}
-
-		logger.fine( "STREAM GENERATES" );
-
-		if( swipe ) {
-			Map<String, Integer> sinfo = swipe( this.viewroot, excludeRoot );
-			info.success = sinfo.get( "success" ) == 1 ? true : false;
-			info.totalFilesToBeDeleted = sinfo.get( "total" );
-			info.dirsDeleted = sinfo.get( "dirs_deleted" );
-			info.filesDeleted = sinfo.get( "files_deleted" );
-		}
-
-		logger.fine( "SWIPED" );
-
-		// Cache current directory and chdir into the viewroot
-		String result = updateView( this, overwrite, loadRules.getLoadRules() );
-		logger.fine( result );
-
-		return info;
-	}
     
     /**
      * TODO: This one should be used for new method of updating
@@ -597,24 +506,7 @@ public class SnapshotView extends UCMView {
 		logger.fine( "SWIPED" );
 
 		// Cache current directory and chdir into the viewroot
-		String result = updateView( this, overwrite, loadRules.getLoadRules() );
-        
-        //Store the load lines
-        HashMap<String, Boolean> loadString = SnapshotView.getAllLoadStrings(viewroot);
-        
-        ArrayList<String> readOnly = new ArrayList<String>();
-        ArrayList<String> all = new ArrayList<String>();
-        
-        for(Entry<String, Boolean> entry : loadString.entrySet()) {
-            if(entry.getValue()) {
-                readOnly.add(entry.getKey());
-            }
-            all.add(entry.getKey());            
-        }
-        
-        this.setAllLoadLines(all);
-        this.setReadOnlyLoadLines(readOnly);
-        
+		String result = updateView( this, overwrite, loadRules.getLoadRules() );        
 		logger.fine( result );
 
 		return info;

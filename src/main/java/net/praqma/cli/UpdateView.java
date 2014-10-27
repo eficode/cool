@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.SnapshotView.Components;
-import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules;
+import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules2;
 import net.praqma.clearcase.ucm.view.SnapshotView.UpdateInfo;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
@@ -91,14 +91,14 @@ public class UpdateView {
 
 		SnapshotView view = SnapshotView.getSnapshotViewFromPath( viewroot );
 		
-		LoadRules loadRules = null;
+		LoadRules2 loadRules = null;
 		if( oall.isUsed() ) {
-			loadRules = new LoadRules( view, Components.ALL );
+			loadRules = new LoadRules2( view, Components.ALL );
 		} else {
-			loadRules = new LoadRules( view, Components.MODIFIABLE );
+			loadRules = new LoadRules2( view, Components.MODIFIABLE );
 		}
-		
-		UpdateInfo info = view.Update( swipe, generate, overwrite, false, loadRules );
+
+		UpdateInfo info = view.update( swipe, generate, overwrite, false, loadRules );
 		
 		if( swipe ) {
 			logger.info( "Removed " + info.filesDeleted + " file" + ( info.filesDeleted == 1 ? "" : "s" ) );
