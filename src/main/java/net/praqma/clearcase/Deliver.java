@@ -15,7 +15,6 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
-import net.praqma.util.execute.CmdResult;
 import org.apache.commons.io.FileUtils;
 
 public class Deliver {
