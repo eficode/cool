@@ -46,8 +46,13 @@ public class LoadRules2Test {
             spy.apply(new SnapshotView());
             assertEquals(expectedLoadRuleString, spy.getLoadRules() );
 
-            spy.apply(new SnapshotView());        
-            assertEquals(expectedLoadRuleMod, spy.getLoadRules());
+            SnapshotView.LoadRules2 lr2 = new SnapshotView.LoadRules2(SnapshotView.Components.MODIFIABLE);        
+            SnapshotView.LoadRules2 spy2 = Mockito.spy(lr2);
+            
+            Mockito.doReturn(mockConsoleOut(linuxWindowsSwitch)).when(spy2).getConsoleOutput(Mockito.any(SnapshotView.class));
+            
+            spy2.apply(new SnapshotView());        
+            assertEquals(expectedLoadRuleMod, spy2.getLoadRules());
         } else {
             //TODO FIX Unit tests for unix, the ordering is different on unix
             assertTrue(true);
@@ -82,9 +87,12 @@ public class LoadRules2Test {
             "appTemplate_Source\\appTemplate_Source",            
         }, " ");
         
-        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2();        
+        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2();
+        SnapshotView.LoadRules2 lr2 = new SnapshotView.LoadRules2(SnapshotView.Components.MODIFIABLE);
         SnapshotView.LoadRules2 spy = Mockito.spy(lr);
+        SnapshotView.LoadRules2 spy2 = Mockito.spy(lr2);
         Mockito.doReturn(mockConsoleOut("ucm-config-spec-with-readonly.txt")).when(spy).getConsoleOutput(Mockito.any(SnapshotView.class));
+        Mockito.doReturn(mockConsoleOut("ucm-config-spec-with-readonly.txt")).when(spy2).getConsoleOutput(Mockito.any(SnapshotView.class));
         
         if(SystemUtils.IS_OS_UNIX) {
             //TODO: Implement me when possible
@@ -92,9 +100,10 @@ public class LoadRules2Test {
         } else {
             SnapshotView view = new SnapshotView();
             spy.apply(view);
-            assertEquals(expectedAll, spy.getLoadRules());            
-            spy.apply(view);
-            assertEquals(modifiableLoadLines, spy.getLoadRules());
+            assertEquals(expectedAll, spy.apply(view).getLoadRules());
+            
+            spy2.apply(view);
+            assertEquals(modifiableLoadLines, spy2.getLoadRules());
         }
     }
     
