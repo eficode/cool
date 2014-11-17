@@ -269,8 +269,14 @@ public class Version extends UCMEntity implements Comparable<Version> {
     @Override
 	public Version load() throws UnableToLoadEntityException {
         
-		try {            
-            logger.fine( String.format( "We are in view %s%nLength of version path is %s", view != null ? view.getAbsolutePath() : null, this.getFullyQualifiedName().length() ) ) ;		
+		try {
+            int vlength = this.getFullyQualifiedName().length();            
+            logger.fine( String.format( "We are in view %s", view != null ? view.getAbsolutePath() : null) ) ;
+            
+            if(vlength >= 260) {
+                logger.warning(String.format("The version path is getting long, recorded length of %s", vlength) );
+            }
+            
             String cmd = "describe -fmt %u}{%Vn}{%Xn}{%[object_kind]p \"" + this + "\"";            
 			String[] list = Cleartool.run( cmd, view ).stdoutBuffer.toString().split( "\\}\\{" );
 
