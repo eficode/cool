@@ -36,7 +36,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	private Stream stream = null;
     
     //TODO: Usage of this? See FB case 
-    private ArrayList<Activity> activities = new ArrayList<Activity>();
+    private transient ArrayList<Activity> activities = new ArrayList<Activity>();
 	
 	public enum LabelBehaviour {
 		NOLABEL,
