@@ -128,8 +128,11 @@ public class SnapshotView extends UCMView {
     
     public static class LoadRules2 {
 		private String loadRules;
+        private Components components;
 
-        public LoadRules2() { }
+        public LoadRules2() { 
+            this.components = Components.ALL;
+        }
         
         /*
 		 * Create load rules based on {@link Components}
@@ -139,17 +142,16 @@ public class SnapshotView extends UCMView {
          * @throws UnableToInitializeEntityException
 		 * @throws CleartoolException
 		 */
-		public LoadRules2( SnapshotView view, Components components ) throws UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException {
-            apply(view, components);
+		public LoadRules2(Components components ) throws UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException {
+            this.components = components;
 		}
                         
         public List<String> getConsoleOutput(SnapshotView view) {
             List<String> configLines = Cleartool.run("catcs", view.getViewRoot()).stdoutList;
             return configLines;
-        }
+        }        
         
-        
-        public String loadRuleSequence( SnapshotView view, Components components ) {
+        public String loadRuleSequence( SnapshotView view ) {
             String loadRuleSequence = "";           
             HashMap<String, Boolean> all = SnapshotView.getAllLoadStrings(getConsoleOutput(view));
 
@@ -168,8 +170,10 @@ public class SnapshotView extends UCMView {
             return loadRuleSequence;
         }
                
-        public void apply(SnapshotView view, Components components) {                        
-			loadRules = " -add_loadrules " + loadRuleSequence(view, components);
+        public LoadRules2 apply(SnapshotView view) {
+            String appValue = " -add_loadrules " + loadRuleSequence(view);
+			this.loadRules = appValue;
+            return this;
         }
         
         private List<String> getOnlyReadOnly(HashMap<String, Boolean> rootFolders) {

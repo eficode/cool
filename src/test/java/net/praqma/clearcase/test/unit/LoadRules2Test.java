@@ -41,12 +41,12 @@ public class LoadRules2Test {
         SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2();        
         SnapshotView.LoadRules2 spy = Mockito.spy(lr);
         Mockito.doReturn(mockConsoleOut(linuxWindowsSwitch)).when(spy).getConsoleOutput(Mockito.any(SnapshotView.class));
-        String sequence = spy.loadRuleSequence(new SnapshotView(), SnapshotView.Components.ALL);
+        String sequence = spy.loadRuleSequence(new SnapshotView());
         if(!SystemUtils.IS_OS_UNIX) {
-            spy.apply(new SnapshotView(), SnapshotView.Components.ALL);
+            spy.apply(new SnapshotView());
             assertEquals(expectedLoadRuleString, spy.getLoadRules() );
 
-            spy.apply(new SnapshotView(), SnapshotView.Components.MODIFIABLE);        
+            spy.apply(new SnapshotView());        
             assertEquals(expectedLoadRuleMod, spy.getLoadRules());
         } else {
             //TODO FIX Unit tests for unix, the ordering is different on unix
@@ -91,9 +91,9 @@ public class LoadRules2Test {
             assertTrue(true);
         } else {
             SnapshotView view = new SnapshotView();
-            spy.apply(new SnapshotView(), SnapshotView.Components.ALL);
+            spy.apply(view);
             assertEquals(expectedAll, spy.getLoadRules());            
-            spy.apply(view, SnapshotView.Components.MODIFIABLE);
+            spy.apply(view);
             assertEquals(modifiableLoadLines, spy.getLoadRules());
         }
     }

@@ -43,7 +43,7 @@ public class GetViewTest extends GetViewTestBase {
         GetView gv = new GetView( path, viewTag ).createIfAbsent().setStream( container );
         SnapshotView view = gv.get();
 
-        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2( view, SnapshotView.Components.ALL );
+        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2( SnapshotView.Components.ALL );
         new UpdateView( view ).setLoadRules( lr ).update();
 
         listFiles( view.getViewRoot() );
@@ -64,7 +64,7 @@ public class GetViewTest extends GetViewTestBase {
         GetView gv = new GetView( path, viewTag ).createIfAbsent().setStream( container );
         SnapshotView view = gv.get();
 
-        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2( view, SnapshotView.Components.ALL );
+        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2( SnapshotView.Components.ALL );
         new UpdateView( view ).setLoadRules( lr ).update();
 
         /* Verify first */
@@ -90,7 +90,7 @@ public class GetViewTest extends GetViewTestBase {
         GetView gv = new GetView( path, viewTag ).createIfAbsent().setStream( container );
         SnapshotView view = gv.get();
 
-        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2( view, SnapshotView.Components.ALL );
+        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2(SnapshotView.Components.ALL );
         new UpdateView( view ).setLoadRules( lr ).update();
 
         /* Verify first */
@@ -120,7 +120,7 @@ public class GetViewTest extends GetViewTestBase {
         GetView gv = new GetView( path, viewTag ).createIfAbsent().setStream( container );
         SnapshotView view = gv.get();
 
-        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2( view, SnapshotView.Components.ALL );
+        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2( SnapshotView.Components.ALL );
         new UpdateView( view ).setLoadRules( lr ).update();
 
         /* Verify first */
@@ -156,7 +156,7 @@ public class GetViewTest extends GetViewTestBase {
         GetView gv = new GetView( path, viewTag ).createIfAbsent().setStream( container );
         SnapshotView view = gv.get();
 
-        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2( view, SnapshotView.Components.ALL );
+        SnapshotView.LoadRules2 lr = new SnapshotView.LoadRules2(SnapshotView.Components.ALL );
         new UpdateView( view ).setLoadRules( lr ).update();
 
         /* Verify first */

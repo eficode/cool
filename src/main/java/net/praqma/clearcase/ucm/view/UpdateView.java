@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules2;
 
 /**
  * @author cwolfgang
@@ -96,11 +97,12 @@ public class UpdateView {
             logger.fine( "Generate config spec for stream" );
             this.view.getStream().generate();
         }
-
+        
+        LoadRules2 lr2 = loadRules.apply(view);
+        
         if( swipe ) {
-            logger.fine( "Swipe view" );
-            
-            Map<String, Integer> sinfo = view.swipe( excludeRoot, loadRules != null ? loadRules.getLoadRules() : null );
+            logger.fine( "Swipe view" );            
+            Map<String, Integer> sinfo = view.swipe( excludeRoot, loadRules != null ? lr2.getLoadRules() : null );
             success = sinfo.get( "success" ) == 1 ? true : false;
             totalFilesToBeDeleted = sinfo.containsKey( "total" ) ? sinfo.get( "total" ) : 0;
             dirsDeleted = sinfo.containsKey( "dirs_deleted" ) ? sinfo.get( "dirs_deleted" ) : 0;
@@ -109,7 +111,7 @@ public class UpdateView {
         }
 
         // Cache current directory and chdir into the viewroot
-        String result = updateView( view, overwrite, loadRules );
+        String result = updateView( view, overwrite,  lr2);
         logger.fine( result );
 
         if( removeDanglingComponentFolders ) {

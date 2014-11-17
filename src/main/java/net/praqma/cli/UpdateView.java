@@ -93,9 +93,9 @@ public class UpdateView {
 		
 		LoadRules2 loadRules = null;
 		if( oall.isUsed() ) {
-			loadRules = new LoadRules2( view, Components.ALL );
+			loadRules = new LoadRules2(Components.ALL );
 		} else {
-			loadRules = new LoadRules2( view, Components.MODIFIABLE );
+			loadRules = new LoadRules2(Components.MODIFIABLE );
 		}
 
 		UpdateInfo info = view.update( swipe, generate, overwrite, false, loadRules );
