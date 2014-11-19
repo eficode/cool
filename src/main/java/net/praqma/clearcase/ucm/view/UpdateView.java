@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules2;
+import net.praqma.util.execute.CmdResult;
 
 /**
  * @author cwolfgang
@@ -98,20 +99,45 @@ public class UpdateView {
             this.view.getStream().generate();
         }
         
+        String cmd = "setcs -stream";
+        
+        try {
+            Cleartool.run( cmd, view.getViewRoot(), false );
+        } catch( AbnormalProcessTerminationException e ) {
+            throw new CleartoolException( "Unable to set cs stream: " + view.getViewRoot() , e );
+        }
+        
         LoadRules2 lr2 = loadRules.apply(view);
         
         if( swipe ) {
             logger.fine( "Swipe view" );            
             Map<String, Integer> sinfo = view.swipe( excludeRoot, loadRules != null ? lr2.getLoadRules() : null );
-            success = sinfo.get( "success" ) == 1 ? true : false;
+            success = sinfo.get( "success" ) == 1;
             totalFilesToBeDeleted = sinfo.containsKey( "total" ) ? sinfo.get( "total" ) : 0;
             dirsDeleted = sinfo.containsKey( "dirs_deleted" ) ? sinfo.get( "dirs_deleted" ) : 0;
             filesDeleted = sinfo.containsKey( "files_deleted") ? sinfo.get( "files_deleted" ) : 0;
             logger.fine( "SWIPED" );
+        }        
+        
+        logger.fine( "Updating view with " + lr2.getLoadRules() );
+
+        cmd = "update -force " + ( overwrite ? " -overwrite " : "" );
+        cmd += lr2.getLoadRules();
+        
+        String result;
+        try {
+             result = Cleartool.run( cmd, view.getViewRoot(), true ).stdoutBuffer.toString();
+        } catch( AbnormalProcessTerminationException e ) {
+            Matcher m = SnapshotView.rx_view_rebasing.matcher( e.getMessage() );
+            if( m.find() ) {
+                logger.log( Level.WARNING, "The view is currently rebasing the stream" + m.group( 1 ), e);
+                throw new ViewException( "The view is currently rebasing the stream " + m.group( 1 ), view.getViewRoot().getAbsolutePath(), ViewException.Type.REBASING, e );
+            } else {
+                logger.log( Level.WARNING, "Unable to update view", e );
+                throw new ViewException( "Unable to update view", view.getViewRoot().getAbsolutePath(), ViewException.Type.UNKNOWN, e );
+            }
         }
 
-        // Cache current directory and chdir into the viewroot
-        String result = updateView( view, overwrite,  lr2);
         logger.fine( result );
 
         if( removeDanglingComponentFolders ) {
