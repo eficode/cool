@@ -215,7 +215,6 @@ public class Activity extends UCMEntity {
 
         public Parser setActivityUserAsVersionUser( boolean b ) {
             activityUserAsVersionUser = b;
-
             return this;
         }
 

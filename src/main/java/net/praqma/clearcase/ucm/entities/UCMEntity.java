@@ -161,9 +161,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	 * 
 	 * @throws UnableToLoadEntityException
 	 * @throws UCMEntityNotFoundException
-	 * @throws UnableToCreateEntityException
 	 * @throws UnableToInitializeEntityException
-	 * @throws UnableToGetEntityException
 	 */
 	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
 		logger.fine( "Load method is not implemented for this Entity(" + this.fqname + ")" );

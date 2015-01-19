@@ -282,14 +282,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 			/* First line, user */
 			setUser( list[0] );
-
-			/* Second line, version name */
-			String vn = list[1];
-
-			/* Third line, version extended name */
-			String ven = list[2];
-			Matcher m = rx_extendedName.matcher( ven );
-
+            
 			if( list[3].equals( "file element" ) ) {
 				setKind( Kind.FILE_ELEMENT );
 			} else if( list[3].equals( "directory version" ) ) {

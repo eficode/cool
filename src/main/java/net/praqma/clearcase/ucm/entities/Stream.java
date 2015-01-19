@@ -365,6 +365,40 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 		return streams;
 	}
+    
+    /**
+     * For JENKINS-26484 
+     * @param hyperLinkName
+     * @return A list of streams 
+     * @throws UnableToListProjectsException
+     * @throws UnableToInitializeEntityException
+     * @throws UnableToLoadEntityException
+     * @throws UCMEntityNotFoundException 
+     */
+    public List<Stream> getDeliveringStreamsUsingHlink(String hyperLinkName) throws UnableToListProjectsException, UnableToInitializeEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, HyperlinkException {
+		logger.fine( "Getting sibling streams" );
+		List<Project> projects = Project.getProjects( this.getPVob() );
+		List<Stream> streams = new ArrayList<Stream>();
+		for( Project p : projects ) {
+            p.load();
+            //Question: Context in which we find the Hyperlink ??
+            List<HyperLink> links = p.getIntegrationStream().getHyperlinks(hyperLinkName, null);
+            
+            for(HyperLink hl : links) {
+                logger.fine(String.format("Found hyperlink with name %s, value was %s", hyperLinkName, hl.getValue()));
+                
+                if(this.getFullyQualifiedName().equals( hl.getValue() ) ) {
+                    logger.fine(String.format("Hyperlink of type %s with value %s matches stream: %s", hyperLinkName, hl.getValue(), p.getIntegrationStream())) ;
+                    logger.fine(String.format("Adding ingration stream %s to list of streams to look for baselines", p.getIntegrationStream()));
+                    streams.add(p.getIntegrationStream());                    
+                }
+            }
+		}
+
+		logger.fine( streams.toString() );
+
+		return streams;
+	}
 
 	/**
 	 * Determines whether a Stream exists, given a fully qualified name
