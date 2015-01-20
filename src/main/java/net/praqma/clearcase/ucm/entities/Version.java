@@ -325,6 +325,10 @@ public class Version extends UCMEntity implements Comparable<Version> {
         autoLoad();
         return activity;
     }
+    
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
 	
 	public static Version create( File file, boolean mkdir, SnapshotView view ) throws CleartoolException, IOException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException, UnableToInitializeEntityException {
 

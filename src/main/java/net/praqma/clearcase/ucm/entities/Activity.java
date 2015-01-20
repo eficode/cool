@@ -132,14 +132,14 @@ public class Activity extends UCMEntity {
 
 			/* This line is a new activity */
 			if( match.find() ) {
-				current = get( match.group( 1 ) );
-
+				current = get( match.group( 1 ) );               
 				/* A special case? */
 				if( current.getShortname().equals( "no_activity" ) ) {
 					logger.fine( "Recorded a special activity case" );
 					current.setSpecialCase( true );
 				}
 				activities.add( current );
+                current.load();
 				continue;
 			}
 
@@ -153,7 +153,7 @@ public class Activity extends UCMEntity {
 
 			Version v = (Version) UCMEntity.getEntity( Version.class, f );
             v.setView(view);
-            v.load();
+            v.setActivity(current);
             
 			v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
 
