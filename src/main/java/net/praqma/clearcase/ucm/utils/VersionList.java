@@ -3,6 +3,7 @@ package net.praqma.clearcase.ucm.utils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,16 +78,25 @@ public class VersionList extends ArrayList<Version> {
         }
 
         for( Version v : map.values() ) {
-            /* Put in a new activity if doesn't exist */
-        //    if( !changeSet.containsKey( v.getActivity() ) ) {
-        //        changeSet.put( v.getActivity(), new ArrayList<Version>(  ) );
-        //    }
             logger.fine("Version tied to activity: " + v.getActivity());
             if(changeSet.containsKey(v.getActivity())) {
                 logger.fine("Version found...adding to changeset!");
                 changeSet.get( v.getActivity() ).add( v );
             }
         }
+        
+        /**
+         * Remove activities with no changes
+         */
+        Iterator<Activity> acts = changeSet.keySet().iterator();
+        while(acts.hasNext()) {
+            if(changeSet.get(acts.next()).isEmpty()) {
+                acts.remove();
+            }
+        }
+        
+        
+        
 
         return changeSet;
     }
