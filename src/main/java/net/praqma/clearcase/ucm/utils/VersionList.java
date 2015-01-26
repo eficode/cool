@@ -48,6 +48,7 @@ public class VersionList extends ArrayList<Version> {
     }
 
     public VersionList addActivity( Activity activity ) throws ClearCaseException {
+        activities.add(activity);
         this.addAll( activity.getVersions( path ) );
         return this;
     }
