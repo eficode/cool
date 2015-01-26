@@ -345,6 +345,7 @@ public class Activity extends UCMEntity {
         for( String versionName : versionNames ) {
             Version v = Version.get( versionName.trim() );
             v.setActivity(activity);
+            versions.add(v);
         }
 
         return versions;
