@@ -17,19 +17,30 @@ public class VersionList extends ArrayList<Version> {
     private static final Logger logger = Logger.getLogger( VersionList.class.getName() );
     private List<VersionFilter> filters = new ArrayList<VersionFilter>();
     private String branchName;
-    private File path;    
+    private File path;
+    private List<Activity> activities = new ArrayList<Activity>();
 
     public VersionList() { }
 
     public VersionList( List<Version> versions ) {
         this.addAll( versions );
     }
-
-    public VersionList addActivities( List<Activity> activities ) {
-        System.out.println( "Adding " + activities.size() + " activities" );
-        for( Activity activity : activities ) {
-            System.out.println( "Adding " + activity.changeset.versions.size() + " versions" );
-            this.addAll( activity.changeset.versions );
+    
+    public VersionList( List<Version> versions, List<Activity> acts ) {
+        activities.addAll(acts);
+        this.addAll( versions );
+    }
+    
+    public VersionList addActivities( List<Activity> acts ) {
+        logger.fine( "Adding " + acts.size() + " activities" );
+        if(this.activities.addAll(acts)) {
+            logger.fine("Succesfully added all activities!");
+        }
+        
+        
+        for( Activity a : acts ) {
+            logger.fine( "Adding " + a.changeset.versions.size() + " versions" );
+            this.addAll( a.changeset.versions );
         }
 
         return this;
@@ -58,14 +69,23 @@ public class VersionList extends ArrayList<Version> {
 
         /* Group the versions into activities */
         Map<Activity, List<Version>> changeSet = new HashMap<Activity, List<Version>>();
+        
+        logger.fine("Activitis recorded in VersionList is: "+getActivities().size());
+        for(Activity a : getActivities()) {
+            logger.fine("Adding activity to changeset: "+ a);
+            changeSet.put(a, new ArrayList<Version>());            
+        }
 
         for( Version v : map.values() ) {
             /* Put in a new activity if doesn't exist */
-            if( !changeSet.containsKey( v.getActivity() ) ) {
-                changeSet.put( v.getActivity(), new ArrayList<Version>(  ) );
+        //    if( !changeSet.containsKey( v.getActivity() ) ) {
+        //        changeSet.put( v.getActivity(), new ArrayList<Version>(  ) );
+        //    }
+            logger.fine("Version tied to activity: " + v.getActivity());
+            if(changeSet.containsKey(v.getActivity())) {
+                logger.fine("Version found...adding to changeset!");
+                changeSet.get( v.getActivity() ).add( v );
             }
-
-            changeSet.get( v.getActivity() ).add( v );
         }
 
         return changeSet;
@@ -149,5 +169,19 @@ public class VersionList extends ArrayList<Version> {
     public VersionList addFilter(VersionFilter filter) {
         filters.add(filter);
         return this;
+    }
+
+    /**
+     * @return the activities
+     */
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    /**
+     * @param activities the activities to set
+     */
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
     }
 }

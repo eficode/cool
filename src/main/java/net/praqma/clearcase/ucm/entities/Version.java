@@ -289,7 +289,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 				setKind( Kind.DIRECTORY_ELEMENT );
 			}
 
-            activity = getActivity( this );
+            //activity = getActivity( this );
 
 		} catch( Exception e ) {
 			throw new UnableToLoadEntityException( this, e );
@@ -315,7 +315,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
     }
 
     public Activity getActivity() {
-        autoLoad();
         return activity;
     }
     
@@ -786,8 +785,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		} catch( Exception e ) {
 			throw new CleartoolException( "Could not retreive the differences of " + e1 + " and " + e2 + ": " + e.getMessage(), e );
 		}
-
-		int length = viewContext.getAbsoluteFile().toString().length();
 
 		net.praqma.clearcase.changeset.ChangeSet2 changeset = new ChangeSet2( viewContext );
 

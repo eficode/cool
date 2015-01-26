@@ -153,8 +153,7 @@ public class Activity extends UCMEntity {
 
 			Version v = (Version) UCMEntity.getEntity( Version.class, f );
             v.setView(view);
-            v.setActivity(current);
-            
+            v.setActivity(current);            
 			v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
 
 			current.changeset.versions.add( v );
@@ -273,6 +272,7 @@ public class Activity extends UCMEntity {
                     Version v = (Version) UCMEntity.getEntity( Version.class, f );                    
                     v.setSFile( v.getFile().getAbsolutePath().substring( length ) );
                     v.setView(diffBl.getViewRoot());
+                    v.setActivity(current);
                     
                     if( activityUserAsVersionUser ) {
                         v.setUser( current.getUser() );

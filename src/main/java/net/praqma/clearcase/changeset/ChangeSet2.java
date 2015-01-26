@@ -8,15 +8,12 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.cleartool.Cleartool;
-import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
-import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.entities.Version.Status;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -29,8 +26,6 @@ public class ChangeSet2 extends Cool {
 	List<Version> changeset2 = new ArrayList<Version>();
 	Map<File, List<Version>> changesetVersions = new HashMap<File, List<Version>>();
 	Map<File, ChangeSetElement2> elements = new HashMap<File, ChangeSetElement2>();
-
-	private static Logger logger = Logger.getLogger( ChangeSet2.class.getName()  );
 
 	private File viewContext;
 
@@ -199,114 +194,5 @@ public class ChangeSet2 extends Cool {
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Could not get object id: " + e.getMessage(), e );
 		}
-	}
-	
-	public static void getDirectoryStatus( Version version, ChangeSet2 changeset ) throws ClearCaseException {
-
-		String cmd = "diff -diff -pre \"" + version.getFullyQualifiedName() + "\"";
-
-		// System.out.println( "$ " + cmd );
-
-		try {
-			List<String> lines = Cleartool.run( cmd, null, true, true ).stdoutList;
-
-			for( int i = 0; i < lines.size(); ++i ) {
-				// System.out.println( "[" + i + "] " + lines.get( i ) );
-				Matcher m = rx_diffAction.matcher( lines.get( i ) );
-
-				/* A diff action */
-				if( m.find() ) {
-					String action = m.group( 1 ).trim();
-
-					/* ADDED action */
-					if( action.equals( "added" ) ) {
-						/* This is an add, the next line is the file added */
-						Matcher mname = rx_diffFileName.matcher( lines.get( i + 1 ) );
-						if( mname.find() ) {
-							changeset.addElement( new File( version.getFile(), mname.group( 1 ).trim() ), Version.Status.ADDED, version );
-						} else {
-							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
-						}
-
-						/* Fast forward one line */
-						i++;
-						/* ADDED action */
-					} else if( action.equals( "deleted" ) ) {
-						/* This is an add, the next line is the file added */
-						Matcher mname = rx_diffFileName.matcher( lines.get( i + 1 ) );
-						if( mname.find() ) {
-							changeset.addElement( new File( version.getFile(), mname.group( 1 ).trim() ), Version.Status.DELETED, version );
-						} else {
-							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
-						}
-
-						/* Fast forward one line */
-						i++;
-
-					} else if( action.equals( "renamed to" ) ) {
-						/* This is a rename, the next line is the file added */
-						Matcher oldname = rx_diffFileName.matcher( lines.get( i + 1 ) );
-						Matcher newname = rx_diffFileName.matcher( lines.get( i + 3 ) );
-
-						File newFile = null;
-						File oldFile = null;
-
-						if( newname.find() ) {
-							newFile = new File( version.getFile(), newname.group( 1 ).trim() );
-						} else {
-							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
-						}
-
-						if( oldname.find() ) {
-							oldFile = new File( version.getFile(), oldname.group( 1 ).trim() );
-						} else {
-							logger.warning( "Unknown filename line: " + lines.get( i + 1 ) );
-						}
-
-						// changeset.addElement( newFile,
-						// Version.Status.CHANGED, version );
-
-						logger.fine( "[" + oldFile + "]" );
-						logger.fine( "[" + newFile + "]" );
-						ChangeSetElement2 element = new ChangeSetElement2( newFile, Version.Status.CHANGED, version );
-						element.setOldFile( oldFile );
-						changeset.addElement( element );
-
-						/* Fast forward four line */
-						i += 4;
-
-					} else {
-						/* I don't know this action, let's move on */
-						logger.warning( "Unhandled diff action: " + action );
-					}
-				}
-			}
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new CleartoolException( "Could not execute the command: " + e.getCommand(), e );
-		} catch( IndexOutOfBoundsException e1 ) {
-			throw new ClearCaseException( "Out of bounds: " + e1.getMessage(), e1 );
-		} catch( Exception e2 ) {
-			throw new ClearCaseException( "Something new, something unhandled: " + e2.getMessage(), e2 );
-		}
-	}
-
-	public static ChangeSet2 getChangeSet( Diffable d1, Diffable d2, File viewContext ) throws ClearCaseException {
-		ChangeSet2 changeset = Version.getChangeset( d1, d2, true, viewContext );
-
-		/* Sorting the version */
-		Set<File> files = changeset.getChangeset().keySet();
-		for( File file : files ) {
-			Collections.sort( changeset.getChangeset().get( file ) );
-
-			for( Version v : changeset.getChangeset().get( file ) ) {
-				if( v.isDirectory() ) {
-					getDirectoryStatus( v, changeset );
-				}
-			}
-		}
-
-		changeset.checkOverlap();
-
-		return changeset;
 	}
 }
