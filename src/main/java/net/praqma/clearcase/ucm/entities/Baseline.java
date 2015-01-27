@@ -318,7 +318,10 @@ public class Baseline extends UCMEntity implements Diffable {
         
         List<Baseline> baselines = new ArrayList<Baseline>( ds.length );
         for( String bl : ds ) {
-            baselines.add( Baseline.get( bl ) );
+            //For JENKINS-26623
+            if(!StringUtils.isBlank(bl)) {
+                baselines.add( Baseline.get( bl ) );
+            }
         }
 
         return baselines;
