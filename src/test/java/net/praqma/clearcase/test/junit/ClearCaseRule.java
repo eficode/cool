@@ -55,7 +55,7 @@ public class ClearCaseRule extends Environment implements TestRule {
         logToFile();
 	}
 
-    public ClearCaseRule logToFile() {
+    public final ClearCaseRule logToFile() {
         if( System.getenv().containsKey( "BUILD_NUMBER" ) ) {
             Integer number = new Integer( System.getenv( "BUILD_NUMBER" ) );
             this.logdir = new File( new File( new File( new File( System.getProperty( "user.dir" ) ), "test-logs" ), number.toString() ), getSafeName( baseName ) );

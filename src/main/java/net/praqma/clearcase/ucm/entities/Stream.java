@@ -376,13 +376,16 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
      * @throws UCMEntityNotFoundException 
      */
     public List<Stream> getDeliveringStreamsUsingHlink(String hyperLinkName) throws UnableToListProjectsException, UnableToInitializeEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, HyperlinkException {
-		logger.fine( "Getting sibling streams" );
+		logger.fine( String.format( "Getting delivering streams using hyperlink of type: %s", hyperLinkName) );
 		List<Project> projects = Project.getProjects( this.getPVob() );
 		List<Stream> streams = new ArrayList<Stream>();
 		for( Project p : projects ) {
             p.load();
-            //Question: Context in which we find the Hyperlink ??
             List<HyperLink> links = p.getIntegrationStream().getHyperlinks(hyperLinkName, null);
+            Stream intStream = p.getIntegrationStream();
+            if(links.isEmpty()) {
+                logger.fine( String.format("Found no hyperlinks on integration stream: %s", intStream.getFullyQualifiedName()) );
+            }            
             
             for(HyperLink hl : links) {
                 logger.fine(String.format("Found hyperlink with name %s, value was %s", hyperLinkName, hl.getValue()));

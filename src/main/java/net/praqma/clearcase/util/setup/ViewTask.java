@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class ViewTask extends AbstractTask {
 
-    private static Logger logger = Logger.getLogger( ViewTask.class.getName() );
+    private static final Logger log = Logger.getLogger( ViewTask.class.getName() );
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {

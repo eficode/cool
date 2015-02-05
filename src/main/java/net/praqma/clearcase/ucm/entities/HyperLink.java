@@ -9,6 +9,7 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UCMEntityNotInitializedException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
+import org.apache.commons.lang.StringUtils;
 
 public class HyperLink extends UCMEntity {
 	
@@ -27,9 +28,18 @@ public class HyperLink extends UCMEntity {
 
 	public static void create( String type, UCMEntity entity, String key, String value ) {
 	}
+    
+    public static void createOfType( String type, String comment, UCMEntity fromEntity, UCMEntity toEntity) throws CleartoolException {
+        String cmd = "mkhlink "+(StringUtils.isBlank(comment) ? "-nc" : "-c \"" +comment+"\"")+ " "+type + " " + fromEntity + (toEntity != null ? " "+toEntity : "");
+        try {
+			Cleartool.run( cmd );
+		} catch( Exception e ) {
+			throw new CleartoolException( "Could not create hyperlink", e );
+		}
+	}
 	
 	public static void createType( String typeName, PVob pvob, String comment ) throws CleartoolException {
-		String cmd = "mkhltype -global " + ( comment != null ? "-c \"" + comment + "\"" : "" ) + typeName + "@" + pvob;
+		String cmd = "mkhltype -global " + ( comment != null ? "-c \"" + comment + "\"" : "" ) + " " + typeName + "@" + pvob;
 		
 		try {
 			Cleartool.run( cmd );
