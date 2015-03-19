@@ -108,7 +108,7 @@ public class Rebase {
     
     /**
      * Rebases the current stream. As of version 0.6.29 we now have the cancelAndTryResume switch
-     * This switch, if true, will check to see if a rebase is ongoing int the current stream, if it is, then the rebase is cancelled 
+     * This switch, if true, will check to see if a rebase is ongoing in the current stream, if it is, then the rebase is cancelled 
      * and restarted.
      * @param complete
      * @param cancelAndTryResume
@@ -201,10 +201,10 @@ public class Rebase {
 			String result = Cleartool.run( cmd ).stdoutBuffer.toString();
             logger.fine(result);
 			if( result.contains("Rebase operation in progress on stream") ) {                
-                logger.fine( String.format( "Rebase in progress on ", stream) );
+                logger.fine( String.format( "Rebase in progress on %s", stream) );
 				return true;
 			} else {
-                logger.fine( String.format( "No rebase in progress on ", stream) );
+                logger.fine( String.format( "No rebase in progress on %s", stream) );
 				return false;
 			}
 		} catch( AbnormalProcessTerminationException e ) {
@@ -215,6 +215,22 @@ public class Rebase {
 	public void cancel() throws CleartoolException {
 		Rebase.cancelRebase( stream );
 	}
+    
+    public void complete() throws CleartoolException {
+        Rebase.completeRebase(stream);
+    }
+    
+    public static void completeRebase(Stream stream) throws CleartoolException {
+        if(!Rebase.isInProgress(stream)) {
+            throw new CleartoolException("Cannot complete the rebase since no rebase is in progres");
+        }
+        String cmd = "rebase -complete -stream " + stream;
+        try {
+            Cleartool.run( cmd );
+        } catch (AbnormalProcessTerminationException ex) {
+            throw new CleartoolException( "Unable to complete rebase of " + stream, ex );
+        }
+    }
 
 	public static void cancelRebase( Stream stream ) throws CleartoolException {
 		String cmd = "rebase -cancel -force -stream " + stream;

@@ -450,9 +450,11 @@ public class Baseline extends UCMEntity implements Diffable {
 
         for( String bl : bls_str.get( "member_of_closure" ) ) {
             logger.fine( "Baseline " + bl );
-            Baseline b = Baseline.get( bl );
-            if( component == null || b.getComponent().equals( component ) ) {
-                bls.add( b );
+            if(!StringUtils.isBlank(bl)) {
+                Baseline b = Baseline.get( bl );
+                if( component == null || b.getComponent().equals( component ) ) {
+                    bls.add( b );
+                }
             }
         }
 

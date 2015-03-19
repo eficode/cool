@@ -28,8 +28,7 @@ public class BaselineList extends ArrayList<Baseline> {
     private int limit = 0;
     private List<Baseline> required = new LinkedList<Baseline>();
 
-    public BaselineList() {
-    }
+    public BaselineList() { }
 
     public BaselineList(Stream stream, Component component, PromotionLevel plevel) {
         this(stream, component, plevel, false);
@@ -63,13 +62,13 @@ public class BaselineList extends ArrayList<Baseline> {
 
         /* Printing info for debug */
         logger.fine(" --- Get baselines information --- ");
-        logger.fine("Component: " + component.getNormalizedName());
-        logger.fine("Stream   : " + stream.getNormalizedName());
-        logger.fine("Level    : " + level);
-        logger.fine("Limit    : " + limit);
-        logger.fine("Filters  : " + filters);
-        logger.fine("Multisite: " + multisitePolling);
-        logger.finest("Requiring: " + required);
+        logger.fine(String.format("Component: %s", component.getNormalizedName()));
+        logger.fine(String.format("Stream   : %s", stream.getNormalizedName()));
+        logger.fine(String.format("Level    : %s", level));
+        logger.fine(String.format("Limit    : %s", limit));
+        logger.fine(String.format("Filters  : %s", filters));
+        logger.fine(String.format("Multisite: %s", multisitePolling));
+        logger.fine(String.format("Requiring: %s", required));
 
         //Asking for posted deliveries only makes sense when you have multisite enabled.
         if(multisitePolling) {

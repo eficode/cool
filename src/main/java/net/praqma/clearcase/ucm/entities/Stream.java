@@ -167,6 +167,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return Stream.get( name );
 	}
 
+    @Override
 	public Stream load() throws UCMEntityNotFoundException, UnableToLoadEntityException, UnableToInitializeEntityException {
 		logger.fine( "loading stream" );
 
