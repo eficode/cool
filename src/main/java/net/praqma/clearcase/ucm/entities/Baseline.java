@@ -140,6 +140,40 @@ public class Baseline extends UCMEntity implements Diffable {
 	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException {
 		return create( basename, component, view, labelBehaviour, identical, null, null );
 	}
+    
+    public static Baseline create(Stream stream, String basename, File view, LabelBehaviour labelBehaviour, boolean identical)  throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException  {
+		/* Remove prefixed baseline: */
+		if( basename.toLowerCase().startsWith( "baseline:" ) ) {
+			basename = basename.replaceFirst( "baseline:", "" );
+		}
+
+		boolean created = false;
+        String cmd = "mkbl -nc" + ( identical ? " -identical" : "" );
+        cmd += " " + labelBehaviour.toArgument();
+		cmd += " " + basename;
+        
+        try {
+			String out = "";
+			if( view != null ) {
+				out = Cleartool.run( cmd, view ).stdoutBuffer.toString();
+			} else {
+				out = Cleartool.run( cmd ).stdoutBuffer.toString();
+			}
+			logger.fine("Baseline output:");
+            logger.fine(out);
+
+			created = out.matches( "(?s).*Created baseline \".*?\" in component \".*?\".*" ); // Created baseline
+
+		} catch( AbnormalProcessTerminationException e ) {
+			throw new UnableToCreateEntityException( Baseline.class, e );
+		}
+
+		if( created ) {
+			return get(basename, stream.getPVob());
+		} else {
+			throw new NothingNewException( "No baseline created, nothing new." );
+		}
+    }
 
 	/**
 	 * Given a baseline basename, a component and a view, the baseline is
@@ -153,8 +187,14 @@ public class Baseline extends UCMEntity implements Diffable {
 		}
 
 		boolean created = false;
-		String cmd = "mkbl -nc -component " + component.getNormalizedName() + ( identical ? " -identical" : "" );
-
+        String cmd = null;
+        
+        if(component != null) { 
+            cmd = "mkbl -nc -component " + component.getNormalizedName() + ( identical ? " -identical" : "" );
+        } else {
+            cmd = "mkbl -nc" + ( identical ? " -identical" : "" );
+        }
+        
 		if( depends != null && depends.size() > 0 ) {
 			cmd += " -adepends_on ";
 			for( Component c : depends ) {
@@ -185,16 +225,19 @@ public class Baseline extends UCMEntity implements Diffable {
             logger.fine(out);
 
 			created = out.matches( "(?s).*Created baseline \".*?\" in component \".*?\".*" ); // Created baseline
-            
-            try {
-                Pattern p = Pattern.compile("^Created baseline \"(.*)\" in component \""+component.getShortname()+"\".$", Pattern.MULTILINE);
-                Matcher m = p.matcher(out);
-                if(m.find()) {
-                    newname = m.group(1);
+           
+            //If component is unspecified...we must look for a particular name
+            if(component != null) {
+                try {
+                    Pattern p = Pattern.compile("^Created baseline \"(.*)\" in component \""+component.getShortname()+"\".$", Pattern.MULTILINE);
+                    Matcher m = p.matcher(out);
+                    if(m.find()) {
+                        newname = m.group(1);
+                    }
+                    logger.fine("Got labeled name: "+newname);
+                } catch (Exception ex) {
+                    logger.log(Level.SEVERE, "Error", ex);                
                 }
-                logger.fine("Got labeled name: "+newname);
-            } catch (Exception ex) {
-                logger.log(Level.SEVERE, "Error", ex);                
             }
             
             
@@ -215,15 +258,15 @@ public class Baseline extends UCMEntity implements Diffable {
         return plevel;
     }
 
+    //TODO: This method should be refactored. The parameter is redundant, as we use the same method regardless.
 	/**
 	 * Return the promotion level of a baseline. <br>
 	 * If <code>cached</code> is not set, the promotion level is loaded from
 	 * ClearCase.
-	 * 
 	 * @param cached
 	 *            Whether to use the cached promotion level or not
 	 * @return The promotion level of the Baseline
-	 */
+	 */   
 	public Project.PromotionLevel getPromotionLevel( boolean cached ) {
 		if( cached ) {
 			return getPromotionLevel();
@@ -508,6 +551,10 @@ public class Baseline extends UCMEntity implements Diffable {
         }
 
         return null;
+    }
+    
+    public boolean isCompositeBaseline() throws UnableToInitializeEntityException, CleartoolException {
+        return getCompositeDependantBaselines().isEmpty();
     }
 
 }
