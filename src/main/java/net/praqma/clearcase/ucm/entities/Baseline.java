@@ -141,7 +141,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		return create( basename, component, view, labelBehaviour, identical, null, null );
 	}
     
-    public static Baseline create(Stream stream, String basename, File view, LabelBehaviour labelBehaviour, boolean identical)  throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException  {
+    public static Baseline create(Stream stream, Component component, String basename, File view, LabelBehaviour labelBehaviour, boolean identical)  throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException  {
 		/* Remove prefixed baseline: */
 		if( basename.toLowerCase().startsWith( "baseline:" ) ) {
 			basename = basename.replaceFirst( "baseline:", "" );
@@ -151,9 +151,8 @@ public class Baseline extends UCMEntity implements Diffable {
         String cmd = "mkbl -nc" + ( identical ? " -identical" : "" );
         cmd += " " + labelBehaviour.toArgument();
 		cmd += " " + basename;
-        
+        String out = "";        
         try {
-			String out = "";
 			if( view != null ) {
 				out = Cleartool.run( cmd, view ).stdoutBuffer.toString();
 			} else {
@@ -167,9 +166,27 @@ public class Baseline extends UCMEntity implements Diffable {
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new UnableToCreateEntityException( Baseline.class, e );
 		}
+        
+        String newname = null;
 
 		if( created ) {
-			return get(basename, stream.getPVob());
+            if(component != null) {
+                try {
+                    Pattern p = Pattern.compile("^Created baseline \"(.*)\" in component \""+component.getShortname()+"\".$", Pattern.MULTILINE);
+                    Matcher m = p.matcher(out);
+                    if(m.find()) {
+                        newname = m.group(1);
+                    }
+                    logger.fine("Got labeled name: "+newname);
+                } catch (Exception ex) {
+                    logger.log(Level.SEVERE, "Error", ex);                
+                }
+                
+                if(newname == null) {
+                    throw new NothingNewException( String.format( "Baselines were creted. but was unable to find a baseline created for component %s", component) );
+                }
+            }
+            return get( newname == null ? basename : newname , component.getPVob() ); 
 		} else {
 			throw new NothingNewException( "No baseline created, nothing new." );
 		}

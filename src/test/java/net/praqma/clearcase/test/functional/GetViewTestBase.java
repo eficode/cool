@@ -2,15 +2,9 @@ package net.praqma.clearcase.test.functional;
 
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.test.BaseClearCaseTest;
-import net.praqma.clearcase.test.junit.ClearCaseRule;
-import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.GetView;
 import net.praqma.clearcase.ucm.view.SnapshotView;
-import net.praqma.clearcase.ucm.view.UpdateView;
 import org.apache.commons.io.FileUtils;
-import org.junit.ClassRule;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
