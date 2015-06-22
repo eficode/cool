@@ -16,6 +16,7 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
+import org.apache.commons.lang.StringUtils;
 
 public class Rebase {
 	
@@ -181,7 +182,10 @@ public class Rebase {
 				return true;
 			}
 		} catch( AbnormalProcessTerminationException e ) {
-			throw new RebaseException( this, e );
+            if(!StringUtils.isBlank(e.getMessage()) && e.getMessage().contains("Conflicts in configuration")) {
+                throw new RebaseException(String.format("Conflicts found in configuration. Unable to rebase %s. Make sure your configuration do not contain baselines with different versions of the same component.", stream),this,e) ;
+            }
+            throw new RebaseException("Unable to rebase "+this.stream, this, e );
 		}
     }
 

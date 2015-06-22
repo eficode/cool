@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules2;
-import net.praqma.util.execute.CmdResult;
 
 /**
  * @author cwolfgang
