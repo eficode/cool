@@ -11,9 +11,11 @@ import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
+import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.clearcase.ucm.utils.filters.AfterBaseline;
 import net.praqma.clearcase.ucm.utils.filters.AfterDate;
+import net.praqma.clearcase.ucm.utils.filters.NoLabels;
 import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.util.debug.Logger;
 
@@ -80,5 +82,5 @@ public class BaselineListTest extends BaseClearCaseTest {
 		assertEquals( 6, baselines.size() );
 		
 		assertNotNull( baselines.get( 0 ) );
-	}
+	}    
 }

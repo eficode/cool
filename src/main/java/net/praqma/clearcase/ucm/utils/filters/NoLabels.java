@@ -18,7 +18,6 @@ public class NoLabels extends BaselineFilter {
 			if( baseline.getLabelStatus().equals( LabelStatus.UNLABLED ) ) {
 				it.remove();
 				pruned++;
-				continue;
 			}
 		}
 		

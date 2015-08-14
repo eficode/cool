@@ -171,6 +171,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	}
 
 	public LabelStatus getLabelStatusFromString( String ls ) {
+        //TODO: What about 'no versions to label' label status (if talking composite baseline) 
 		if( ls.equalsIgnoreCase( "not labeled" ) ) {
 			return LabelStatus.UNLABLED;
 		} else if( ls.equalsIgnoreCase( "fully labeled" ) ) {
@@ -182,7 +183,8 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 		}
 	}
 
-	public LabelStatus getLabelStatus() {
+	public LabelStatus getLabelStatus() {                 
+        autoLoad();                
 		return labelStatus;
 	}
 

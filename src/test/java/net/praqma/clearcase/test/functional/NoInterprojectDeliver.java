@@ -4,20 +4,13 @@ import java.io.File;
 
 import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.Deliver.DeliverStatus;
-import net.praqma.clearcase.Rebase;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.DeliverException;
 import net.praqma.clearcase.exceptions.DeliverException.Type;
-import net.praqma.clearcase.exceptions.NothingNewException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
-import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.clearcase.ucm.view.DynamicView;
-import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.util.debug.Logger;
 
@@ -59,9 +52,6 @@ public class NoInterprojectDeliver {
 		DeliverStatus status = deliver.getDeliverStatus();
 		assertFalse( status.busy() );
 	}
-	
-	
-
 	
 	protected Baseline getNewBaseline( File path, String filename, String bname ) throws ClearCaseException {
 		
