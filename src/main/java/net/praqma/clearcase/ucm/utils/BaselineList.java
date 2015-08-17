@@ -221,7 +221,7 @@ public class BaselineList extends ArrayList<Baseline> {
         String cmd;
 
         if (SystemUtils.IS_OS_WINDOWS) {
-            cmd = "lsbl -fmt %Xn\\t%Nd\\t\"%[label_status]p\"\\n -component " + component + " -stream " + stream + (level != null ? " -level " + level.toString() : "");
+            cmd = "lsbl -fmt %Xn¤%Nd¤%[label_status]p\\n -component " + component + " -stream " + stream + (level != null ? " -level " + level.toString() : "");
         } else {
             cmd = "lsbl -fmt %Xn\\\\t%Nd\\\\n -component " + component + " -stream " + stream + (level != null ? " -level " + level.toString() : "");
         }
@@ -237,7 +237,7 @@ public class BaselineList extends ArrayList<Baseline> {
         List<Baseline> bls = new ArrayList<Baseline>();
 
         for (String bl : bls_str) {
-            String[] split = bl.split("\\s+");
+            String[] split = bl.split("¤");
             Baseline baseline = Baseline.get(split[0]);
             try {
                 baseline.setDate(split[1]);
