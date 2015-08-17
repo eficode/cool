@@ -221,7 +221,7 @@ public class BaselineList extends ArrayList<Baseline> {
         String cmd;
 
         if (SystemUtils.IS_OS_WINDOWS) {
-            cmd = "lsbl -fmt %Xn\\t%Nd\\n -component " + component + " -stream " + stream + (level != null ? " -level " + level.toString() : "");
+            cmd = "lsbl -fmt %Xn\\t%Nd\\%[label_status]p\\n -component " + component + " -stream " + stream + (level != null ? " -level " + level.toString() : "");
         } else {
             cmd = "lsbl -fmt %Xn\\\\t%Nd\\\\n -component " + component + " -stream " + stream + (level != null ? " -level " + level.toString() : "");
         }
@@ -241,6 +241,7 @@ public class BaselineList extends ArrayList<Baseline> {
             Baseline baseline = Baseline.get(split[0]);
             try {
                 baseline.setDate(split[1]);
+                baseline.setLabelStatusFromString(split[2]);
             } catch (ParseException e) {
                 throw new UnableToInitializeEntityException(baseline.getClass(), e);
             }
