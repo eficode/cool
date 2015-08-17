@@ -166,9 +166,12 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
 		logger.fine( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
-
 		return this;
 	}
+    
+    public void setLabelStatusFromString(String labelStatus) {
+        this.labelStatus = getLabelStatusFromString(labelStatus);
+    }
 
 	public LabelStatus getLabelStatusFromString( String ls ) {
         //TODO: What about 'no versions to label' label status (if talking composite baseline) 
@@ -183,8 +186,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 		}
 	}
 
-	public LabelStatus getLabelStatus() {                 
-        autoLoad();                
+	public LabelStatus getLabelStatus() {                               
 		return labelStatus;
 	}
 
