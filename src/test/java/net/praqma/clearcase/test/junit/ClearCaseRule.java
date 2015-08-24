@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -404,6 +405,34 @@ public class ClearCaseRule extends Environment implements TestRule {
 
             return this;
         }
+    }
+    
+    /**
+     * 
+     * @param streamName
+     * @return
+     * @throws Exception 
+     */
+    public Baseline createNewDevStreamContents(String streamName) throws Exception {
+        String viewtag = getUniqueName() + "_"+streamName;
+        System.out.println("VIEW: " + this.context.views.get(viewtag));
+        
+        File path = new File(this.context.mvfs + "/" + viewtag + "/" + this.getVobName());
+
+        System.out.println("PATH: " + path);
+
+        Stream stream = Stream.get(streamName, this.getPVob());
+        
+        Activity activity = Activity.create("ccucm-activity-"+UUID.randomUUID().toString(), stream, getPVob(), true, "ccucm activity", null, path);
+        UCMView.setActivity(activity, path, null, null);
+
+        try {
+            this.addNewElement(this.context.components.get("Model"), path, "test2.txt");
+        } catch (ClearCaseException e) {
+            ExceptionUtils.print(e, System.out, true);
+        }
+        
+        return Baseline.create("baseline-for-test", context.components.get("_System"), path, Baseline.LabelBehaviour.FULL, false);
     }
 	
 }
