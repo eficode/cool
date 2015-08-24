@@ -78,10 +78,8 @@ public class Environment {
 	
 	public void addNewContent( Component component, File viewpath, String filename ) throws ClearCaseException {
 		Version.checkOut( new File( component.getShortname() ), viewpath );
-		File file = new File( new File( viewpath, component.getShortname() ), filename );
-		
-		writeContent( file, "blaha" );
-		
+		File file = new File( new File( viewpath, component.getShortname() ), filename );		
+		writeContent( file, "blaha" );		
 		Version.addToSourceControl( file, viewpath, null, true );
 	}
 
@@ -92,24 +90,27 @@ public class Environment {
     }
 
 	public void addNewElement( Component component, File viewpath, String filename ) throws ClearCaseException {
-		File file = new File( new File( viewpath, component.getShortname() ), filename );
+        File compFile = new File( viewpath, component.getShortname() );
+		File file = new File( compFile, filename );
 		
 		logger.fine( "FILE IS " + viewpath );
 		logger.fine( "FILE IS " + component );
 		logger.fine( "FILE IS " + filename );
 		logger.fine( "FILE IS " + file );
 		
+        //If this is a  new element in source control. Add it.
 		if( !file.exists() ) {
 			try {
 				file.createNewFile();
+                writeContent( file, "blaha" );
+                Version.addToSourceControl( file, viewpath, null, true );
 			} catch( IOException e1 ) {
 				throw new ClearCaseException( e1 );
 			}
-		}
-		
-		writeContent( file, "blaha" );
-		
-		Version.addToSourceControl( file, viewpath, null, true );
+		} else {
+            //Add new content to the old file
+            addNewContent(file, viewpath);
+        }	
 	}
 	
 	public void writeContent( File file, String content ) throws ClearCaseException {
