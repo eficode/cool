@@ -109,7 +109,7 @@ public class Environment {
 			}
 		} else {
             //Add new content to the old file
-            addNewContent(component, viewpath, filename);
+            addNewContent(file, viewpath);
         }	
 	}
 	
