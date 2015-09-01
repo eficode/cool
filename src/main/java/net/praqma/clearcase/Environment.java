@@ -77,8 +77,8 @@ public class Environment {
 	}
 	
 	public void addNewContent( Component component, File viewpath, String filename ) throws ClearCaseException {
-		Version.checkOut( new File( component.getShortname() ), viewpath );
 		File file = new File( new File( viewpath, component.getShortname() ), filename );		
+		Version.checkOut( new File( component.getShortname(), filename ), viewpath );
 		writeContent( file, "blaha" );		
 		Version.addToSourceControl( file, viewpath, null, true );
 	}
