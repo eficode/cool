@@ -188,7 +188,7 @@ public class Baseline extends UCMEntity implements Diffable {
             }
             return get( newname == null ? basename : newname , component.getPVob() ); 
 		} else {
-			throw new NothingNewException( "No baseline created, nothing new." );
+			throw new NothingNewException(String.format("No baseline created, nothing new. Baseline basename is: %s", basename));
 		}
     }
 
@@ -265,7 +265,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		if( created ) {
 			return get( newname == null ? basename : newname , component.getPVob() );
 		} else {
-			throw new NothingNewException( "No baseline created, nothing new." );
+			throw new NothingNewException(String.format("No baseline created, nothing new. Baseline basename is %s", basename));
 		}
 	}
 

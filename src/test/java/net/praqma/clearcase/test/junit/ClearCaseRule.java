@@ -392,7 +392,6 @@ public class ClearCaseRule extends Environment implements TestRule {
                 if( newElement ) {
                     addNewElement( rootedComponent, path, filename );
                 } else {
-                    //addNewContent( rootedComponent, path, filename );
                     addNewContent( new File( new File( path, rootedComponent.getShortname() ), filename ), path );
                 }
             } catch( ClearCaseException e ) {

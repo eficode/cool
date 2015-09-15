@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Baseline;
@@ -16,7 +15,7 @@ import org.w3c.dom.Element;
 
 public class BaselineTask extends AbstractTask {
 	
-	private static Logger logger = Logger.getLogger( BaselineTask.class.getName() );
+	private static final Logger logger = Logger.getLogger( BaselineTask.class.getName() );
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {
