@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 
 public class CheckinTask extends AbstractTask {
 	
-	private static Logger logger = Logger.getLogger( CheckinTask.class.getName() );
+	private static final Logger logger = Logger.getLogger( CheckinTask.class.getName() );
 
 	@Override
 	public void parse( Element e, Context context ) throws ClearCaseException {

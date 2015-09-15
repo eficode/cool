@@ -35,7 +35,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	private static final Pattern rx_checkExistence = Pattern.compile( ".*?Entry named \".*\" already exists.*?" );
 	private static final Pattern rx_versionName = Pattern.compile( "^(\\S+)\\s+([\\S\\s.^@]+@@.*)$" );
 	
-	transient private static Logger logger = Logger.getLogger( Version.class.getName() );
+	private transient static final Logger logger = Logger.getLogger( Version.class.getName() );
 
 	private String machine = null;
 	private boolean checkedout = false;
@@ -456,12 +456,13 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	public static void checkIn( File file, boolean identical, File viewContext, String comment ) throws CleartoolException {
 		try {
 			String cmd = "checkin " + ( comment != null ? "-c \"" + comment + "\" " : "-nc " ) + ( identical ? "-identical " : "" ) + file;
-			Cleartool.run( cmd, viewContext, true, false );
+			CmdResult res = Cleartool.run( cmd, viewContext, true, false );
+            logger.config("Check in result:");
+            logger.config(res.stdoutBuffer.toString());
 		} catch( Exception e ) {
 			if( e.getMessage().matches( "(?s).*By default, won't create version with data identical to predecessor.*" ) ) {
 				logger.fine( "Identical version, trying to uncheckout" );
 				uncheckout( file, false, viewContext );
-				return;
 			} else {
 				throw new CleartoolException( "Could not check in", e );
 			}

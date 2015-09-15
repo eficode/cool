@@ -9,7 +9,6 @@ import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
-import net.praqma.util.execute.CommandLine;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
 import org.w3c.dom.DOMError;
