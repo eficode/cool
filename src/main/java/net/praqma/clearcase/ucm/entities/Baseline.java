@@ -316,7 +316,7 @@ public class Baseline extends UCMEntity implements Diffable {
 		}
 
 		if( this.plevel.equals( PromotionLevel.REJECTED ) ) {
-			throw new UnableToPromoteBaselineException( this, PromotionLevel.REJECTED );
+			throw new UnableToPromoteBaselineException("You cannot promote a REJECTED baseline", this, PromotionLevel.REJECTED );
 		}
 
 		this.plevel = Project.promoteFrom( this.plevel );
