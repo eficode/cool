@@ -74,21 +74,12 @@ public class Baseline extends UCMEntity implements Diffable {
 	Baseline() {
 		super( "baseline" );
 	}
-
-	/**
-	 * Load the Baseline into memory from ClearCase.<br>
-	 * This function is automatically called when needed by other functions.
-	 * 
-	 * @throws UnableToLoadEntityException
-	 * @throws UnableToInitializeEntityException 
-     * @return The baseline in question, with stream and component data
-	 */
-    @Override
-	public Baseline load() throws UnableToLoadEntityException, UnableToInitializeEntityException {
+    
+    public Baseline load(boolean force) throws UnableToLoadEntityException, UnableToInitializeEntityException {
         /**
          * [FB11107] Performance tweaks. Avoid unnecssary load of baseline if already loaded. If it is loaded then return immediately return
          */
-        if(loaded) {
+        if(!force && loaded) {
             return this;
         }
         
@@ -134,7 +125,20 @@ public class Baseline extends UCMEntity implements Diffable {
 
 		this.loaded = true;
 
-		return this;
+		return this;        
+    }
+
+	/**
+	 * Load the Baseline into memory from ClearCase.<br>
+	 * This function is automatically called when needed by other functions.
+	 * 
+	 * @throws UnableToLoadEntityException
+	 * @throws UnableToInitializeEntityException 
+     * @return The baseline in question, with stream and component data
+	 */
+    @Override
+	public Baseline load() throws UnableToLoadEntityException, UnableToInitializeEntityException {
+        return load(false);
 	}
 	
 	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException {
@@ -307,14 +311,12 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * @throws UnableToPromoteBaselineException
 	 */
 	public Project.PromotionLevel promote() throws UnableToPromoteBaselineException {
-		if( !loaded ) {
-			try {
-				load();
-			} catch( ClearCaseException e ) {
-				throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
-			}
-		}
-
+        try {
+            load(true);
+        } catch( ClearCaseException e ) {
+            throw new EntityNotLoadedException( fqname, fqname + " could not be auto loaded", e );
+        }
+        
 		if( this.plevel.equals( PromotionLevel.REJECTED ) ) {
 			throw new UnableToPromoteBaselineException("You cannot promote a REJECTED baseline", this, PromotionLevel.REJECTED );
 		}
