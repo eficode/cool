@@ -21,7 +21,7 @@ import org.junit.Test;
 
 public class BaselineTest extends BaseClearCaseTest {
 
-    private static Logger logger = Logger.getLogger( BaselineTest.class.getName() );
+    private static final Logger logger = Logger.getLogger( BaselineTest.class.getName() );
 
 	@ClassRule
 	public static ClearCaseRule ccenv = new ClearCaseRule( "cool-baseline" );
@@ -149,5 +149,17 @@ public class BaselineTest extends BaseClearCaseTest {
         assertThat( posted.get( 0 ), is( client ) );
     }
 
-
+    @Test
+    public void testPromote() throws UnableToPromoteBaselineException {
+        Baseline b = ccenv.context.baselines.get( "client-3" );
+        b.promote();
+        assertThat(b.getPromotionLevel(), is(PromotionLevel.BUILT));
+    }
+    
+    @Test
+    public void testForcedLoad() throws UnableToPromoteBaselineException, UnableToLoadEntityException, UnableToInitializeEntityException {
+        Baseline b1 = ccenv.context.baselines.get( "client-3" ).load();
+        Baseline b2 = ccenv.context.baselines.get( "client-3" ).load(true);
+        assertThat(b1, is(b2));
+    }
 }
