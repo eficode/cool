@@ -2,7 +2,6 @@ package net.praqma.clearcase;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,18 +33,12 @@ public class Rebase {
     private boolean dropFromStream = false;
 
 
-    /**
-     * @deprecated since 0.6.13
-     */
 	public Rebase( Stream stream, UCMView view, Baseline baseline ) {
 		this.stream = stream;
 		this.baselines.add( baseline );
 		this.view = view;
 	}
 
-    /**
-     * @deprecated since 0.6.13
-     */
 	public Rebase( Stream stream, UCMView view, List<Baseline> baselines ) {
 		this.stream = stream;
 		this.baselines = baselines;
@@ -99,11 +92,10 @@ public class Rebase {
 
     /**
      * Drop those foundation {@link Baseline}s not given as parameters from the {@link Stream}s configuration
-     * @return
+     * @return The current {@link Rebase} operation.
      */
     public Rebase dropFromStream() {
         dropFromStream = true;
-
         return this;
     }
     
@@ -111,10 +103,10 @@ public class Rebase {
      * Rebases the current stream. As of version 0.6.29 we now have the cancelAndTryResume switch
      * This switch, if true, will check to see if a rebase is ongoing in the current stream, if it is, then the rebase is cancelled 
      * and restarted.
-     * @param complete
-     * @param cancelAndTryResume
-     * @return true if rebase is succesful, false otherwise
-     * @throws RebaseException 
+     * @param complete Flag to indicate if the rebase should be completed
+     * @param cancelAndTryResume Flag to indicate wheather the rebase should try and restart an ongoing rebase
+     * @return true if rebase is successful, false otherwise
+     * @throws RebaseException Thrown when ClearCase reports errors with the rebase 
      */
     public boolean rebase( boolean complete, boolean cancelAndTryResume) throws RebaseException {
         logger.fine( "Rebasing" );

@@ -57,7 +57,7 @@ public class CleanView {
 		}
 
 		SnapshotView view = SnapshotView.getSnapshotViewFromPath( viewroot );
-		Map<String, Integer> info = view.swipe( exclude );
+        Map<String, Integer> info = view.swipe(viewroot, exclude);		
 		
 		logger.info( "Removed " + info.get( "files_deleted" ) + " file" + ( info.get( "files_deleted" ) == 1 ? "" : "s" ) );
 		logger.info( "Removed " + info.get( "dirs_deleted" ) + " director" + ( info.get( "dirs_deleted" ) == 1 ? "y" : "ies" ) );		

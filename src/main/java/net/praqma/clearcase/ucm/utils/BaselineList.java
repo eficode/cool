@@ -45,7 +45,6 @@ public class BaselineList extends ArrayList<Baseline> {
      * Create a {@link BaselineList} object from a list of {@link Baseline}s
      *
      * @param baselines - A list of {@link Baseline}s
-     * @return
      */
     public BaselineList(List<Baseline> baselines) {
         this.addAll(baselines);
@@ -54,9 +53,9 @@ public class BaselineList extends ArrayList<Baseline> {
     /**
      * Apply all the given filters and rules to this
      *
-     * @return
-     * @throws UnableToInitializeEntityException
-     * @throws UnableToListBaselinesException
+     * @return The {@link BaselineList}
+     * @throws UnableToInitializeEntityException Thrown when ClearCase reports errors 
+     * @throws UnableToListBaselinesException Thrown when ClearCase reports errors 
      */
     public BaselineList apply() throws UnableToInitializeEntityException, UnableToListBaselinesException {
 
@@ -145,9 +144,8 @@ public class BaselineList extends ArrayList<Baseline> {
 
     /**
      * Ensure that the {@link Baseline} is in the list
-     *
-     * @param baseline
-     * @return
+     * @param baseline Adds the {@link Baseline} to the required baselines  
+     * @return The {@link BaselineList}
      */
     public BaselineList ensureBaseline(Baseline baseline) {
         required.add(baseline);
@@ -159,8 +157,8 @@ public class BaselineList extends ArrayList<Baseline> {
      * Apply a single filter to the {@link BaselineList} after the list has been
      * generated.
      *
-     * @param filter
-     * @return
+     * @param filter Apply the {@link BaselineFilter}
+     * @return A {@link BaselineList}
      */
     public BaselineList applyFilter(BaselineFilter filter) {
         logger.fine("Filter: " + filter.getName());
@@ -172,8 +170,8 @@ public class BaselineList extends ArrayList<Baseline> {
     /**
      * Set a limit of how many {@link Baseline}s apply should return
      *
-     * @param limit
-     * @return
+     * @param limit Limit to this number of baselines
+     * @return A limited {@link BaselineList}
      */
     public BaselineList setLimit(int limit) {
         this.limit = limit;
@@ -184,7 +182,7 @@ public class BaselineList extends ArrayList<Baseline> {
     /**
      * Load the {@link Baseline}s
      *
-     * @return
+     * @return A loaded {@link BaselineList}
      */
     public BaselineList load() {
         this.load = true;
@@ -196,7 +194,7 @@ public class BaselineList extends ArrayList<Baseline> {
      * Set the sorting of the {@link BaselineList}
      *
      * @param sorter - A {@link Comparator} of {@link Baseline}s
-     * @return
+     * @return A sorted {@link BaselineList}
      */
     public BaselineList setSorting(Comparator<Baseline> sorter) {
         this.sorter = sorter;
@@ -207,8 +205,8 @@ public class BaselineList extends ArrayList<Baseline> {
     /**
      * Add a filter to apply
      *
-     * @param filter
-     * @return
+     * @param filter Adds this filter to the {@link BaselineList}
+     * @return The {@link BaselineList} with the new filter
      */
     public BaselineList addFilter(BaselineFilter filter) {
         this.filters.add(filter);

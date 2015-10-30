@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class Find {
 
-    private static Logger logger = Logger.getLogger( Find.class.getName() );
+    private static final Logger logger = Logger.getLogger( Find.class.getName() );
 
     protected List<String> pathNames = new ArrayList<String>();
     protected File viewRoot;

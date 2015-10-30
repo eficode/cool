@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  */
 public class Describe {
 
-    private static Logger logger = Logger.getLogger( Describe.class.getName() );
+    private static final Logger logger = Logger.getLogger( Describe.class.getName() );
 
     private UCMEntity enitity;
 
@@ -105,8 +105,7 @@ public class Describe {
         return elements;
     }
 
-     public String getCommandLine() {
-
+    public String getCommandLine() {
         StringBuilder sb = new StringBuilder(  );
         sb.append( "describe -fmt" );
 
@@ -122,7 +121,7 @@ public class Describe {
             sb.append( "}" );
         }
 
-         sb.append( " " + enitity.toString() );
+         sb.append(" ").append(enitity.toString());
 
         return sb.toString();
     }

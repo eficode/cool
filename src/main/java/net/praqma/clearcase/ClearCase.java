@@ -15,16 +15,17 @@ import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
 public abstract class ClearCase extends Cool {
 	
-	private static Logger logger = Logger.getLogger( ClearCase.class.getName() );
+	private static final Logger logger = Logger.getLogger( ClearCase.class.getName() );
 
 	public static final String rx_attr_find = "^\\s*\\S+\\s*=\\s*\\S*\\s*$";
 	
 	/**
 	 * Retrieve the attributes for an entity, executed from the current working
-	 * directory
-	 * 
+	 * directory	 
+     * @param entity Retrieves attributes from {@link ClearCase} entity.
+     * @param context The context, from which directory the command is executed (view)
 	 * @return A Map of key, value pairs of the attributes
-	 * @throws UnableToListAttributesException
+	 * @throws UnableToListAttributesException Thrown when ClearCase reports errors 
 	 */
 	public static Map<String, String> getAttributes( ClearCase entity, File context ) throws UnableToListAttributesException {
 		String cmd = "describe -aattr -all " + entity;
@@ -78,7 +79,6 @@ public abstract class ClearCase extends Cool {
 			value = "'\"" + value + "\"'";
 		}
 
-		logger.fine( "Setting attribute " + attribute + "=" + value + " for " + this.getFullyQualifiedName() );
 
 		String cmd = "mkattr " + ( replace ? "-replace " : "" ) + attribute + " " + value + " " + this.getFullyQualifiedName();
 		try {
@@ -101,7 +101,8 @@ public abstract class ClearCase extends Cool {
 	 * Create an attribute with no possibility of specifying type or range.
 	 * @param name Name of the type
 	 * @param pvob The PVob
-	 * @param replace
+	 * @param replace Flag indicating if the new attribute type shall overwrite existing attribute type.
+     * @throws net.praqma.clearcase.exceptions.UnableToCreateAttributeException Thrown when ClearCase reports errors 
 	 */
 	public static void createSimpleAttributeType( String name, PVob pvob, boolean replace ) throws UnableToCreateAttributeException {
 		String cmd = "mkattype -vtype string -nc " + name + "@" + pvob;

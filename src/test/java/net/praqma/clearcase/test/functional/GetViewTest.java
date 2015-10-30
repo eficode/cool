@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNull;
  */
 public class GetViewTest extends GetViewTestBase {
 
-    private static Logger logger = Logger.getLogger( GetViewTest.class.getName() );
+    private static final Logger logger = Logger.getLogger( GetViewTest.class.getName() );
 
     @ClassRule
     public static ClearCaseRule ccenv = new ClearCaseRule( "cool-GetView" );

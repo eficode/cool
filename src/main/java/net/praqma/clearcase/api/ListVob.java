@@ -82,19 +82,16 @@ public class ListVob extends Command<List<String>> {
     private Restriction restriction;
 
     /**
-     * Restricts the listing to objects visible to the operating system listing command.
-     */
-    private boolean visible;
-
-    /**
      * Restricts the listing to the specified files, directories, and/or links.
      * pname may be a view- or VOB-extended pathname to list objects that are not in the view,
      * regardless of whether the view is a snapshot view or a dynamic view (see pathnames_ccase).
      */
-    private List<String> pathNames = new ArrayList<String>(  );
+    private List<String> pathNames = new ArrayList<String>( );
 
     /**
      * Add a path name.
+     * @param pathName Path name
+     * @return Current {@link ListVob} command
      */
     public ListVob addPathName( String pathName ) {
         this.pathNames.add( pathName );
@@ -122,14 +119,12 @@ public class ListVob extends Command<List<String>> {
 
     public ListVob setViewRoot( File path ) {
         this.root = path;
-
         return this;
     }
 
     @Override
     public List<String> execute() throws CleartoolException {
         CmdResult result = runCommand();
-
         return result.stdoutList;
 
     }

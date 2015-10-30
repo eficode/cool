@@ -168,6 +168,7 @@ public class Describe extends Command<List<String>> {
 
     /**
      * Allow the execution of the {@link Describe} to return null instead of an exception. See FB case 9988.
+     * @return Current {@link net.praqma.clearcase.api.Describe} command
      */
     public Describe doAcceptEmpty() {
         this.acceptEmpty = true;
@@ -230,6 +231,8 @@ public class Describe extends Command<List<String>> {
 
     /**
      * This method will return a grouped result by property for easier access.
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors 
+     * @return Current {@link net.praqma.clearcase.api.Describe} command
      */
     public Map<String, String[]> describe() throws CleartoolException {
         CmdResult result = runCommand();
@@ -277,8 +280,6 @@ public class Describe extends Command<List<String>> {
 
 
     public Map<String, String[]> getResults( List<String> elements ) {
-        logger.finest( "Get results for " + elements );
-
         if( elements.size() != properties.size() ) {
             throw new IllegalStateException( "The number of elements and the number of describers does not match" );
         }
@@ -300,8 +301,6 @@ public class Describe extends Command<List<String>> {
     }
 
     public List<String> getElements( String string ) {
-        logger.finest( "Get elements for " + string );
-
         String[] lines = string.split( itemSeparator );
         List<String> elements = new ArrayList<String>(  );
         for( String line : lines ) {

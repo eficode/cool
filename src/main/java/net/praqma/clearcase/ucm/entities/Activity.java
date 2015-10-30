@@ -2,6 +2,7 @@ package net.praqma.clearcase.ucm.entities;
 
 import java.io.File;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,22 +15,18 @@ import net.praqma.clearcase.exceptions.*;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 public class Activity extends UCMEntity {
-	
-	//private final static Pattern pattern_activity = Pattern.compile( "^>>\\s*(\\S+)\\s*.*$" );
+
 	private final static Pattern pattern_activity = Pattern.compile( "^[<>-]{2}\\s*(\\S+)\\s*.*$" );
     private final static Pattern pattern_activity2 = Pattern.compile( "^([<>-]{2})\\s*(\\S+)\\s*.*$" );
 	
-	private static Logger logger = Logger.getLogger( Activity.class.getName() );
+	private static final Logger logger = Logger.getLogger( Activity.class.getName() );
 
     /**
      * The change set of the activity
      */
 	public Changeset changeset = new Changeset();
 
-    /**
-     * The specialCase field is used when parsing an activity string from cleartool,<br />
-     * when there's no_activity
-     */
+    //The specialCase field is used when parsing an activity string from cleartool, when there's no_activity
 	private boolean specialCase = false;
 
     /**
@@ -52,9 +49,10 @@ public class Activity extends UCMEntity {
 	/**
 	 * Load the Activity into memory from ClearCase.<br>
 	 * This function is automatically called when needed by other functions.
-	 * @return 
-	 * @throws UnableToLoadEntityException
+	 * @return The current {@link Activity} populated with ClearCase data.
+	 * @throws UnableToLoadEntityException Thrown when ClearCase reports errors 
 	 */
+    @Override
 	public Activity load() throws UnableToLoadEntityException {
 		String[] result = new String[2];
 
@@ -81,18 +79,18 @@ public class Activity extends UCMEntity {
 	
 	/**
 	 * Create an activity. If name is null an anonymous activity is created and the return value is null.
-	 * @param name
-	 * @param in
-	 * @param pvob
-	 * @param force
-	 * @param comment
-	 * @param headline
-	 * @param view
-	 * @return
-	 * @throws UnableToCreateEntityException
-	 * @throws UCMEntityNotFoundException
-	 * @throws UnableToGetEntityException
-	 * @throws UnableToInitializeEntityException
+	 * @param name The name of the activity
+	 * @param in The stream in which to create the actitivy
+	 * @param pvob Vob of the actitivy
+	 * @param force Force creation
+	 * @param comment Comment of the activity
+	 * @param headline Headline for the activyt
+	 * @param view Current view
+	 * @return An {@link Activity} created by ClearCase.
+	 * @throws UnableToCreateEntityException Thrown when ClearCase reports errors 
+	 * @throws UCMEntityNotFoundException Thrown when ClearCase reports errors 
+	 * @throws UnableToGetEntityException Thrown when ClearCase reports errors 
+	 * @throws UnableToInitializeEntityException Thrown when ClearCase reports errors 
 	 */
 	public static Activity create( String name, Stream in, PVob pvob, boolean force, String comment, String headline, File view ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
 		String cmd = "mkactivity" + ( comment != null ? " -c \"" + comment + "\"" : " -nc" ) + 
@@ -291,13 +289,14 @@ public class Activity extends UCMEntity {
     /**
      * Trim the change set to the latest.
      * @param branchName If given, only the {@link Version}s on this branch will be included.
+     * @return A list of {@link Version}s trimmed.
      */
     public List<Version> getTrimmedChangeSet( String branchName ) {
-        logger.fine( "Trimming change set to latest from " + branchName );
+        logger.log(Level.FINE, "Trimming change set to latest from {0}", branchName);
 
         Map<File, Version> versions = new HashMap<File, Version>(  );
         for( Version v : changeset.versions ) {
-            if( branchName == null || ( branchName != null && v.getBranch().matches( branchName ) ) ) {
+            if( branchName == null || v.getBranch().matches( branchName ) ) {
                 if( versions.containsKey( v.getFile() ) ) {
                     if( v.getRevision() > versions.get( v.getFile() ).getRevision() ) {
                         versions.put( v.getFile(), v );
@@ -328,13 +327,10 @@ public class Activity extends UCMEntity {
     }
 
     public static List<Version> getVersions( Activity activity, File path ) throws UnableToInitializeEntityException {
-        logger.fine( "Getting versions for " + activity );
-
         String output = null;
         try {
             output = new Describe( activity ).addModifier( Describe.versions ).setPath( path ).executeGetFirstLine();
         } catch( CleartoolException e ) {
-            logger.fine("getVersions() error: "+ e.getMessage() );
             return Collections.emptyList();
         }
 

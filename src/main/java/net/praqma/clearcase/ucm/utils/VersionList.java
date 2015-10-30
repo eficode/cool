@@ -33,14 +33,11 @@ public class VersionList extends ArrayList<Version> {
     }
     
     public VersionList addActivities( List<Activity> acts ) {
-        logger.fine( "Adding " + acts.size() + " activities" );
         if(this.activities.addAll(acts)) {
             logger.fine("Succesfully added all activities!");
         }
-        
-        
+
         for( Activity a : acts ) {
-            logger.fine( "Adding " + a.changeset.versions.size() + " versions" );
             this.addAll( a.changeset.versions );
         }
 
@@ -71,17 +68,12 @@ public class VersionList extends ArrayList<Version> {
 
         /* Group the versions into activities */
         Map<Activity, List<Version>> changeSet = new HashMap<Activity, List<Version>>();
-        
-        logger.fine("Activitis recorded in VersionList is: "+getActivities().size());
         for(Activity a : getActivities()) {
-            logger.fine("Adding activity to changeset: "+ a);
             changeSet.put(a, new ArrayList<Version>());            
         }
 
         for( Version v : map.values() ) {
-            logger.fine("Version tied to activity: " + v.getActivity());
             if(changeSet.containsKey(v.getActivity())) {
-                logger.fine("Version found...adding to changeset!");
                 changeSet.get( v.getActivity() ).add( v );
             }
         }
@@ -96,9 +88,6 @@ public class VersionList extends ArrayList<Version> {
             }
         }
         
-        
-        
-
         return changeSet;
     }
 
@@ -113,19 +102,15 @@ public class VersionList extends ArrayList<Version> {
 				
 				Map<String, Version> bmap = fmap.get( v.getFile() );
 				if( bmap.containsKey( v.getBranch() ) ) {
-					logger.fine( "Existing branch: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
 					Version iv = bmap.get( v.getBranch() );
-					if( iv.getRevision().intValue() < v.getRevision().intValue() ) {
-						logger.fine( "Updating branch: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
+					if( iv.getRevision()< v.getRevision()) {
 						bmap.put( v.getBranch(), v );
 					}
 				} else {
-					logger.fine( "New branch: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
 					bmap.put( v.getBranch(), v );
 				}
 
 			} else {
-				logger.fine( "New file: " + v.getFile() + ", " + v.getBranch() + ", " + v.getRevision() );
 				Map<String, Version> nmap = new HashMap<String, Version>();
 				nmap.put( v.getBranch(), v );
 				fmap.put( v.getFile(), nmap );
@@ -163,9 +148,8 @@ public class VersionList extends ArrayList<Version> {
     }
 
     private static void getLatestChanges( List<Version> versions, String branchName, Map<File, Version> map ) {
-        logger.fine( "Branch name is " + branchName );
         for( Version v : versions ) {
-            if( branchName == null || ( branchName != null && v.getBranch().matches( branchName ) ) ) {
+            if( branchName == null || v.getBranch().matches( branchName ) ) {
                 if( map.containsKey( v.getFile() ) ) {
                     if( v.getRevision() > map.get( v.getFile() ).getRevision() ) {
                         map.put( v.getFile(), v );

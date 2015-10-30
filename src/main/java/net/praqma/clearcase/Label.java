@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 public class Label extends Type {
 
-    private static Logger logger = Logger.getLogger( Label.class.getName() );
+    private static final Logger logger = Logger.getLogger( Label.class.getName() );
 
     public static final Pattern rx = Pattern.compile( "^(.*)\\b\\s*\\((.*?)\\)$" );
 
@@ -49,8 +49,8 @@ public class Label extends Type {
 
     /**
      * From a string, get a {@link List} of {@link Label}s.
-     * @param labelString
-     * @return
+     * @param labelString The label string to look for
+     * @return A list of {@link Label} 
      */
     public static List<Label> getLabels( String labelString ) {
         int b = labelString.startsWith( "(" ) ? 1 : 0;

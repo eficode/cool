@@ -22,6 +22,7 @@ public class LabelsForVersion {
 
     /**
      * Get the final {@link Branch} of the branch path.
+     * @return The {@link Branch}
      */
     public Branch getBranch() {
         return version.getUltimateBranch();

@@ -28,7 +28,7 @@ public class ReadOnlyVersionFilter extends VersionFilter implements Serializable
      * A load line in unix looks like this: /vobs/myCompA 
      * A load line in windows looks like this: \vobfolder\myCompA
      * This filter will discard changes to files where the path to the changed file matches [viewroot][path seperator][readOnlyLoadLine]
-     * @param view
+     * @param view The view root ({@link File}
      * @param readOnlyLoadLines The load paths, they are relative to the view you're standing in.
      */
     public ReadOnlyVersionFilter(File view, List<String> readOnlyLoadLines) {

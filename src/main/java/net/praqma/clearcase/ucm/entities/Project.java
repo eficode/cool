@@ -45,16 +45,6 @@ public class Project extends UCMEntity implements StreamContainable {
 		INITIAL, BUILT, TESTED, RELEASED, REJECTED;
 	}
 
-	/**
-	 * Given a String, return the corresponding Promotion Level.
-	 */
-    /*
-	public static PromotionLevel getPlevelFromString( String str ) {
-		return PromotionLevel.valueOf( str );
-	}
-	*/
-
-
     public static PromotionLevel getPlevelFromString( String str ) {
         PromotionLevel plevel = PromotionLevel.INITIAL;
 
@@ -139,8 +129,11 @@ public class Project extends UCMEntity implements StreamContainable {
 	 * @param pvob The {@link PVob}}
 	 * @param policy Policies as integer
 	 * @param comment If not null, the comment of the project
+     * @param normal Normal
 	 * @param mcomps Modifiable components of the project
 	 * @return a new {@link Project}
+     * @throws net.praqma.clearcase.exceptions.UnableToCreateEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when ClearCase reports errors 
 	 */
 	public static Project create( String name, String root, PVob pvob, int policy, String comment, boolean normal, List<Component> mcomps ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
 
@@ -196,7 +189,7 @@ public class Project extends UCMEntity implements StreamContainable {
 
     /**
      * Set the integration {@link Stream} for this {@link Project} object
-     * @param stream
+     * @param stream Set the {@link Stream}
      */
 	public void setStream( Stream stream ) {
 		this.stream = stream;
@@ -246,13 +239,12 @@ public class Project extends UCMEntity implements StreamContainable {
 
     /**
      * Get the list of {@link Project}s in a given {@link PVob}
-     * @return
-     * @throws UnableToListProjectsException
-     * @throws UnableToInitializeEntityException
+     * @param pvob The {@link PVob}
+     * @return A list of {@link Project}s under the given {@link PVob}
+     * @throws UnableToListProjectsException Thrown when ClearCase reports errors 
+     * @throws UnableToInitializeEntityException Thrown when ClearCase reports errors 
      */
 	public static List<Project> getProjects( PVob pvob ) throws UnableToListProjectsException, UnableToInitializeEntityException {
-
-		logger.fine( "Getting projects for " + pvob );
 		String cmd = "lsproject -s -invob " + pvob.toString();
 
 		List<String> projs = null;
@@ -277,9 +269,9 @@ public class Project extends UCMEntity implements StreamContainable {
 
     /**
      * Get a list of modifiable {@link Component}s for this {@link Project} from ClearCase
-     * @return
-     * @throws UnableToInitializeEntityException
-     * @throws CleartoolException
+     * @return A list of {@link Component}
+     * @throws UnableToInitializeEntityException Thrown when ClearCase reports errors 
+     * @throws CleartoolException Thrown when ClearCase reports errors 
      */
 	public List<Component> getModifiableComponents() throws UnableToInitializeEntityException, CleartoolException {
 		String[] cs;
@@ -319,7 +311,7 @@ public class Project extends UCMEntity implements StreamContainable {
 
     /**
      * Remove this {@link Project} from ClearCase
-     * @throws UnableToRemoveEntityException
+     * @throws UnableToRemoveEntityException Thrown when ClearCase reports errors 
      */
 	public void remove() throws UnableToRemoveEntityException {
 		String cmd = "rmproject -force " + this;

@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 
 public class VersionListTest {
 	
@@ -70,9 +71,8 @@ public class VersionListTest {
 		VersionList nvlist = vlist.getLatest();
 		
 		logger.debug( "LIST: " + nvlist );
-		
+        
 		assertThat( nvlist.size(), is( 2 ) );
-		assertThat( nvlist.get( 0 ), is( seven ) );
-		assertThat( nvlist.get( 1 ), is( four ) );
+        assertThat ( nvlist, hasItems(seven, four) );
 	}
 }

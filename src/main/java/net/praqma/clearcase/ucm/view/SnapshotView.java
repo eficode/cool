@@ -40,7 +40,6 @@ public class SnapshotView extends UCMView {
 
 	transient private static final Logger logger = Logger.getLogger( SnapshotView.class.getName() );
 
-	//protected static final String rx_view_uuid = "view_uuid:(.*)";
 	protected static final Pattern rx_view_uuid_file = Pattern.compile( "view_uuid:(.*)" );
 	protected static final Pattern rx_view_uuid = Pattern.compile( "View uuid:(.*)" );
 	public static final Pattern rx_view_rebasing = Pattern.compile( "^\\.*Error: This view is currently being used to rebase stream \"(.+)\"\\.*$" );
@@ -136,11 +135,10 @@ public class SnapshotView extends UCMView {
         
         /*
 		 * Create load rules based on {@link Components}
-         * @param view
-         * @param components
-		 * @throws UnableToLoadEntityException
-         * @throws UnableToInitializeEntityException
-		 * @throws CleartoolException
+         * @param components The components to load
+		 * @throws UnableToLoadEntityException Thrown on ClearTool error
+         * @throws UnableToInitializeEntityException Thrown on ClearTool error
+		 * @throws CleartoolException Thrown on ClearTool error
 		 */
 		public LoadRules2(Components components ) throws UnableToInitializeEntityException, CleartoolException, UnableToLoadEntityException {
             this.components = components;
@@ -199,7 +197,7 @@ public class SnapshotView extends UCMView {
 		/**
 		 * Create load rules based on a string
 		 * 
-		 * @param loadRules
+		 * @param loadRules The load rule specification
 		 */
 		public LoadRules2( String loadRules ) {
 			this.loadRules = " -add_loadrules " + loadRules;
@@ -209,19 +207,12 @@ public class SnapshotView extends UCMView {
 			return loadRules;
 		}
 	}
-    
 
-	public SnapshotView() {
-
-	}
+	public SnapshotView() { }
 
 	public SnapshotView( File viewroot ) throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
-		/* TODO Test the view root? Does it exist? Is it a directory? */
-
 		this.viewroot = viewroot;
-
 		Tuple<Stream, String> t = getStreamFromView( viewroot );
-
 		this.viewtag = t.t2;
 		this.viewroot = viewroot;
 		this.stream = t.t1;
@@ -233,20 +224,21 @@ public class SnapshotView extends UCMView {
 	 * 
 	 * @param stream
 	 *            The Stream
-	 * @param viewroot
-	 * @param viewtag
-	 * @return SnapShotView
+	 * @param viewroot The root of this new view
+	 * @param viewtag The tag to use
+	 * @return SnapShotView The {@link SnapshotView} as a result of the creation
+     * @throws net.praqma.clearcase.exceptions.ViewException  Thrown on ClearTool error, view cannot be created
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when a ClearTool error occurs
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown on ClearTool error
+     * @throws java.io.IOException File errors/other external non ClearTool errors
 	 */
 	public static SnapshotView create( Stream stream, File viewroot, String viewtag ) throws ViewException, UnableToInitializeEntityException, CleartoolException, IOException {
-		//context.makeSnapshotView( stream, viewroot, viewtag );
-
 		logger.fine( "The view \"" + viewtag + "\" in \"" + viewroot + "\"" );
 
 		if( viewroot.exists() ) {
 			IO.deleteDirectory( viewroot );
 		}
 
-		//this.generate( stream );
 		stream.generate();
 
 		String cmd = "mkview -snapshot -stgloc -auto -tag " + viewtag + " -stream " + stream + " \"" + viewroot.getAbsolutePath() + "\"";
@@ -255,7 +247,6 @@ public class SnapshotView extends UCMView {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
 			logger.warning( "Could not create snapshot view \"" + viewtag + "\"" );
-			//throw new UCMException( "Could not create snapshot view \"" + viewtag + "\"", e.getMessage(), UCMType.VIEW_ERROR );
 			throw new ViewException( "Unable to create view " + viewtag + " at " + viewroot, viewroot.getAbsolutePath(), Type.CREATION_FAILED, e );
 		}
 
@@ -290,8 +281,6 @@ public class SnapshotView extends UCMView {
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new UnableToListViewsException( viewtag, dir, e );
 		}
-
-		// System.out.println(result);
 
 		Matcher match = rx_view_uuid.matcher( result );
 		if( !match.find() ) {
@@ -391,10 +380,11 @@ public class SnapshotView extends UCMView {
 	/**
 	 * Determine if the views view root is valid, returning its view tag
 	 * 
+     * @param viewroot The view root ({@link File})
 	 * @return The view tag
-	 * @throws IOException 
-	 * @throws CleartoolException 
-	 * @throws ViewException
+	 * @throws IOException Thrown when the filesystem cannot find the files specified 
+	 * @throws CleartoolException Thrown on ClearTool error 
+	 * @throws ViewException  Thrown on ClearTool error, the view was not created
 	 */
 	public static String viewrootIsValid( File viewroot ) throws IOException, CleartoolException, ViewException {
 		logger.fine( viewroot.getAbsolutePath() );
@@ -423,8 +413,6 @@ public class SnapshotView extends UCMView {
 			throw e;
 		}
 
-		logger.fine( "FILE CONTENT=" + result.toString() );
-
 		Matcher match = rx_view_uuid_file.matcher( result.toString() );
 
 		String uuid = "";
@@ -445,10 +433,7 @@ public class SnapshotView extends UCMView {
 			throw new CleartoolException( "Unable to list view with " + uuid, e );
 		}
 	}
-
-    /**
-     * @deprecated since 0.6.13
-     */
+    
 	public class UpdateInfo {
 		public Integer totalFilesToBeDeleted = 0;
 		public boolean success = false;
@@ -456,12 +441,12 @@ public class SnapshotView extends UCMView {
 		public Integer dirsDeleted = 0;
 	}
 
-	public Tuple<Stream, String> getStreamFromView( File viewroot ) throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
-		File wvroot = getCurrentViewRoot( viewroot );
-		String viewtag = viewrootIsValid( wvroot );
+	public final Tuple<Stream, String> getStreamFromView( File vr ) throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
+		File wvroot = getCurrentViewRoot( vr );
+		String vt = viewrootIsValid( wvroot );
 		String streamstr = getStreamFromView( viewtag );
-		Stream stream = Stream.get( streamstr );
-		return new Tuple<Stream, String>( stream, viewtag );
+		Stream sstr = Stream.get( streamstr );
+		return new Tuple<Stream, String>( sstr, vt );
 	}
 
 	public File getCurrentViewRoot( File viewroot ) throws ViewException {
@@ -487,7 +472,14 @@ public class SnapshotView extends UCMView {
     
     /**
      * TODO: This one should be used for new method of updating
-     * @deprecated since 0.6.13
+     * @param swipe Swipe
+     * @param generate Generated
+     * @param overwrite Overview
+     * @param excludeRoot Exclude root
+     * @param loadRules Load rules
+     * @return An {@link UpdateInfo} 
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown on ClearTool error 
+     * @throws net.praqma.clearcase.exceptions.ViewException  Thrown on ClearTool error
      */
     public UpdateInfo update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules2 loadRules ) throws CleartoolException, ViewException {
 
@@ -516,12 +508,7 @@ public class SnapshotView extends UCMView {
 		return info;
 	}
 
-    /**
-     * @deprecated since 0.6.13
-     */
 	private static String updateView( SnapshotView view, boolean overwrite, String loadrules ) throws CleartoolException, ViewException {
-		//String result = strategy.viewUpdate( view.getViewRoot(), overwrite, loadrules );
-		
 		String result = "";
 		
 		logger.fine( view.getViewRoot().getAbsolutePath() );
@@ -700,10 +687,10 @@ public class SnapshotView extends UCMView {
 	}
 
     /**
-     * Returns a list of view private files from a vob folder.
-     * @param vobFolder The {@link File} path for the vob
+     * Returns a list of view private files from a {@link Vob} folder.
+     * @param vobFolder The {@link File} path for the {@link Vob}
      * @return A {@link List} of {@link File}s representing the view private files of a vob in the view.
-     * @throws CleartoolException
+     * @throws CleartoolException Thrown on ClearTool error
      */
     private List<File> findViewPrivateFilesFromVob( File vobFolder ) throws CleartoolException {
         List<String> result = new ListVob().recurse().restrictToViewOnly().shortReportLength().addPathName( vobFolder.getAbsolutePath() ).execute();
@@ -726,8 +713,8 @@ public class SnapshotView extends UCMView {
      * Filters files in any given VOB folder, based on the assumption that all files that are writable (Not-read-only)
      * in a given vob folder are are view-private and can be safely deleted. We also exclude all the special cases like view update
      * and other files.
-     * @param vobFolder
-     * @return 
+     * @param vobFolder The vob to look for view private files
+     * @return A list of view private {@link File}s 
      */
     private List<File> findViewPrivateFilesFromVobUsingFileFilter( File vobFolder ) {
         ArrayList<File> foldersToCheck = new ArrayList<File>();
@@ -754,20 +741,6 @@ public class SnapshotView extends UCMView {
         }
         return folders;
     }
-
-    /**
-     * 
-     * @param excludeRoot
-     * @return
-     * @throws CleartoolException
-     * @deprecated Use this method instead. The loadrules is the string you create you view context with {@link #swipe( File viewroot, boolean excludeRoot, String loadrules)}  
-     */
-    @Deprecated
-	public Map<String, Integer> swipe( boolean excludeRoot ) throws CleartoolException {
-		logger.fine( "Swiping " + this.getViewRoot() );
-		Map<String, Integer> sinfo = swipe( viewroot, excludeRoot );
-		return sinfo;
-	}
     
     public Map<String, Integer> swipe( boolean excludeRoot, String loadRules ) throws CleartoolException {
 		logger.fine( "Swiping " + this.getViewRoot() );

@@ -1,20 +1,14 @@
 package net.praqma.clearcase.ucm.view;
 
-import java.util.logging.Level;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.exceptions.ViewException.Type;
 import net.praqma.clearcase.ucm.entities.Stream;
 
-import java.util.logging.Logger;
 
 public class DynamicView extends UCMView {
-
-	private static Logger logger = Logger.getLogger( DynamicView.class.getName() );
-
-	public DynamicView() {
-
-	}
+    
+	public DynamicView() { }
 
 	public DynamicView( String path ) {
 		super( path );
@@ -33,15 +27,14 @@ public class DynamicView extends UCMView {
 
 	/**
 	 * Creates a dynamic view in the given path. If path is null -auto is used
-     * 
      * This is currently only used for testing purposes. 
-	 * 
 	 * @param tagTag
 	 *            The view tag
 	 * @param stgloc
 	 *            The path
+     * @param stream The {@link Stream}
 	 * @return An instance of DynamicView
-	 * @throws ViewException
+	 * @throws ViewException Thrown when a ClearTool error occurs
 	 */
 	public static DynamicView create( String stgloc, String tagTag, Stream stream ) throws ViewException {
  
@@ -49,7 +42,6 @@ public class DynamicView extends UCMView {
             UCMView.create( tagTag, stgloc, false, stream );
         } catch (ViewException ex) {
             try {              
-                //Wait 10 seconds....try again 
                 Thread.sleep(10000);
                 UCMView.create(tagTag, stgloc, false, stream);
             } catch (InterruptedException ex1) {

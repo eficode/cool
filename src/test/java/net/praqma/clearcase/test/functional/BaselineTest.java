@@ -31,7 +31,7 @@ public class BaselineTest extends BaseClearCaseTest {
 		Baseline bl = ccenv.context.baselines.get( "model-3" ).load();
 		
 		assertNotNull( bl );
-		assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
+		assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel(  ) );
 	}
 	
 	@Test

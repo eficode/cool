@@ -22,9 +22,9 @@ public class BaselineDynamicTest extends BaseClearCaseTest {
 		Baseline bl = ccenv.context.baselines.get( "model-1" ).load();
 		
 		assertNotNull( bl );
-		assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
+		assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel(  ) );
 		bl.setPromotionLevel( PromotionLevel.RELEASED );
-		assertEquals( PromotionLevel.RELEASED, bl.getPromotionLevel( false ) );
+		assertEquals( PromotionLevel.RELEASED, bl.getPromotionLevel(  ) );
 	}
 
     @Test
@@ -33,9 +33,9 @@ public class BaselineDynamicTest extends BaseClearCaseTest {
         Baseline bl = ccenv.context.baselines.get( "model-3" ).load();
 
         assertNotNull( bl );
-        assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
+        assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel(  ) );
         bl.promote();
-        assertEquals( PromotionLevel.BUILT, bl.getPromotionLevel( false ) );
+        assertEquals( PromotionLevel.BUILT, bl.getPromotionLevel(  ) );
     }
 
     @Test
@@ -44,9 +44,9 @@ public class BaselineDynamicTest extends BaseClearCaseTest {
         Baseline bl = ccenv.context.baselines.get( "model-2" ).load();
 
         assertNotNull( bl );
-        assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel( false ) );
+        assertEquals( PromotionLevel.INITIAL, bl.getPromotionLevel(  ) );
         bl.reject();
-        assertEquals( PromotionLevel.REJECTED, bl.getPromotionLevel( false ) );
+        assertEquals( PromotionLevel.REJECTED, bl.getPromotionLevel(  ) );
     }
 
 

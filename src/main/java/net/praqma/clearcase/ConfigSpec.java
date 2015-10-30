@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  */
 public class ConfigSpec {
 
-    private static Logger logger = Logger.getLogger( ConfigSpec.class.getName() );
+    private static final Logger logger = Logger.getLogger( ConfigSpec.class.getName() );
 
     private static final String UCMCustomLoadBegin = "#UCMCustomLoadBegin - DO NOT REMOVE - ADD CUSTOM LOAD RULES AFTER THIS LINE";
 
@@ -96,6 +97,9 @@ public class ConfigSpec {
 
     /**
      * Generate the new config spec
+     * @return The generated {@link ConfigSpec}
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors 
+     * @throws java.io.IOException Thrown if we're not able to create the temporary config spec file 
      */
     public ConfigSpec generate() throws CleartoolException, IOException {
         List<String> csLines = catcs();
@@ -125,6 +129,8 @@ public class ConfigSpec {
 
     /**
      * Apply the generated config spec
+     * @return The generated {@link ConfigSpec}
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors 
      */
     public ConfigSpec appy() throws CleartoolException {
         if( temporaryCSFile == null || !temporaryCSFile.exists() ) {
@@ -138,7 +144,7 @@ public class ConfigSpec {
             try {
                 logger.severe( FileUtils.readFileToString( temporaryCSFile ) );
             } catch( IOException e1 ) {
-                logger.severe( "Unable to dump config spec, " + e1.getMessage() );
+                logger.log(Level.SEVERE, "Unable to dump config spec.", e1);
             }
             throw new CleartoolException( "Unable to set the config spec", e );
         }
@@ -169,10 +175,6 @@ public class ConfigSpec {
         }
     }
 
-    /**
-     * Remove custom load rules from config specs IN-PLACE!!!!
-     * @return
-     */
     private void removeLoadRules( List<String> configSpec ) {
         logger.fine( "Remove custom load rules" );
 
@@ -188,8 +190,7 @@ public class ConfigSpec {
                 continue;
             }
 
-            if( remove && next.startsWith( "load" ) ) {
-                logger.fine( "Removing " + next );
+            if( remove && next.startsWith( "load" ) ) {                
                 currentLoadRules.add( next.substring( 5 ) );
                 it.remove();
             }
@@ -197,7 +198,6 @@ public class ConfigSpec {
     }
 
     public static String getLoadRules( File viewRoot ) {
-
         return null;
     }
 

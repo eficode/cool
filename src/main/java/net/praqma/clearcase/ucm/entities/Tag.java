@@ -33,7 +33,7 @@ public class Tag extends UCMEntity {
 	private static final Pattern pattern_hlink_type_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB \"(\\S+)\" .*" );
 	private static final Pattern pattern_remove_verbose_tag = Pattern.compile( "^.*?\"(.*)\".*?$" );
 	private static final Pattern pattern_tags = Pattern.compile( "^\\s*(.*?)\\s*->\\s*\"(.*?)\"\\s*$" );
-	transient private static Logger logger = Logger.getLogger( Tag.class.getName() );
+	private static final transient Logger logger = Logger.getLogger( Tag.class.getName() );
 
     /**
      * The tag type
@@ -119,13 +119,13 @@ public class Tag extends UCMEntity {
 	}
 
 	public static String mapToCGI( Map<String, String> keyval, boolean skiptaginfo ) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Iterator<Entry<String, String>> it = keyval.entrySet().iterator();
 		int c = 0;
 		while( it.hasNext() ) {
 			Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
 			if( skiptaginfo && ( entry.getKey().equalsIgnoreCase( "tagid" ) || entry.getKey().equalsIgnoreCase( "tagtype" ) ) ) continue;
-			sb.append( entry.getKey() + "=" + entry.getValue() + "&" );
+            sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
 			c++;
 		}
 
@@ -138,10 +138,9 @@ public class Tag extends UCMEntity {
 
 	/**
 	 * Is used by Stringify
-	 * 
-	 * @return
+	 * @return The loaded {@link Tag}
 	 */
-        @Override
+    @Override
 	public Tag load() {
 		this.tagType = keyval.get( "tagtype" );
 		this.tagID = keyval.get( "tagid" );
@@ -160,17 +159,14 @@ public class Tag extends UCMEntity {
 	}
 
 	public void setEntry( String key, String value ) {
-		logger.fine( "Setting " + key + " = " + value );
 		keyval.put( key, value );
 	}
 
 	public boolean removeEntry( String key ) {
 		if( keyval.containsKey( key ) ) {
-			logger.fine( "Removing " + key );
 			keyval.remove( key );
 			return true;
 		} else {
-			logger.fine( "Could not remove " + key );
 			return false;
 		}
 	}
@@ -199,24 +195,20 @@ public class Tag extends UCMEntity {
 	 * Persist the Tag. Returns the new Tag from ClearCase.
 	 * 
 	 * @return The new Tag.
-	 * @throws UnableToInitializeEntityException 
-	 * @throws TagException
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToLoadEntityException 
-	 * @throws UnableToCreateEntityException 
-	 * @throws UnableToGetEntityException 
+	 * @throws UnableToInitializeEntityException Thrown on ClearCase error 
+	 * @throws TagException Thrown on ClearCase error 
+	 * @throws UCMEntityNotFoundException Thrown on ClearCase error  
+	 * @throws UnableToLoadEntityException Thrown on ClearCase error  
+	 * @throws UnableToCreateEntityException Thrown on ClearCase error  
+	 * @throws UnableToGetEntityException Thrown on ClearCase error  
 	 */
 	public Tag persist() throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
 		return persist( this );
 	}
 
-	public static Tag persist( Tag tag ) throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
-		/* Make the new tag */
+	public static Tag persist( Tag tag ) throws TagException, UnableToCreateEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {		
 		Tag newtag = Tag.newTag( tag.getTagType(), tag.getTagID(), tag.getTagEntity(), Tag.mapToCGI( tag.GetEntries(), true ) );
-
-		/* Delete the old tag */
 		delete( tag );
-
 		return newtag;
 	}
 
@@ -232,8 +224,7 @@ public class Tag extends UCMEntity {
 		try {
 			res = Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
-			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );
-			logger.warning( "Unable to get tags: " + e.getMessage() );
+			Matcher match = pattern_hlink_type_missing.matcher( e.getMessage() );			
 			if( match.find() ) {
 				TagException te = new TagException( entity, "", __TAG_NAME, Type.NO_SUCH_HYPERLINK, e );
 				te.addInformation( "The Hyperlink type \"" + match.group( 1 ) + "\" was not found.\nInstallation: \"cleartool mkhltype -shared -global -c \"Hyperlink type for tagging entities\" " + __TAG_NAME + "@" + match.group( 2 ) );
@@ -385,18 +376,15 @@ public class Tag extends UCMEntity {
 			if( !this.loaded ) load();
 
 			sb.append( super.stringify() );
-
-			sb.append( "Tag ID   : " + this.tagID + linesep );
-			sb.append( "Tag Type : " + this.tagType + linesep );
-			sb.append( "Tag OID  : " + this.OID + linesep );
-
-			sb.append( "From obj : " + this.getTagEntity().toString() + linesep );
-
-			sb.append( "Entries  : " + keyval.size() + " " );
+			sb.append("Tag ID   : ").append(this.tagID).append(linesep);            
+			sb.append("Tag Type : ").append(this.tagType).append(linesep);            
+			sb.append("Tag OID  : ").append(this.OID).append(linesep);
+			sb.append("From obj : ").append(this.getTagEntity().toString()).append(linesep);
+			sb.append("Entries  : ").append(keyval.size()).append(" ");
 			Iterator<Entry<String, String>> it = keyval.entrySet().iterator();
 			while( it.hasNext() ) {
 				Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
-				sb.append( "(" + entry.getKey() + " = " + entry.getValue() + ")" );
+				sb.append("(").append(entry.getKey()).append(" = ").append(entry.getValue()).append(")");
 				if( it.hasNext() ) sb.append( ", " );
 			}
 		} catch( Exception e ) {

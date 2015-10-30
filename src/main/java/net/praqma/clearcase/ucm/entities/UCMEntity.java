@@ -7,15 +7,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.praqma.clearcase.ClearCase;
-import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
 import net.praqma.clearcase.api.Describe;
@@ -44,26 +41,18 @@ import net.praqma.util.execute.CmdResult;
  */
 public abstract class UCMEntity extends ClearCase implements Serializable {
 
-	transient private static Logger logger = Logger.getLogger( UCMEntity.class.getName() );
-
-	//protected static final String rx_ccdef_allowed = "[\\w\\.-]";
-        protected static final String rx_ccdef_allowed = "[.[^@:\\s]]";
+	private static final transient Logger logger = Logger.getLogger( UCMEntity.class.getName() );
+    protected static final String rx_ccdef_allowed = "[.[^@:\\s]]";
 	protected static final String rx_ccdef_vob = "[\\\\\\w\\./-]";
 	protected static final Pattern pattern_std_fqname = Pattern.compile( "^(\\w+):(" + rx_ccdef_allowed + "+)@(" + rx_ccdef_allowed + "+)$" );
-	/* TODO Make a better character class definition for files(Version) */
-	//private static final Pattern pattern_version_fqname = Pattern.compile( "^([\\S\\s\\\\\\/.^@]+)@@(" + rx_ccdef_vob + "+)$" );
 	protected static final Pattern pattern_version_fqname = Pattern.compile( "^(.+)@@(.+)$" );
 	protected static final String rx_ccdef_filename = "[\\S\\s\\\\\\/.^@]";
-	//private static final Pattern pattern_version_fqname = Pattern.compile( "^(" + rx_ccdef_filename + "+)@@(?:(" + rx_ccdef_filename + ")@@)?(" + rx_ccdef_vob + "+)$" );
-
 	protected static final Pattern pattern_tag_fqname = Pattern.compile( "^tag@(\\w+)@(" + rx_ccdef_vob + "+)$" );
 	private static final Pattern pattern_hlink = Pattern.compile( "^\\s*(" + rx_ccdef_allowed + "+@\\d+@" + rx_ccdef_allowed + "+)\\s*->\\s*\"*(.*?)\"*\\s*$" );
 	private static final Pattern pattern_hlink_type_missing = Pattern.compile( ".*Error: hyperlink type \"(.*?)\" not found in VOB \"(\\S+)\" .*" );
 	private static final String rx_entityNotFound = "cleartool: Error: \\w+ not found: \"\\S+\"\\.";
 
 	protected static final String rx_ccdef_cc_name = "[\\w\\.][\\w\\.-]*";
-
-	transient private static ClassLoader classloader = UCMEntity.class.getClassLoader();
 
 	private boolean created = false;
 
@@ -110,9 +99,10 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	/**
 	 * Generates a UCM entity given its fully qualified name.
 	 * 
+     * @param clazz The class of ClearCase object you want to git
+     * @param fqname The fully qualified ClearCase object name
 	 * @return A new entity of the type given by the fully qualified name.
-	 * @throws UnableToCreateEntityException
-	 * @throws UnableToInitializeEntityException
+	 * @throws UnableToInitializeEntityException Thrown when ClearCase reports errors 
 	 */
 	protected static UCMEntity getEntity( Class<? extends UCMEntity> clazz, String fqname ) throws UnableToInitializeEntityException {
 
@@ -138,10 +128,10 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	}
 
 	/**
-	 * Initialize the UCM entity. This is a base implementation, storing the
-	 * short name and pvob.
+	 * initialise the UCM entity. This is a base implementation, storing the
+	 * short name and {@link PVob}.
 	 * 
-	 * @throws UCMEntityNotInitializedException
+	 * @throws UCMEntityNotInitializedException Thrown when ClearCase reports errors 
 	 */
 	protected void initialize() throws UCMEntityNotInitializedException {
 		Matcher match = pattern_std_fqname.matcher( fqname );
@@ -157,14 +147,13 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	 * Default load functionality for the entity. Every UCM entity should
 	 * implement this method itself.
 	 * 
-	 * @return
+	 * @return The current {@link UCMEntity}
 	 * 
-	 * @throws UnableToLoadEntityException
-	 * @throws UCMEntityNotFoundException
-	 * @throws UnableToInitializeEntityException
+	 * @throws UnableToLoadEntityException Thrown when ClearCase reports errors 
+	 * @throws UCMEntityNotFoundException Thrown when ClearCase reports errors 
+	 * @throws UnableToInitializeEntityException Thrown when ClearCase reports errors 
 	 */
 	public UCMEntity load() throws UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
-		logger.fine( "Load method is not implemented for this Entity(" + this.fqname + ")" );
 		this.loaded = true;
 		return this;
 	}
@@ -207,13 +196,8 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 
 		throw new UnknownEntityException( fqname );
 	}
-
-	/* Syntactic static helper methods for retrieving entity objects */
-
-	/* Tag stuff */
-
-	public Tag getTag( String tagType, String tagID ) throws TagException, UnableToInitializeEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {
-		logger.fine( "Retrieving tags for " + tagType + ", " + tagID );
+    
+	public Tag getTag( String tagType, String tagID ) throws TagException, UnableToInitializeEntityException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException {		
 		return Tag.getTag( this, tagType, tagID, true );
 	}
 
@@ -253,7 +237,6 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	}
 
 	/* Getters */
-
 	public String getUser() {
 		if( user == null && !loaded ) {
 			try {
@@ -279,13 +262,13 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 		return this.fqname;
 	}
         
-        public String getFqname() {
-            return this.fqname;
-        }
-        
-        public void setFqname(String fqname) {
-            this.fqname = fqname;
-        }
+    public String getFqname() {
+        return this.fqname;
+    }
+
+    public void setFqname(String fqname) {
+        this.fqname = fqname;
+    }
 
 	public String getShortname() {
 		return this.shortname;
@@ -296,11 +279,10 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	}
 
 	public void setMastership( String mastership ) throws CleartoolException {
-		if( this.mastership != mastership ) {
+		if( !this.mastership.equals(mastership)) {
 			this.mastership = mastership;
 
 			String cmd = "chmaster replica:" + mastership + " " + fqname;
-
 			try {
 				Cleartool.run( cmd );
 			} catch( AbnormalProcessTerminationException e ) {
@@ -328,10 +310,10 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	 * @return A String
 	 */
 	public String stringify() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
-		sb.append( this.fqname + ":" + linesep );
-		sb.append( " * Shortname: " + this.shortname + linesep );
+		sb.append(this.fqname).append(":").append(linesep);
+		sb.append(" * Shortname: ").append(this.shortname).append(linesep);
 
 		return sb.toString();
 	}
@@ -354,6 +336,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	/**
 	 * @return A shorthand representation of the object.
 	 */
+    @Override
 	public String toString() {
 		return this.getFullyQualifiedName();
 	}
@@ -377,9 +360,7 @@ public abstract class UCMEntity extends ClearCase implements Serializable {
 	}
 
     public void loadDate() throws CleartoolException {
-
         String result = "";
-
         String cmd = "desc -fmt %Nd " + "\""+this + "\"";
         try {
             result = Cleartool.run( cmd ).stdoutBuffer.toString();
