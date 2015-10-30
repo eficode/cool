@@ -39,9 +39,9 @@ public class Deliver {
 
 	/**
 	 * 
-	 * @param baseline
-	 * @param stream
-	 * @param target
+	 * @param baseline The baseline to deliver
+	 * @param stream The stream which the baseline belings
+	 * @param target The target stream for the deliver
 	 * @param context - View context of the target view
 	 * @param viewtag - View tag of the target view
 	 */
@@ -67,17 +67,18 @@ public class Deliver {
     }
 
     /**
-     * @deprecated since 0.6.10
-     */
-	public boolean deliverForced( Stream stream, Stream target, File viewcontext, String viewtag ) throws DeliverException, CleartoolException {
-		return deliver( true, true, true, false );
-	}
-
-    /**
+     * @param force Force deliver
+     * @param complete Complete the deliver
+     * @param abort Abort
+     * @param resume Resume
+     * @return Boolean status indication of deliver complete
+     * @throws net.praqma.clearcase.exceptions.DeliverException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors 
      * @deprecated since 0.6.13 - Should it be?
      */
+    @Deprecated
 	public boolean deliver( boolean force, boolean complete, boolean abort, boolean resume ) throws DeliverException, CleartoolException {
-		logger.fine( "Delivering " + baseline + " from " + stream + " to " + target + " in " + context + " with tag " + viewtag );
+		logger.log(Level.FINE, "Delivering {0} from {1} to {2} in {3} with tag {4}", new Object[]{baseline, stream, target, context, viewtag});
 		try {
 			return _deliver( force, complete, abort, resume );
 		} catch( DeliverException e ) {

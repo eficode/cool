@@ -28,7 +28,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 	private static final String rx_stream_load = "\\s*Error: stream not found\\s*";
 
-	transient static private Logger logger = Logger.getLogger( Stream.class.getName() );
+	private static final transient Logger logger = Logger.getLogger( Stream.class.getName() );
 
     /**
      * The list of recommended {@link Baseline}s
@@ -86,7 +86,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	 *            The fully qualified name of the new Stream
 	 * @param readonly
 	 *            Whether the new Stream is read only or not
+     * @param baselines Initial configuration of baselines for the stream
 	 * @return A new Stream given the parameters
+     * @throws net.praqma.clearcase.exceptions.UnableToCreateEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when ClearCase reports errors 
 	 */
 	public static Stream create( StreamContainable parent, String nstream, boolean readonly, List<Baseline> baselines ) throws UnableToCreateEntityException, UnableToInitializeEntityException {
 		logger.fine( "Creating stream " + nstream + " as child of " + parent );
@@ -137,6 +140,14 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
     /**
      * Create an integration {@link Stream} in ClearCase
+     * @param name The name of the new integration stream
+     * @param project The project under which the stream is created
+     * @param baselines Initial configuration of baselines
+     * @return The created {@link Stream}
+     * @throws net.praqma.clearcase.exceptions.UnableToCreateEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.UCMEntityNotFoundException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.UnableToGetEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when ClearCase reports errors 
      */
 	public static Stream createIntegration( String name, Project project, List<Baseline> baselines ) throws UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToInitializeEntityException {
 		String cmd = "mkstream -integration -in " + project;
@@ -320,7 +331,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
     /**
      * Set the {@link Project} of the {@link Stream}
-     * @param project
+     * @param project The {@link Project}
      */
 	public void setProject( Project project ) {
 		this.project = project;
@@ -328,8 +339,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
     /**
      * Set the default target {@link Stream} in ClearCase
-     * @param stream
-     * @throws CleartoolException
+     * @param stream The {@link Stream}
+     * @throws CleartoolException Thrown when ClearCase reports errors 
      */
 	public void setDefaultTarget( Stream stream ) throws CleartoolException {
 		
@@ -344,9 +355,12 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	/**
-	 * For each project return their integration streams
-	 * 
-	 * @return
+	 * For each project return their integration streams	 
+	 * @return A list of {@link Stream}s
+     * @throws net.praqma.clearcase.exceptions.UnableToListProjectsException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.UnableToLoadEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.UCMEntityNotFoundException Thrown when ClearCase reports errors 
 	 */
 	public List<Stream> getSiblingStreams() throws UnableToListProjectsException, UnableToInitializeEntityException, UnableToLoadEntityException, UCMEntityNotFoundException {
 		logger.fine( "Getting sibling streams" );
@@ -369,12 +383,13 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
     
     /**
      * For JENKINS-26484 
-     * @param hyperLinkName
+     * @param hyperLinkName The name of the hyperlink
      * @return A list of streams 
-     * @throws UnableToListProjectsException
-     * @throws UnableToInitializeEntityException
-     * @throws UnableToLoadEntityException
-     * @throws UCMEntityNotFoundException 
+     * @throws UnableToListProjectsException Thrown when ClearCase cannot list projects
+     * @throws UnableToInitializeEntityException Thrown when ClearCase reports error
+     * @throws UnableToLoadEntityException Thrown when ClearCase reports error
+     * @throws UCMEntityNotFoundException Thrown when ClearCase reports error 
+     * @throws net.praqma.clearcase.exceptions.HyperlinkException Thrown when a ClearTool error occurs 
      */
     public List<Stream> getDeliveringStreamsUsingHlink(String hyperLinkName) throws UnableToListProjectsException, UnableToInitializeEntityException, UnableToLoadEntityException, UCMEntityNotFoundException, HyperlinkException {
 		logger.fine( String.format( "Getting delivering streams using hyperlink of type: %s", hyperLinkName) );
@@ -428,6 +443,9 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
     /**
      * Get the {@link Stream} delivering to this {@link Stream}. Null if no {@link Deliver} is in progress.
+     * @param isMultiSite Multisite
+     * @return The delivering {@link Stream}
+     * @throws net.praqma.clearcase.exceptions.ClearCaseException Thrown when ClearCase reports errors 
      */
     public Stream getDeliveringStream( boolean isMultiSite ) throws ClearCaseException {
         /* Heuristic: Typically a child stream delivering
@@ -446,10 +464,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
     }
 
     /**
-     * @param isMultiSite
-     * @param streams
-     * @return
-     * @throws ClearCaseException 
+     * @param isMultiSite Is multisite enabled?
+     * @param streams Streams
+     * @return The delivering {@link Stream}
+     * @throws ClearCaseException Thrown when ClearCase reports errors  
      */
     public Stream getDeliveringStream( boolean isMultiSite, List<Stream> streams ) throws ClearCaseException {
 
@@ -475,7 +493,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
     /**
      * Update the config spec of the {@link Stream}
-     * @throws CleartoolException
+     * @throws CleartoolException Thrown when ClearCase reports error
      */
 	public void generate() throws CleartoolException {
 		String cmd = "chstream -generate " + this;
@@ -517,6 +535,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
     /**
      * Recommend the {@link Baseline} for this {@link Stream} in ClearCase
+     * @param baseline The {@link Baseline} to recommend
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors 
      */
 	public void recommendBaseline( Baseline baseline ) throws CleartoolException {
 		String cmd = "chstream -recommend " + baseline + " " + this;
@@ -550,6 +570,10 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
     /**
      * Get the latest {@link Baseline} from this {@link Stream} and a {@link Component}.
+     * @param component The {@link Component}
+     * @return The latest {@link Baseline} under the given {@link Component}
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors 
      */
     public Baseline getLatestBaseline( Component component ) throws UnableToInitializeEntityException, CleartoolException {
         List<Baseline> baselines = getLatestBaselines();
@@ -622,7 +646,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
     /**
      * Remove this {@link Stream} from ClearCase
-     * @throws UnableToRemoveEntityException
+     * @throws UnableToRemoveEntityException Thrown when ClearCase reports errors 
      */
 	public void remove() throws UnableToRemoveEntityException {
 		String cmd = "rmstream -force " + this;
@@ -669,8 +693,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 	}
 
 	/**
-	 * Add a single foundation {@link Baseline} for this {@link Stream}
-	 * @param baseline
+	 * @param baseline The {@link Baseline} to use as foundation for this {@link Stream}
 	 */
 	public void setFoundationBaseline( Baseline baseline ) {
 		this.foundations.clear();
@@ -679,7 +702,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
     /**
      * Add a foundation {@link Baseline} for this {@link Stream}
-     * @param baseline
+     * @param baseline The {@link Baseline} to add as a foundation baselin to this {@link Stream}  
      */
 	public void addFoundationBaseline( Baseline baseline ) {
 		this.foundations.add( baseline );
@@ -687,6 +710,7 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
 	/**
 	 * Get the first foundation baseline. This is a method implemented to maintain backwards compatibility.
+     * @return The foundation {@link Baseline}
 	 */
 	public Baseline getFoundationBaseline() {
 		if( !loaded ) {
@@ -726,6 +750,8 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
     /**
      * Get the original mastership from ClearCase
+     * @return The original mastership
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors 
      */
 	public String getOriginalMastership() throws CleartoolException {
 		Matcher m = Pattern.compile( ".*Operation posted from replica \"(\\w*)\".*" ).matcher( Deliver.getStatus( this ) );
@@ -736,23 +762,23 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return this.getMastership();
 	}
 
+    @Override
 	public String stringify() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		try {
 			if( !this.loaded ) load();
 
 			if( this.recommendedBaselines != null ) {
-				sb.append( "Recommended baselines: " + this.recommendedBaselines.size() + linesep );
+				sb.append("Recommended baselines: ").append(this.recommendedBaselines.size()).append(linesep);
 				for( Baseline b : this.recommendedBaselines ) {
-					sb.append( "\t" + b.toString() + linesep );
+					sb.append("\t").append(b.toString()).append(linesep);
 				}
 			} else {
-				sb.append( "Recommended baselines: Undefined/not loaded" + linesep );
+				sb.append("Recommended baselines: Undefined/not loaded").append(linesep);
 			}
 		} catch( Exception e ) {
 
 		} finally {
-			//sb.append( super.stringify() );
 			sb.insert( 0, super.stringify() );
 		}
 

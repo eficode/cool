@@ -16,6 +16,7 @@ import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.interfaces.Diffable;
 import net.praqma.clearcase.ucm.entities.Project.PromotionLevel;
+import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import org.apache.commons.lang.StringUtils;
 
@@ -132,8 +133,8 @@ public class Baseline extends UCMEntity implements Diffable {
 	 * Load the Baseline into memory from ClearCase.<br>
 	 * This function is automatically called when needed by other functions.
 	 * 
-	 * @throws UnableToLoadEntityException
-	 * @throws UnableToInitializeEntityException 
+	 * @throws UnableToLoadEntityException Thrown when ClearCase reports errors 
+	 * @throws UnableToInitializeEntityException Thrown when ClearCase reports errors  
      * @return The baseline in question, with stream and component data
 	 */
     @Override
@@ -199,7 +200,17 @@ public class Baseline extends UCMEntity implements Diffable {
 	/**
 	 * Given a baseline basename, a component and a view, the baseline is
 	 * created.
+     * @param basename The base name for the new {@link Baseline}
+     * @param component The {@link Component} in which the baseline should be created    
+     * @param view Current {@link SnapshotView} view root.    
+     * @param labelBehaviour The {@link LabelBehaviour} to use.    
+     * @param identical Should we allow identical baselines to be created?   
+     * @param activities Activities
+     * @param depends Add {@link Component} dependencies
      * @return Created baselines with the given arguments
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.UnableToCreateEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.NothingNewException Thrown when ClearCase reports errors 
 	 */
 	public static Baseline create( String basename, Component component, File view, LabelBehaviour labelBehaviour, boolean identical, List<Activity> activities, List<Component> depends ) throws UnableToInitializeEntityException, UnableToCreateEntityException, NothingNewException {
 		/* Remove prefixed baseline: */
@@ -246,8 +257,7 @@ public class Baseline extends UCMEntity implements Diffable {
             logger.fine(out);
 
 			created = out.matches( "(?s).*Created baseline \".*?\" in component \".*?\".*" ); // Created baseline
-           
-            //If component is unspecified...we must look for a particular name
+
             if(component != null) {
                 try {
                     Pattern p = Pattern.compile("^Created baseline \"(.*)\" in component \""+component.getShortname()+"\".$", Pattern.MULTILINE);
@@ -275,40 +285,19 @@ public class Baseline extends UCMEntity implements Diffable {
 
     public PromotionLevel getPromotionLevel() {
         autoLoad();
-
         return plevel;
     }
-
-    //TODO: This method should be refactored. The parameter is redundant, as we use the same method regardless.
-	/**
-	 * Return the promotion level of a baseline. <br>
-	 * If <code>cached</code> is not set, the promotion level is loaded from
-	 * ClearCase.
-	 * @param cached
-	 *            Whether to use the cached promotion level or not
-	 * @return The promotion level of the Baseline
-	 */   
-	public Project.PromotionLevel getPromotionLevel( boolean cached ) {
-		if( cached ) {
-			return getPromotionLevel();
-		} else {
-            //String cmd = "desc -fmt %[plevel]p " + this;
-			return getPromotionLevel();
-		}
-	}
-
+    
 	/**
 	 * Promote the Baseline.
 	 * <ul>
-	 * <li><code>INITIAL -> BUILT</code></li>
-	 * <li><code>BUILD&nbsp;&nbsp; -> TESTED</code></li>
-	 * <li><code>TESTED&nbsp; -> RELEASED</code></li>
+	 * <li>INITIAL to BUILT</li>
+	 * <li>BUILD to TESTED</li>
+	 * <li>TESTED to RELEASED</li>
 	 * </ul>
-	 * 
 	 * If the promotion level is not set, it is set to <code>INITAL</code>.
-	 * 
 	 * @return The new promotion level.
-	 * @throws UnableToPromoteBaselineException
+	 * @throws UnableToPromoteBaselineException Thrown when ClearCase reports errors 
 	 */
 	public Project.PromotionLevel promote() throws UnableToPromoteBaselineException {
         try {
@@ -329,8 +318,8 @@ public class Baseline extends UCMEntity implements Diffable {
 
 	/**
 	 * <code>REJECTED</code> the Baseline.
-     * @return 
-     * @throws net.praqma.clearcase.exceptions.UnableToPromoteBaselineException
+     * @return The rejected {@link PromotionLevel} 
+     * @throws net.praqma.clearcase.exceptions.UnableToPromoteBaselineException Thrown when ClearCase reports errors 
 	 */
 	public Project.PromotionLevel reject() throws UnableToPromoteBaselineException {
 		if( !loaded ) {
@@ -349,8 +338,8 @@ public class Baseline extends UCMEntity implements Diffable {
 
     /**
      * Set the {@link PromotionLevel}
-     * @param plevel
-     * @throws net.praqma.clearcase.exceptions.UnableToPromoteBaselineException
+     * @param plevel The new {@link PromotionLevel}
+     * @throws net.praqma.clearcase.exceptions.UnableToPromoteBaselineException Thrown when ClearCase reports errors 
      */
 	public void setPromotionLevel( Project.PromotionLevel plevel ) throws UnableToPromoteBaselineException {
 		String cmd = "chbl -level " + plevel + " " + this;
@@ -365,7 +354,7 @@ public class Baseline extends UCMEntity implements Diffable {
 
     /**
      * Set the {@link PromotionLevel} of this {@link Baseline}, without persisting it in ClearCase.
-     * @param plevel
+     * @param plevel Set the new promotion level
      */
     public void setLocalPromotionLevel( Project.PromotionLevel plevel ) {
         this.plevel = plevel;
@@ -386,17 +375,14 @@ public class Baseline extends UCMEntity implements Diffable {
     /**
      * Get the {@link List} of {@link Baseline}'s, that depends on this {@link Baseline}.
      * @return A list of dependant baselines
-     * @throws net.praqma.clearcase.exceptions.CleartoolException
-     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when ClearCase reports errors 
      */
     public List<Baseline> getDependent() throws CleartoolException, UnableToInitializeEntityException {
-        logger.fine( "Finding dependent baselines for " + this.getNormalizedName() );
-
         String[] ds = new net.praqma.clearcase.Describe( this ).dependentsOn().describe().get( "depends_on" );
         
         List<Baseline> baselines = new ArrayList<Baseline>( ds.length );
         for( String bl : ds ) {
-            //For JENKINS-26623
             if(!StringUtils.isBlank(bl)) {
                 baselines.add( Baseline.get( bl ) );
             }
@@ -418,10 +404,7 @@ public class Baseline extends UCMEntity implements Diffable {
 	}
 	
 	public boolean shouldResetMastership() throws ClearCaseException {
-		if( !getMastership().equals( this.getStream().getOriginalMastership() ) ) {
-			return true;
-		}
-		return false;
+		return !getMastership().equals( this.getStream().getOriginalMastership() );
 	}
 
 	public void resetMastership() throws ClearCaseException {
@@ -438,17 +421,17 @@ public class Baseline extends UCMEntity implements Diffable {
 			}
 		}
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		try {
 			if( !this.loaded ) {
                 load();
             }
 
-			sb.append( " * Level    : " + this.plevel + linesep );
-			sb.append( " * Component: " + this.component.toString() + linesep );
-			sb.append( " * Stream   : " + this.stream.toString() + linesep );
-			sb.append( " * Date     : " + this.date.toString() + linesep );
+			sb.append(" * Level    : ").append(this.plevel).append(linesep);
+			sb.append(" * Component: ").append(this.component.toString()).append(linesep);
+			sb.append(" * Stream   : ").append(this.stream.toString()).append(linesep);
+			sb.append(" * Date     : ").append(this.date.toString()).append(linesep);
 
 		} catch( Exception e ) {
 
@@ -494,17 +477,24 @@ public class Baseline extends UCMEntity implements Diffable {
     /**
      * Get all the composite {@link Baseline}s that are members of this {@link Baseline}.
      * That is, {@link Baseline}s that are descendants of this.
+     * @return A list of composite member {@link Baseline}s  
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when ClearCase reports errors   
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors   
      */
     public List<Baseline> getCompositeMemberBaselines() throws UnableToInitializeEntityException, CleartoolException {
         return getCompositeMemberBaselines( null );
     }
 
     /**
-     * Get all the composite {@link Baseline}s that are members of this {@link Baseline} given a specific {@link Component}. <br />
-     * That is, {@link Baseline}s that are descendants of this.
+     * <p>Get all the composite {@link Baseline}s that are members of this {@link Baseline} given a specific {@link Component}.</p>
+     * <p>That is, {@link Baseline}s that are descendants of this.</p>
+     * @param component A list of components to consider
+     * @return A list of composite member {@link Baseline}s
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors 
      */
     public List<Baseline> getCompositeMemberBaselines( Component component ) throws UnableToInitializeEntityException, CleartoolException {
-		logger.fine( "Getting composite member baselines for " + this + ( component != null ? " and " + component : "" ) );
+		logger.log(Level.FINE, "Getting composite member baselines for {0}{1}", new Object[]{this, component != null ? " and " + component : ""});
 
         Map<String, String[]> bls_str = new Describe( this ).addModifier( Describe.memberOfClosure ).describe();
 
@@ -526,14 +516,21 @@ public class Baseline extends UCMEntity implements Diffable {
     /**
      * Get all the composite {@link Baseline}s that are dependant on this {@link Baseline}.
      * That is, {@link Baseline}s that are ancestors of this.
+     * @return A list of composite baselines that depend on this {@link Baseline}
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when a ClearTool error occurs
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when a ClearTool error occurs
      */
     public List<Baseline> getCompositeDependantBaselines() throws UnableToInitializeEntityException, CleartoolException {
         return getCompositeDependantBaselines( null );
     }
 
     /**
-     * Get all the composite {@link Baseline}s that are dependant on this {@link Baseline} given a specific {@link Component}. <br />
-     * That is, {@link Baseline}s that are ancestors of this.
+     * <p>Get all the composite {@link Baseline}s that are dependant on this {@link Baseline} given a specific {@link Component}.
+     * That is, {@link Baseline}s that are ancestors of this.</p>
+     * @param component The {@link Component} to look under
+     * @return A list of {@link Baseline}s
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors 
      */
     public List<Baseline> getCompositeDependantBaselines( Component component ) throws UnableToInitializeEntityException, CleartoolException {
         logger.fine( "Getting composite dependant baselines for " + this + ( component != null ? " and " + component : "" ) );
@@ -543,7 +540,7 @@ public class Baseline extends UCMEntity implements Diffable {
         List<Baseline> bls = new ArrayList<Baseline>();
 
         for( String bl : bls_str.get( "depends_on_closure" ) ) {
-            logger.fine( "Baseline " + bl );
+            logger.log(Level.FINE, "Baseline {0}", bl);
             if(!StringUtils.isBlank(bl)) {
                 Baseline b = Baseline.get( bl );
                 if( component == null || b.getComponent().equals( component ) ) {
@@ -557,6 +554,9 @@ public class Baseline extends UCMEntity implements Diffable {
 
     /**
      * Get the rooted version of this {@link Baseline}. Returns null if none found.
+     * @return The first rooted baseline
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown when ClearCase reports errors 
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown when ClearCase reports errors 
      */
     public Baseline getRootedBaseline() throws UnableToInitializeEntityException, CleartoolException {
         List<Baseline> baselines = getCompositeDependantBaselines();

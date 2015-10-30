@@ -28,6 +28,8 @@ public class Branch extends Type {
 
     /**
      * Get the name of the {@link Branch} from a branch path.
+     * @param branchPath The relative path to the branch
+     * @return The branch name
      */
     public static String getBranchName( String branchPath ) {
         String[] bs = branchPath.split( Cool.qfs );

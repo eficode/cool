@@ -10,17 +10,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
- * Base implementation of a ClearCase api command.
- *
+ * <p>Base implementation of a ClearCase api command.</p>
  * @author cwolfgang
+ * @param <RT> The type of command to execute. Example is {@link Describe}
  */
 public abstract class Command<RT extends Object> {
 
-    /**
-     * The {@link File} path to where this command is executed.<br />
-     * To change the path, it must be done in the actual implementation.
-     */
     protected File root;
 
     protected CmdResult runCommand() throws CleartoolException {

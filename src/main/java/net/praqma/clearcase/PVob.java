@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,10 +22,7 @@ import org.apache.commons.lang.SystemUtils;
 public class PVob extends Vob {
 	
 	private static final Logger logger = Logger.getLogger( PVob.class.getName() );
-
-	private String localPath;
-	private String globalPath;
-	
+    
 	public PVob( String name ) {
 		super( name );
 
@@ -64,7 +62,7 @@ public class PVob extends Vob {
         List<String> lines = null;
         try {
             lines = Cleartool.run( cmd ).stdoutList;
-            logger.finest( "Output: " + lines );
+            logger.log(Level.FINEST, "Output: {0}", lines);
         } catch( Exception e ) {
             throw new CleartoolException( "Unable to list views", e );
         }
@@ -86,8 +84,6 @@ public class PVob extends Vob {
 		} catch( Exception e ) {
 			throw new CleartoolException( "Unable to list views", e );
 		}
-		
-		logger.finest( "OUT IS: " + lines );
 		
 		Set<UCMView> views = new HashSet<UCMView>();
 		
@@ -127,8 +123,6 @@ public class PVob extends Vob {
 		
 		Set<Vob> vobs = new HashSet<Vob>();
 		
-		logger.fine( "OUT IS: " + list );
-		
 		for( String l : list ) {
 			if( !l.matches( "^\\s*$" ) ) {
 				Matcher m = rx_find_component.matcher( l );
@@ -147,9 +141,6 @@ public class PVob extends Vob {
 				}
 			}
 		}
-		
-		logger.fine( "Vobs: " + vobs );
-		
 		return vobs;
 	}
 

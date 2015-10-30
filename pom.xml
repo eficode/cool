@@ -4,7 +4,7 @@
     <parent>
         <groupId>net.praqma</groupId>
         <artifactId>praqma-parent</artifactId>
-        <version>0.1.3</version>
+        <version>0.1.7</version>
     </parent>
 	
     <artifactId>cool</artifactId>
@@ -30,7 +30,6 @@
             <id>praqma-repo</id>
             <url>http://code.praqma.net/repo/maven/</url>
         </repository>
-
     </repositories>
 
     <profiles>

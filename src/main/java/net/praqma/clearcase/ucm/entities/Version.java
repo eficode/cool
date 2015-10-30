@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,10 +37,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	private static final Pattern rx_versionName = Pattern.compile( "^(\\S+)\\s+([\\S\\s.^@]+@@.*)$" );
 	
 	private transient static final Logger logger = Logger.getLogger( Version.class.getName() );
-
-	private String machine = null;
-	private boolean checkedout = false;
-	private String comment = null;
 
     /**
      * This is actually not the exact branch, but the string of branches separated by slashes.
@@ -189,6 +186,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
     /**
      * Get the qualified filename, without any branch and version syntax.
+     * @return Fully qualified file name
      */
     public String getQualifiedFilename() {
         return qualifiedFilename;
@@ -230,7 +228,15 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	}
 
     /**
-     * Given a file({@link File}) and a viewroot({@link File}) return the {@link Version} from ClearCase
+     * Given a file({@link File}) and a view root({@link File}) return the {@link Version} from ClearCase
+     * @param file The file to get the version from
+     * @param viewroot The view root
+     * @return An unextended {@link Version}
+     * @throws java.io.IOException Thrown on file/io errors 
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown on ClearCase error 
+     * @throws net.praqma.clearcase.exceptions.UnableToLoadEntityException Thrown on ClearCase error 
+     * @throws net.praqma.clearcase.exceptions.UCMEntityNotFoundException Thrown on ClearCase error 
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown on ClearCase error 
      */
 	public static Version getUnextendedVersion( File file, File viewroot ) throws IOException, CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
 
@@ -260,7 +266,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
     /**
      * Get the fully qualified branch name.
-     * @return 
+     * @return Fully qualified branch name 
      */
 	public String getBranch() {
 		return branch;
@@ -288,9 +294,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 			} else if( list[3].equals( "directory version" ) ) {
 				setKind( Kind.DIRECTORY_ELEMENT );
 			}
-
-            //activity = getActivity( this );
-
 		} catch( Exception e ) {
 			throw new UnableToLoadEntityException( this, e );
 		}
@@ -303,13 +306,17 @@ public class Version extends UCMEntity implements Comparable<Version> {
     /**
      * Get the {@link Activity} for a {@link Version}.
      * In base ClearCase the {@link Activity} object does not exist, it must therefore be allowed to return null. See FB case 9988.
+     * @param version Version
+     * @return An {@link Activity}
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown on ClearCase error 
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown on ClearCase error 
      */
     public static Activity getActivity( Version version ) throws CleartoolException, UnableToInitializeEntityException {
         String activityName = new Describe( version ).addModifier( Describe.activity ).doAcceptEmpty().executeGetFirstLine();
         if( activityName != null ) {
             return Activity.get( activityName );
         } else {
-            logger.fine( "No activities for " + version );
+            logger.log(Level.FINE, "No activities for {0}", version);
             return null;
         }
     }
@@ -323,12 +330,9 @@ public class Version extends UCMEntity implements Comparable<Version> {
     }
 	
 	public static Version create( File file, boolean mkdir, SnapshotView view ) throws CleartoolException, IOException, UnableToCreateEntityException, UCMEntityNotFoundException, UnableToGetEntityException, UnableToLoadEntityException, UnableToInitializeEntityException {
-
-		Version.addToSourceControl( file, mkdir, view.getViewRoot() );
-		
+		Version.addToSourceControl( file, mkdir, view.getViewRoot() );		
 		Version version = Version.getUnextendedVersion( file, view.getViewRoot() );
-		version.setView( view );
-		
+		version.setView( view );	
 		return version;
 	}
 	
@@ -336,26 +340,26 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	 * Create a ClearCase element from a File, that will be checked in
 	 * @param file - The relative file
 	 * @param viewContext - The view root
-	 * @return
-	 * @throws ClearCaseException
-	 * @throws IOException
+	 * @return The created {@link Version}
+	 * @throws ClearCaseException Thrown on ClearCase error 
+	 * @throws IOException Thrown when the file does not exits, cannot be created or other non-clearcase related error
 	 */
 	public static Version create( File file, File viewContext ) throws ClearCaseException, IOException {
-
 		Version.addToSourceControl( file, viewContext, null, true );
-		
 		Version version = Version.getUnextendedVersion( file, viewContext );
-		version.setView( viewContext );
-		
+		version.setView( viewContext );		
 		return version;
 	}
 
     /**
      * Make an element in ClearCase
+     * @param file File
+     * @param view Current view
+     * @param comment Comment
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown on ClearCase error 
      */
 	public static void makeElement( File file, File view, String comment ) throws CleartoolException {
-		String cmd = "mkelem " + ( comment != null ? "-c \"" + comment + "\" " : "" ) + file;
-		
+		String cmd = "mkelem " + ( comment != null ? "-c \"" + comment + "\" " : "" ) + file;		
 		try {
 			Cleartool.run( cmd, view );
 		} catch( Exception e ) {
@@ -365,6 +369,10 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
     /**
      * Make a directory in ClearCase
+     * @param directory The directory to make
+     * @param view The current view
+     * @param comment Comment
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown on ClearCase error 
      */
 	public static void makeDirectory( File directory, File view, String comment ) throws CleartoolException {
 		String cmd = "mkdir " + ( comment != null ? "-c \"" + comment + "\" " : "" ) + directory;
@@ -378,6 +386,11 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	
 	/**
 	 * Add a {@link File} in ClearCase
+     * @param file File
+     * @param viewContext Current view
+     * @param comment Check in comment
+     * @param checkIn Check in new element
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown on ClearCase error 
 	 */
 	public static void addToSourceControl( File file, File viewContext, String comment, boolean checkIn ) throws CleartoolException {
 		String cmd = "mkelem -mkpath ";
@@ -501,6 +514,9 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
     /**
      * Remove a {@link Version} in ClearCase
+     * @param file The file to remove a version from
+     * @param viewContext Current working view
+     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown on ClearCase error 
      */
 	public static void removeVersion( File file, File viewContext ) throws CleartoolException {
 		/* First checkout directory */
@@ -536,11 +552,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		/* Firstly, checkout directory */
 		try {
 			checkOut( file.getParentFile(), context );
-		} catch( CleartoolException e ) {
-			/*
-			 * The file is probably already checked out, let's try to continue
-			 */
-		}
+		} catch( CleartoolException e ) { }
 
 		try {
 			uncheckout( file, false, context );
@@ -708,7 +720,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	 * @param element The File to be checked
 	 * @param viewContext The view context as a File path
 	 * @return True if the File element is under source control
-	 * @throws CleartoolException 
+	 * @throws CleartoolException Thrown on ClearCase error 
 	 */
 	public static boolean isUnderSourceControl( File element, File viewContext ) throws CleartoolException {
 		String cmd = "describe " + element;
@@ -730,7 +742,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	 * @param element The File to be checked
 	 * @param viewContext The view context as a File path
 	 * @return True if the File element is checked out
-	 * @throws CleartoolException 
+	 * @throws CleartoolException Thrown on ClearCase error 
 	 */
 	public static boolean isCheckedout( File element, File viewContext ) throws CleartoolException {
 		String cmd = "describe -s " + element;
@@ -789,34 +801,29 @@ public class Version extends UCMEntity implements Comparable<Version> {
 
 		net.praqma.clearcase.changeset.ChangeSet2 changeset = new ChangeSet2( viewContext );
 
-		for( int i = 0; i < lines.size(); i++ ) {
-			Matcher m = rx_versionName.matcher( lines.get( i ) );
-			if( m.find() ) {
-
-				String f = m.group( 2 ).trim();
-
-				logger.finer( "F: " + f );
-
-				Version version = (Version) UCMEntity.getEntity( Version.class, m.group( 2 ).trim() );
-
-				changeset.addVersion( version );
-			}
-		}
+        for (String line : lines) {
+            Matcher m = rx_versionName.matcher(line);
+            if( m.find() ) {                
+                String f = m.group( 2 ).trim();                
+                Version version = (Version) UCMEntity.getEntity( Version.class, m.group( 2 ).trim() );                
+                changeset.addVersion( version );
+            }
+        }
 
 		return changeset;
 	}
 	
     /**
      * ONLY USED IN TEST
-     * @param d1
-     * @param d2
-     * @param merge
-     * @param viewContext
-     * @return
-     * @throws CleartoolException
-     * @throws UnableToLoadEntityException
-     * @throws UCMEntityNotFoundException
-     * @throws UnableToInitializeEntityException 
+     * @param d1 d1
+     * @param d2 d2
+     * @param merge merge
+     * @param viewContext viewContext
+     * @return list of activity
+     * @throws CleartoolException Thrown on ClearCase error 
+     * @throws UnableToLoadEntityException Thrown on ClearCase error 
+     * @throws UCMEntityNotFoundException Thrown on ClearCase error 
+     * @throws UnableToInitializeEntityException Thrown on ClearCase error  
      */
 	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext ) throws CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {
 		return getBaselineDiff( d1, d2, merge, viewContext, true );
@@ -825,16 +832,16 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	/**
      * ONLY USED IN TEST
 	 * Activity based baseline diff method
-	 * @param d1
-	 * @param d2
-	 * @param merge
-	 * @param viewContext
-	 * @param versions
-	 * @return
-	 * @throws CleartoolException
-	 * @throws UnableToLoadEntityException
-	 * @throws UCMEntityNotFoundException
-	 * @throws UnableToInitializeEntityException
+	 * @param d1 d1
+	 * @param d2 d2
+	 * @param merge merge
+	 * @param viewContext viewContext
+	 * @param versions version 
+	 * @return List of activities
+	 * @throws CleartoolException Thrown on ClearCase error 
+	 * @throws UnableToLoadEntityException Thrown on ClearCase error 
+	 * @throws UCMEntityNotFoundException Thrown on ClearCase error 
+	 * @throws UnableToInitializeEntityException Thrown on ClearCase error 
 	 */
 	public static List<Activity> getBaselineDiff( Diffable d1, Diffable d2, boolean merge, File viewContext, boolean versions ) throws CleartoolException, UnableToLoadEntityException, UCMEntityNotFoundException, UnableToInitializeEntityException {        
 		String cmd = "diffbl " + ( versions ? "-versions " : "" ) + " -activities " + ( !merge ? "-nmerge " : "" ) + ( d2 == null ? "-pre " : "" ) + d1.getFullyQualifiedName() + ( d2 != null ? " " + d2.getFullyQualifiedName() : "" );
@@ -846,8 +853,6 @@ public class Version extends UCMEntity implements Comparable<Version> {
 		} catch( AbnormalProcessTerminationException e ) {
 			throw new CleartoolException( "Could not get difference between " + d1 + " and " + d2 + ": " + e.getMessage(), e );
 		}
-		
-		logger.finest( "LINES: " + lines );
 		
 		return Activity.parseActivityStrings( lines, viewContext );
 	}
@@ -874,7 +879,7 @@ public class Version extends UCMEntity implements Comparable<Version> {
 	public static void printCheckouts( File viewContext ) {
 		try {
 			CmdResult result = Cleartool.run( "lsco -r", viewContext );
-			logger.finer( "RESULT\\n" + result.stdoutBuffer );
+			logger.log(Level.FINER, "RESULT\\n{0}", result.stdoutBuffer);
 		} catch( Exception ex ) {
 			logger.warning( ex.getMessage() );
 		}

@@ -31,7 +31,7 @@ import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.structure.Tuple;
 
 public class BuildNumber extends Cool {
-	transient private static Logger logger = Logger.getLogger( BuildNumber.class.getName()  );
+	private static final transient Logger logger = Logger.getLogger( BuildNumber.class.getName()  );
 	
 	private final static String rx_buildnumber = "\\S+__(\\d+)_(\\d+)_(\\d+)_(\\d+)";
 	private final static Pattern pattern_buildnumber = Pattern.compile( "^" + rx_buildnumber + "$" );
@@ -83,8 +83,8 @@ public class BuildNumber extends Cool {
 
 	public static int stampFromComponent( Component component, File dir, String major, String minor, String patch, String sequence, boolean ignoreErrors ) throws HyperlinkException, UnableToInitializeEntityException, BuildNumberException, IOException {
 		List<HyperLink> result = component.getHyperlinks( __BUILD_NUMBER_FILE, dir );
-
-		if( result.size() == 0 ) {
+        
+		if( result.isEmpty() ) {
 			throw new BuildNumberException( "No build number file references found.", Type.ZERO_MATCHES );
 		}
 
@@ -93,14 +93,7 @@ public class BuildNumber extends Cool {
 		for( HyperLink h : result ) {
 			String f = h.getValue().replaceFirst( "@@\\s*$", "" );
 			File stampee = new File( f );
-			//try {
-				number += BuildNumber.stampIntoCode( stampee, major, minor, patch, sequence );
-				/*
-			} catch ( Exception e) {
-				if( !ignoreErrors ) {
-					//throw e;
-				}
-			}*/
+            number += BuildNumber.stampIntoCode( stampee, major, minor, patch, sequence );
 		}
 
 		return number;
@@ -113,18 +106,12 @@ public class BuildNumber extends Cool {
 	public static int stampIntoCode( Baseline baseline, File dir ) throws BuildNumberException, HyperlinkException, UnableToInitializeEntityException, IOException {
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.getComponent();
-
-		logger.fine( "I got " + component.getFullyQualifiedName() );
-
 		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], false );
 	}
 
 	public static int stampIntoCode( Baseline baseline, File dir, boolean ignoreErrors ) throws BuildNumberException, HyperlinkException, UnableToInitializeEntityException, IOException  {
 		String[] numbers = isBuildNumber( baseline );
 		Component component = baseline.getComponent();
-
-		logger.fine( "I got " + component.getFullyQualifiedName() );
-
 		return stampFromComponent( component, dir, numbers[0], numbers[1], numbers[2], numbers[3], ignoreErrors );
 	}
 
@@ -176,15 +163,11 @@ public class BuildNumber extends Cool {
 	 * @param project
 	 *            A UCM Project
 	 * @return Integer
-	 * @throws UnableToInitializeEntityException 
-	 * @throws UnableToSetAttributeException 
-	 * @throws BuildNumberException 
-	 * @throws UnableToListAttributesException 
-	 * @throws UCMEntityNotFoundException 
-	 * @throws UnableToCreateEntityException 
-	 * @throws UnableToLoadEntityException 
-	 * @throws NoSingleTopComponentException 
-	 * @throws UnableToGetEntityException
+	 * @throws UnableToInitializeEntityException Thrown when ClearCase reports errors 
+	 * @throws UnableToSetAttributeException Thrown when ClearCase reports errors 
+	 * @throws BuildNumberException Thrown when ClearCase reports errors   
+	 * @throws UnableToListAttributesException Thrown when ClearCase reports errors 
+	 * @throws NoSingleTopComponentException Thrown when ClearCase reports errors 
 	 */
 	public static Integer getNextBuildSequence( Project project ) throws NoSingleTopComponentException, UnableToInitializeEntityException, UnableToListAttributesException, BuildNumberException, UnableToSetAttributeException {
 		Component c = project.getIntegrationStream().getSingleTopComponent();
@@ -216,6 +199,9 @@ public class BuildNumber extends Cool {
 	 * @param project
 	 *            The UCM project to verify
 	 * @return A flag determining the attributes present
+     * @throws net.praqma.clearcase.exceptions.NoSingleTopComponentException Thrown error
+     * @throws net.praqma.clearcase.exceptions.UnableToInitializeEntityException Thrown error
+     * @throws net.praqma.clearcase.exceptions.UnableToListAttributesException Thrown error
 	 */
 	public static int isValidUCMBuildNumber( Project project ) throws NoSingleTopComponentException, UnableToInitializeEntityException, UnableToListAttributesException {
 		int valid = 0;
@@ -246,12 +232,13 @@ public class BuildNumber extends Cool {
 	/**
 	 * This method returns the new build number for a Baseline.
 	 * 
+     * @param project The project to get the build number from
 	 * @return String
-	 * @throws UnableToListAttributesException 
-	 * @throws BuildNumberException 
-	 * @throws UnableToSetAttributeException 
-	 * @throws UnableToInitializeEntityException 
-	 * @throws NoSingleTopComponentException 
+	 * @throws UnableToListAttributesException Error
+	 * @throws BuildNumberException Error 
+	 * @throws UnableToSetAttributeException Error 
+	 * @throws UnableToInitializeEntityException Error 
+	 * @throws NoSingleTopComponentException Error 
 	 */
 	public static String getBuildNumber( Project project ) throws UnableToListAttributesException, BuildNumberException, NoSingleTopComponentException, UnableToInitializeEntityException, UnableToSetAttributeException {
 		String exceptionMsg = "";

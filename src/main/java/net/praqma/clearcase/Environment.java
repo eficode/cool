@@ -15,7 +15,7 @@ import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
 public class Environment {
 
-    private static Logger logger = Logger.getLogger( Environment.class.getName() );
+    private static final Logger logger = Logger.getLogger( Environment.class.getName() );
 
 	/**
 	 * This variable is null until bootStrap is called.
@@ -49,12 +49,10 @@ public class Environment {
 	}
 	
 	public void bootStrap( File file ) throws Exception {
-		logger.info( "Bootstrapping from " + file + ( file.exists() ? "" : ", which does not exist!?" ) );
 		try {
 			EnvironmentParser parser = new EnvironmentParser( file );
 			context = parser.parse( variables );
             logger.fine( context.toString() );
-			logger.info( "CONTEXT PVOBS: " + context.pvobs );
 			if( context.pvobs.size() > 0 ) {
 
 				/* There should be only one pvob defined, get it */
@@ -70,8 +68,7 @@ public class Environment {
 				throw new ClearCaseException( "No PVob available" );
 			}
 		} catch( Exception ex ) {
-			// this. and classname not callable
-			logger.info( "net.praqma.clearcase.test.junit.CoolTestCase.java:" + " caught exception: " + ex );
+            logger.log(Level.SEVERE, "Bootstrap error log the entire error", ex);
 			throw ex;
 		}
 	}
@@ -92,13 +89,7 @@ public class Environment {
 	public void addNewElement( Component component, File viewpath, String filename ) throws ClearCaseException {
         File compFile = new File( viewpath, component.getShortname() );
 		File file = new File( compFile, filename );
-		
-		logger.fine( "FILE IS " + viewpath );
-		logger.fine( "FILE IS " + component );
-		logger.fine( "FILE IS " + filename );
-		logger.fine( "FILE IS " + file );
-		
-        //If this is a  new element in source control. Add it.
+
 		if( !file.exists() ) {
 			try {
 				file.createNewFile();

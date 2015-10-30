@@ -32,14 +32,14 @@ public abstract class AbstractTask {
 	private static final Pattern rx_variable = Pattern.compile( "(\\$\\{(.*?)\\})" );
 	
 	/**
-	 * Get the tag of an element. Either tag, wintag or linuxtag must be provided or else null is returned.<br/>
-	 * wintag and tag are aliases. wintag is preferred. tag is typically used without prepended backward slash.
+	 * <p>Get the tag of an element. Either tag, wintag or linuxtag must be provided or else null is returned.</p>
+	 * <p>Wintag and tag are aliases. wintag is preferred. tag is typically used without prepended backward slash.</p>
 	 * @param e - Element tag
 	 * @param context - The context
 	 * @return The tag given the OS context or null
 	 */
 	public String getTag( Element e, Context context ) {
-		String tag = getValue( "tag", e, context, null ); /* Same as wintag */
+		String tag = getValue( "tag", e, context, null ); 
 		String wintag = getValue( "wintag", e, context, null );
 		String lintag = getValue( "linuxtag", e, context, null );
 		
@@ -62,6 +62,11 @@ public abstract class AbstractTask {
 
     /**
      * Get the attribute "name" for the given {@link Element} in the given {@link Context}. If not found def is returned.
+     * @param name The name
+     * @param e The element
+     * @param context The context
+     * @param def Default
+     * @return A string with the specified value
      */
 	public String getValue( String name, Element e, Context context, String def ) {
 		String value = e.getAttribute( name );

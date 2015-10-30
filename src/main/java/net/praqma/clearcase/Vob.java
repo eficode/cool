@@ -3,6 +3,7 @@ package net.praqma.clearcase;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +31,7 @@ public class Vob extends ClearCase implements Serializable {
 
 	public static final Pattern rx_vob_get_path = Pattern.compile( "^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$" );
 
-	transient private static Logger logger = Logger.getLogger( Vob.class.getName() );
+	private static final transient Logger logger = Logger.getLogger( Vob.class.getName() );
 
 	protected String name;
 
@@ -50,8 +51,6 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public void load() throws CleartoolException {
-		logger.fine( "Loading vob " + this );
-
 		String cmd = "describe vob:" + this;
 
 		try {
@@ -147,6 +146,7 @@ public class Vob extends ClearCase implements Serializable {
 		return this.projectVob;
 	}
 
+    @Override
 	public String toString() {
 		return name;
 	}
@@ -160,8 +160,6 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public static Vob create( String name, boolean UCMProject, String path, String comment ) throws CleartoolException, EntityAlreadyExistsException {
-		logger.fine( "Creating vob " + name );
-
 		String cmd = "mkvob -tag " + name + ( UCMProject ? " -ucmproject" : "" ) + ( comment != null ? " -c \"" + comment + "\"" : " -nc" ) + " -stgloc " + ( path != null ? path : "-auto" );
 
 		try {
@@ -202,13 +200,11 @@ public class Vob extends ClearCase implements Serializable {
 	}
 
 	public static boolean isVob( File context ) {
-		logger.fine( "Testing " + context );
-
 		String cmd = "lsvob " + Cool.filesep + context.getName();
 		try {
 			Cleartool.run( cmd );
 		} catch( Exception e ) {
-			logger.fine( "E=" + e.getMessage() );
+			logger.log(Level.FINE, "Error in isVob", e);
 			return false;
 		}
 

@@ -13,7 +13,7 @@ import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
 public class UpdateView {
-	private static Logger logger = Logger.getLogger( UpdateView.class.getName() );
+	private static final Logger logger = Logger.getLogger( UpdateView.class.getName() );
 	
 	public static void main( String[] args ) throws ClearCaseException, IOException {
 		try {
