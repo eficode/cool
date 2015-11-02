@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
     <name>ClearCase Oriented Open Library Core</name>
     <url>http://www.praqma.org</url>
-    <version>0.6.48</version>
+    <version>0.6.49-SNAPSHOT</version>
 
     <developers>
         <developer>
@@ -284,6 +284,6 @@
         <connection>scm:git:http://github.com/Praqma/cool.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/Praqma/cool.git</developerConnection>
         <url>https://github.com/Praqma/cool.git</url>
-      <tag>cool-0.6.48</tag>
+      <tag>HEAD</tag>
   </scm>
 </project>
