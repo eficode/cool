@@ -444,7 +444,7 @@ public class SnapshotView extends UCMView {
 	public final Tuple<Stream, String> getStreamFromView( File vr ) throws UnableToInitializeEntityException, CleartoolException, ViewException, IOException {
 		File wvroot = getCurrentViewRoot( vr );
 		String vt = viewrootIsValid( wvroot );
-		String streamstr = getStreamFromView( viewtag );
+		String streamstr = getStreamFromView( vt );
 		Stream sstr = Stream.get( streamstr );
 		return new Tuple<Stream, String>( sstr, vt );
 	}
