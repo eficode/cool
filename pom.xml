@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
     <name>ClearCase Oriented Open Library Core</name>
     <url>http://www.praqma.org</url>
-    <version>0.6.49-SNAPSHOT</version>
+    <version>0.6.49-SNAPSHOT-PERF</version>
 
     <developers>
         <developer>
@@ -227,14 +227,14 @@
         <dependency>
             <groupId>net.praqma</groupId>
             <artifactId>praqmajutils</artifactId>
-            <version>0.1.34</version>
+            <version>0.1.35-SNAPSHOT-PERF</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>net.praqma</groupId>
             <artifactId>praqmajutils</artifactId>
-            <version>0.1.34</version>
+            <version>0.1.35-SNAPSHOT-PERF</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
