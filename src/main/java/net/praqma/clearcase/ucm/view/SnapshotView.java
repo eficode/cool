@@ -161,8 +161,7 @@ public class SnapshotView extends UCMView {
                 HashMap<String, Boolean> modifiables = getModifiableOnly(all);
                 loadRuleSequence = StringUtils.join(modifiables.keySet(), " ");
 			}
-            
-            //We should set the view properties here
+ 
             view.setReadOnlyLoadLines(getOnlyReadOnly(all));
             
             return loadRuleSequence;
@@ -206,6 +205,13 @@ public class SnapshotView extends UCMView {
 		public String getLoadRules() {
 			return loadRules;
 		}
+
+        /**
+         * @return the components
+         */
+        public Components getComponents() {
+            return components;
+        }
 	}
 
 	public SnapshotView() { }
@@ -469,81 +475,7 @@ public class SnapshotView extends UCMView {
 			throw new ViewException( "Unable to get stream from view " + viewtag, path, Type.INFO_FAILED, e );
 		}
 	}
-    
-    /**
-     * TODO: This one should be used for new method of updating
-     * @param swipe Swipe
-     * @param generate Generated
-     * @param overwrite Overview
-     * @param excludeRoot Exclude root
-     * @param loadRules Load rules
-     * @return An {@link UpdateInfo} 
-     * @throws net.praqma.clearcase.exceptions.CleartoolException Thrown on ClearTool error 
-     * @throws net.praqma.clearcase.exceptions.ViewException  Thrown on ClearTool error
-     */
-    public UpdateInfo update( boolean swipe, boolean generate, boolean overwrite, boolean excludeRoot, LoadRules2 loadRules ) throws CleartoolException, ViewException {
 
-		UpdateInfo info = new UpdateInfo();
-
-		if( generate ) {
-			this.stream.generate();
-		}
-
-		logger.fine( "STREAM GENERATES" );
-
-		if( swipe ) {
-			Map<String, Integer> sinfo = swipe( this.viewroot, excludeRoot, loadRules.getLoadRules() );
-			info.success = sinfo.get( "success" ) == 1 ? true : false;
-			info.totalFilesToBeDeleted = sinfo.get( "total" );
-			info.dirsDeleted = sinfo.get( "dirs_deleted" );
-			info.filesDeleted = sinfo.get( "files_deleted" );
-		}
-
-		logger.fine( "SWIPED" );
-
-		// Cache current directory and chdir into the viewroot
-		String result = updateView( this, overwrite, loadRules.getLoadRules() );        
-		logger.fine( result );
-
-		return info;
-	}
-
-	private static String updateView( SnapshotView view, boolean overwrite, String loadrules ) throws CleartoolException, ViewException {
-		String result = "";
-		
-		logger.fine( view.getViewRoot().getAbsolutePath() );
-
-		String cmd = "setcs -stream";
-		try {
-			Cleartool.run( cmd, view.getViewRoot(), false );
-		} catch( AbnormalProcessTerminationException e ) {
-			throw new CleartoolException( "Unable to set cs stream: " + view.getViewRoot() , e );
-		}
-
-		logger.fine( "Updating view" );
-
-		cmd = "update -force " + ( overwrite ? " -overwrite " : "" ) + loadrules;
-		try {
-			result = Cleartool.run( cmd, view.getViewRoot(), true ).stdoutBuffer.toString();
-		} catch( AbnormalProcessTerminationException e ) {
-			Matcher m = rx_view_rebasing.matcher( e.getMessage() );
-			if( m.find() ) {
-				logger.log( Level.WARNING, "The view is currently rebasing the stream" + m.group( 1 ), e);
-				throw new ViewException( "The view is currently rebasing the stream " + m.group( 1 ), view.getViewRoot().getAbsolutePath(), Type.REBASING, e );
-			} else {
-                logger.log( Level.WARNING, "Unable to update view", e );
-				throw new ViewException( "Unable to update view", view.getViewRoot().getAbsolutePath(), Type.UNKNOWN, e );
-			}
-		}
-
-		
-		Matcher match = pattern_cache.matcher( result );
-		if( match.find() ) {
-			return match.group( 1 );
-		}
-
-		return "";
-	}
     
     public Map<String, Integer> swipe ( File viewroot, boolean excludeRoot ) throws CleartoolException {
         return swipe(viewroot, excludeRoot, null);
@@ -576,7 +508,6 @@ public class SnapshotView extends UCMView {
                         notVobs.add( f );
                     } 
                 } else {
-                    logger.info( String.format( "The loadrule: %s%nContains %s", loadrules, f.getName() ) );
                     if(loadrules.contains(f.getName())) {
                         vobfolders.add(f);
                     } else {

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
-import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules2;
+import net.praqma.clearcase.ucm.view.SnapshotView.Components;
 
 /**
  * @author cwolfgang
@@ -41,6 +41,7 @@ public class UpdateView {
     private boolean success = false;
     private int filesDeleted = 0;
     private int dirsDeleted = 0;
+    private String resLoadRules = "";
 
     public UpdateView( SnapshotView view ) {
         this.view = view;
@@ -48,7 +49,6 @@ public class UpdateView {
 
     public UpdateView swipe() {
         this.swipe = true;
-
         return this;
     }
 
@@ -90,38 +90,18 @@ public class UpdateView {
     public int getDirsDeleted() {
         return dirsDeleted;
     }
-
-    public UpdateView update() throws ClearCaseException, IOException {
-
-        if( generate ) {
-            logger.fine( "Generate config spec for stream" );
-            this.view.getStream().generate();
-        }
-        
-        String cmd = "setcs -stream";
-        
+    
+    private void _allComponentsUpdate() throws ClearCaseException, IOException {
         try {
-            Cleartool.run( cmd, view.getViewRoot(), false );
+            Cleartool.run("setcs "+(overwrite ? "-overwrite " : " ")+"-force -stream", view.getViewRoot(), false );
         } catch( AbnormalProcessTerminationException e ) {
             throw new CleartoolException( "Unable to set cs stream: " + view.getViewRoot() , e );
         }
-        
-        LoadRules2 lr2 = loadRules.apply(view);
-        
-        if( swipe ) {
-            logger.fine( "Swipe view" );            
-            Map<String, Integer> sinfo = view.swipe( excludeRoot, loadRules != null ? lr2.getLoadRules() : null );
-            success = sinfo.get( "success" ) == 1;
-            totalFilesToBeDeleted = sinfo.containsKey( "total" ) ? sinfo.get( "total" ) : 0;
-            dirsDeleted = sinfo.containsKey( "dirs_deleted" ) ? sinfo.get( "dirs_deleted" ) : 0;
-            filesDeleted = sinfo.containsKey( "files_deleted") ? sinfo.get( "files_deleted" ) : 0;
-            logger.fine( "SWIPED" );
-        }        
-        
-        logger.fine( "Updating view with " + lr2.getLoadRules() );
-
-        cmd = "update -force " + ( overwrite ? " -overwrite " : "" );
-        cmd += lr2.getLoadRules();
+    }
+    
+    private void _modifiableComponentsUpdate() throws ClearCaseException, IOException {         
+        String cmd = "update -force " + ( overwrite ? " -overwrite " : "" );
+        cmd += resLoadRules;        
         
         String result;
         try {
@@ -138,6 +118,36 @@ public class UpdateView {
         }
 
         logger.fine( result );
+        
+    }
+
+    public UpdateView update() throws ClearCaseException, IOException {
+        if( generate ) {
+            logger.fine( "Generate config spec for stream" );
+            this.view.getStream().generate();
+        }        
+        
+        resLoadRules = loadRules.apply(view).getLoadRules();
+        
+        if( swipe ) {
+            logger.fine( "Swipe view" );            
+            Map<String, Integer> sinfo = view.swipe( excludeRoot, loadRules != null ? resLoadRules : null );
+            success = sinfo.get( "success" ) == 1;
+            totalFilesToBeDeleted = sinfo.containsKey( "total" ) ? sinfo.get( "total" ) : 0;
+            dirsDeleted = sinfo.containsKey( "dirs_deleted" ) ? sinfo.get( "dirs_deleted" ) : 0;
+            filesDeleted = sinfo.containsKey( "files_deleted") ? sinfo.get( "files_deleted" ) : 0;
+            logger.fine( "SWIPED" );
+        }
+        
+        
+        if(loadRules.getComponents().equals(Components.ALL)) {
+            logger.fine("Load all components");
+            _allComponentsUpdate();
+        } else {
+            logger.fine("Load modifiable components");
+            _modifiableComponentsUpdate();
+        }
+               
 
         if( removeDanglingComponentFolders ) {
             removeComponentFolders();
@@ -163,7 +173,7 @@ public class UpdateView {
         view.setAllLoadLines(all);
         view.setReadOnlyLoadLines(readOnly);
     }
-
+/*
     private static String updateView( SnapshotView view, boolean overwrite, SnapshotView.LoadRules2 loadrules ) throws CleartoolException, ViewException {
         String result = "";
 
@@ -205,6 +215,7 @@ public class UpdateView {
 
         return "";
     }
+    */
 
     public UpdateView removeDanglingComponentFolders() {
         this.removeDanglingComponentFolders = true;

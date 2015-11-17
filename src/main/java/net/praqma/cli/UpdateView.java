@@ -98,12 +98,6 @@ public class UpdateView {
 			loadRules = new LoadRules2(Components.MODIFIABLE );
 		}
 
-		UpdateInfo info = view.update( swipe, generate, overwrite, false, loadRules );
-		
-		if( swipe ) {
-			logger.info( "Removed " + info.filesDeleted + " file" + ( info.filesDeleted == 1 ? "" : "s" ) );
-			logger.info( "Removed " + info.dirsDeleted + " director" + ( info.dirsDeleted == 1 ? "y" : "ies" ) );		
-		}
 	}
 
 }
