@@ -227,14 +227,14 @@
         <dependency>
             <groupId>net.praqma</groupId>
             <artifactId>praqmajutils</artifactId>
-            <version>0.1.35-SNAPSHOT-PERF</version>
+            <version>0.1.36</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>net.praqma</groupId>
             <artifactId>praqmajutils</artifactId>
-            <version>0.1.35-SNAPSHOT-PERF</version>
+            <version>0.1.36</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
