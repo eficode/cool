@@ -404,12 +404,17 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
             }            
             
             for(HyperLink hl : links) {
-                logger.fine(String.format("Found hyperlink with name %s, value was %s", hyperLinkName, hl.getValue()));
-                
-                if(this.getFullyQualifiedName().equals( hl.getValue() ) ) {
-                    logger.fine(String.format("Hyperlink of type %s with value %s matches stream: %s", hyperLinkName, hl.getValue(), p.getIntegrationStream())) ;
-                    logger.fine(String.format("Adding ingration stream %s to list of streams to look for baselines", p.getIntegrationStream()));
-                    streams.add(p.getIntegrationStream());                    
+                logger.fine(String.format("Found hyperlink with name %s, value was %s", hyperLinkName, hl.getValue()));                
+                if(this.getFullyQualifiedName().equals( hl.getValue() ) ) {                    
+                    Stream sSource = Stream.get(hl.getValue());
+                    String sMastership = sSource.getMastership();
+                    if (sMastership.equals(this.getMastership())) {
+                        logger.fine(String.format("Hyperlink of type %s with value %s matches stream: %s", hyperLinkName, hl.getValue(), p.getIntegrationStream())) ;
+                        logger.fine(String.format("Adding ingration stream %s to list of streams to look for baselines", p.getIntegrationStream()));
+                        streams.add(p.getIntegrationStream());                    
+                    } else {
+                        logger.fine(String.format("The stream %s was not mastered locally, it is mastered in %s", sSource.getFullyQualifiedName(), sMastership));
+                    }
                 }
             }
 		}
