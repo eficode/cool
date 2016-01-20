@@ -9,6 +9,7 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -121,24 +122,59 @@ public class UpdateView {
         logger.fine( "Updating view with " + lr2.getLoadRules() );
 
         cmd = "update -force " + ( overwrite ? " -overwrite " : "" );
-        cmd += lr2.getLoadRules();
-        
-        String result;
-        try {
-             result = Cleartool.run( cmd, view.getViewRoot(), true ).stdoutBuffer.toString();
-        } catch( AbnormalProcessTerminationException e ) {
-            Matcher m = SnapshotView.rx_view_rebasing.matcher( e.getMessage() );
-            if( m.find() ) {
-                logger.log( Level.WARNING, "The view is currently rebasing the stream" + m.group( 1 ), e);
-                throw new ViewException( "The view is currently rebasing the stream " + m.group( 1 ), view.getViewRoot().getAbsolutePath(), ViewException.Type.REBASING, e );
-            } else {
-                logger.log( Level.WARNING, "Unable to update view", e );
-                throw new ViewException( "Unable to update view", view.getViewRoot().getAbsolutePath(), ViewException.Type.UNKNOWN, e );
-            }
+        String loadRules = lr2.getLoadRules();
+        // Maximum size allowed in windows cmd.exe is 8192 characters, so we use a conservative limit
+        ArrayList<String> cmds = new ArrayList<String>();
+        int maxLength = 7000;
+        if(loadRules.length() < maxLength) {
+            //This is the case we already handled, with the assumption that we are not exceeding the windows commandline limit
+            cmds.add(cmd + loadRules);
+        } else {            
+            //How many sections to we need to split into
+            int numberOfChunks = loadRules.length() / maxLength + 1;
+            int lengthOfChunks = loadRules.length() / numberOfChunks;
+            String msg = MessageFormat.format("Max command length exceeded, will split into {0,number,integer} pieces of length {1,number,integer}",numberOfChunks, lengthOfChunks);
+            logger.log(Level.INFO, msg);
+            // Offset is past the -add_loadrules
+            int offset = 15;
+            for(int i = 0; i < numberOfChunks; i++) {
+                int end = 0;
+                if (offset + maxLength >= loadRules.length() - 1) {
+                    end = loadRules.length();             
+                } else {                 
+                    end = loadRules.indexOf(" ", offset + maxLength);
+                }
+                msg = MessageFormat.format("Chunk from {0,number,integer} to {1,number,integer}", offset, end);
+                logger.log(Level.INFO, msg);
+                logger.log(Level.INFO, "chunk: " + loadRules.substring(offset, end));
+                String command = cmd + " -add_loadrules " + loadRules.substring(offset, end);
+                logger.log(Level.INFO, "command: " + command);
+                cmds.add(command);
+                offset = end + 1;
+            }   
         }
-
-        logger.fine( result );
-
+        
+        int count = 1;
+        for( String c : cmds) {
+            String msg = MessageFormat.format("Running {0,number,integer} of {1,number,integer} commands", count, cmds.size() );
+            logger.log(Level.INFO, msg);
+            String result;
+            try {
+                 result = Cleartool.run( c, view.getViewRoot(), true ).stdoutBuffer.toString();
+            } catch( AbnormalProcessTerminationException e ) {
+                Matcher m = SnapshotView.rx_view_rebasing.matcher( e.getMessage() );
+                if( m.find() ) {
+                    logger.log( Level.WARNING, "The view is currently rebasing the stream" + m.group( 1 ), e);
+                    throw new ViewException( "The view is currently rebasing the stream " + m.group( 1 ), view.getViewRoot().getAbsolutePath(), ViewException.Type.REBASING, e );
+                } else {
+                    logger.log( Level.WARNING, "Unable to update view", e );
+                    throw new ViewException( "Unable to update view", view.getViewRoot().getAbsolutePath(), ViewException.Type.UNKNOWN, e );
+                }
+            }
+            
+            logger.fine( result );  
+        }
+        
         if( removeDanglingComponentFolders ) {
             removeComponentFolders();
         }
