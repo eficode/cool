@@ -145,7 +145,7 @@ public class UpdateView {
                 int end = 0;
                 if (offset + maxLength >= loadRules.length() - 1)
                 {
-                    end = loadRules.length() - 1;             
+                    end = loadRules.length();             
                 }
                 else
                 {                 
@@ -160,8 +160,12 @@ public class UpdateView {
                 offset = end + 1;
             }   
         }
+        int count = 1;
         for( String c: cmds)   
         {
+            String msg = MessageFormat.format("Running {0,number,integer} of {1,number,integer} commands", count, cmds.size() );
+            logger.log(Level.INFO, msg);
+                    
             String result;
             try {
                  result = Cleartool.run( c, view.getViewRoot(), true ).stdoutBuffer.toString();
