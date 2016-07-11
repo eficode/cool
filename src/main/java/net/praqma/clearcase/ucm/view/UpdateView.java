@@ -256,12 +256,4 @@ public class UpdateView {
             logger.finer( "Root directory: " + dir );
         }
     }
-
-    public void b( File path, int i ) {
-        if( i == 0 ) {
-
-        } else {
-
-        }
-    }
 }
