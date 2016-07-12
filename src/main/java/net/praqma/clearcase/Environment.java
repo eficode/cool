@@ -52,7 +52,7 @@ public class Environment {
 		try {
 			EnvironmentParser parser = new EnvironmentParser( file );
 			context = parser.parse( variables );
-            logger.fine( context.toString() );
+            logger.fine( context.toString() );                    f
 			if( context.pvobs.size() > 0 ) {
 
 				/* There should be only one pvob defined, get it */
