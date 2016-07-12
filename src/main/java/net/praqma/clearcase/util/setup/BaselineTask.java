@@ -36,9 +36,12 @@ public class BaselineTask extends AbstractTask {
 			}
 		} catch( Exception e1 ) {
 			/* Components not given, skipping */
-		}
-		
-		context.baselines.put( name, Baseline.create( name, component, context.path, LabelBehaviour.valueOf( label ), identical.length() > 0, null, components ) );
+		}                                                                                                             /* ClearCase Baseline creation date is only accurate up to a second.
+        * Our new server spins up the test environment so fast that it saves multiple baselines in the same second.
+        * This causes our date sorting tests to fail.
+        * So we just wait a bit when creating a baseline. */
+        try { Thread.sleep(1250); } catch (InterruptedException ie) { ie.printStackTrace(); }
+        context.baselines.put( name, Baseline.create( name, component, context.path, LabelBehaviour.valueOf( label ), identical.length() > 0, null, components ) );
 	}
 
 }
