@@ -219,9 +219,9 @@ public class BaselineList extends ArrayList<Baseline> {
         String cmd;
 
         if (SystemUtils.IS_OS_WINDOWS) {
-            cmd = "lsbl -fmt %Xn¤%Nd¤%[label_status]p\\n -component " + component + " -stream " + stream + (level != null ? " -level " + level.toString() : "");
+            cmd = "lsbl -fmt %Xn::%Nd::%[label_status]p\\n -component " + component + " -stream " + stream + (level != null ? " -level " + level.toString() : "");
         } else {
-            cmd = "lsbl -fmt %Xn¤%Nd¤%[label_status]p\\\\n -component " + component + " -stream " + stream + (level != null ? " -level " + level.toString() : "");
+            cmd = "lsbl -fmt %Xn::%Nd::%[label_status]p\\\\n -component " + component + " -stream " + stream + (level != null ? " -level " + level.toString() : "");
         }
         try {
             bls_str = Cleartool.run(cmd).stdoutList;
@@ -235,7 +235,7 @@ public class BaselineList extends ArrayList<Baseline> {
         List<Baseline> bls = new ArrayList<Baseline>();
 
         for (String bl : bls_str) {
-            String[] split = bl.split("¤");
+            String[] split = bl.split("::");
             Baseline baseline = Baseline.get(split[0]);
             try {
                 baseline.setDate(split[1]);
@@ -259,7 +259,7 @@ public class BaselineList extends ArrayList<Baseline> {
             if (bl1.getDate() == null) {
                 return -1;
             }
-            return (int) ((bl1.getDate().getTime() / 1000) - (bl2.getDate().getTime() / 1000));
+            return bl2.getDate().compareTo(bl1.getDate());
         }
     }
 
@@ -273,7 +273,7 @@ public class BaselineList extends ArrayList<Baseline> {
             if (bl1.getDate() == null) {
                 return 1;
             }
-            return (int) ((bl2.getDate().getTime() / 1000) - (bl1.getDate().getTime() / 1000));
+            return bl1.getDate().compareTo(bl2.getDate());
         }
     }
 }
