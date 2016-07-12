@@ -361,7 +361,7 @@ public class ClearCaseRule extends Environment implements TestRule {
             }
         }
 
-        public ContentCreator create() throws ClearCaseException, InterruptedException {
+        public ContentCreator create() throws ClearCaseException {
             viewTag = getUniqueName() + postFix;
             logger.finer( "Creating content for " + viewTag );
 
@@ -399,11 +399,6 @@ public class ClearCaseRule extends Environment implements TestRule {
             }
 
             if( baselineName != null ) {
-                /* ClearCase Baseline creation date is only accurate up to a second.
-                 * Our new server spins up the test environment so fast that it saves multiple baselines in the same second.
-                 * This causes our date sorting tests to fail.
-                 * So we just wait a bit when creating a baseline. */
-                Thread.sleep(1250);
                 baseline = Baseline.create( baselineName, context.components.get( "_System" ), path, Baseline.LabelBehaviour.FULL, false );
             }
 
