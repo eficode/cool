@@ -259,7 +259,8 @@ public class BaselineList extends ArrayList<Baseline> {
             if (bl1.getDate() == null) {
                 return -1;
             }
-            return bl2.getDate().compareTo(bl1.getDate());
+
+            return bl1.getDate().compareTo(bl2.getDate());
         }
     }
 
@@ -273,7 +274,7 @@ public class BaselineList extends ArrayList<Baseline> {
             if (bl1.getDate() == null) {
                 return 1;
             }
-            return bl1.getDate().compareTo(bl2.getDate());
+            return bl2.getDate().compareTo(bl1.getDate());
         }
     }
 }
