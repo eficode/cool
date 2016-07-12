@@ -349,7 +349,7 @@ public class ClearCaseRule extends Environment implements TestRule {
             return viewTag;
         }
 
-        public Baseline getBaseline() throws ClearCaseException {
+        public Baseline getBaseline() throws ClearCaseException, InterruptedException {
             if( baselineName != null ) {
                 if( baseline == null ) {
                     create();
