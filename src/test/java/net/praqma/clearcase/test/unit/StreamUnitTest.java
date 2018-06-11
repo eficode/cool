@@ -19,15 +19,13 @@ import net.praqma.util.debug.appenders.Appender;
 import net.praqma.util.debug.appenders.ConsoleAppender;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.mockito.*;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import junit.framework.TestCase;
 
 import java.util.Collections;
 import java.util.List;

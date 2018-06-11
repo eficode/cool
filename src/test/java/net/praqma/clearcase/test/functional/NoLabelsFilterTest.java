@@ -5,20 +5,16 @@
  */
 package net.praqma.clearcase.test.functional;
 
-import net.praqma.clearcase.test.junit.ClearCaseRule;
-import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.Component;
-import net.praqma.clearcase.ucm.entities.Project;
-import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.clearcase.ucm.utils.BaselineList;
-import net.praqma.clearcase.ucm.utils.filters.NoLabels;
-import net.praqma.util.debug.Logger;
-import static org.hamcrest.CoreMatchers.not;
-import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import org.junit.ClassRule;
-import org.junit.Test;
-import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
+import net.praqma.clearcase.test.junit.*;
+import net.praqma.clearcase.ucm.entities.*;
+import net.praqma.clearcase.ucm.utils.*;
+import net.praqma.clearcase.ucm.utils.filters.*;
+import net.praqma.util.debug.*;
+import org.junit.*;
+
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.*;
 
 /**
  *
