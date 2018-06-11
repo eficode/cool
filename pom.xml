@@ -1,17 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.praqma</groupId>
-    <artifactId>cool</artifactId>
+    <artifactId>clearcase-ucm-api</artifactId>
     <packaging>hpi</packaging>
-    <name>ClearCase Oriented Open Library Core</name>
-    <url>https://www.praqma.org</url>
+    <name>ClearCase UCM library for Jenkins Plugin</name>
+    <url>https://github.com/praqma/cool</url>
     <version>1.0.0-SNAPSHOT</version>
-
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>3.14</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <developers>
