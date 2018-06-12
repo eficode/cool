@@ -3,7 +3,7 @@
     <groupId>net.praqma</groupId>
     <artifactId>clearcase-ucm-api</artifactId>
     <packaging>hpi</packaging>
-    <name>ClearCase UCM library for Jenkins Plugin</name>
+    <name>ClearCase UCM library Plugin</name>
     <url>https://github.com/praqma/cool</url>
     <version>1.0.0-SNAPSHOT</version>
     <parent>
