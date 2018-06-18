@@ -4,15 +4,12 @@ import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.Environment;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.util.io.FileUtilities;
-import net.praqma.util.test.junit.LoggingRule;
-import org.junit.ClassRule;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.logging.Level;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
@@ -24,9 +21,6 @@ import static org.junit.Assert.assertThat;
  *         Time: 11:41
  */
 public class DeliverTest {
-
-    @ClassRule
-    public static LoggingRule logging = new LoggingRule( Level.ALL, "net.praqma" );
 
     @Test
     public void testStatus() throws FileNotFoundException, ClearCaseException, UnsupportedEncodingException {

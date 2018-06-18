@@ -5,9 +5,6 @@ import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.test.annotations.ClearCaseUniqueVobName;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.util.test.junit.LoggingRule;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -23,9 +20,6 @@ public class FB8671 {
 
     @Rule
     public static ClearCaseRule ccenv = new ClearCaseRule( "FB8671", "setup-8671.xml" );
-
-    @ClassRule
-    public static LoggingRule lrule = new LoggingRule( "net.praqma" );
 
     @Test
     public void test01() throws ClearCaseException {

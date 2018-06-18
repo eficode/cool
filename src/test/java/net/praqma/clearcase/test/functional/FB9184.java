@@ -4,7 +4,6 @@ import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.util.test.junit.LoggingRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -25,9 +24,6 @@ public class FB9184 {
 
     @ClassRule
     public static ClearCaseRule ccenv = new ClearCaseRule( "FB9184", "setup.xml" );
-
-    @ClassRule
-    public static LoggingRule lrule = new LoggingRule( "net.praqma" );
 
     @Test
     public void test() throws CleartoolException {

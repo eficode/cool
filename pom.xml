@@ -69,15 +69,7 @@
         <dependency>
             <groupId>net.praqma</groupId>
             <artifactId>praqmajutils</artifactId>
-            <version>0.1.36</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.praqma</groupId>
-            <artifactId>praqmajutils</artifactId>
-            <version>0.1.36</version>
-            <type>test-jar</type>
-            <scope>test</scope>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
@@ -141,10 +133,6 @@
         <repository>
             <id>repo.jenkins-ci.org</id>
             <url>https://repo.jenkins-ci.org/public/</url>
-        </repository>
-        <repository>
-            <id>praqma-repo</id>
-            <url>http://code.praqma.net/repo/maven/</url>
         </repository>
     </repositories>
 

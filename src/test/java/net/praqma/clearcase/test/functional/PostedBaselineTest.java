@@ -10,9 +10,6 @@ import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Project;
 import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.logging.PraqmaticLogFormatter;
-import net.praqma.util.test.junit.LoggingRule;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -35,8 +32,6 @@ public class PostedBaselineTest /* extends BaseClearCaseTest */ {
     @Rule
     public PowerMockRule pmockRule = new PowerMockRule();
 
-    @ClassRule
-    public static LoggingRule lrule = new LoggingRule( "net.praqma" ).setFormat( PraqmaticLogFormatter.TINY_FORMAT );
 
     @Rule
     public ClearCaseRule ccenv = new ClearCaseRule( "cool-posted-baseline" );

@@ -1,22 +1,18 @@
 package net.praqma.clearcase.test.unit;
 
-import net.praqma.clearcase.ConfigSpec;
-import net.praqma.clearcase.exceptions.CleartoolException;
-import net.praqma.logging.PraqmaticLogFormatter;
-import net.praqma.util.test.junit.LoggingRule;
-import org.apache.commons.io.FileUtils;
-import org.junit.ClassRule;
+import net.praqma.clearcase.*;
+import net.praqma.clearcase.exceptions.*;
+import org.apache.commons.io.*;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.*;
 
 import java.io.*;
-import java.net.URLDecoder;
-import java.util.List;
-import java.util.logging.Logger;
+import java.net.*;
+import java.util.*;
+import java.util.logging.*;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.core.Is.*;
+import static org.junit.Assert.*;
 
 /**
  * @author cwolfgang
@@ -24,9 +20,6 @@ import static org.junit.Assert.assertTrue;
 public class ConfigSpecTest {
 
     private static Logger logger = Logger.getLogger( ConfigSpec.class.getName() );
-
-    @ClassRule
-    public static LoggingRule lrule = new LoggingRule( "net.praqma" ).setFormat( PraqmaticLogFormatter.TINY_FORMAT );
 
     @Test
     public void noNewLoadRules() throws IOException, CleartoolException {

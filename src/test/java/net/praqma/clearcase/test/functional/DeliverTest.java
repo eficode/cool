@@ -1,28 +1,18 @@
 package net.praqma.clearcase.test.functional;
 
-import java.io.File;
-
-import net.praqma.clearcase.Deliver;
-import net.praqma.clearcase.Deliver.DeliverStatus;
-import net.praqma.clearcase.Rebase;
-import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.DeliverException;
+import net.praqma.clearcase.*;
+import net.praqma.clearcase.Deliver.*;
+import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.exceptions.DeliverException.Type;
-import net.praqma.clearcase.exceptions.NothingNewException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
-import net.praqma.clearcase.test.junit.ClearCaseRule;
-import net.praqma.clearcase.ucm.entities.Activity;
-import net.praqma.clearcase.ucm.entities.Baseline;
-import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
-import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.clearcase.ucm.view.DynamicView;
-import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.clearcase.util.ExceptionUtils;
-import net.praqma.util.debug.Logger;
+import net.praqma.clearcase.test.junit.*;
+import net.praqma.clearcase.ucm.entities.*;
+import net.praqma.clearcase.ucm.entities.Baseline.*;
+import net.praqma.clearcase.ucm.view.*;
+import net.praqma.clearcase.util.*;
+import net.praqma.util.debug.*;
+import org.junit.*;
 
-import org.junit.ClassRule;
-import org.junit.Test;
+import java.io.*;
 
 import static org.junit.Assert.*;
 

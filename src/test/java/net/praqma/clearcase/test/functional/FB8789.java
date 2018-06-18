@@ -11,8 +11,6 @@ import net.praqma.clearcase.ucm.utils.BaselineList;
 import net.praqma.clearcase.ucm.utils.filters.AfterBaseline;
 import net.praqma.clearcase.ucm.utils.filters.NoDeliver;
 import net.praqma.clearcase.ucm.utils.filters.NoLabels;
-import net.praqma.util.test.junit.LoggingRule;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -27,9 +25,6 @@ public class FB8789 {
 
     @Rule
     public static ClearCaseRule ccenv = new ClearCaseRule( "FB8789", "setup.xml" );
-
-    @ClassRule
-    public static LoggingRule lrule = new LoggingRule( "net.praqma" );
 
     @Test
     @ClearCaseUniqueVobName( name = "fb8789" )

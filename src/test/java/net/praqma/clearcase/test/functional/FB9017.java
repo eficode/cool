@@ -4,8 +4,6 @@ import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.test.annotations.ClearCaseUniqueVobName;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.*;
-import net.praqma.util.test.junit.LoggingRule;
-import org.junit.ClassRule;
 import org.junit.Rule;
 
 import java.io.File;
@@ -19,9 +17,6 @@ public class FB9017 {
 
     @Rule
     public static ClearCaseRule ccenv = new ClearCaseRule( "FB9017", "setup-no-baselines.xml" );
-
-    @ClassRule
-    public static LoggingRule lrule = new LoggingRule( "net.praqma" );
 
     //@Test
     @ClearCaseUniqueVobName( name = "rødgrødmedfløde" )

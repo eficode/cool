@@ -3,7 +3,6 @@ package net.praqma.clearcase.test.functional;
 import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.test.junit.ClearCaseRule;
 import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.util.test.junit.LoggingRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -18,9 +17,6 @@ import static org.junit.Assert.assertThat;
 public class StreamTest {
     @ClassRule
     public static ClearCaseRule ccenv = new ClearCaseRule( "FB8603", "setup-siblings.xml" );
-
-    @ClassRule
-    public static LoggingRule lrule = new LoggingRule( "net.praqma" );
 
     @Test
     public void testLoad() throws CleartoolException, UnableToInitializeEntityException {
