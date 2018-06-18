@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.command.ListVobs;
 import net.praqma.clearcase.exceptions.CleartoolException;
@@ -19,6 +20,7 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.clearcase.ucm.view.UCMView;
 import org.apache.commons.lang.SystemUtils;
 
+@SuppressFBWarnings("")
 public class PVob extends Vob {
 	
 	private static final Logger logger = Logger.getLogger( PVob.class.getName() );

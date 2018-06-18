@@ -1,20 +1,14 @@
 package net.praqma.cli;
 
-import java.io.File;
-import java.util.logging.Logger;
+import edu.umd.cs.findbugs.annotations.*;
+import net.praqma.clearcase.exceptions.*;
+import net.praqma.clearcase.ucm.entities.*;
+import net.praqma.clearcase.ucm.utils.*;
+import net.praqma.util.option.*;
 
-import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
-import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
-import net.praqma.clearcase.exceptions.UnableToGetEntityException;
-import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
-import net.praqma.clearcase.exceptions.UnableToLoadEntityException;
-import net.praqma.clearcase.ucm.entities.Project;
-import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.clearcase.ucm.utils.BuildNumber;
-import net.praqma.util.option.Option;
-import net.praqma.util.option.Options;
+import java.util.logging.*;
 
+@SuppressFBWarnings("")
 public class GetNextBuildNumber {
 	private static Logger logger = Logger.getLogger( GetNextBuildNumber.class.getName() );
 

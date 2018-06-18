@@ -1,8 +1,11 @@
 package net.praqma.clearcase;
 
+import edu.umd.cs.findbugs.annotations.*;
+
 /**
  * @author cwolfgang
  */
+@SuppressFBWarnings("")
 public class Branch extends Type {
 
     private String branchPath;

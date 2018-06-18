@@ -2,10 +2,12 @@ package net.praqma.clearcase.ucm.utils.filters;
 
 import java.util.Iterator;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.utils.BaselineFilter;
 import net.praqma.clearcase.ucm.utils.BaselineList;
 
+@SuppressFBWarnings("")
 public class NoDeliver extends BaselineFilter {
 	
 	@Override

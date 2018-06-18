@@ -11,12 +11,15 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.ucm.entities.Version;
 
 /**
  *
  * @author Mads
  */
+@SuppressFBWarnings("")
 public class ReadOnlyVersionFilter extends VersionFilter implements Serializable {
     
     private static final Logger log = Logger.getLogger(ReadOnlyVersionFilter.class.getName());

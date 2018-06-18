@@ -1,5 +1,6 @@
 package net.praqma.cli;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.TagException;
 import net.praqma.clearcase.exceptions.UCMEntityNotFoundException;
@@ -15,6 +16,7 @@ import net.praqma.util.option.Options;
 
 import java.util.logging.Logger;
 
+@SuppressFBWarnings("")
 public class GetTagValue {
 	private static Logger logger = Logger.getLogger( GetTagValue.class.getName() );
 	

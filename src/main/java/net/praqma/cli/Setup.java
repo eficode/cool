@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.setup.EnvironmentParser;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
+@SuppressFBWarnings("")
 public class Setup extends CLI {
 	private static Logger logger = Logger.getLogger( Setup.class.getName() );
 	

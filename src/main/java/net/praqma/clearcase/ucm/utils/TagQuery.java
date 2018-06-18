@@ -3,8 +3,10 @@ package net.praqma.clearcase.ucm.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.util.structure.Tuple;
 
+@SuppressFBWarnings("")
 public class TagQuery extends ArrayList<Tuple<String, String>> {
     public TagQuery() {
     }

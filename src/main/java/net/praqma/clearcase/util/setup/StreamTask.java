@@ -3,6 +3,7 @@ package net.praqma.clearcase.util.setup;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -13,6 +14,7 @@ import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
 import org.w3c.dom.Element;
 
+@SuppressFBWarnings("")
 public class StreamTask extends AbstractTask {
 
 	@Override

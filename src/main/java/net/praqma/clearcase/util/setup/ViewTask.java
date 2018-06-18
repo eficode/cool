@@ -1,17 +1,16 @@
 package net.praqma.clearcase.util.setup;
 
-import net.praqma.clearcase.Cool;
-import net.praqma.clearcase.PVob;
-import net.praqma.clearcase.exceptions.ClearCaseException;
-import net.praqma.clearcase.ucm.entities.Stream;
-import net.praqma.clearcase.ucm.view.DynamicView;
-import net.praqma.clearcase.ucm.view.UCMView;
-import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
+import edu.umd.cs.findbugs.annotations.*;
+import net.praqma.clearcase.*;
+import net.praqma.clearcase.exceptions.*;
+import net.praqma.clearcase.ucm.entities.*;
+import net.praqma.clearcase.ucm.view.*;
+import net.praqma.clearcase.util.setup.EnvironmentParser.*;
+import org.w3c.dom.*;
 
-import org.w3c.dom.Element;
+import java.util.logging.*;
 
-import java.util.logging.Logger;
-
+@SuppressFBWarnings("")
 public class ViewTask extends AbstractTask {
 
     private static final Logger log = Logger.getLogger( ViewTask.class.getName() );

@@ -1,5 +1,6 @@
 package net.praqma.cli;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.ConfigSpec;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -11,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+
+@SuppressFBWarnings("")
 public class SetLoadRules extends CLI {
 	private static Logger logger = Logger.getLogger( SetLoadRules.class.getName() );
 	

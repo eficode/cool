@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Baseline;
@@ -13,6 +14,7 @@ import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
 import org.w3c.dom.Element;
 
+@SuppressFBWarnings("")
 public class BaselineTask extends AbstractTask {
 	
 	private static final Logger logger = Logger.getLogger( BaselineTask.class.getName() );

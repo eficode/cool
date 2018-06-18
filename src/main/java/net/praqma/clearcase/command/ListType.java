@@ -1,5 +1,6 @@
 package net.praqma.clearcase.command;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.Type;
 import net.praqma.clearcase.cleartool.Cleartool;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
 /**
  * @author cwolfgang
  */
+@SuppressFBWarnings("")
 public class ListType {
 
     private static Logger logger = Logger.getLogger( ListType.class.getName() );

@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
@@ -36,6 +37,7 @@ import org.apache.commons.lang.SystemUtils;
 /**
  * @author wolfgang
  */
+@SuppressFBWarnings("")
 public class SnapshotView extends UCMView {
 
 	transient private static final Logger logger = Logger.getLogger( SnapshotView.class.getName() );

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -27,6 +28,7 @@ import net.praqma.clearcase.ucm.view.UCMView;
 import net.praqma.clearcase.util.ExceptionUtils;
 import net.praqma.util.xml.XML;
 
+@SuppressFBWarnings("")
 public class EnvironmentParser extends XML {
 	
 	private static final Logger log = Logger.getLogger( EnvironmentParser.class.getName() );

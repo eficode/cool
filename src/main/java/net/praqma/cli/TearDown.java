@@ -3,12 +3,14 @@ package net.praqma.cli;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.SetupUtils;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
+@SuppressFBWarnings("")
 public class TearDown extends CLI {
 	private static Logger logger = Logger.getLogger( TearDown.class.getName() );
 	

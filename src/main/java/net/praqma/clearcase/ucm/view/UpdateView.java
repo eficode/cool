@@ -1,5 +1,6 @@
 package net.praqma.clearcase.ucm.view;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.CleartoolException;
@@ -22,6 +23,7 @@ import net.praqma.clearcase.ucm.view.SnapshotView.LoadRules2;
 /**
  * @author cwolfgang
  */
+@SuppressFBWarnings("")
 public class UpdateView {
 
     private static final Logger logger = Logger.getLogger( UpdateView.class.getName() );

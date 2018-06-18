@@ -5,10 +5,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.utils.BaselineFilter;
 import net.praqma.clearcase.ucm.utils.BaselineList;
 
+@SuppressFBWarnings("")
 public class AfterDate extends BaselineFilter {
 	
 	private static Logger logger = Logger.getLogger( AfterDate.class.getName() );

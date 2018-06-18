@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.ClearCase;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Vob;
@@ -39,6 +40,7 @@ import net.praqma.util.execute.CmdResult;
  * @author wolfgang
  * 
  */
+@SuppressFBWarnings("")
 public abstract class UCMEntity extends ClearCase implements Serializable {
 
 	private static final transient Logger logger = Logger.getLogger( UCMEntity.class.getName() );

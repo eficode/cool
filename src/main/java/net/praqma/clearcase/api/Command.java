@@ -1,5 +1,6 @@
 package net.praqma.clearcase.api;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
@@ -14,6 +15,7 @@ import java.util.regex.Pattern;
  * @author cwolfgang
  * @param <RT> The type of command to execute. Example is {@link Describe}
  */
+@SuppressFBWarnings("")
 public abstract class Command<RT extends Object> {
 
     protected File root;

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.Site;
@@ -14,6 +15,7 @@ import net.praqma.clearcase.util.SetupUtils;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
+@SuppressFBWarnings("")
 public class TearDownAll extends CLI {
 	private static Logger logger = Logger.getLogger( TearDownAll.class.getName() );
 	

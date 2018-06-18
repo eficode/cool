@@ -7,12 +7,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Component;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.util.setup.EnvironmentParser;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
+@SuppressFBWarnings("")
 public class Environment {
 
     private static final Logger logger = Logger.getLogger( Environment.class.getName() );

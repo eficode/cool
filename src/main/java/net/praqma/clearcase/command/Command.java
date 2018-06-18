@@ -1,5 +1,6 @@
 package net.praqma.clearcase.command;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.util.execute.CmdResult;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * Date: 09-11-12
  * Time: 10:58
  */
+@SuppressFBWarnings("")
 public abstract class Command<T> {
 
     protected StringBuilder cmd = new StringBuilder();

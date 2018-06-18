@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.interfaces.StreamContainable;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
+@SuppressFBWarnings("")
 public class Project extends UCMEntity implements StreamContainable {
 
 	private static Logger logger = Logger.getLogger( Project.class.getName() );

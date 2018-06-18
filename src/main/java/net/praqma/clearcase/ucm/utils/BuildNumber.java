@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.exceptions.BuildNumberException;
 import net.praqma.clearcase.exceptions.BuildNumberException.Type;
@@ -30,6 +31,7 @@ import net.praqma.clearcase.ucm.entities.Baseline.LabelBehaviour;
 import net.praqma.util.io.BuildNumberStamper;
 import net.praqma.util.structure.Tuple;
 
+@SuppressFBWarnings("")
 public class BuildNumber extends Cool {
 	private static final transient Logger logger = Logger.getLogger( BuildNumber.class.getName()  );
 	

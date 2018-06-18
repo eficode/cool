@@ -9,10 +9,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.entities.Activity;
 import net.praqma.clearcase.ucm.entities.Version;
 
+@SuppressFBWarnings("")
 public class VersionList extends ArrayList<Version> {
 
     private static final Logger logger = Logger.getLogger( VersionList.class.getName() );

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
 import net.praqma.clearcase.exceptions.DeliverException.Type;
@@ -17,6 +18,7 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import org.apache.commons.io.FileUtils;
 
+@SuppressFBWarnings("")
 public class Deliver {
 	private static Logger logger = Logger.getLogger( Deliver.class.getName() );
 

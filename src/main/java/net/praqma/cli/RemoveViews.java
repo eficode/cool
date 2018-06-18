@@ -1,5 +1,6 @@
 package net.praqma.cli;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Region;
 import net.praqma.clearcase.Site;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+@SuppressFBWarnings("")
 public class RemoveViews extends CLI {
 	private static Logger logger = Logger.getLogger( RemoveViews.class.getName() );
 

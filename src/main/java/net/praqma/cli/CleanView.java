@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
+@SuppressFBWarnings("")
 public class CleanView {
 	
 	private static Logger logger = Logger.getLogger( CleanView.class.getName() );

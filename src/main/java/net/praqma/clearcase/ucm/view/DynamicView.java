@@ -1,11 +1,13 @@
 package net.praqma.clearcase.ucm.view;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.ViewException;
 import net.praqma.clearcase.exceptions.ViewException.Type;
 import net.praqma.clearcase.ucm.entities.Stream;
 
 
+@SuppressFBWarnings("")
 public class DynamicView extends UCMView {
     
 	public DynamicView() { }

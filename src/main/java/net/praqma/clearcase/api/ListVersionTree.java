@@ -1,5 +1,6 @@
 package net.praqma.clearcase.api;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.util.execute.CmdResult;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * @author cwolfgang
  */
+@SuppressFBWarnings("")
 public class ListVersionTree extends Command<List<String>> {
 
     /**

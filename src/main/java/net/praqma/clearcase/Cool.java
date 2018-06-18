@@ -1,8 +1,10 @@
 package net.praqma.clearcase;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.util.execute.CommandLine;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
+@SuppressFBWarnings("")
 public abstract class Cool {
 
 	public static final String filesep = System.getProperty( "file.separator" );

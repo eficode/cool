@@ -1,5 +1,6 @@
 package net.praqma.clearcase.command;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Vob;
 
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
  * Date: 09-11-12
  * Time: 11:02
  */
+@SuppressFBWarnings("")
 public class ListVobs extends Command<List<Vob>> {
 
     private static Logger logger = Logger.getLogger( ListVobs.class.getName() );

@@ -1,5 +1,6 @@
 package net.praqma.clearcase;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.api.ListVersionTree;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
@@ -15,6 +16,7 @@ import java.util.regex.Pattern;
 /**
  * @author cwolfgang
  */
+@SuppressFBWarnings("")
 public class Label extends Type {
 
     private static final Logger logger = Logger.getLogger( Label.class.getName() );

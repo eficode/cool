@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
@@ -15,6 +16,7 @@ import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.entities.Version.Status;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 
+@SuppressFBWarnings("")
 public class Difference {
 	
 	private static final Pattern rx_baselineDiff = Pattern.compile( "^(\\S+)\\s*(.*?)\\s*(.*)\\s*$" );

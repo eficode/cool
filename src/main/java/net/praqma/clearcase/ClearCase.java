@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.UnableToCreateAttributeException;
 import net.praqma.clearcase.exceptions.UnableToListAttributesException;
@@ -13,6 +14,7 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
 
+@SuppressFBWarnings("")
 public abstract class ClearCase extends Cool {
 	
 	private static final Logger logger = Logger.getLogger( ClearCase.class.getName() );

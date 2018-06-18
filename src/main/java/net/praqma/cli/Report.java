@@ -1,5 +1,6 @@
 package net.praqma.cli;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.Find;
 import net.praqma.clearcase.command.ListType;
@@ -22,6 +23,7 @@ import java.util.logging.Logger;
 /**
  * @author cwolfgang
  */
+@SuppressFBWarnings("")
 public class Report extends CLI {
     private static Logger logger = Logger.getLogger( Report.class.getName() );
 

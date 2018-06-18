@@ -1,5 +1,6 @@
 package net.praqma.clearcase.ucm.utils.filters;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.ucm.entities.Baseline;
 import net.praqma.clearcase.ucm.utils.BaselineFilter;
 import net.praqma.clearcase.ucm.utils.BaselineList;
@@ -8,6 +9,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+@SuppressFBWarnings("")
 public class AfterBaseline extends BaselineFilter {
 	
 	private static Logger logger = Logger.getLogger( AfterBaseline.class.getName() );

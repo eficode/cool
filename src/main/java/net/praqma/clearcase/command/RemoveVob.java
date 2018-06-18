@@ -1,5 +1,6 @@
 package net.praqma.clearcase.command;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Vob;
 
 import java.util.logging.Logger;
@@ -9,6 +10,7 @@ import java.util.logging.Logger;
  * Date: 09-11-12
  * Time: 11:02
  */
+@SuppressFBWarnings("")
 public class RemoveVob extends Command<Boolean> {
 
     private static Logger logger = Logger.getLogger( RemoveVob.class.getName() );

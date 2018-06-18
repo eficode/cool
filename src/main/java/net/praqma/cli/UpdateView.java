@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.clearcase.ucm.view.SnapshotView.Components;
@@ -12,6 +13,7 @@ import net.praqma.clearcase.ucm.view.SnapshotView.UpdateInfo;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
+@SuppressFBWarnings("")
 public class UpdateView {
 	private static final Logger logger = Logger.getLogger( UpdateView.class.getName() );
 	

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.exceptions.BuildNumberException;
 import net.praqma.clearcase.exceptions.ClearCaseException;
@@ -18,6 +19,7 @@ import net.praqma.clearcase.ucm.utils.BuildNumber;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
+@SuppressFBWarnings("")
 public class StampBuildNumber extends Cool {
 	private static Logger logger = Logger.getLogger( StampBuildNumber.class.getName() );
 	

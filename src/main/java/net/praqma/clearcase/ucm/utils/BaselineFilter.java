@@ -1,7 +1,10 @@
 package net.praqma.clearcase.ucm.utils;
 
+import edu.umd.cs.findbugs.annotations.*;
+
 import java.io.Serializable;
 
+@SuppressFBWarnings("")
 public abstract class BaselineFilter implements Serializable {
 
 	public abstract int filter( BaselineList baselines );

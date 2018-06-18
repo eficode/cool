@@ -1,5 +1,6 @@
 package net.praqma.clearcase;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
@@ -19,6 +20,7 @@ import java.util.logging.Logger;
 /**
  * @author cwolfgang
  */
+@SuppressFBWarnings("")
 public class ConfigSpec {
 
     private static final Logger logger = Logger.getLogger( ConfigSpec.class.getName() );

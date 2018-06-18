@@ -9,6 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Cool;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.api.Describe;
@@ -20,6 +22,7 @@ import net.praqma.clearcase.ucm.view.SnapshotView;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import org.apache.commons.lang.StringUtils;
 
+@SuppressFBWarnings("")
 public class Baseline extends UCMEntity implements Diffable {
 
 	transient static final private Logger logger = Logger.getLogger( Baseline.class.getName()  );

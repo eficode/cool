@@ -1,5 +1,6 @@
 package net.praqma.clearcase.api;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
 import net.praqma.util.execute.CmdResult;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
 /**
  * @author cwolfgang
  */
+@SuppressFBWarnings("")
 public class Describe extends Command<List<String>> {
 
     private static final Logger logger = Logger.getLogger( Describe.class.getName() );

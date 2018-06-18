@@ -3,11 +3,13 @@ package net.praqma.clearcase.ucm.entities;
 import java.io.File;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.*;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 
+@SuppressFBWarnings("")
 public class Component extends UCMEntity {
 	
 	private transient static Logger logger = Logger.getLogger( Component.class.getName()  );

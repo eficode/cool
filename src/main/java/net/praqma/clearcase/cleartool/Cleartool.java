@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.*;
 import net.praqma.clearcase.exceptions.CleartoolNotInstalledException;
 import net.praqma.clearcase.exceptions.NoLicenseServerException;
@@ -23,6 +24,7 @@ import net.praqma.util.execute.CommandLineInterface;
  * @author wolfgang
  * 
  */
+@SuppressFBWarnings("")
 public abstract class Cleartool extends Cool {
 
     

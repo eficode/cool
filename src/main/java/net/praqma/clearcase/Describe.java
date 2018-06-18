@@ -1,5 +1,6 @@
 package net.praqma.clearcase;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.ucm.entities.UCMEntity;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
  * @author cwolfgang
  * @deprecated
  */
+@SuppressFBWarnings("")
 public class Describe {
 
     private static final Logger logger = Logger.getLogger( Describe.class.getName() );

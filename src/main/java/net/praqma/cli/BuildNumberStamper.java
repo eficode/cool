@@ -3,17 +3,12 @@ package net.praqma.cli;
 import java.io.File;
 import java.io.IOException;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.util.option.Option;
 import net.praqma.util.option.Options;
 
-/*
- * Usage
- * java -classpath COOL-0.1.5.jar net.praqma.cli.BuildNumber -f stamptest.txt -m 12 -p 1234 -s 22221 --minor 22b
- * 
- * 
- */
-
+@SuppressFBWarnings("")
 public class BuildNumberStamper {
 
 	public static void main( String[] args ) throws ClearCaseException {

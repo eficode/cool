@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.command.ListVobs;
 import net.praqma.clearcase.command.RemoveVob;
@@ -27,6 +28,7 @@ import net.praqma.util.execute.CommandLineInterface.OperatingSystem;
  * @author wolfgang
  * 
  */
+@SuppressFBWarnings("")
 public class Vob extends ClearCase implements Serializable {
 
 	public static final Pattern rx_vob_get_path = Pattern.compile( "^\\s*VOB storage global pathname\\s*\"(.*?)\"\\s*$" );

@@ -1,5 +1,6 @@
 package net.praqma.cli;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.exceptions.TagException;
 import net.praqma.clearcase.exceptions.TagException.Type;
@@ -16,6 +17,7 @@ import net.praqma.util.option.Options;
 
 import java.util.logging.Logger;
 
+@SuppressFBWarnings("")
 public class SetTag {
 	
 	private static Logger logger = Logger.getLogger( SetTag.class.getName() );

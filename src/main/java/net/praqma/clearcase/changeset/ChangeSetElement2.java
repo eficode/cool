@@ -2,9 +2,11 @@ package net.praqma.clearcase.changeset;
 
 import java.io.File;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.ucm.entities.Version;
 import net.praqma.clearcase.ucm.entities.Version.Status;
 
+@SuppressFBWarnings("")
 public class ChangeSetElement2 {
 	private File file;	
 	private File oldFile;

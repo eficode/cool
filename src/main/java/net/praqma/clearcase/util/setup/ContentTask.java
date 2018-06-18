@@ -5,11 +5,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.exceptions.ClearCaseException;
 import net.praqma.clearcase.util.setup.EnvironmentParser.Context;
 
 import org.w3c.dom.Element;
 
+@SuppressFBWarnings("")
 public class ContentTask extends AbstractTask {
 	
 	private static Logger logger = Logger.getLogger( ContentTask.class.getName() );

@@ -1,5 +1,6 @@
 package net.praqma.clearcase.container;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Branch;
 import net.praqma.clearcase.Label;
 import net.praqma.clearcase.ucm.entities.Version;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * @author cwolfgang
  */
+@SuppressFBWarnings("")
 public class LabelsForVersion {
 
     private Version version;

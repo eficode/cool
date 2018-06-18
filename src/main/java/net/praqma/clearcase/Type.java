@@ -1,10 +1,13 @@
 package net.praqma.clearcase;
 
+import edu.umd.cs.findbugs.annotations.*;
+
 import java.io.Serializable;
 
 /**
  * @author cwolfgang
  */
+@SuppressFBWarnings("")
 public abstract class Type implements Serializable {
     protected String name;
 

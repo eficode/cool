@@ -2,8 +2,10 @@ package net.praqma.cli;
 
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.util.PackageUtils;
 
+@SuppressFBWarnings("")
 public class Main {
 	public static void main( String[] args ) throws Exception {
 		

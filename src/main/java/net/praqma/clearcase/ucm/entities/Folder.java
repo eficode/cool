@@ -4,6 +4,7 @@
  */
 package net.praqma.clearcase.ucm.entities;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.UnableToCreateEntityException;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
  * 
  * @author Praqma
  */
+@SuppressFBWarnings("")
 public class Folder extends UCMEntity {
 	transient static private Logger logger = Logger.getLogger( Folder.class.getName() );
 

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.Deliver;
 import net.praqma.clearcase.PVob;
 import net.praqma.clearcase.cleartool.Cleartool;
@@ -24,6 +25,7 @@ import net.praqma.util.execute.CmdResult;
  * @author wolfgang
  * 
  */
+@SuppressFBWarnings("")
 public class Stream extends UCMEntity implements Diffable, Serializable, StreamContainable {
 
 	private static final String rx_stream_load = "\\s*Error: stream not found\\s*";

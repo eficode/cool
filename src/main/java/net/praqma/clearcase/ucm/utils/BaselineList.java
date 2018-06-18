@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.UnableToInitializeEntityException;
 import net.praqma.clearcase.exceptions.UnableToListBaselinesException;
@@ -15,6 +16,7 @@ import net.praqma.clearcase.ucm.entities.Stream;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import org.apache.commons.lang.SystemUtils;
 
+@SuppressFBWarnings("")
 public class BaselineList extends ArrayList<Baseline> {
 
     private static Logger logger = Logger.getLogger(BaselineList.class.getName());

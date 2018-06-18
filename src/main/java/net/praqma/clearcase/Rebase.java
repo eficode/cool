@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.clearcase.exceptions.RebaseException;
@@ -17,6 +18,7 @@ import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 import org.apache.commons.lang.StringUtils;
 
+@SuppressFBWarnings("")
 public class Rebase {
 	
 	private static final String rx_rebase_in_progress = "^Rebase operation in progress on stream\\s+\\.*";

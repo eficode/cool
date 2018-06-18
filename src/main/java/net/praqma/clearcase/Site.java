@@ -3,11 +3,13 @@ package net.praqma.clearcase;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.*;
 import net.praqma.clearcase.cleartool.Cleartool;
 import net.praqma.clearcase.exceptions.CleartoolException;
 import net.praqma.util.execute.AbnormalProcessTerminationException;
 import net.praqma.util.execute.CmdResult;
 
+@SuppressFBWarnings("")
 public class Site extends Cool {
 
 	private String name;
