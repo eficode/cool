@@ -5,12 +5,12 @@
     <packaging>hpi</packaging>
     <name>ClearCase UCM library Plugin</name>
     <url>https://github.com/praqma/cool</url>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>3.14</version>
-        <relativePath/>
+        <relativePath />
     </parent>
 
     <developers>
@@ -119,7 +119,7 @@
         <connection>scm:git:http://github.com/Praqma/cool.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/Praqma/cool.git</developerConnection>
         <url>https://github.com/Praqma/cool.git</url>
-        <tag>HEAD</tag>
+        <tag>clearcase-ucm-api-1.0.0</tag>
     </scm>
 
     <pluginRepositories>
