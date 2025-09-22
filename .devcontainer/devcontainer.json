@@ -1,0 +1,12 @@
+{
+    "name": "Dev Container (1-8-jdk-bullseye)",
+    "image": "mcr.microsoft.com/devcontainers/java:1-8-jdk-bullseye",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "vscjava.vscode-java-pack"
+            ]
+        }
+    },
+    "postCreateCommand": "java -version"
+}
